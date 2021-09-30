@@ -1,0 +1,79 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
+img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u,
+i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table,
+caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details,
+embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby,
+section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+*{
+	box-sizing: border-box;
+}
+:root{
+    --couleur-principale: #0a71b3;
+    --variable-color-user: /*#19b4a0*/ #ff4a0b;
+    --variable-color-user-hover: #3f3844;
+    --couleur-focus: #06b4ff;
+    --gris-profond: #636363;
+    --gris-clair: #e3e3e3;
+    --gris-clair-hover: #bfbfbf;
+    --disconnect: #dc3937;
+}
+.svg-background{
+	fill: var(--gris-profond);
+}
+.persoBleu {
+    background-color: #1e88d8 !important;
+}
+.persoJaune {
+    background-color: #ffb600 !important;
+}
+.persoVert {
+    background-color: #22bf02 !important;
+}
+.persoRouge {
+    background-color: #ea0a0a !important;
+}
+.persoAzur {
+    background-color: #04baac !important;
+}
+.persoViolet {
+    background-color: #ab35ef !important;
+}
+.persoMagenta {
+    background-color: #e60064 !important;
+}
+.peroInactif {
+    background-color: #ff4a0b !important;
+}
+html{
+    background: url("../images/img/fondEcran-Dekstop.jpg") no-repeat center fixed /*#0a71b3*/;
+    -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+    background-size: cover; /* version standardisée */
+    padding-top: 58px;
+}
+a{
+    text-decoration: none;
+}
+body{
+	width: 100%;
+}
+.cacher{
+	display: none !important;
+}
+.hidden{
+    visibility: hidden !important;
+}
+.desactive{
+	pointer-events: none !important;
+	border: 0px !important;
+}
+.desactive * {
+	border: 0px !important;
+}

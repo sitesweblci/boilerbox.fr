@@ -1,0 +1,27 @@
+{# /srv/www/htdocs/Symfony/src/Lci/FilesBundle/Resources/views #}
+<h1>Utilisation du service File</h1>
+
+<p>Ce service permet la création et le téléchargement de fichiers csv</p>
+
+<h2>Paramètres globaux</h2>
+<p>
+Il nécessite le paramètre suivant dans le fichier /app/config/parameters.yml : <br />
+- <b>files_path</b> :       		chemin vers le répertoire des nouveaux fichiers (doit avoir les droits en écriture)
+</p>
+
+<h2>Les méthodes accessibles au sein du service sont </h2>
+
+<h3>Objet Response help () </h3>
+<p>Permet l'affichage de ce document<br />
+N'attend pas de paramètres<br />
+<br />
+<h3>Objet Response creerFichierCsv ($lignes, $nom_du_fichier, $telechargement)</h3>
+<p>	Permet la création et le téléchargement d'un fichier csv<br />
+	Les paramètres <b>$lignes</b> et <b>$nom_du_fichier</b> sont obligatoires<br />
+	Le paramètre <b>$telechargement</b> est définit à true par défaut.<br />
+	<br />
+	<b>$lignes</b> : (array) Tableau des lignes du fichier csv<br />
+	<b>$nom_du_fichier</b> : (string) Nom du fichier à créer<br />
+	<b>$téléchargement</b> : (bool) Si true (valeur par défaut) alors le téléargement du fichier est proposé lors de sa création<br />
+							 Si false, le fichier est créé et la méthode retourne le nom du fichier<br />
+</p>

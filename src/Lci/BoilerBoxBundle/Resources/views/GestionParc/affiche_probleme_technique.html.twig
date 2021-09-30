@@ -1,0 +1,156 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/affiche_probleme_technique.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+{% form_theme form 'form/fields.html.twig' %}
+
+{% block title %}{{ parent() }}ticket{% endblock title %}
+
+{% block fos_user_content %}
+{{ parent() }}
+<div class='listing'>
+<div class='ajout_objet'>
+	<div><span class='top_droit notToBePrinted'><img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" onclick="window.print();"></span></div>
+	<div class='menu_date'>{% include "form/version_boilerbox.html.twig" %}<span class='top_droit'>{{ date_jour }}<br /></span></div>
+	<h1>Problème technique</h1>
+	<div class='formulaire taille_texte_petit'>
+		<div class='nouveau_probleme_ligne'>
+			Problème n°{{ entity_probleme.id }} signalé le {{ entity_probleme.dateSignalement | date('d/m/Y') }} et affecté à {{ entity_probleme.user.username }}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			{{ entity_probleme.user.label }}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			{% if entity_probleme.corrige == true %}
+				<div class='ok ajout_espace_top'>Corrigé {% if entity_probleme.dateCorrection != null %} le {{ entity_probleme.dateCorrection | date('d/m/Y') }}{% endif %}</div>
+			{% endif %}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			{% if entity_probleme.cloture == true %}
+				<p class='mid ajout_espace_top'>Clos {% if entity_probleme.dateCloture != null %} le {{ entity_probleme.dateCloture | date('d/m/Y') }}{% endif %}</p>
+			{% endif %}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			{% if entity_probleme.bloquant == true %}
+				<span class='nok taille_texte_moyen ajout_espace_top'>Problème bloquant !</span>
+			{% endif %}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			<h1>Module(s) impacté(s)</h1> 
+		</div>
+		<div class='nouveau_probleme_ligne'>
+				{% for key, module in entity_probleme.module %}
+				{{ module.numero }} - {{ module.nom }} {% if module.type is not empty %}- [ {{ module.type }} ]{% endif %} {% if loop.index != entity_probleme.module|length %} - {% endif %}
+			{% endfor %}
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			<h1>Equipement concerné</h1>
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			<div>{{ entity_probleme.equipement.type }}</div>
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			<h1>Description</h1>
+		</div>
+		<div class='nouveau_probleme_ligne'>
+			<div class='div_limite_hauteur'>{{ entity_probleme.description }}</div>
+		</div>
+		{% if entity_probleme.solution != null %}
+			<div class='nouveau_probleme_ligne'>
+				<h1>Solution</h1>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='div_limite_hauteur'>{{ entity_probleme.solution }}</div>
+			</div>
+		{% endif %}
+
+		{# 	* Si un problème n'est pas clos, il peut être mis en état corrigé / non corrigé si il appartient au 
+			* technicien qui visualise la fiche 
+		#}
+		{% if entity_probleme.fichiersJoint is not empty %}
+			<div class='div_limite_hauteur'>
+				<div class='nouveau_probleme_ligne'>
+					<h1>Fichiers joints</h1>
+				</div>
+				{% for fichier in entity_probleme.fichiersJoint %}
+					<div class='nouveau_probleme_ligne'>
+						<a onclick="window.open(this.href); return false;" href="{{ asset('uploads/problemes/' ~ fichier.url) }}">{{ fichier.alt }}</a>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		{% if entity_probleme.cloture != true %}
+			{% if entity_probleme.user.username == app.user.getUsername() %}
+			{{ form_start(form, {'action':path('lci_affiche_problemeTechnique'), 'method':'POST', 'name':'myForm'}) }}
+				<div class='nouveau_probleme_ligne notToBePrinted'>
+					<div>{{ form_widget(form.corrige) }}{{ form_label(form.corrige) }}</div>
+				</div>
+				<div class='divCorrection nouveau_probleme_ligne invisible'>
+					<div>{{ form_errors(form.dateCorrection) }}{{ form_label(form.dateCorrection) }}</div>
+					<div>{{ form_widget(form.dateCorrection) }}</div>
+				</div>
+				<div class='divCorrection nouveau_probleme_ligne invisible'>
+					<div class='texte_box'>
+						<div>{{ form_errors(form.solution) }}{{ form_widget(form.solution) }}</div>
+					</div>
+				</div>
+				<div class='cacher'>
+					{{ form_rest(form) }}
+				</div>
+				<div class='validation_formulaire notToBePrinted'>
+					<img 	onClick="attente(); document.forms['myForm'].submit();" 
+							class="btn_menu" 
+							alt="Enregistrer"
+							src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+							onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 
+							onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" />
+				</div>
+			{{ form_end(form) }}
+			{% endif %}
+		{% endif %}
+		<div class='nouveau_probleme_ligne' style='margin-top:-60px;'>
+			<img class='position_logo_fiche_ticket' src="{{ asset('bundles/lciboilerbox/images/logo_lci.jpg') }}"  width='100%' alt='logo_lci' />
+		</div>
+
+		<div class='nouveau_probleme_ligne notToBePrinted'>
+			<div class='frm_lien_centrer'><a href="{{ path('lci_tri_recherche_problemes') }}" style="height:30px;" onClick="attente();">Retour à la liste</a></div>
+		</div>
+	</div>
+</div>
+</div>
+
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+		// Affichage des informations de résolution cachées si le ticket est résolu
+        if ("{{ entity_probleme.corrige }}" != ""){
+			$('#problemeTechnique_corrige').attr('checked', 'checked');
+            if ("{{ entity_probleme.dateCorrection|date('d-m-Y') }}" != ""){
+                $('#problemeTechnique_dateCorrection').val("{{ form.dateCorrection.vars.value }}");
+                $('.divCorrection').removeClass('invisible');
+            }	
+        } else {
+			$('#problemeTechnique_corrige').removeAttr('checked');
+		}
+
+		// Affichage ou Cache des informations de résolution lors du clic sur la checkbox
+		$('#problemeTechnique_corrige').change(function(){
+            if ($('#problemeTechnique_corrige').is(':checked')) {
+                if ("{{ form.corrige.vars.checked }}" == true){
+                    if ("{{ form.dateCorrection.vars.value }}" != ""){
+                        $('#problemeTechnique_dateCorrection').val("{{ form.dateCorrection.vars.value }}");
+                    } else {
+                        $('#problemeTechnique_dateCorrection').val($.format.date(new Date(), 'dd-MM-yyyy'));
+                    }
+                } else {
+                    $('#problemeTechnique_dateCorrection').val($.format.date(new Date(), 'dd-MM-yyyy'));
+                }
+                $('.divCorrection').removeClass('invisible');
+            } else {
+				$('#problemeTechnique_dateCorrection').val("");
+                $('.divCorrection').addClass('invisible');
+            }
+        });
+    });
+</script>
+
+{% endblock fos_user_content %}

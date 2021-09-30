@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="L'Interface de supervision des Chaudières Industrielles">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+    {% block boilerBoxCSS %}
+         <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloud.css') }}" />
+    {% endblock boilerBoxCSS %}
+    
+	<title>{% block title %}BOILERBOX {% endblock title %}</title>
+</head>
+
+<body>
+{% block mainBandeau %}
+	 <nav id="mainMenu">
+        <div id="left">
+            <a href="{{ path('fos_user_security_logout') }}" id="lienWatermark">
+                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="baselineLogo">
+                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
+                    <span class="initialeBaseline">B</span>OILER<br>
+                    <span class="initialeBaseline">C</span>ONTROL<br>
+                </p>
+            </a>
+        </div>
+
+        <div id="right">
+            <a id="iconeLocalisation" class="mainNavButton spaceRoundedButton" href="https://www.google.com/maps/d/embed?mid=1y0NIi4DoQQCO4sDyfxOMwqQ052U3X2TB" >
+                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites" class="icones">
+                <p id="pLocalisation" class="popUp">Localisation</p>
+            </a>
+            <a href="{{ path('fos_user_security_login') }}" id="btnUnidentified" class="mainNavButton">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/unidentified.svg') }}" alt="icône mon compte" id="iconeUnidentified" class="icones">
+            </a>
+        </div>
+    </nav>
+
+
+    <div id='popUpError' class='cacher' >
+        <div class="crossCloseContainerEquipement" onClick="clotureMessageErreur();"></div>
+        {% if app.session.flashbag.peek('erreur') | length  > 0 %}
+            <h1>Erreur rencontrée</h1>
+            <div class="containerPopUpError">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/warningError.svg') }}" alt="icône Erreur">
+                <p>
+                    {% for message in app.session.flashbag.get('erreur') %}
+                        {{ message|raw }}<br /><br />
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if  app.session.flashbag.peek('info') | length  > 0 %}
+            <div class="containerPopUpError">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/warningInfo.svg') }}" alt="icône Info">
+                <p>
+                    {% for message in app.session.flashbag.get('info') %}
+                        {{ message|raw }}<br /><br />
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        <p class="eyeCatcherGris" onClick="clotureMessageErreur();" style="box-sizing:border-box;width:100%;margin-top:24px;">compris</p>
+    </div>
+
+    <div id="cartonBlack" class="cacher"></div>
+
+{% endblock mainBandeau %}
+
+{% block subBandeau %}
+{% endblock subBandeau %}
+
+
+{% block mainBody %}
+{% endblock mainBody%}
+
+
+
+<script src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
+
+<script type='text/javascript'>
+	$(document).ready(function() 
+	{
+		if(typeof($('#popUpError div.containerPopUpError p').html()) != 'undefined') 
+		{
+			$('#popUpError').removeClass('cacher')
+			$('#cartonBlack').removeClass('cacher')
+		}
+	});
+
+	function clotureMessageErreur() {
+		$('#popUpError').addClass('cacher');
+		$('#cartonBlack').addClass('cacher');
+	}
+</script>
+
+{% block javascript %}
+{% endblock javascript %}
+
+</body>
+</html>

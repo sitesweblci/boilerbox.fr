@@ -1,0 +1,193 @@
+﻿"Problèmes Techniques"
+Référence;Bloquant;"Date de correction";"Date de signalement";Opérateur;Module(s);Equipement;Description;Solution;"Fichier(s) joint(s)"
+678;X;;27/02/2019;"0_TECHNICIENS (Groupe Techniciens)";122;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 122 (VAP 12T 28b GN/FOD)";;
+679;X;;27/02/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";123;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 123 (VAP 12T 28b GN/FOD)";;
+680;X;;27/02/2019;"0_TECHNICIENS (Groupe Techniciens)";123;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 123 (VAP 12T 28b GN/FOD)";;
+681;X;;27/02/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";124;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 124 (VAP 12T 28b GN/FOD)";;
+682;X;;27/02/2019;"0_TECHNICIENS (Groupe Techniciens)";124;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 124 (VAP 12T 28b GN/FOD)";;
+683;X;;27/02/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";146;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 146 (VAP 12T 28b GN/FOD)";;
+684;X;;27/02/2019;"0_TECHNICIENS (Groupe Techniciens)";146;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 146 (VAP 12T 28b GN/FOD)";;
+685;X;;27/02/2019;"0_AUTOMATICIENS (Groupe Automaticiens)";146;"MISE A JOUR AUTOMATE ET COMMUNICATION";"Effectuer la mise à jour de l'automate et de la communication pour le module 146 (VAP 12T 28b GN/FOD)";;
+686;X;;27/02/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";151;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 151 (VAP 16T 24,5b GN/FOD version SH  + ancien design)";;
+687;X;;27/02/2019;"0_TECHNICIENS (Groupe Techniciens)";151;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 151 (VAP 16T 24,5b GN/FOD version SH  + ancien design)";;
+688;X;;27/02/2019;"0_AUTOMATICIENS (Groupe Automaticiens)";151;"MISE A JOUR AUTOMATE ET COMMUNICATION";"Effectuer la mise à jour de l'automate et de la communication pour le module 151 (VAP 16T 24,5b GN/FOD version SH  + ancien design)";;
+675;X;;26/02/2019;"0_TECHNICIENS (Groupe Techniciens)";144;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 144 (VAP 16T 24,5b GN/FOD)";;
+676;X;;26/02/2019;"0_AUTOMATICIENS (Groupe Automaticiens)";144;"MISE A JOUR AUTOMATE ET COMMUNICATION";"Effectuer la mise à jour de l'automate et de la communication pour le module 144 (VAP 16T 24,5b GN/FOD)";;
+672;X;;04/02/2019;"0_TECHNICIENS (Groupe Techniciens)";107;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 107 (VAP 3T2 16b GN/FOD)";;
+666;X;;31/01/2019;"0_TECHNICIENS (Groupe Techniciens)";109;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 109 (VAP 6T 20b GN/FOD)";;
+664;;;25/01/2019;"0_TECHNICIENS (Groupe Techniciens)";152;"IBC ";"remplacer la cpu, piece en stock";;
+663;;;22/01/2019;"0_AUTOMATICIENS (Groupe Automaticiens)";161;"CHECK TECHNICIEN";"PSL et PSH inversés physiquement
+A mettre en ordre lors du check";;
+662;;;21/01/2019;"0_TECHNICIENS (Groupe Techniciens)";160;"ARMOIRE ÉLECTRIQUE";"servo rezi canal 4 etamatic desactivé, voir maxime et kevin";;
+634;X;;09/01/2019;"0_TECHNICIENS (Groupe Techniciens)";551;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 551 (CUVE EFFLUENT 17,5m3 environ)";;
+627;X;;09/01/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";129;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 129 (VAP 3T2 16b GN/FOD)";;
+628;X;;09/01/2019;"0_TECHNICIENS (Groupe Techniciens)";129;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 129 (VAP 3T2 16b GN/FOD)";;
+630;X;;09/01/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";139;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 139 (VAP 12T 28b GN/FOD)";;
+631;X;;09/01/2019;"0_TECHNICIENS (Groupe Techniciens)";139;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 139 (VAP 12T 28b GN/FOD)";;
+635;X;;09/01/2019;"0_MÉCANICIENS (Groupe Mécaniciens)";141;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 141 (VAP 3T2 16b GN/FOD)";;
+636;X;;09/01/2019;"0_TECHNICIENS (Groupe Techniciens)";141;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 141 (VAP 3T2 16b GN/FOD)";;
+608;X;;20/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";563;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 563 (SKID POMPE FIOUL)";;
+609;X;;20/12/2018;"0_TECHNICIENS (Groupe Techniciens)";563;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 563 (SKID POMPE FIOUL)";;
+614;X;;20/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";596;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 596 (DETENTE HP GAZ)";;
+615;X;;20/12/2018;"0_TECHNICIENS (Groupe Techniciens)";596;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 596 (DETENTE HP GAZ)";;
+587;X;;18/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";532;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 532 (SILENCIEUX VAPEUR 30T 20B)";;
+588;X;;18/12/2018;"0_TECHNICIENS (Groupe Techniciens)";532;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 532 (SILENCIEUX VAPEUR 30T 20B)";;
+590;X;;18/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";603;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 603 (DETENDEUR VAPEUR - DN080 PN40 - PREDU 35.701 + DMA 80)";;
+591;X;;18/12/2018;"0_TECHNICIENS (Groupe Techniciens)";603;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 603 (DETENDEUR VAPEUR - DN080 PN40 - PREDU 35.701 + DMA 80)";;
+575;X;;14/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";601;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 601 (BALLON DETENTE PURGES SPE ES)";;
+576;X;;14/12/2018;"0_TECHNICIENS (Groupe Techniciens)";601;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 601 (BALLON DETENTE PURGES SPE ES)";;
+569;X;;07/12/2018;"0_TECHNICIENS (Groupe Techniciens)";145;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 145 (VAP 12T 28b GN/FOD)";;
+561;;;04/12/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";124;SONDE;"Sonde de conductivite a chaud la remplacer";;
+559;X;;23/11/2018;"0_TECHNICIENS (Groupe Techniciens)";590;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 590 (BACHE ALIMENTAIRE 17M3 sans calo)";;
+552;X;;15/11/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";581;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 581 (CONTAINER DE COMMANDE SURCHAUFFEUR ELECTRIQUE)";;
+553;X;;15/11/2018;"0_TECHNICIENS (Groupe Techniciens)";581;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 581 (CONTAINER DE COMMANDE SURCHAUFFEUR ELECTRIQUE)";;
+539;;;31/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";123;"ARMOIRE ÉLECTRIQUE";"remplace qpa2
+piece disponible dans la caisse a outil de remy emaille";;
+536;X;;25/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";163;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 163 (VAP 12T 28b GN/FOD version SH + nouveau design)";;
+537;X;;25/10/2018;"0_TECHNICIENS (Groupe Techniciens)";163;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 163 (VAP 12T 28b GN/FOD version SH + nouveau design)";;
+533;X;;25/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";164;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 164 (VAP 12T 28b GN/FOD version SH + nouveau design)";;
+534;X;;25/10/2018;"0_TECHNICIENS (Groupe Techniciens)";164;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 164 (VAP 12T 28b GN/FOD version SH + nouveau design)";;
+515;X;;03/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";502;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 502 (BACHE 1,2 M3 ATM)";;
+516;X;;03/10/2018;"0_TECHNICIENS (Groupe Techniciens)";502;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 502 (BACHE 1,2 M3 ATM)";;
+521;X;;03/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";622;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 622 (BACHE - 23M3 - 0,5b avec réchauffage)";;
+522;X;;03/10/2018;"0_TECHNICIENS (Groupe Techniciens)";622;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 622 (BACHE - 23M3 - 0,5b avec réchauffage)";;
+524;X;;03/10/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";623;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 623 (BACHE - 23M3 - 0,5b avec réchauffage)";;
+525;X;;03/10/2018;"0_TECHNICIENS (Groupe Techniciens)";623;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 623 (BACHE - 23M3 - 0,5b avec réchauffage)";;
+508;X;;27/09/2018;"DAMENENA (Naguib Damene)";569;MÉCANIQUE;"manque le capot de trou d'homme, retour cpcu a organiser";;
+478;X;;05/09/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";571;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 571 (BALLON DETENTE PURGES SPE ES)";;
+479;X;;05/09/2018;"0_TECHNICIENS (Groupe Techniciens)";571;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 571 (BALLON DETENTE PURGES SPE ES)";;
+481;X;;05/09/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";582;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 582 (DETENTE HP GAZ)";;
+482;X;;05/09/2018;"0_TECHNICIENS (Groupe Techniciens)";582;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 582 (DETENTE HP GAZ)";;
+464;X;;25/07/2018;"0_TECHNICIENS (Groupe Techniciens)";512;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 512 (BARILLET DN250 x 28b)";;
+460;X;;25/07/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";534;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 534 (BALLON DETENTE PURGES 450l)";;
+461;X;;25/07/2018;"0_TECHNICIENS (Groupe Techniciens)";534;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 534 (BALLON DETENTE PURGES 450l)";;
+466;X;;25/07/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";580;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 580 (SURCHAUFFEUR ELECTRIQUE)";;
+467;X;;25/07/2018;"0_TECHNICIENS (Groupe Techniciens)";580;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 580 (SURCHAUFFEUR ELECTRIQUE)";;
+441;X;;02/07/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";615;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 615 (SILENCIEUX VAPEUR)";;
+442;X;;02/07/2018;"0_TECHNICIENS (Groupe Techniciens)";615;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 615 (SILENCIEUX VAPEUR)";;
+418;X;;05/06/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";546;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 546 (DETENDEUR VAPEUR DN80)";;
+419;X;;05/06/2018;"0_TECHNICIENS (Groupe Techniciens)";546;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 546 (DETENDEUR VAPEUR DN80)";;
+425;;;05/06/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";620;"CHECK AVANT DÉPART";"remplacer la plaque ce, la nouvelle plaque est au bureau du chef de parc";;
+391;X;;09/05/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";548;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 548 (BALLON DETENTE PURGES SPE ES)";;
+392;X;;09/05/2018;"0_TECHNICIENS (Groupe Techniciens)";548;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 548 (BALLON DETENTE PURGES SPE ES)";;
+379;X;;09/05/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";616;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 616 (CENTRALE DETECTION INCENDIE avec 2x2IR + 3x3IR)";;
+380;X;;09/05/2018;"0_TECHNICIENS (Groupe Techniciens)";616;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 616 (CENTRALE DETECTION INCENDIE avec 2x2IR + 3x3IR)";;
+370;X;;13/04/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";583;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 583 (SURCHAUFFEUR ELECTRIQUE)";;
+371;X;;13/04/2018;"0_TECHNICIENS (Groupe Techniciens)";583;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 583 (SURCHAUFFEUR ELECTRIQUE)";;
+373;X;;13/04/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";597;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 597 (BALLON DETENTE PURGES SPE ES)";;
+374;X;;13/04/2018;"0_TECHNICIENS (Groupe Techniciens)";597;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 597 (BALLON DETENTE PURGES SPE ES)";;
+369;;;09/04/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";122;"CORPS DE CHAUFFE";"calo a revoir suite choc sur site";;
+365;;;05/04/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";121;MÉCANIQUE;"Pas de support sur la tuyauterie eau alimentaire en entrée du module.";;
+364;X;;05/04/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";130;"MISE A JOUR AUTOMATE ET COMMUNICATION";"M130 :REMARQUE DE MB LORS DU DEMARRAGE
+•De l’eau dans un PSHH mais il fonctionne.
+•Problème de com entre WFM et IBC. Déjà signalé il y a 2 ans (à voir avec Ben mais je pense connaitre le problème)
+•La pompe sur variateur ne se mettait pas en marche, les pates du relais FINDER étaient pliées.
+•Vanne de niveau à contrôler car pas étanche et je pense course de l’axe de vanne pas bon.";;
+315;;;14/02/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";124;VANNE;"REMPLACEMENT KIT GARNITURE SUR VANNE PNEUMATIQUE 6571 AVEC KIT 6572
+FRAPPER LE NUMÉRO DE VANNE 6571-2";;
+316;;;14/02/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";146;BRULEUR;"manque torche bruleur, démontage fait sur site pour dépanner m151 de Cadarache";;
+242;X;;31/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";537;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 537 (Cuve FOD 15m3)";;
+251;X;;31/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";543;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 543 (ECHANGEUR A PLAQUES)";;
+252;X;;31/01/2018;"0_TECHNICIENS (Groupe Techniciens)";543;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 543 (ECHANGEUR A PLAQUES)";;
+265;X;;31/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";570;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 570 (SKID POMPE ECC KSB)";;
+266;X;;31/01/2018;"0_TECHNICIENS (Groupe Techniciens)";570;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 570 (SKID POMPE ECC KSB)";;
+268;X;;31/01/2018;"0_TECHNICIENS (Groupe Techniciens)";570;POMPE;"pompe neuve, n'a jamais démarré sur l776
+mise en service par ksb a faire";;
+230;X;;31/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";600;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 600 (BALLON DETENTE PURGES SPE ES)";;
+231;X;;31/01/2018;"0_TECHNICIENS (Groupe Techniciens)";600;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 600 (BALLON DETENTE PURGES SPE ES)";;
+135;;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";142;"CORPS DE CHAUFFE";"calorifuge a réparer";"réparation avec tole inox en attente du bon calo";
+155;X;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";505;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 505 (EXP. EC 1000 L + POMPE)";;
+158;X;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";506;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 506 (EXP. EC 500 L)";;
+159;X;;29/01/2018;"0_TECHNICIENS (Groupe Techniciens)";506;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 506 (EXP. EC 500 L)";;
+173;X;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";520;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 520 (MODULE ADOUCISSEUR 8,4M3/H)";;
+174;X;;29/01/2018;"0_TECHNICIENS (Groupe Techniciens)";520;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 520 (MODULE ADOUCISSEUR 8,4M3/H)";;
+176;X;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";521;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 521 (MODULE ADOUCISSEUR 8,4M3/H)";;
+177;X;;29/01/2018;"0_TECHNICIENS (Groupe Techniciens)";521;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 521 (MODULE ADOUCISSEUR 8,4M3/H)";;
+185;X;;29/01/2018;"0_MÉCANICIENS (Groupe Mécaniciens)";526;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 526 (BACHE 17,5M3 0,5B INOX)";;
+186;X;;29/01/2018;"0_TECHNICIENS (Groupe Techniciens)";526;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 526 (BACHE 17,5M3 0,5B INOX)";;
+79;X;;25/09/2017;"0_MÉCANICIENS (Groupe Mécaniciens)";519;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 519 (MODULE ADOUCISSEUR 8,4M3/H)";;
+80;X;;25/09/2017;"0_TECHNICIENS (Groupe Techniciens)";519;"CHECK TECHNICIEN";"Effectuer le check technicien
+Vérifier les problèmes déclarés sur le module 519 (MODULE ADOUCISSEUR 8,4M3/H)";;
+66;X;;20/09/2017;"0_MÉCANICIENS (Groupe Mécaniciens)";600;"CHECK MÉCANICIEN";"Effectuer le check mécanicien
+Vérifier les problèmes déclarés sur le module 600 (BALLON DETENTE PURGES SPE ES)";;

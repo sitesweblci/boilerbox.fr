@@ -1,0 +1,129 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_ajout_fichiers_bons.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block title %}{{ parent() }} Modification de bon{% endblock title %}
+
+{% form_theme form 'templates/form/fields.html.twig' %}
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'attachements</h1></div>
+
+<div class='listing notToBePrinted'>
+    <div class='listing_raw'>
+        <div class='listing2'>
+            <div class='formulaire_liste formulaire_bon'>
+                <div class='entete'>Signé le {{ entity_bon.dateSignature | date('d/m/Y')  }}</div>
+                <div><h1>Bon {{ entity_bon.numeroBA }}</h1></div>
+                <div class='afterH1'><span class='titre'>Intervention par : </span>{{ entity_bon.user.label }}</div>
+                <div><span class='titre'>Site de l'intervention : </span>{{ entity_bon.nomDuSite }}   ( {{ entity_bon.numeroAffaire | upper }} ) </div>
+                {% if entity_bon.enqueteFaite %}<div class='verte'>Enquête faite</div>{% elseif entity_bon.enqueteNecessaire %}<div class='bleue'>Enquête demandée</div>{% else %}<div class='rouge'>Pas d'enquête demandée</div>{% endif %}
+                <div><span class='titre'>Contact chez le client : </span>{{ entity_bon.emailContactClient }}</div>
+
+                <div class='liste_fichiers_du_bon'>
+                    <h1>Fichiers attachés</h1>
+                    <table class='table_boiler'>
+                        <thead>
+                            <tr>
+                                <th class='zone_texte_geant'>Nom</th>
+                                <th class='zone_texte_petit'>Visualiser</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fichier in entity_bon.fichiersPdf %}
+                                <tr class='selectionnable' onclick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+                                    <td class='zone_texte_geant'><a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' href="/uploads/bonsAttachement/{{ fichier.bonAttachement.id }}_{{ fichier.url }}" download={{ fichier.alt }}>
+                                        {{ fichier.alt }}
+                                    </a></td>
+                                    <td class='zone_texte_petit'>
+                                        <img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{ form_start(form, {'action':path('lci_bons_ajout_fichiers'), 'method':'POST', 'name':'myForm'}) }}
+        {{ form_errors(form) }}
+			<div class='ligne_error'>{{ form_errors(form.fichiersPdf) }}</div>
+			<div class='nouveau_probleme_ligne'><div>{{ form_label(form.fichiersPdf) }}<br /><span id='lien_ajout_fichier'></span></div></div>
+			<div class='nouveau_probleme_ligne'><div id='champ_ajout_fichiers_bon'>{# form_widget(form.fichiersPdf) #}</div></div>
+			<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+		{{ form_end(form) }}
+		{# form_end(form, {'render_rest': false}) #}
+
+	</div>
+
+    <div class='validation_formulaire_centre notToBePrinted'>
+        <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" class="btn_menu" alt="Valider"
+            onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}"
+            onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"
+            onClick="attente(); document.forms['myForm'].submit(); return false;">
+    </div>
+
+	<div class='validation_formulaire_end notToBePrinted'>
+        <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" class="btn_menu" alt="Retour au menu"
+            onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
+            onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
+            onClick="attente(); redirection('accueilBons'); return false;">
+   	</div>
+</div>
+{% endblock fos_user_content %}
+
+
+{% block javascript %}
+<script type='text/javascript'>
+	var $indexFichier = 1;
+	var $container;
+	$(document).ready(function(){
+		/* Mise en place de l'objet datepicker avec 2 mois affichés */
+        $.datepicker.setDefaults({
+            numberOfMonths: 2
+        });
+		$("#bonsAttachement_dateSignature" ).datepicker();
+
+		/* Récupération du container contenant l'attribut data-prototype */
+		$container = $('#bonsAttachement_fichiersPdf');
+	
+		/* Lien permettant l'ajout d'un nouveau fichier */
+		var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier</a>');
+
+		/* Ajout du lien dans la div du container */
+		$('#lien_ajout_fichier').html($addLink);
+
+		/* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
+		$addLink.click(function(e){
+			ajoutChampFichier();
+			e.preventDefault();
+			return false;
+		});
+	});
+
+	// Fonction qui ajout un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
+	function ajoutChampFichier() {
+		var $nouveauPrototype = $($('#bonsAttachement_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
+
+	 	// Création et ajout d'un lien de suppression en fin de container
+        $deleteLink = $('<a href="#" class="mini_link">Supprimer</a>');
+        $nouveauPrototype.append($deleteLink);
+
+		// Ajout du listener permettant la suppression du champ fichier lors du clic sur le lien
+		$deleteLink.click(function(e){
+			$nouveauPrototype.remove();
+			e.preventDefault();
+			return false;
+		});
+
+		// Ajout du prototype a la fin du container
+		console.log($nouveauPrototype.html());
+		$container.prepend($nouveauPrototype);
+
+		console.log($container.html());
+
+		// Incrémentation de l'index des fichiers
+		$indexFichier ++;
+	}
+</script>
+{% endblock javascript %}

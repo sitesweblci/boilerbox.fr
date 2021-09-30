@@ -1,0 +1,23 @@
+.sub-header{
+	padding: 5vh 0;
+	background: var(--grisClair);
+	color: black;
+	&--blue{
+		background: var(--couleur-principale);
+		color: white;
+	}
+	&__title{
+		@include title;
+		text-align: center;
+	}
+}
+@media screen and (max-height: 1020px){
+	.sub-header{
+		padding: 2vh 0;
+		&__title{
+			padding-left: 40px;
+			font-size: 14pt;
+			text-align: left;
+		}
+	}
+}

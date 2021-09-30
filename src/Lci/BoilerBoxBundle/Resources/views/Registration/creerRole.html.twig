@@ -1,0 +1,81 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/creerRole.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{% block fos_user_content %}
+{{ parent() }}
+
+<div class='listing_raw'>
+	<div class='listing2 formulaire_ajout_roles'>
+		<h1>Ajout d'un rôle</h1>
+		{{ form_start(form) }}
+			<table>
+			<thead>
+				<tr><th>{{ form_label(form.role) }}</th><th>{{ form_label(form.description) }}</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>{{ form_widget(form.role) }}</td><td>{{ form_widget(form.description) }}</td></tr>
+				<tr><td></td><td style='text-align:right;'>{{ form_widget(form.submit) }}</td></tr>
+			</tbody>
+			</table>
+		{{ form_end(form) }}
+	</div>
+
+	<div class='listing2 formulaire_roles'>
+			<h2>Hiérachie des rôles boilerbox</h2>
+			<table>
+			<thead>
+				<tr>
+					<th>Le rôle</th>
+					<th>Hérite de</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for role, tab_hierarchie in tableau_des_roles %}
+				<tr>
+					<td>{{ role | capitalize }}</td>
+					<td style='max-width:200px; word-wrap:normal;'>{% for hierarchie in tab_hierarchie %} - {{ hierarchie | capitalize }}{% endfor %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+			</table>
+
+			<hr width="80%" align="center" size="3" color="white" >
+
+			<h2>Rôles en base de donnée</h2>
+			<table>
+			<thead>
+		    	<tr>
+		        	<th>Rôle</th>
+		        	<th>Description</th>
+		    	</tr>
+			</thead>
+			<tbody>
+				{% for entity_role in entities_role %}
+				<tr>
+					<td class='selectionnable' onclick="attente(); setRole('{{ entity_role.role |upper }}');">{{ entity_role.role | capitalize }}</td><td> {{ entity_role.description|capitalize }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+			</table>
+	</div>
+
+	<div class='listing2 formulaire_roles'>
+		<form name='get_users_role' id='get_users_role' method='post'  action="{{ path('lci_register_role') }}">
+			<input type='hidden' name='role' id='role' />
+		</form>
+		<h1>{{ role }}</h1>
+		{% for user in entities_user %}
+			{{ user.label }}<br />
+		{% endfor %}
+		</div>
+</div>
+{% endblock fos_user_content %}
+
+{% block javascript %}
+<script type='text/javascript'>
+	function setRole($role) {
+		$('#role').val($role);
+		document.getElementById('get_users_role').submit();
+	}
+</script>
+{% endblock javascript %}

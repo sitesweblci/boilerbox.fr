@@ -1,0 +1,51 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/secondParcLayout.html.twig #}
+{% extends "::firstLayout.html.twig" %}
+
+{% block liens_url %}
+{{ parent() }}
+
+<input type='hidden' name='liens' id='liens' 
+    data-ajouterEquipementFromAccueil="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}" 
+    data-ajouterEquipementFromTicket="{{ path('lci_register_equipement', {'provenance':'ticket'}) }}" 
+	data-ajouterEquipementFromParc="{{ path('lci_register_equipement', {'provenance':'parc'}) }}"
+    data-ajouterModuleFromAccueil="{{ path('lci_register_module', {'provenance':'accueil' }) }}" 
+    data-ajouterModuleFromTicket="{{ path('lci_register_module', {'provenance':'ticket'}) }}"
+    data-ajouterModuleFromParc="{{ path('lci_register_module', {'provenance':'parc'}) }}"
+    data-retourListeProblemes = "{{ path('lci_tri_recherche_problemes') }}" 
+    data-signalerProblemeTechnique="{{ path('lci_register_problemeTechnique') }}"
+    data-afficherProblemesAdmin="{{ path('lci_affiche_problemes') }}"
+    data-afficherProblemes="{{ path('lci_problemes_affectes') }}"
+    data-affinerRecherche="{{ path('lci_recherche_problemes') }}"
+    data-retourAccueil="{{ path('lci_boilerbox_index') }}"
+    data-parcModules="{{ path('lci_gestion_modules') }}"
+    data-parcEquipements="{{ path('lci_gestion_equipements') }}"
+    data-retourMenu="{{ path('lci_gestion_parc') }}" 
+	data-export="{{ path('lci_export_liste_problemes') }}"
+/>  
+{% endblock liens_url %} 
+
+{% block lien_parc_technique %}
+    {% set utilisateur_boilerbox = "liens/ParcTechnique_" ~ app.user.getLabel() | replace({' ':'_'}) ~ ".exe" %}
+    <a href="{{ asset(utilisateur_boilerbox) }}" title="téléchargement du lien personnel [ lci parc technique ]" alt="{{ utilisateur_boilerbox }}">
+    {{ app.user.getLabel() }}</a>
+{% endblock lien_parc_technique %}
+
+
+{% block liens_menu %}
+{% endblock liens_menu %}
+
+
+{% block body %}
+     {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+    {% block fos_user_content %}
+		<div id='entete_de_page'><h1>Gestion du Parc Technique</h1></div>
+    {% endblock fos_user_content %}
+{% endblock  body %}
+
+{% block javascript %}
+    <script type='text/javascript'>
+        /* Remplacement du menu 'outils' par 'accueil' */
+        $('#lien_menu_boiler_outil').html("<a href={{ path('lci_boilerbox_index') }} title='Retour accueil'>Accueil</a>");
+        $('#sousmenu_boiler_deroulant1').addClass('nopadding');
+   </script>
+{% endblock javascript %}

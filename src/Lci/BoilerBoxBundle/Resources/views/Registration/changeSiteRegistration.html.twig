@@ -1,0 +1,42 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/changeSiteRegistration.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{% block title %}{{ parent() }} Accueil{% endblock title %}
+
+{% block body %}
+<div class='formulaire'>
+	<div class='titre_page'>
+    	<h1>Gestion des sites</h1>
+	</div>
+    <form name='myForm' method='post' action={{ path('lci_accueil_register_site') }}>
+    	<input type='hidden' name='choixAction' id='choixAction'>
+    	<select name='choix_site'>
+		{% for site in liste_sites %}
+		    <option value={{ site.id }}>({{ site.affaire }}) {{ site.intitule }}</option>	
+		{% endfor %}
+    	</select>
+    	<div class='validationFormulaire'>
+    	    <div class='right'>
+			    <a href='#' style="height:30px;" onClick="validFormulaire('deleteSite');return false;" ><div class='bouton green'><div class='bgbouton'>Supprimer le site</div></div></a><br />
+			    <a href='#' style="height:30px;" onClick="validFormulaire('updateSite');return false;" ><div class='bouton green'><div class='bgbouton'>Modifier le site</div></div></a><br />
+			    <a href='#' style="height:30px;" onClick="validFormulaire('createSite');return false;" ><div class='bouton green'><div class='bgbouton'>Créer un site</div></div></a><br />
+			    <a href='#' style="height:30px;" onClick="annuleFormulaire();return false;" ><div class='bouton red'><div class='bgbouton'>Annuler</div></div></a>
+			</div>
+    	</div>
+    </form>
+</div>
+
+<script type='text/javascript'>
+    function validFormulaire(choixAction)
+    {
+	$('#choixAction').val(choixAction);
+	document.forms['myForm'].submit();
+    }
+    function annuleFormulaire()
+    {
+	var url={{ path('lci_gestion_admin')|json_encode|raw }};
+	$(location).attr('href',url);
+    }
+</script>
+{% endblock body %}

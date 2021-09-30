@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="L'Interface de supervision des Chaudières Industrielles">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+    {% block boilerBoxCSS %}
+        <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
+
+        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloud.css') }}" />
+    {% endblock boilerBoxCSS %}
+	<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"/>
+    
+	<title> {% block title %}Boiler-Box Cloud{% endblock title %}</title>
+</head>
+
+<body>
+	   <nav id="mainMenu">
+        <div id="left">
+            <div id="containerMenuBurger">
+                <div id="menuBurger">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>
+            </div>
+            <a  id="lienWatermark" href="{{ path("lci_boilerbox_index") }}">
+                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="baselineLogo">
+                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
+                    <span class="initialeBaseline">B</span>OILER<br>
+                   <span class="initialeBaseline">C</span>ONTROL<br>
+                </p>
+            </a>
+        </div>
+
+        <div id="right">
+			{% if is_granted('ROLE_ADMIN') %}
+            	<a id="iconeParametre" class="mainNavButton" href='{{ path("lci_gestion_admin") }}'> 
+            	    <img src="{{ asset('bundles/lciboilerbox/images/img/nav/parametre.svg') }}" alt="icône Paramètre" class="icones">
+            	    <span id="pParam" class="popUp">Paramètres</span>
+            	</a>
+			{% endif %}
+            <a id="iconeLocalisation" class="mainNavButton spaceRoundedButton" href="https://www.google.com/maps/d/u/0/embed?mid=1HvyRmqnv2__T4xk8EDwLBcZoulMvx7C1" >
+                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites" class="icones">
+                <span id="pLocalisation" class="popUp">Localisation</span>
+            </a>
+			<a id="btnIdentified" class="mainNavButton btnIdentified {{ app.user.couleur }}" href="">
+                <span>{{ app.user.label | slice(0,1) }}</span>
+            </a>
+        </div>
+    </nav>
+    <div id="popUpIdentifiant">
+        <div id="espaceVidePopUpIdentifiant"></div>
+        <div id="containerEnTetePopUpIdentifiant">
+            <div id="enTetePopUpIdentifiant">
+                <p class="btnIdentified {{ app.user.couleur }}">
+                    <span class="">{{ app.user.label | slice(0,1) | lower }}</span>
+                </p>
+                <div id="containerInfoIdentifiant">
+                    <p id="nameIdentifiant">{{ app.user.username }}</p>
+                    <p id="mailIdentifiant">{{ app.user.email }}</p>
+                </div>
+            </div>
+        </div>
+	    <div id="choixPrivePublicPopUpId">
+	        <div id="flexBoxBoutonSwitchPrivePublic" class="flexBoxBoutonSwitch">
+	            <label for="modePrivePublic" id="labelBoutonSwitchPrivePublic" class="labelBoutonSwitch" data-href="">
+	                <input type="checkbox" id="modePrivePublic" onClick="$Refresh_page=true; switchModePrivateTo();" {% if app.user.modePrive %}checked{% endif %}>
+	                <span id="sliderPrivePublic" class="slider"></span>
+	            </label>
+				{% if app.user.modePrive == false %}
+	               	<p id="nameSwitchPrivePublic">Mode Public</p>
+				{% else %}
+					<p id="nameSwitchPrivePublic">Mode Privé</p>
+				{% endif %}
+	        </div>
+	    </div>
+        <ul>
+            <li><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">mon compte</a></li>
+            <li><a href="{{ path('fos_user_security_logout') }}">se déconnecter</a></li>
+        </ul>
+    </div>
+
+    <nav id="menuLateral" class=''>
+        <div id="containerBaselineLogo">
+            <div id="containerMenuBurgerMenuLateral">
+                <div id="menuBurgerLateral">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>
+            </div>
+            <a id="watermarkMenuLateral" href="{{ path("lci_boilerbox_index") }}">
+                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="baselineLogo">
+                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
+                    <span class="initialeBaseline">B</span>OILER<br>
+                    <span class="initialeBaseline">C</span>ONTROL<br>
+                </p>
+            </a>
+        </div>
+ 
+        <div id="scrollNav" class="styleScrollBar">
+            <ul id="commonNav">
+                <li>
+                    <a href='{{ path("lci_boilerbox_index")}}' class="linkNavLat">
+                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navAffEtMod.svg') }}" alt="icône affaires et modules" class="imgNavLat">
+                        <span class="nameNavLat">sites</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.google.com/maps/d/u/0/embed?mid=1HvyRmqnv2__T4xk8EDwLBcZoulMvx7C1" class="linkNavLat">
+                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navLocalisation.svg') }}" alt="icône localisation" class="imgNavLat">
+                        <span class="nameNavLat">localisation</span>
+                    </a>
+                </li>
+                <li>
+                    <a href='{{ path("lci_gestion_parc")}}' class="linkNavLat">
+                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navProbTech.svg') }}" alt="icône problèmes techniques" class="imgNavLat">
+                        <span class="nameNavLat">problèmes techniques</span>
+                    </a>
+                </li>
+                <li>
+                    <a href='{{ path("lci_bons_attachements")}}' class="linkNavLat">
+                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navBonsAttach.svg') }}" alt="icône bons d'interventions" class="imgNavLat">
+                        <span class="nameNavLat">bons d'interventions</span>
+                    </a>
+                </li>
+				{% if is_granted('ROLE_TECHNICIEN') %}
+                	<li>
+                	    <a href='{{ path("lci_generation_mdp")}}' class="linkNavLat">
+                	        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navGenerateurMdp.svg') }}" alt="icône générateur mot de passe" class="imgNavLat">
+                	        <span class="nameNavLat">Générateur de mot de passe</span>
+                	    </a>
+                	</li>
+				{% endif %}
+            </ul>
+
+            <ul id="account">
+                <li>
+					<a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}" class="linkNavLat">
+						<img src="{{ asset('bundles/lciboilerbox/images/img/nav/navAccount.svg') }}" alt="icône mon compte" class="imgNavLat">
+						<span class="nameNavLat">mon compte</span>
+					</a>
+                </li>
+                <li>
+					<a href="{{ path('lci_cgu_show') }}" class="linkNavLat">
+						<img src="{{ asset('bundles/lciboilerbox/images/img/nav/navListings.svg') }}" alt="icône cgu" class="imgNavLat">
+						<span class="nameNavLat">CGU</span>
+					</a>
+                </li>
+            </ul>
+            <ul id="disconnect">
+                <li>
+                    <a href="{{ path('fos_user_security_logout') }}" class="linkNavLat">
+                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navDisconnect.svg') }}" alt="icône Paramètres" class="imgNavLat">
+                        <span class="nameNavLat disconnect">se déconnecter</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <div id='popUpError' class='cacher' >
+		{% set popup_error = false %}
+        <div class="crossCloseContainerEquipement" onClick="clotureMessageErreur();"></div>
+        {% if app.session.flashbag.peek('erreur') | length  > 0 %}
+			{% set popup_error = true %}
+			<h1>Erreur rencontrée</h1>
+            <div class="containerPopUpError">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/warningError.svg') }}" alt="icône Erreur">
+                <p>
+                    {% for message in app.session.flashbag.get('erreur') %}
+                        {{ message|raw }}<br /><br />
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if  app.session.flashbag.peek('info') | length  > 0 %}
+			{% set popup_error = true %}
+            <div class="containerPopUpError">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/warningInfo.svg') }}" alt="icône Info">
+                <p>
+                    {% for message in app.session.flashbag.get('info') %}
+                        {{ message|raw }}<br /><br />
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        <p class="btn btn--main btn--wide" style="margin-top: 24px;" onClick="clotureMessageErreur();">compris</p>
+    </div>
+
+    <div id="cartonBlack" class='cacher'></div>
+    <div id="fonduBlack" class='cacher'></div>
+
+    {% block liens_url %}
+        <input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
+    {% endblock liens_url %}
+
+{% block mainBody %}
+{% endblock mainBody%}
+
+    <script src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>	
+
+	<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+	<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+	<script src="{{ asset('bundles/lciboilerbox/js/fonctions_generales.js') }}"></script>
+
+
+    <script type="text/javascript">
+        let actioner = document.getElementById('containerMenuBurger');
+        let actionerLateral = document.getElementById('containerMenuBurgerMenuLateral');
+        var base = document.getElementsByTagName('html')[0];
+		// Variable indiquant le mode publique /ou privé actif */
+    	var $Mode_prive = "{{ app.user.modePrive }}";
+		// Variable indiquant si on dispose des droits administrateurs 
+		var $admin_granted = "{{ is_granted('ROLE_ADMIN') }}";
+		var $tech_granted = "{{ is_granted('ROLE_TECHNICIEN') }}";
+		// Variable indiquant si la page doit être rafraichie ou non dans certaines fonctions
+		var $Refresh_page = true;
+
+        // fonction pour afficher le menu latéral
+        function showMenuLateral(){
+			if (!($('#menuLateral').hasClass('menuLateral--visible'))) {
+				$('#menuLateral').addClass('menuLateral--visible');
+                $('#cartonBlack').removeClass('cacher');
+                base.style.overflowY = 'hidden';
+            } else {
+				$('#menuLateral').removeClass('menuLateral--visible');
+                $('#cartonBlack').addClass('cacher');
+                base.style.overflowY = "visible";
+            }
+        };
+        actioner.onclick = showMenuLateral;
+        actionerLateral.onclick = showMenuLateral;
+		$('#cartonBlack').click(function() {
+			$('#menuLateral').removeClass('menuLateral--visible');
+			$('#cartonBlack').addClass('cacher');
+			$('#popUpError').addClass('cacher');
+            base.style.overflowY = "visible";
+		});
+
+        // fonction pour afficher la petite popup "mon compte" au survol du bouton mon compte
+        let boutonLogged = document.getElementById('btnIdentified');
+        let popUpIdentifiant = document.getElementById('popUpIdentifiant');
+        boutonLogged.onclick = showPopUpIdentifiant;
+        boutonLogged.onmouseenter = showPopUpIdentifiant;
+        function showPopUpIdentifiant(){
+            popUpIdentifiant.style.display = "flex";
+        }
+        popUpIdentifiant.onmouseleave = hidePopUpIdentifiant;
+        function hidePopUpIdentifiant(){
+            popUpIdentifiant.style.display = "none";
+        }
+
+    	$(document).ready(function() {
+    	    if("{{popup_error}}") {
+    	        $('#popUpError').removeClass('cacher')
+    	        $('#cartonBlack').removeClass('cacher')
+    	    }
+    	});
+
+    	function clotureMessageErreur() {
+    	    $('#popUpError').addClass('cacher');
+    	    $('#cartonBlack').addClass('cacher');
+    	}
+
+
+		// Fonction qui switch entre mode privé et mode publique 
+		// Un argument est passé indiquant si la page doit être raffrachie
+		function switchModePrivateTo() {
+    		$.ajax({
+    		    url: "{{ path('lci_switch_user_mode') }}",
+    		    type: 'POST',
+				success: function ($data, textStatus, jqXHR) {
+					// Si la variable globale $Refresh_page est true on rafraichi la page
+					if ($Refresh_page == true) {
+						window.location.assign(window.location.href);
+            		} 
+				},
+    		    error: function (jqXHR, textStatus, errorThrown) {
+    		        console.log('error ' + textStatus + ' - -' + errorThrown );
+    		        alert('Echec de changement de mode');
+    		    }
+    		});
+    		// On inverse la variable de mode
+			reverse_variable('mode_prive');
+			// 
+			switch($Mode_prive) 
+			{
+				case true:
+					$('#choixPrivePublicPopUpId p').text('Mode privé');
+					break;
+				case false:
+					$('#choixPrivePublicPopUpId p').text('Mode publique');
+					break;
+			}
+			return 0;
+		}
+
+		// Fonction qui retourne l'inverse de la variable (booleenne) passée en argument
+		function reverse_variable($variable) 
+		{
+			switch($variable) 
+			{
+				case 'mode_prive':
+					$Mode_prive = !($Mode_prive);
+					break;
+			}
+		}
+    </script>
+    
+    {% block javascript %}
+    {% endblock javascript %}
+
+
+</body>
+</html>

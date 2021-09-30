@@ -1,0 +1,43 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Connexion/logSites.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block title %}{{ parent() }} : Acceuil{% endblock title %}
+
+
+{% block boilerBoxCSS %}
+   {{ parent() }}
+   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+ <main id="listingEquipement">
+	{% for entite in tableau_des_entites_de_replications %}
+		<p style='border:2px solid black'>
+			Site : {{ entite.site.intitule }}<br />
+			Affaire : {{ entite.site.affaire }}<br />
+			<br />
+			Processus Sql Actif : {{ entite.etatSql }}<br />
+			Message d'état Sql : {{ entite.messageEtatSql }}<br />
+			<br />
+            Processus IO Actif : {{ entite.etatIo }}<br />
+            Message d'état IO : {{ entite.messageEtatIo }}<br />
+			<br />
+            Secondes de Retard sur le Master : {{ entite.retard }}<br />
+			<br />
+            Message d'erreur : {{ entite.messageErreur }}<br />
+			<br />
+			{% set nbDbDonnee = entite.site.nbdbdonnees | split(';') %}
+			Nombre de messages récupérés : {% if  nbDbDonnee[1] is defined %}{{ nbDbDonnee[1] }}{% else %}0{% endif %}<br />
+			Date de dernière récupération : {{ nbDbDonnee[0] }}<br />
+			<br />
+			Date de dernière tentative de connexion  : {{ entite.site.dateAccess | date('d/m/Y à H:i:s') }}<br />
+			Date de dernière connexion réussie : {{ entite.site.dateAccessSucceded | date('d/m/Y à H:i:s') }}<br />
+			<br />
+		</p>
+		
+	{% endfor %}
+ </main>	
+{% endblock mainBody %}
+
+
+

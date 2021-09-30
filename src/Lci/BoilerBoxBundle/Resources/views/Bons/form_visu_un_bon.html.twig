@@ -1,0 +1,640 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_visu_un_bon.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block meta_viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.3, shrink-to-fit=no">
+{% endblock meta_viewport %}
+
+{% block title %}{{ parent() }} : Fichiers du bon{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>Bons d'interventions</h1></div>
+<div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
+
+{# ***** ENCART DU BON ***** #}
+<div style='width:80%;'>
+	<div class='listing notToBePrinted'>
+		<div class='listing_raw'>
+	    	<div class='listing2'>
+	    	    <div class='formulaire_liste formulaire_bon'>
+					<div class='entete'>
+						<div>{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</div>
+						{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+							<div onClick="updateBon({{ entity_bon.id }});">
+	                    		<img alt='mise à jour' src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj.png') }}"
+	                    		    onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj_hover.png') }}"
+	                    		    onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj.png') }}"
+	                    		>
+	                		</div>
+						{% endif %}
+					</div>
+					<div><h2>Demande {{ entity_bon.id }} (initialisée par {{ entity_bon.userInitiateur.label }})</h2></div>
+					<br />
+					<div><h1>Bon {{ entity_bon.numeroBA }}</h1></div>
+					<div class='afterH1'><span class='titre'>Signé le : </span>{% if entity_bon.dateSignature is not null  %}{{ entity_bon.dateSignature | date('d/m/Y')  }}{% endif %}</div>
+					<div><span class='titre'>Intervenant : </span>{{ entity_bon.user.label }}</div>
+					<div><span class='titre'>Site d'intervention : </span>{{ entity_bon.site.intitule }}   ( {{ entity_bon.numeroAffaire | upper }} ) </div>
+					<div>
+						<span class='titre'>Période de l'intervention : </span>
+							{% if entity_bon.dateDebutIntervention is not null  %}du {{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}{% endif %}
+							{% if entity_bon.dateFinIntervention is not null  %} au {{ entity_bon.dateFinIntervention | date('d/m/Y')  }}{% endif %}
+					</div>
+					{% if entity_bon.enqueteFaite %}
+						<div class='verte'>Enquête faite</div>
+					{% elseif entity_bon.enqueteNecessaire %}
+						<div class='bleue'>Enquête demandée</div>
+					{% else %}
+						<div class='rouge'>Pas d'enquête demandée</div>
+					{% endif %}
+					<div><span class='titre'>Nom du contact client : </span>{{ entity_bon.nomDuContact }}</div>
+					<div><span class='titre'>Email du contact : </span>{{ entity_bon.emailContactClient }}</div>
+				
+	    	        <div class='liste_fichiers_du_bon'>
+						<h2>
+							{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} 
+
+							{% if is_granted('ROLE_SAISIE_BA') %}
+                            	<div id='info_bulle_archive' class='fichier cacher'>Montrer / Cacher les fichiers archivés</div>
+                            	<div id='label_archive'>
+                            	    Archives : <input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+                            	</div>
+							{% endif %}
+
+							<div id='info_bulle_fichier' class='fichier cacher'></div>
+							<div id='label_fichier' class='droite_div' style='top:15px;'>
+								<label class="switch">
+									<input type="checkbox" onClick="toggleFiles();">
+									<span class="slider"></span>
+								</label>
+							</div>
+						</h2>
+						<table class='table_boiler tab_fichiers'>
+							<thead>
+								<tr>
+									{% if is_granted('ROLE_SAISIE_BA') %}
+										<th class='zone_texte_mini'>Archiver</th>
+									{% endif %}
+									<th class='zone_texte_geant'>Nom</th>
+									<th class='zone_texte_petit'>Visualiser</th>
+								</tr>
+							</thead>
+							<tbody id='table_des_fichiers'>
+								{% for fichier in entity_bon.fichiersPdf %}
+									<tr id="fichier_{{ fichier.id }}" {% if fichier.archive == true %}class="cacher archive"{% endif %}>
+										{% if is_granted('ROLE_SAISIE_BA') %}
+											<td class='zone_texte_mini'>
+												<img 	id="image_{{ fichier.id }}" 
+														{% if fichier.archive == false %}
+															src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}" 
+														{% else %}
+															src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}" 
+														{% endif %} 
+														onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
+												/>
+											</td>
+										{% endif %}
+										<td class='zone_texte_geant gauche selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+											<a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' 
+												href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
+											{{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
+										</a></td>
+										<td class='zone_texte_petit selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+											<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			{# ***** ENCART DE VALIDATION ***** #}
+			<div class = 'listing3'>
+				<div id='validation_des_bons_attachement'>
+	    		    <div><h1>Validation</h1></div>
+	    			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
+	    			{{ form_errors(form_validation) }}
+						<table class='table_boiler'>
+						<thead>
+							<tr>
+								<th>Facturation</th>
+								<th>Technique</th>
+								<th>Pièces</th>
+								<th>SAV</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									{% if entity_bon.validationFacturation %}
+										{% if entity_bon.validationFacturation.valide == true %}
+											{# Service Facturation validé #}
+											<span class='verte'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+										{% else %}
+											{# Service Facturation dé-validé #}
+											<span class='rouge'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+										{% endif %}	
+									{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
+										{# Service Facturation non validé - On a les droits de validation #}	
+										{{ form_widget(form_validation.validationFacturation) }}
+									{% else %}
+										{# Service Facturation non validé - On n'a pas les droits de validation #}
+										<span class='rouge'>Non effectuée</span>
+									{% endif %}
+								</td>
+								<td>
+	                		        {% if entity_bon.validationTechnique %}
+	                   					{% if entity_bon.validationTechnique.valide == true %}
+	                   		            	{# Service Technique validé #}
+	                                		<span class='verte'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
+	                            		{% else %}
+	                                		{# Service Technique dé-validé #}
+	                                		<span class='rouge'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
+	                            		{% endif %}
+			                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
+	    		                        {# Service Technique non validé - On a les droits de validation #}
+	    		                        {{ form_widget(form_validation.validationTechnique) }}
+	    		                    {% else %}
+	        		                    {# Service Technique non validé - On n'a pas les droits de validation #}
+	        		                    <span class='rouge'>Non effectuée</span>
+	        		                {% endif %}
+								</td>
+								<td>
+									{% if entity_bon.validationHoraire %}
+	                		            {% if entity_bon.validationHoraire.valide == true %}
+	                		                {# Service Pieces validé #}
+	                		                <span class='rouge'>Demandé le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+	                    		        {% else %}
+	                        		        {# Service Pieces dé-validé #}
+	                           				<span class='verte'>Offre faite le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+			                            {% endif %}
+	    		                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+	        		                    {# Service Pièces non validé - On a les droits de validation #}
+	            		                {{ form_widget(form_validation.validationHoraire) }}
+	                		        {% else %}
+	                    		        {# Service Pieces non validé - On n'a pas les droits de validation #}
+	                        		    <span class='verte'>Non effectuée</span>
+	                        		{% endif %}
+								</td>
+								<td>
+	                        		{% if entity_bon.validationSAV %}
+	                            		{% if entity_bon.validationSAV.valide == true %}
+	                                		{# Service SAV validé #}
+			                                <span class='verte'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
+	    		                        {% else %}
+	        		                        {# Service SAV dé-validé #}
+	            		                    <span class='rouge'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
+			                            {% endif %}
+	   			                  	{% elseif is_granted('ROLE_SERVICE_SAV') %}
+	                            		{# Service SAV non validé - On a les droits de validation #}
+	                            		{{ form_widget(form_validation.validationSAV) }}
+	                        		{% else %}
+	                           		 	{# Service SAV non validé - On n'a pas les droits de validation #}
+	                            		<span class='rouge'>Non effectuée</span>
+	                        		{% endif %}
+								</td>
+							</tr>
+							<tr>
+	                    		<td>
+	                        		{% if entity_bon.validationFacturation %}
+			                            <span>{{ entity_bon.validationFacturation.user.label }}</span>
+			                        {% endif %}
+	    		                </td>
+	        		            <td>
+									{% if entity_bon.validationTechnique %}
+										<span>{{ entity_bon.validationTechnique.user.label }}</span>
+    	                		    {% endif %}
+								</td>
+			                    <td>
+    			                    {% if entity_bon.validationHoraire %}
+    	    		                    <span>{{ entity_bon.validationHoraire.user.label }}</span>
+    	        		            {% endif %}
+								</td>
+    	                		<td>
+			                        {% if entity_bon.validationSAV %}
+    			                        <span>{{ entity_bon.validationSAV.user.label }}</span>
+    	       		             	{% endif %}
+								</td>
+							</tr>
+    	            		<tr>
+    	                		<td>
+    	                    		{% if entity_bon.validationFacturation %}
+    	                        		{% if entity_bon.validationFacturation.valide == true %}
+    	                            		{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+											{% if is_granted('ROLE_SERVICE_FACTURATION') %}
+    	    									<img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+    	            									onClick="changeValidation('facturation', false);"
+    	            									alt="Supprimer la validation facturation"
+    	    									/>
+											{% endif %}
+    	                        		{% else %}
+    	                            		{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+											{% if is_granted('ROLE_SERVICE_FACTURATION') %}
+												{{ form_widget(form_validation.validationFacturation) }}
+											{% endif %}
+    	        		                {% endif %}
+    	               		     	{% endif %}
+    	                		</td>
+    	                		<td>
+									{% if entity_bon.validationTechnique %}
+			                            {% if entity_bon.validationTechnique.valide == true %}
+    			                            {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
+    	    		                        {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+    	        		                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+    	            		                            onClick="changeValidation('technique', false);"
+    	                		                        alt="Supprimer la validation technique"
+    	                    		            />
+    	                        		    {% endif %}
+    	                        		{% else %}
+    	                            		{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+			                                {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+    			                                {{ form_widget(form_validation.validationTechnique) }}
+    	    		                        {% endif %}
+    	        		                {% endif %}
+    	            		        {% endif %}
+								</td>
+			                    <td>
+    			                    {% if entity_bon.validationHoraire %}
+    	    		                    {% if entity_bon.validationHoraire.valide == true %}
+    	        		                    {# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
+    	            		                {% if is_granted('ROLE_SERVICE_PIECES') %}
+    	                		                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+    	                    		                    onClick="changeValidation('pieces', false);"
+    	                        		                alt="Supprimer la validation pièces"
+    	                            		    />
+			                                {% endif %}
+    			                        {% else %}
+        			                        {# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+        	    		                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+        	        		                    {{ form_widget(form_validation.validationHoraire) }}
+        	            		            {% endif %}
+        	                		    {% endif %}
+			                        {% endif %}
+								</td>
+    			                <td>
+        			                {% if entity_bon.validationSAV %}
+        	    		                {% if entity_bon.validationSAV.valide == true %}
+        	        		                {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
+        	            		            {% if is_granted('ROLE_SERVICE_SAV') %}
+        	                		            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+        	                    		                onClick="changeValidation('sav', false);"
+        	                        		            alt="Supprimer la validation SAV"
+        	                            		/>
+			                                {% endif %}
+    			                        {% else %}
+        			                        {# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+        	    		                    {% if is_granted('ROLE_SERVICE_SAV') %}
+        	        		                    {{ form_widget(form_validation.validationSAV) }}
+        	            		            {% endif %}
+        	                		    {% endif %}
+			                        {% endif %}
+								</td>
+        			        </tr>
+						</tbody>
+						</table>
+					{{ form_end(form_validation, {'render_rest': false}) }} 
+				</div>
+				<div class='legende'><span class='rouge'>Supprimée</div>
+				<div class='legende'><span class='verte'>Validée</div>
+
+        		<div id='formulaire_bons_fichiers' class='cacher'>
+					<div><h1>Ajout de fichiers</h1></div>
+					<div id='liste_nouveaux_fichiers'>
+				    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+        			{{ form_errors(form_ajout_fichier) }}
+        		    	<div class='ligne_error'>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
+						<div class='nouveau_probleme_ligne'><div><span id='lien_ajout_fichier'></span></div></div>
+        		    	<div class='nouveau_probleme_ligne'><div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div></div>
+						<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+        			{{ form_end(form_ajout_fichier) }}
+					</div>
+				</div>
+
+				<div id='formulaire_bons_commentaires'>
+                	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires'}) }}
+                	{{ form_errors(form_ajout_commentaires) }}
+                	    <div class='ligne_error'>{{ form_errors(form_ajout_commentaires.commentaires) }}</div>
+						<div class='nouveau_probleme_ligne'>{{ form_label(form_ajout_commentaires.commentaires) }}</div>
+						<hr />
+						<div id='commentaires_bon'>{{ entity_bon.commentaires|raw|nl2br }}</div>
+						<div class='nouveau_probleme_ligne'>{{ form_widget(form_ajout_commentaires.commentaires) }}</div>
+                	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+                	{{ form_end(form_ajout_commentaires) }}
+            	</div>
+			</div>
+		</div>
+	</div>
+
+	<div class='validation_formulaire_end notToBePrinted'>
+		<div>
+			<img    id='img_validation'
+				onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;"
+	    		class="btn_menu mobile"
+	            alt="Valider"
+	            src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"
+	            onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}"
+	            onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"
+	    	/>
+		</div>
+		<div>
+	    	<img 	onClick="attente(); redirection('bonsVisualiser'); return false;"
+				class="btn_menu mobile"
+				alt="Retour au menu"
+				src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 
+	        	onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}"
+	        	onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}"
+	    	/>
+		</div>
+	</div>
+
+	<form method='post' name='form_modification_bon' id='form_modification_bon' action="{{ path('lci_bons_modifier_unbon', { 'idBon':entity_bon.id }) }}">
+		<input type='hidden' name='id_bon' id='id_bon' />
+	</form>
+</div>
+{% endblock fos_user_content %}
+
+
+
+{% block javascript %}
+
+<script type='text/javascript'>
+	var $idBon = {{ entity_bon.id }};
+    var $indexFichier;
+    var $container;
+
+	$(document).ready(function() {
+		/* Désactivation de la checkbox Archive */
+		$('#chk_archive').attr('checked', false);
+		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationTechnique_valide').is(":checked");
+			$type = 'technique';
+			changeValidation($type, $sens);
+		});
+        $('#bons_attachement_validation_validationHoraire_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationHoraire_valide').is(":checked");
+			$type = 'pieces';
+			changeValidation($type, $sens);
+        });
+        $('#bons_attachement_validation_validationSAV_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
+			$type = 'sav';
+			changeValidation($type, $sens);
+        });
+        $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
+			$type = 'facturation';
+			changeValidation($type, $sens);
+        });
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
+        $.datepicker.setDefaults({
+            numberOfMonths: 2
+        });
+        $("#bons_attachement_validation_dateSignature" ).datepicker();
+
+        /* Récupération du container contenant l'attribut data-prototype */
+        $container = $('#bons_attachement_modification_fichiersPdf');
+
+		/* Calcul du nombre de fichiers déjà présent */
+	    // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+    	$indexFichier = $container.find(':input').length;
+
+		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutiles
+
+        /* Lien permettant l'ajout d'un nouveau fichier */
+        var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier ({{ max_upload_size }} max)</a>');
+
+        /* Ajout du lien dans la div du container */
+        $('#lien_ajout_fichier').html($addLink);
+
+        /* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
+        $addLink.click(function(e){
+            ajoutChampFichier();
+			$('#bons_attachement_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
+            e.preventDefault();
+            return false;
+        });
+
+		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutils
+		$('#formulaire_bons_fichiers div.form-group').addClass('cacher');
+
+
+		/* Modification des infos bulles indiquant l'affichage des encarts fichiers et commentaires */
+		$('#label_fichier').mouseover(function(e) {
+			$('#info_bulle_fichier').removeClass('cacher');
+			
+		});
+        $('#label_fichier').mouseout(function(e) {
+            $('#info_bulle_fichier').addClass('cacher');
+
+        });
+
+		$('#label_archive').mouseover(function(e) {
+            $('#info_bulle_archive').removeClass('cacher');
+
+        });
+        $('#label_archive').mouseout(function(e) {
+            $('#info_bulle_archive').addClass('cacher');
+
+        });
+
+	});	
+
+	function changeValidation($type, $sens) {
+        // On n'affiche plus les msgbox - Mettre en commentaire cette ligne pour proposer les msgbox ci dessous
+        return sendAjaxRequest($idBon, $type, $sens);
+
+		if($sens === false) {
+			$.msgBox({
+    			title: "Avertissement",
+    			content: "Êtes vous certain de vouloir annuler la validation " + $type + " ? ",
+    			type: "alert",
+    			buttons: [{ value: "Oui" }, { value: "Annuler"}],
+    			opacity: 1,
+    			success: function (result) {
+    			    if (result == "Annuler") {
+						return false;
+        			}
+					if (result == "Oui") {
+						return sendAjaxRequest($idBon, $type, $sens);
+					}
+    			}
+			});
+		} else {
+			var $retourAjax;
+			$.msgBox({
+                title: "Information",
+                content: "Êtes vous certain de vouloir effectuer la validation " + $type + " ? ",
+                type: "confirm",
+                buttons: [{ value: "Oui" }, { value: "Annuler"}],
+                opacity: 1,
+                success: function (result) {
+                    if (result == "Annuler") {
+                        switch($type) {
+                            case 'technique':
+                                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", false);
+                                break;
+                            case 'sav':
+                                $('#bons_attachement_validation_validationSAV_valide').prop("checked", false);
+                                break;
+                            case 'pieces':
+                                $('#bons_attachement_validation_validationHoraire_valide').prop("checked", false);
+                                break;
+                            case 'facturation':
+								location.reload();
+                                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", false);
+                                break;
+                        }
+                        return false;
+                    }
+                    if (result == "Oui") {
+                     	return sendAjaxRequest($idBon, $type, $sens);
+                    }
+                }
+            });
+		}
+	}
+
+
+
+	function sendAjaxRequest($idBon, $type, $sens) {
+		attente();
+		setTimeout(function() {
+			$.ajax({
+        	    url: "{{ path('lci_ajax_bons_setValidation') }}",
+        	    method: "post",
+        	    data: {'identifiant':$idBon, 'type':$type, 'sens':$sens},
+        	    success: function(msg) {
+					window.location.assign(location.href); 
+					fin_attente();
+					return true;
+        	    },
+        	    error: function(request, $error, $msg) {
+        	        alert('error ' + $error + $msg);
+        	        fin_attente();
+					switch($type) {
+        	            case 'technique':
+        	                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", true);
+        	                break;
+        	            case 'sav':
+        	                $('#bons_attachement_validation_validationSAV_valide').prop("checked", true);
+        	                break;
+        	            case 'pieces':
+        	                $('#bons_attachement_validation_validationHoraire_valide').prop("checked", true);
+        	                break;
+        	            case 'facturation':
+        	                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", true);
+        	                break;
+        	        }
+					return false;
+        	    }
+        	});
+		}, 500);
+	}
+
+
+	function afficheFichier($url) {
+		$('#' + $url)[0].click();
+	}
+
+
+    function archiveUnFichierDuBon($idFichier, $archive) {
+        $.ajax({
+       	    url: "{{ path('lci_ajax_bons_archive_fichier') }}",
+      	 	method: "post",
+           	data: {'identifiant_fichier':$idFichier},
+           	success: function($msg) {
+				if ($archive == false) {
+					$('#fichier_' +  $idFichier).addClass('archive');
+					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}");
+					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '1')");
+				} else {
+					$('#fichier_' +  $idFichier).removeClass('archive');
+					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}");
+					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '0')");
+				}
+           	},
+           	error: function($requete, $error, $msg) {
+           	    alert('Erreur : Archivage non effectué');
+           	}
+       	});
+    }
+
+
+
+    // Fonction qui ajout un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
+    function ajoutChampFichier() {
+        var $nouveauPrototype = $($('#bons_attachement_modification_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
+
+        // Création et ajout d'un lien de suppression en fin de container
+        $deleteLink = $('<a href="#" class="mini_link">Supprimer</a>');
+        $nouveauPrototype.append($deleteLink);
+
+        // Ajout du listener permettant la suppression du champ fichier lors du clic sur le lien
+        $deleteLink.click(function(e){
+            $nouveauPrototype.remove();
+            e.preventDefault();
+            return false;
+        });
+
+        // Ajout du prototype a la fin du container
+        //console.log($nouveauPrototype.html());
+        $container.prepend($nouveauPrototype);
+
+        //console.log($container.html());
+
+        // Incrémentation de l'index des fichiers
+        $indexFichier ++;
+    }
+
+	// Fonction qui renvoie vers la page de modification de bon
+	function updateBon($idBon) {
+        $('#id_bon').val($idBon);
+        document.forms['form_modification_bon'].submit();
+    }
+
+
+	function toggleFiles() {
+		$('#info_bulle_fichier').toggleClass("fichier");
+		$('#formulaire_bons_fichiers').toggleClass("cacher");
+		$('#formulaire_bons_commentaires').toggleClass("cacher");
+		if ($('#formulaire_bons_fichiers').is(':visible')) {
+			$('#img_validation').attr('onClick', "attente(); document.forms['myFormFichiers'].submit(); return false;");
+		} else {
+			$('#img_validation').attr('onClick', "attente(); document.forms['myFormCommentaires'].submit(); return false;");
+		}	
+	}
+
+
+	function afficheArchives() {
+		if ($('#chk_archive').is(":checked")) {
+            $('#table_des_fichiers tr').each(function() {
+               	$(this).removeClass('cacher');
+            });
+		}else{
+			$('#table_des_fichiers tr').each(function() {
+				if ($(this).attr('class') == "archive") {
+					$(this).addClass('cacher');
+				}
+			});
+		} 
+	}
+
+
+    // Fonction qui supprime les informations contenues entre les parenthèses des noms de fichiers
+    function definirNomFichier($idLien, $nomDuFichier)
+    {
+        var $regex = /\([a-zA-Z0-9àéèêâ:\/\s]+\)$/;
+        $('#' + $idLien).attr('download', $.trim($nomDuFichier.replace($regex, '')));
+    }
+
+</script>
+{% endblock javascript %}

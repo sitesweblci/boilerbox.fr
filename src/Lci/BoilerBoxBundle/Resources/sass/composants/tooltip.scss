@@ -1,0 +1,29 @@
+.tooltip-wrapper{
+	position: relative;
+	@include flex-col;
+	width: fit-content;
+	width: -moz-fit-content;
+	max-width: fit-content;
+	margin: 0 auto;
+	> .tooltip{
+		position: absolute;
+		top: 24px;
+		padding: 6px 12px;
+		background: var(--gris-profond);
+		border-radius: 3px;
+		opacity: 0;
+		visibility: hidden;
+		font-size: 10pt;
+		font-weight: 500;
+		color: white;
+		z-index: 1000;
+	}
+	&:hover{
+		> .tooltip{
+			top: 32px;
+			opacity: 1;
+			visibility: visible;
+			transition: all 0.2s linear;
+		}
+	}
+}

@@ -1,0 +1,151 @@
+{# Lci/BoilerBoxBundle/Resources/views/firstLayout.html.twig #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" style="background:url({{ asset('bundles/lciboilerbox/images/capture_google_map_flou_2.png') }});">
+<head>
+	<title>{% block title %}Boiler-Box {% endblock title %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="L'interface de supervision des chaudières industrielles." />
+    <meta name="title" content="BoilerBox - Accueil" />
+
+
+    {% block liens_css %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc.css') }}" media='screen' />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc_print.css') }}" media='print' />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/jquery-ui-1.12.1.min.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/msgBoxLight.css') }}" />
+    {% endblock liens_css %}
+
+
+    {# JAVASCRIPT ********************************** avec gestion Assetic ****************************************  #}
+    {% javascripts output='js/jquery_compil.js'
+        'bundles/lciboilerbox/js/jquery.js'
+        'bundles/lciboilerbox/js/jquery-dateFormat.min.js'
+        'bundles/lciboilerbox/js/jquery-ui-1.12.1.min.js'
+        'bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js'
+        'bundles/lciboilerbox/js/jquery.msgBox.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+</head>
+
+<body>
+	{% block google_map %}
+	{% endblock google_map %}
+
+    <div id='bloc_header_accueil' class='notToBePrinted'>
+    	{% block header %}
+    	<div class='entete_gauche'>
+    	    <div class='version_boilerbox'>
+				{% block enTete_gauche %}
+    	    	    <p>{% include "form/version_boilerbox.html.twig" %}
+						<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>Lien vers la démo</a></i></span>{% block mdp %}{% endblock mdp %}
+    	    	      	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    	    	           	- Bienvenue
+    	    	           	{% block lien_parc_technique %}
+    	    	           	    {{ app.user.getLabel() }}
+    	    	           	{% endblock lien_parc_technique %}
+						{% endif %}
+    	    	    </p>
+				{% endblock enTete_gauche %}
+        	</div>
+		</div>
+
+		<div id='messagebox' class='cacher'>
+        	<div id='messageboxTexte'>
+           	</div>
+           	<div class='right'><a href='#' style="height:30px;" onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>ok</div></div></a>
+			</div>
+        </div>
+
+		{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        	<div id='menu_boiler' class='notToBePrinted'>
+           		{% if is_granted("ROLE_ADMIN") %}
+                   	<div class='menu_boiler'>
+                   		<a href="{{ path('lci_gestion_admin') }}" title='Administration'>Administration</a>
+                	</div>
+           		{% endif %}
+
+                <div class='menu_boiler' id='menu_boiler_deroulant1'>
+                    <span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
+                    <div id='sousmenu_boiler_deroulant1' style='display:none'>
+                        {% block liens_menu %}
+                            <div class='sousmenu_boiler'><a href="{{ path('lci_change_password') }}" title='Changement de son mot de passe'>Gestion du mot de passe</a></div>
+                        {% endblock liens_menu %}
+                    </div>
+                </div>
+
+
+
+				<div class='menu_boiler'>
+               		<a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
+           		</div>
+       		</div>
+		{% endif %}
+
+       	<div id='message_flashinfo'>
+        	{% block messages_flash %}
+           		{% for message in app.session.flashbag.get('info') %}
+              		<div> - {{ message }}</div>
+           		{% endfor %}
+           	{% endblock messages_flash %}
+       	</div>
+
+       	<div id='erreurs_formulaires'>
+        	<div>
+           	    {% block erreurs_formulaires %}
+           	    {% endblock erreurs_formulaires %}
+       	 	</div>
+       	</div>
+    	{% endblock header %}
+    </div>
+
+    {% block liens_url %}
+		<input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
+    {% endblock liens_url %} 
+    
+    <div id='bloc_body'>
+    	{% block body %}
+    	{% endblock body %}
+    </div>
+
+
+{% include "boilerbox/boilerbox.js" %}
+
+
+{#
+<script type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/jquery.msgBox.js') }}"></script>
+#}
+
+{% block javascript %}
+{% endblock javascript %}
+
+<script type="text/javascript">
+	var $afficheMenu = 0;
+
+	var $menuOutil = document.getElementById("menu_boiler_deroulant1");
+	$(document).ready(function(){
+		$("#menu_boiler_deroulant1").mouseover(function(){
+			if ($afficheMenu == 1) {
+				afficheMenu(this);
+				$('div.boxlogin').addClass('cacher');
+			}
+		});    
+		$("#sousmenu_boiler_deroulant1").mouseout(function(){
+		 	cacheMenu($menuOutil);
+			$('div.boxlogin').removeClass('cacher');
+        });
+		$("#map_google").mouseenter(function(){
+			cacheMenu($menuOutil);
+			$('div.boxlogin').removeClass('cacher');
+		});
+		setTimeout(function() {
+			$afficheMenu = 1;
+		}, 2000);
+	});
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,15 @@
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+{{ parent() }}
+    <div class='listing'>
+        <div class='ajout_objet'>
+            <h1>Réinitialisation du mot de passe</h1>
+            <p>
+                {{ 'resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime, "%email%":email})|nl2br }}
+            </p>
+        </div>
+    </div>
+{% endblock fos_user_content %}

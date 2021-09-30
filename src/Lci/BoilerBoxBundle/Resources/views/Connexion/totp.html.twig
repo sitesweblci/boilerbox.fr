@@ -1,0 +1,59 @@
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+{# Dans la page : Accès jquery avec envoye d'un formulaire avec passage de fichier #}
+{# Récupération d'une entité avec sous entité serializé avec gestion des Groups pour éviter le références circulaires #}
+{# Utilisation de routes symfony en javascript avec passage d'argument #}
+{# Utilisation du formatage avancé des routes javasript : new Intl.DateTimeFormat #}
+{# Récupérer des information de l'url
+window.location.hash: "#2"
+window.location.host: "localhost:4200"
+window.location.hostname: "localhost"
+window.location.href: "http://localhost:4200/landing?query=1#2"
+window.location.origin: "http://localhost:4200"
+window.location.pathname: "/landing"
+window.location.port: "4200"
+window.location.protocol: "http:"
+window.location.search: "?query=1"
+#}
+
+
+{% block boilerBoxCSS %}
+   {{ parent() }}
+   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/authentification.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+		<h1>Authentification à double facteur</h1>
+		{% if qrcode is defined %}
+			<p>Veuillez scanner le QrCode ci-dessous avec l'application [
+				<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=fr" target="_blank">
+					<span class="lien">Google Authenticator</span>
+				</a>
+				] et inscrire le code dans l'encart prévu à cet effet.
+			</p>
+		{% endif %}
+		<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' data-logout={{ path('fos_user_security_logout') }}>
+			{% if qrcode is defined %}
+				<img src="{{ qrcode }}" alt="QrCode" /><br /><br />
+			{% endif %}
+			{% for message in app.session.flashbag.get('info') %}
+                <span class='message_info_erreur'>{{ message }}</span>
+            {% endfor %}
+            <br /><br />
+			<input type='text' id="totp_key" name="totp_key" placeholder="Placez ici le code généré" required>
+			<br /><br /><br />
+			<input type='submit' value='Envoyer'>
+			<input type='reset' value='Annuler' onClick="redirection('retourAccueil');">
+		</form>
+{% endblock mainBody %}
+
+
+{% block javascript %}
+    {% javascripts
+        'bundles/lciboilerbox/js/jquery.js'
+        'bundles/lciboilerbox/js/authentification.js'
+    %}
+        <script type='text/javascript' src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascript %}
+

@@ -1,0 +1,69 @@
+{# Lci/BoilerBoxBundle/Resources/views/firstEmptyLayout.html.twig #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}boiler-box {% endblock title %}</title>
+    {% block liens_css %}
+		<link rel="stylesheet" type="text/css" href="{{ asset('css/parc.css') }}" media='screen' />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/parc_print.css') }}" media='print' />
+    {% endblock liens_css %}
+</head>
+
+<body>
+    <div id='bloc_header' class='notToBePrinted'>
+    	{% block header %}
+    	<div class='entete_gauche'>
+    	    <div class='version_boilerbox'>
+    	        <p>{% include "form/version_boilerbox.html.twig" %}
+    	          	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    	               	Bienvenue 
+    	               	{% block lien_parc_technique %}
+    	               	    {{ app.user.getLabel() }}
+    	               	{% endblock lien_parc_technique %}
+					{% endif %}
+    	        </p>
+        	</div>
+		</div>
+
+		<div id='messagebox' class='cacher'>
+        </div>
+
+        <div id='menu_boiler' class='notToBePrinted'>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <div class='menu_boiler'>
+                    <a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
+                </div>
+            {% else %}
+                <div class='menu_boiler'>
+                    <a href="{{ path('fos_user_security_login') }}" id='lienDeconnexion' title='Connexion'>Connexion</a>
+                </div>
+            {% endif %}
+        </div>
+
+
+
+       	<div id='message_flashinfo'>
+        	{% block messages_flash %}
+           		{% for message in app.session.flashbag.get('info') %}
+              		<div> - {{ message }}</div>
+           		{% endfor %}
+           	{% endblock messages_flash %}
+       	</div>
+
+       	<div id='erreurs_formulaires'>
+       	</div>
+    	{% endblock header %}
+    </div>
+
+    {% block liens_url %}
+		<input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
+    {% endblock liens_url %} 
+    
+    <div id='bloc_body'>
+    	{% block body %}
+    	{% endblock body %}
+    </div>
+</body>
+</html>
+

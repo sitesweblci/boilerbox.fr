@@ -1,0 +1,80 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+
+services:
+     lci_replication:
+        class: 'Lci\BoilerBoxBunde\Repository\ReplicationRepository'
+        autowire: true
+        tags: ['doctrine.repository_service']
+
+     lci_boilerbox.connectbd:
+         class: "%connectbd.class%"
+
+     lci_boilerbox.log:
+        class: "%log.class%"
+
+     lci_boilerbox.configuration:
+         class: "%configuration.class%"
+         arguments: ["@lci_boilerbox.connectbd", "@security.token_storage", "@doctrine.orm.entity_manager"]
+         public: true
+
+     lci_boilerbox.utilitaires:
+         class: "%utilitaires.class%"
+         arguments: ["@doctrine", "@lci_boilerbox.configuration", "@lci_boilerbox.log", "@lci_boilerbox.mailing", "%mail_debuggeur%"]
+
+     lci_boilerbox.cgu:
+         class: "%cgu.class%"
+         arguments: ["@doctrine"]
+
+     lci_boilerbox.authentication_success_handler:
+         class: "%authentication_success_handler.class%"
+         arguments: ["@router"]
+
+     lci_boilerbox.regitration.form.type.site:
+         class: Lci\BoilerBoxBundle\Form\Type\SiteType
+
+     lci_boilerbox.mailing:
+         class: "%mailing.class%"
+         arguments: ["@mailer", "@templating", "%mailer_delivery%", "@lci_boilerbox.log", "@lci_boilerbox.configuration"]
+
+     lci_boilerbox.rapport:
+         class: "%rapport.class%"
+         arguments: ["@doctrine", "@lci_boilerbox.configuration", "@lci_boilerbox.mailing"]
+
+     lci_user.logout.listener:
+         class: 'Lci\UserBundle\Listeners\logoutListener'
+         arguments: ["@fos_user.user_manager", "@lci_user.detect.login", "@session"]
+
+     lci_user.registration.form.type:
+         class: 'Lci\BoilerBoxBundle\Form\Type\RegistrationFormType'
+         arguments: ["%fos_user.model.user.class%", "@doctrine.orm.entity_manager"]
+         tags:
+             - { name: form.type, alias: lci_user_registration }
+
+     lci_user.change.password.form.type:
+         class: 'Lci\BoilerBoxBundle\Form\Type\ChangePasswordFormType'
+         arguments: ["%fos_user.model.user.class%"]
+         tags:
+             - { name: form.type, alias: lci_user_change_password }
+
+     lci_user.detect.login:
+         class: 'Lci\UserBundle\Listeners\detectLogin'
+
+     lci_user.detect.login.listener:
+        class: 'Lci\UserBundle\Listeners\detectLoginListener'
+        arguments: ["@lci_user.detect.login", "@session", "@lci_boilerbox.log"]
+        # ancien tag - { name:kernel.event_listener, event:security.authentication.success, method:successLogin, priority:2 } | Executé plusieurs fois lors d'une authentifacation par session
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: successLogin, priority: 2 }
+            - { name: kernel.event_listener, event: security.authentication.failure, method: failedLogin, priority: 2 }
+
+     lci_security.check.login.listener:
+         class: 'Lci\BoilerBoxBundle\Listeners\checkLoginListener'
+         arguments: ["@router", "@lci_user.detect.login", "@session", "@security.token_storage", "@lci_boilerbox.log"]
+         tags:
+            - { name: kernel.event_listener, event: kernel.request, method: checkLogin, priority: 2 }
+
+     twig.extension.intl:
+        class: 'Twig\Extensions\IntlExtension'
+        tags:
+            - { name: twig.extension }

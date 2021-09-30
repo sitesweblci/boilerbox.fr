@@ -1,0 +1,346 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/newProblemeTechnique.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+
+{% form_theme form 'form/fields.html.twig' %}
+
+{% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
+
+{% block fos_user_content %}
+
+{{ parent() }}
+
+<div class='listing'>
+	<div class='ajout_objet'>
+		{{ form_start(form, {'action':path('lci_register_problemeTechnique'), 'method':'POST', 'name':'myForm'}) }}	
+		<div class='petit_menu_principal'>
+			{% if type_probleme == 'update' %}
+				<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_mail.png') }}"  
+							onClick='attente(); sendAjaxMail(); fin_attente();' 
+							class="btn_petit_picto selectionnable" 
+							title='Envoyer un mail de rappel' 
+							alt="Mail de rappel"i
+						/>
+				</div>
+				<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" 
+							onClick='attente(); showPrintedVersion("{{ form.id.vars.value }}"); fin_attente();' 
+							class="btn_petit_picto selectionnable" 
+							title='Afficher la version imprimable' 
+							alt="Version imprimable"
+						/>
+				</div>
+			{% endif %}
+		</div>
+		<div class='menu_raccourci'>
+			<div>
+				<div><img 	id='picto_ajouter_module' 	  
+							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_module.png') }}" 
+							onClick="attente(); redirection('ajouterModuleFromTicket');" 
+							class="btn_picto" 
+							alt="Ajouter un module"
+						/>
+				</div>
+				<div><img 	id='picto_ajouter_module_hover' 
+							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_module_hover.png') }}" 
+							class="btn_menu cacher" 
+							alt="Ajouter un module"
+						/>
+				</div>
+			</div>
+			<div>
+				<div><img 	id='picto_ajouter_equipement' 	  
+							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_equipement.png') }}" 
+							onClick="attente(); redirection('ajouterEquipementFromTicket');" 
+							class="btn_picto" 
+							alt="Ajouter un equipement"
+						/>
+				</div>
+				<div><img 	id='picto_ajouter_equipement_hover' 
+							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_equipement_hover.png') }}" 
+							class="btn_menu cacher" 
+							alt="Ajouter un equipement"
+						/>
+				</div>
+			</div>
+		</div>
+	
+		<h1>{{ titre }}</h1>
+		
+		<div class='formulaire'>
+			<div class='nouveau_probleme_ligne'>
+				<div>{{ form_widget(form.bloquant) }} {{ form_label(form.bloquant) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>
+					{{ form_errors(form.dateSignalement) }}
+					{{ form_label(form.dateSignalement) }}
+				</div>
+				<div>{{ form_widget(form.dateSignalement) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>
+					{{ form_errors(form.module) }}
+					{{ form_label(form.module) }}
+				</div>
+				<div>{{ form_widget(form.module) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='module_selectionne'>&nbsp;</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>{{ form_label(form.equipement) }}</div>
+				<div>{{ form_widget(form.equipement) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='texte_box'>
+					{{ form_errors(form.description) }}
+					{{ form_widget(form.description) }}
+				</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>{{ form_label(form.user) }}</div>
+				<div>{{ form_widget(form.user) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='texte_box'>
+					{{ form_errors(form.solution) }}
+					{{ form_widget(form.solution) }}
+				</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>{{ form_widget(form.corrige) }} {{ form_label(form.corrige) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='register_date_correctif invisible'>
+					{{ form_errors(form.dateCorrection) }}
+					{{ form_label(form.dateCorrection) }}
+				</div>
+				<div class='register_date_correctif invisible'>{{ form_widget(form.dateCorrection) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div>{{ form_widget(form.cloture) }} {{ form_label(form.cloture) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+				<div class='register_date_cloture invisible'>
+					{{ form_errors(form.dateCloture) }}
+					{{ form_label(form.dateCloture) }}
+				</div>
+				<div class='register_date_cloture invisible'>{{ form_widget(form.dateCloture) }}</div>
+			</div>
+			<div class='nouveau_probleme_ligne'>
+			</div>
+		</div>
+
+		<div class='validation_formulaire_ticket notToBePrinted'> 
+			<div class='div_fichier_joint'>
+				{% if type_probleme == 'update' %}
+					{% if entity_probleme.fichiersJoint is not empty %}
+						<div class='nouveau_probleme_ligne'><div style='font-size:14px;'>Fichiers joints</div></div>
+						{% for fichier in entity_probleme.fichiersJoint %}
+							{% if fichier.alt|slice(0,8) == 'removed_' %}
+								<div class='lien_fichier_download_removed'>{{ fichier.alt }}</div>
+							{% else %}
+								<div class='nouveau_probleme_ligne'><a onclick="window.open(this.href); return false;" href="{{ asset('uploads/problemes/' ~ fichier.url) }}">{{ fichier.alt }}</a></div>
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+				{{ form_widget(form.fichiersJoint) }}
+			</div>
+		
+			<div class='div_boutons_validation'>
+				{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+					<div><img 	onClick="attente(); document.forms['myForm'].submit();return false;" 
+								class="btn_menu" 
+								alt="Créer un ticket"
+								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 
+								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+							/>
+					</div>
+				{% endif %}
+
+				{% if provenance == 'liste' %}
+					<div><img 	onClick="attente(); redirection('retourListeProblemes')";
+								class="btn_menu"
+								alt="Retour à la liste"
+								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}"
+							/>
+					</div>
+				{% elseif provenance == 'accueil' %}
+					<div><img 	onClick="attente(); redirection('retourMenu')";
+								class="btn_menu"
+								alt="Retour au menu"
+								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 			
+							/>
+					</div>
+				{% endif %}
+			</div>	
+		</div>
+	
+		{{ form_rest(form) }}
+	
+		{{ form_end(form) }}
+
+		<form name='myFormDownload' method='post' action={{ path('lci_download_probleme_file') }}>
+			<input type='hidden' name='fileName' id='fileName' />
+			<input type='hidden' name='fileUrl' id='fileUrl' />
+			<input type='hidden' name='fileId' id='fileId' />
+		</form>
+
+		<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
+			<input type='hidden' id='id_probleme' name='id_probleme' />
+			<input type='hidden' id='printed_version' name='printed_version' />
+		</form>
+	</div>
+</div>
+
+<script type='text/javascript'>
+	function showPrintedVersion(numeroProbleme){
+		$('#id_probleme').val(numeroProbleme);
+        document.forms['form_change'].submit();
+	}
+
+     function downloadFile($fileurl, $filename, $fileid){
+         $('#fileName').val($filename);
+		 $('#fileUrl').val($fileurl);
+		 $('#fileId').val($fileid);
+         document.forms['myFormDownload'].submit();
+     }
+
+
+	$(document).ready(function(){
+		$('#probleme_technique_dateSignalement').datepicker();
+		$('#probleme_technique_dateCorrection').datepicker();
+		$('#probleme_technique_dateCloture').datepicker();	
+
+		/* Vérification de l'état initial des checkbox */
+		if ($('#probleme_technique_corrige').is(':checked')){
+            $('.register_date_correctif').removeClass('invisible');
+        }
+		if ($('#probleme_technique_cloture').is(':checked')){
+            $('.register_date_cloture').removeClass('invisible');
+        }
+		
+		/* Affichage ou Cache des zone date en fonction de l'état des checkbox */
+		$('#probleme_technique_corrige').change(function(){
+			if ($('#probleme_technique_corrige').is(':checked')){
+				$('#probleme_technique_dateCorrection').val($.format.date(new Date(), 'dd-MM-yyyy'));
+				$('.register_date_correctif').removeClass('invisible');
+			} else {
+				$('.register_date_correctif').addClass('invisible');
+			}
+		});
+		/* Seul le responsable du parc peut cloturer un ticket */
+		{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+			$('#probleme_technique_cloture').change(function(){
+				if ($('#probleme_technique_cloture').is(':checked')){
+					$('#probleme_technique_dateCloture').val($.format.date(new Date(), 'dd-MM-yyyy'));
+					$('.register_date_cloture').removeClass('invisible');
+				} else {
+					$('.register_date_cloture').addClass('invisible');
+				}
+			});
+		{% endif %}
+
+		// Ajout du lien vers l'insertion de fichier joints
+		var $fichier_container = $('div#probleme_technique_fichiersJoint');
+		//		Ajout du lien pour insertion d'un nouveau fichier
+		//			Création du lien
+		var $addLink = $('<a href="#" id="add_fichier"><img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre.png') }}" onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre_hover.png') }}" onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre.png') }}" class="btn_menu" alt="Joindre un fichier"></a>');
+		//			Insertion du lien dans la page
+		$fichier_container.append($addLink);
+
+		// Ajout de la fonction qui intercepte le clic sur le lien 'nouveau fichier
+		$addLink.click(function(e){
+			// Ajout d'un champ 'nouveau fichier' dans le container
+			ajoutFichierJoint($fichier_container);
+			e.preventDefault();
+			return false;
+		});
+
+		// Compteur indiquant le nombre de champs de fichier présents dans le container
+		var $index_fichiers = $fichier_container.find(':input').length;
+
+		// Création du premier champs 'fichier joint'
+		if ($index_fichiers != 0){
+			for (i=0; i<$index_fichiers; i++){
+				$('#probleme_technique_fichiersJoint_' + i).parent().closest('div').remove();
+			}
+		}
+
+
+		// Fonction qui ajoute le champs Fichier joint dans le container passé en argument
+		function ajoutFichierJoint($container){
+		    // Dans le contenu de l'attribut « data-prototype », on remplace :
+		    // - le texte "__name__label__" qu'il contient par le label du champ
+	   	   	// - le texte "__name__" qu'il contient par le numéro du champ
+	     	var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, '')	
+																.replace(/__name__/g, $index_fichiers));
+			// Ajout d'un lien de suppression
+			ajoutLienSuppression($prototype);
+			// Ajout du prototype à la fin du container
+			$fichier_container.append("</div>");
+			$fichier_container.append($prototype);
+			$fichier_container.append("<div class='prototype'>");
+			// Incrémentation du compteur pour que le prochain champs de fichier joint ait un autre numéro
+			$index_fichiers ++;
+		}
+
+
+
+		// Fonction qui ajoute un lien de suppression
+		function ajoutLienSuppression($prototype){		
+			$lienSuppression = $('<a href="#" class="lien_fichier_supprime">Supprimer</a><br /><br />');
+			$prototype.append($lienSuppression);
+			// Fonction qui gère la suppression du lien
+			$lienSuppression.click(function(e){
+				$prototype.remove();
+				e.preventDefault();
+				return false;
+			});
+		}
+
+
+
+		$('#picto_ajouter_module').mouseover(function(){
+			$('#picto_ajouter_module_hover').removeClass('cacher');
+		});
+		$('#picto_ajouter_module').mouseout(function(){
+			$('#picto_ajouter_module_hover').addClass('cacher');
+		});
+
+		$('#picto_ajouter_equipement').mouseover(function(){
+			$('#picto_ajouter_equipement_hover').removeClass('cacher');
+		});
+		$('#picto_ajouter_equipement').mouseout(function(){
+			$('#picto_ajouter_equipement_hover').addClass('cacher');
+		});
+
+		$('#probleme_technique_module option').hover(function(e){
+			$('.module_selectionne').text('-> ' + e.target.text);
+		});
+		$('#probleme_technique_module').mouseleave(function(e){
+			$('.module_selectionne').html('&nbsp;');
+		});
+	});
+
+
+	function sendAjaxMail(){
+		$.ajax({
+			url: "{{ path('lci_ajax_mail_probleme_rappel') }}",
+			success: function($msg){
+				alert('Message de rappel envoyé');
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	}
+</script>
+
+{% endblock fos_user_content %}

@@ -1,0 +1,111 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/GestionParc/formulaire_recherche.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+{% form_theme form 'form/fields.html.twig' %}
+
+{% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
+{% block title %} {{ parent() }}Gestion du parc{% endblock title %}
+
+{% block fos_user_content %}
+{{ parent() }}
+
+<div class='listing'>
+	<div class='ajout_objet'>
+	    <h1>Recherche</h1>
+	    <div class='formulaire taille_texte_moyen' >
+			{{ form_start(form, {'action':path('lci_recherche_problemes'), 'method':'POST', 'name':'myForm'}) }}
+			{{ form_errors(form) }}
+				<div class='nouveau_probleme_ligne'><div>{{ form_errors(form.reference) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.reference) }}</div>		<div>{{ form_widget(form.reference) }}</div></div>	
+	            <div class='nouveau_probleme_ligne'><div>{{ form_errors(form.type) }}</div></div>
+	            <div class='nouveau_probleme_ligne'><div>{{ form_label(form.type) }}</div>     	<div>{{ form_widget(form.type) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.corrige) }}</div>		<div>{{ form_widget(form.corrige) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.nonCorrige) }}</div>	<div>{{ form_widget(form.nonCorrige) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.cloture) }}</div>		<div>{{ form_widget(form.cloture) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.nonCloture) }}</div>	<div>{{ form_widget(form.nonCloture) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.bloquant) }}</div>		<div>{{ form_widget(form.bloquant) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.nonBloquant) }}</div>	<div>{{ form_widget(form.nonBloquant) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.present) }}</div>		<div>{{ form_widget(form.present) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.nonPresent) }}</div>	<div>{{ form_widget(form.nonPresent) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_errors(form.dateDebut) }}</div>	<div>{{ form_errors(form.dateFin) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateDebut) }}</div>		<div>{{ form_label(form.dateFin) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_widget(form.dateDebut) }}</div>	<div>{{ form_widget(form.dateFin) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_widget(form.chk_intervenant) }}{{ form_label(form.chk_intervenant) }}</div></div>
+				<div id='champs_intervenant' class='nouveau_probleme_ligne invisible'><div>{{ form_widget(form.intervenant) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_widget(form.chk_module) }}{{ form_label(form.chk_module) }}</div></div>
+				<div id='champs_module' class='nouveau_probleme_ligne invisible'><div>{{ form_widget(form.module) }}</div></div>
+				<div class='nouveau_probleme_ligne'><div>{{ form_widget(form.chk_equipement) }}{{ form_label(form.chk_equipement) }}</div></div>
+				<div id='champs_equipement' class='nouveau_probleme_ligne invisible'><div>{{ form_widget(form.equipement) }}</div></div>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+	    </div>
+	    <div class='validation_formulaire notToBePrinted'>
+			<img 	alt="Rechercher"
+					class="btn_menu"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche.png') }}" 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche_hover.png') }}" 	
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche.png') }}" 	
+					onClick="attente(); document.forms['myForm'].submit();"
+			/>
+			{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+				<img 	alt="Retour
+						class="btn_menu"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 	
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 	
+						onClick="attente(); redirection('afficherProblemesAdmin');"
+				/>
+			{% else %}
+				<img 	alt="Retour"
+						class="btn_menu"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 	
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 	
+						onClick="attente(); redirection('afficherProblemes');"
+				/>
+			{% endif %}
+	    </div>
+	</div>
+</div>
+
+
+
+
+<script type='text/javascript'>
+	$(document).ready(function(){
+		$('#obj_recherche_probleme_dateDebut').datepicker();
+		$('#obj_recherche_probleme_dateFin').datepicker();
+			
+		/* Par défaut les cases ne sont pas cochées */
+		$('input[type="checkbox"][name="obj_recherche_probleme[chk_intervenant]"]').attr('checked',false);
+		$('input[type="checkbox"][name="obj_recherche_probleme[chk_module]"]').attr('checked',false);
+		$('input[type="checkbox"][name="obj_recherche_probleme[chk_equipement]"]').attr('checked',false);
+
+		/* Lorsque l'on coche une case, on affiche le champs correspondant.
+		   Lorsqu'on décoche une case, on cache le champs correspondant.
+	    */	
+		$('input[type="checkbox"][name="obj_recherche_probleme[chk_intervenant]"]').click(function(){
+			if ($('input[type="checkbox"][name="obj_recherche_probleme[chk_intervenant]"]').is(':checked') == true) {
+				$('#champs_intervenant').removeClass('invisible');
+			} else {
+				$('#champs_intervenant').addClass('invisible');
+			}
+		});
+
+        $('input[type="checkbox"][name="obj_recherche_probleme[chk_module]"]').click(function(){
+            if ($('input[type="checkbox"][name="obj_recherche_probleme[chk_module]"]').is(':checked') == true) {
+                $('#champs_module').removeClass('invisible');
+            } else {
+                $('#champs_module').addClass('invisible');
+            }
+        });
+
+        $('input[type="checkbox"][name="obj_recherche_probleme[chk_equipement]"]').click(function(){
+            if ($('input[type="checkbox"][name="obj_recherche_probleme[chk_equipement]"]').is(':checked') == true) {
+                $('#champs_equipement').removeClass('invisible');
+            } else {
+                $('#champs_equipement').addClass('invisible');
+            }
+        });
+	});
+</script>
+{% endblock fos_user_content %}

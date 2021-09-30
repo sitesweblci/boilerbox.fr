@@ -1,0 +1,1222 @@
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+{# Dans la page : Accès jquery avec envoye d'un formulaire avec passage de fichier #}
+{# Récupération d'une entité avec sous entité serializé avec gestion des Groups pour éviter le références circulaires #}
+{# Utilisation de routes symfony en javascript avec passage d'argument #}
+{# Utilisation du formatage avancé des routes javasript : new Intl.DateTimeFormat #}
+{# Récupérer des information de l'url 
+window.location.hash: "#2"
+window.location.host: "localhost:4200"
+window.location.hostname: "localhost"
+window.location.href: "http://localhost:4200/landing?query=1#2"
+window.location.origin: "http://localhost:4200"
+window.location.pathname: "/landing"
+window.location.port: "4200"
+window.location.protocol: "http:"
+window.location.search: "?query=1"
+#}
+
+
+{% block boilerBoxCSS %}
+   {{ parent() }}
+   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+		<main id="listingEquipement" class="accueil-box">
+			<h1 class="accueil-box__title">Sites</h1>
+			<div id="legendeListeEquipement" class="accueil-box__header">
+				<div id="legendeConnexion" class="accueil-box__header__legende">
+					<div class="legende-wrapper">
+						Connecté
+					</div>
+					<div class="legende-wrapper">
+						Pas à jour
+					</div>
+					<div class="legende-wrapper">
+						eCatcher
+					</div>
+					<div class="legende-wrapper">
+						Non connecté
+					</div>
+					<div class="legende-wrapper">
+						Désactivé
+					</div>
+				</div>
+				<div id="searchBarEquipement" class="search-bar">
+					<span id="imgSearchBar" class="search-bar__img"/></span>
+					<input id='searchBarInput' class="search-bar__input" type="text" placeholder="Rechercher">
+				</div>
+			</div>
+			<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' class="accueil-box__contenu" autocomplete="off" data-urjax_desactivation_authl={{ path('lci_ajax_refreshASiteStatut') }}>
+				<input type="hidden" id="_database" name="_database" value="" />
+                <input type="hidden" id="remember_me" name="_remember_me" value="on" />
+                <input type="hidden" id="_username" name="_username" value="" />
+                <input type="hidden" id="_password" name="_password" value="" />
+                <input type="hidden" id="_label" name="_label" value="{{ label }}" />
+			
+				<table id="tableAffaire" class="accueil-table">
+					<thead>
+						<tr>
+							<th class="CXXXHead" onClick='triSur("affaire");'>Code</th>
+							<th class="etatConnecHead">Connexion</th>
+							<th class="nomAffaireHead" onClick='triSur("intitule");'>Nom</th>
+							<th class="whiteSpace"></th> 
+							<th class="connexionOnHead">Cloud</th>
+							<th class="whiteSpaceBorder"></th>
+							<th class="connexionOnHead">Live</th>
+							<th class="whiteSpaceBorder"></th>
+							<th class="connexionOnHead">Local</th>
+							<th class="legendeTypeConnexion">
+								<div id="legendeInfoConnexion" class="pastille">
+									<div id="stay"><p class="stay">i</p></div>
+									<div class="explicationInfoConnexion">
+										<h1>Cloud</h1>
+										<p>{% include "form/ver_boilerbox.fr.html.twig" %}</p>
+										<h1>Local&nbsp&&nbspLive</h1>
+										<p>{% include "form/ver_boilerbox.html.twig" %}</p>
+									</div>
+								</div>
+							</th>
+						</tr>
+					</thead>
+
+					<tbody class="styleScrollBar">
+						{% for site in liste_sites %}
+							{% set img_cloud  = asset('bundles/lciboilerbox/images/img/connexionCloud-gris.svg') %}
+							{% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-gris.svg') %}
+	                        {% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-gris.svg') %}
+							{% set acces_distant_cloud = false %}
+							{% set cloud_a_jour = false %}
+							{% set acces_distant_live = false %}
+	                        {% set acces_distant_local = false %}
+							{% set acces_ecatcher_local_only = false %}
+							{% set acces_ecatcher_live_only = false %}
+
+							{# Si non est defini dans la liste des valeurs du paramètre AccesDistant, il prévaut sur tous les autres paramètres. La connexion est donc définie sur pas de connexion possible #}
+							{% if site.siteConnexion %}
+								{% if 'non' not in site.siteConnexion.accesDistant %}
+									{# Le site Cloud est configuré #}
+									{% if 'cloud' in site.siteConnexion.accesDistant %}
+										{% set acces_distant_cloud = true %}
+										{# ##### On vérifie que les données du cloud sont à jour : Pour être à jour les données doivent avoir été actualisées le jour même et le nombre de données doit être != 0 #}
+										{% if ((site.nbDbDonnees | slice (0,10)  ==  date() | date('d/m/Y')) and (site.nbDbDonnees | slice (11) != '0')) %}
+											{% set img_cloud  = asset('bundles/lciboilerbox/images/img/connexionCloud-vert.svg') %}
+											{% set cloud_a_jour = true %}
+	                        	    	{% else %}
+											{% set img_cloud  = asset('bundles/lciboilerbox/images/img/connexionCloud-orange.svg') %}
+										{% endif %}
+									{% endif %}
+
+									{# ****************************************************** #}
+									{# La connexion à distance est ok et peut se faire depuis boiler-box.fr #}
+									{# Vérification de l'accès LIVE (il faut que les paramètres live et boilerbox soient définis à Oui #}
+									{# ****************************************************** #}	
+									{% if 'boilerbox' in site.siteConnexion.accesDistant %}
+										{# ##### La connexion locale doit pouvoir être fonctionnelle -> IL faut maintenant analyser le retour du ping#}
+										{# ##### Si PING OK -> local vert #}
+										{% if site.siteConnexion.disponibilite == 0 %}
+											{% set acces_distant_local = true %}
+											{% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-vert.svg') %}
+											{% if 'live' in site.siteConnexion.accesDistant %}
+												{% set acces_distant_live = true %}
+												{% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-vert.svg') %}
+											{% endif %}
+										{# SINON Si une connexion eCatcher est possible -> bleu #}
+										{% else %}
+											{% if 'ecatcher' in site.siteConnexion.accesDistant and site.siteConnexion.disponibilite == 3 %}
+	                                            {% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') %}
+	                                            {% if 'live' in site.siteConnexion.accesDistant %}
+	                                                {% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') %}
+	                                                {% set acces_ecatcher_live_only = true %}
+	                                            {% endif %}
+	                                        {% else %}
+												{# SINON local et live en rouge #}
+	                                            {% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') %}
+	                                            {% if 'live' in site.siteConnexion.accesDistant %}
+	                                                {% set img_live = asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') %}
+	                                            {% endif %}
+	                                        {% endif %}	
+										{% endif %}
+									{# Si pas de connexion boilerbox mais une connexion pas ecatcher #}
+									{% elseif 'ecatcher' in site.siteConnexion.accesDistant %} 
+										{% if site.siteConnexion.disponibilite == 2 %}
+											{% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') %}
+											{% if 'live' in site.siteConnexion.accesDistant %}
+												{% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') %}
+												{% set acces_ecatcher_live_only = true %}
+											{% endif %}
+										{% elseif site.siteConnexion.disponibilite == 3 %}
+											{% set img_locale = asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') %}
+											{% if 'live' in site.siteConnexion.accesDistant %}
+											    {% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') %}
+	                                            {% set acces_ecatcher_live_only = true %}
+	                                        {% endif %}
+										{% endif %}	
+										{% set acces_ecatcher_local_only = true %}
+									{% endif %}
+								{% endif %}
+							{% endif %}
+
+							<tr class="ligneAffaire">
+								<td class="CXXX" data_idSite="{{ site.id }}" onclick="showPopUp('{{ site.id }}', false,  '{{ img_cloud }}', '{{ acces_distant_cloud }}', '{{ img_live }}', '{{ acces_distant_live }}', '{{ img_locale }}', '{{ acces_distant_local }}', '{{ acces_ecatcher_local_only }}', '{{ acces_ecatcher_live_only }}')">
+									{{ site.affaire }}
+								</td>
+								<td class="etatConnec" onclick="showPopUp('{{ site.id }}', false, '{{ img_cloud }}', '{{ acces_distant_cloud }}', '{{ img_live }}', '{{ acces_distant_live }}', '{{ img_locale }}', '{{ acces_distant_local }}', '{{ acces_ecatcher_local_only }}', '{{ acces_ecatcher_live_only }}')">
+									{% if site.siteConnexion %}	
+										{% if 'non' not in site.siteConnexion.accesDistant %}
+											{# La connexion à distance est ok : Par ecatcher si ecatcher défini et que pas de boilerbox et pas de cloud #}
+											{% if 'boilerbox' not in site.siteConnexion.accesDistant and not acces_distant_cloud and 'ecatcher' in site.siteConnexion.accesDistant %}
+												<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-bleu.svg') }}" alt="" class="imgEtatConnec">
+											{% else %}
+												{# La connexion à distance est normallement ok mais les retours de ping sont ko et le cloud n'est pas à jour #}
+												{% if ((acces_distant_cloud == false) and (acces_distant_local == false)) %}
+													{# Pas de connexion cloud et ping Ko #}
+													<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-rouge.svg') }}" alt="" class="imgEtatConnec">
+												{% elseif ((acces_distant_cloud == true) and (cloud_a_jour == false) and (acces_distant_local == false)) %}
+													{# Connexion Cloud - Cloud non à jour et ping Ko #}
+													<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-orange.svg') }}" alt="" class="imgEtatConnec">
+												{% else %}
+													{# La connexion à distance est ok et la connexion peut se faire sur un des outils local ou cloud #}
+													<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec.svg') }}" alt="" class="imgEtatConnec">
+												{% endif %}
+											{% endif %}
+										{% else %}
+											{# Pas de connexion à distance possible #}
+											<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-gris.svg') }}" alt="" class="imgEtatConnec">
+										{% endif %}
+									{% endif %}
+								</td>
+								<td class="nomAffaire" onclick="showPopUp('{{ site.id }}', false, '{{ img_cloud }}', '{{ acces_distant_cloud }}', '{{ img_live }}', '{{ acces_distant_live }}', '{{ img_locale }}', '{{ acces_distant_local }}', '{{ acces_ecatcher_local_only }}', '{{ acces_ecatcher_live_only }}')">{{ site.intitule }}</td>
+								<td class="whiteSpace"></td>
+								<td class="connexionOn">
+									{% if acces_distant_cloud == true %} 
+										{% if  "now" | date("d/m/Y")  !=  site.nbDbDonnees | split(';', -1) | join  %}
+											<p class="popUpCloud">Cloud mis à jour</br>le {{ site.nbDbDonnees | split(';', -1) | join }} {#maj cloud le 00/00/0000 à 00:00#}</p>
+										{% endif %}
+									{% endif %}
+									<img src="{{ img_cloud }}" 
+										 alt="" 
+										 class="iconeConnec" 
+										 {% if acces_distant_cloud == true %} onClick="actionForm('{{ site.affaire }}', '{{ url_cloud}}');" {% endif %}
+									>
+								</td>
+								<td class="whiteSpace"></td>
+	                        	<td class="connexionOn">
+	                        	    {% if acces_ecatcher_live_only == true %}
+	                        	        <p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+	                        	    {% endif %}
+	                        	    <img src="{{ img_live }}"
+	                        	         alt=""
+	                        	         class="iconeConnec"
+	                        	        {% if (acces_distant_live == true) and (site.siteConnexion.codeLive != null) %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}web/app.php/fr/boilerboxlive/supervision/accueil?id={{ site.siteConnexion.codeLive  }}');" {% endif %}
+	                        	    >
+	                        	</td>
+								<td class="whiteSpace"></td>
+								<td class="connexionOn">
+									{% if acces_ecatcher_local_only == true %}
+										<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+									{% endif %}
+									<img src="{{ img_locale }}" 
+										 alt="" 
+										 class="iconeConnec" 
+										 {% if acces_distant_local == true %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}');" {% endif %}
+									>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</form>
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="accueil-box__btn btn btn--add" onClick='redirection("creationSite");'>
+					<span class="crossAdd"></span>
+					<span>Ajouter un autre équipement</span>
+				</div>
+			{% endif %}
+		</main>
+
+		<div id="infoAffaire">
+			<header>
+				<div class="crossCloseContainerEquipement" onClick='cacherPopup()'></div>
+				<div id="titreAffaire">
+					<h1 class='infoAffaireAffaire'>dev</h1>
+					<h2 class='infoAffaireIntitule'>dev</h2>
+				</div>
+			</header>
+			{# On affiche les options de mode privé / mode publique uniquement pour les comptes administrateurs #}
+			{% if app.user.modePrive == false %}
+				<p class="textWarning">Attention, vous êtes en partage public <a class="lienModePartage" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a></p>
+			{% else %}
+				<p class="partagePrive">Vous êtes en partage privé <a class="lienModePartage" href="#" onClick="mySwitchMode(); return false;">(passer en public)</a></p>
+			{% endif %}
+			<div id="ensembleInfoAffaire">
+				<div id="leftInfo">
+					<div id="connexionAffaire">
+						<p id="choixModeConnexion">Choisissez votre</br> mode de connexion</p>
+						<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoConnexion.svg') }}" alt="pictogramme connexion">Connexion</h1>
+						<div id="pictoConnexion">
+							<a class="connexionInfoAffaire infoMajCloud">
+								<p class="popUpCloud">Date de mise à jour du cloud</p>
+								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+								<p>Cloud</p>
+							</a>
+							<a class="connexionInfoAffaire infoMajLive">
+								<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+								<p>Live</p>
+							</a>
+							<a class="connexionInfoAffaire infoMajLocal">
+								<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+								<p>Local</p>
+							</a>
+						</div>
+					</div>
+
+					<div id="piecesJointesAffaire">
+						<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">Pièces jointes</h1>
+						<div id="ensemblePieceJointe" class="styleScrollBar"></div>
+						<div class="addPieceJointe btn btn--add">
+							<div class="crossAdd"></div>
+							Ajouter pièce jointe
+						</div>
+						<span style='display:none'>
+							<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
+								<input type='file' id='fichier' name='fichierDuSite'>
+								<input type='text' id='fichierIdSite' name='fichierIdSite'>
+							</form>
+						</span>
+					</div>
+
+					<div id="infoSiteAffaire">
+						<div id="pictoTitreInformationAffaire">
+							<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">Paramètres de site</h1>
+							{% if is_granted('ROLE_ADMIN') %}
+								<div id="modifyInfoAffaire" onClick="modifierSite()">
+									<img class="editInfo" src="{{ asset('bundles/lciboilerbox/images/img/edit.svg') }}" alt="icone modification informations de l'affaire">
+									<p id="infoBulleModifyInfo" class="popUp">Modifier</p>
+								</div>
+							{% endif %}
+						</div>
+							<div id="resumeAffaire" class="styleScrollBar">
+								<p class="labelInfoSite">Nom</p>
+								<p class="infoAffaireIntitule forLabelInfoSite">demo</p>
+								<p class="labelInfoSite">Affaire</p>
+								<p class="infoAffaireAffaire forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Url</p>
+                                <p class="infoAffaireUrl forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Code Live</p>
+                                <p class="infoAffaireCodeLive forLabelInfoSite">demo</p>
+								<p class="labelInfoSite">Connexion 3G / 4G</p>
+                                <p class="infoAffaire3G4G forLabelInfoSite">demo</p>
+								<p class="labelInfoSite">Connexion ADSL</p>
+								<p class="infoAffaireADSL forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Acces Cloud</p>
+                                <p class="infoAffaireCloud forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Access Live</p>
+                                <p class="infoAffaireLive forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Acces Local</p>
+                                <p class="infoAffaireLocal forLabelInfoSite">demo</p>
+                                <p class="labelInfoSite">Acces Ecatcher</p>
+                                <p class="infoAffaireEcatcher forLabelInfoSite">demo</p>
+							</div>
+					</div>
+				</div>
+				<div id="espaceCommunautaireAffaire">
+					<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoActivite.svg') }}" alt="pictogramme information">Activité</h1>
+					<div id="ensembleCommentaire">
+						<div id="monCommentaire">
+							<div class="infoMonCommentaire">
+								<div class="rondCompte {{ app.user.couleur }}">{{ app.user.label | slice (0,1) }}</div>
+								<form id="formMonCommentaire">
+									<label for="inputMonCommentaire"></label>
+									<textarea class="inputMonCommentaire" id="inputMonCommentaire" name="inputMonCommentaire" placeholder="Votre commentaire" rows="2" maxlength="999"></textarea>
+									<p id="validationMonCommentaire" class="eyeCatcher inputPublish {{ app.user.couleur }}" onclick="publicationCommentaire();">Publier</p>
+								</form>
+							</div>
+						</div>
+
+						<div id="fluxCommentaire" class="styleScrollBar styleScrollBarGris">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock mainBody %}
+{% block javascript %}
+	<script type="text/javascript">
+
+	function conversionInfosFr($info) {
+		switch($info) {
+			case true:
+				return 'oui';
+				break;
+			case false:
+				return 'non';
+				break;
+		}
+	}
+
+
+	var exec_fonction = 1;
+	var date_refresh;
+	var $login_distant = null;
+	var $password_distant = null;
+	var $img_cloud;
+	var $img_live;
+	var $img_locale;
+	var $refreshPourSite;
+
+	// Detection du clic sur le bouton ENTREE
+    $(function() {
+        $(document).keypress(function(e){
+            if ((e.keyCode == 13) && (e.shiftKey == false)) {
+				// Lorsqu'on est dans la popup : Permet de valider un commentaire si il n'est pas vide
+				if ($('#inputMonCommentaire').is(':focus')) {
+					$('#inputMonCommentaire').trigger('focusout');
+				}
+            }
+        });
+    });
+
+
+    //  Affichage de la liste des sites pour les affecter à l'utilisateur sélectionné
+    function getListeSites() 
+	{
+		$.ajax({
+                url: "{{ path('lci_ajax_get_userListeSites') }}",
+                type: 'POST',
+                success: function ($dataListeSites, textStatus, jqXHR) {
+					var $entsListeSites = JSON.parse($dataListeSites);
+					var html = '';
+					var compteur = 0;
+					$.each($entsListeSites, function(index, value) 
+					{
+						compteur ++;
+						var img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-gris.svg') }}";
+						var img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-gris.svg') }}";
+						var img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-gris.svg') }}";
+						var acces_distant_cloud = false;
+						var cloud_a_jour = false;
+						var acces_distant_live = false;
+                        var acces_distant_local = false;
+                        var acces_ecatcher_local_only = false;
+						var acces_ecatcher_live_only = false;
+						if ($entsListeSites[index]['siteConnexion']) 
+						{
+							if (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non'))
+							{
+								/* Le site Cloud est configuré */
+								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('cloud'))
+								{
+									acces_distant_cloud = true;
+									/* On vérifie que les données du cloud sont à jour : Pour être à jour les données doivent avoir été actualisées le jour même et le nombre de données doit être != 0 */
+									if ($entsListeSites[index]['nbDbDonnees'])
+									{
+										if (($entsListeSites[index]['nbDbDonnees'].slice(0,10) == majDeDate()) && ($entsListeSites[index]['nbDbDonnees'].slice(11) != '0'))
+										{
+											img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-vert.svg') }}";
+											cloud_a_jour = true;
+										} else {
+											img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-orange.svg') }}";
+										}
+									} else {
+										img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-orange.svg') }}";
+									}
+								}
+
+								/* ****************************************************** 
+									La connexion à distance est ok et peut se faire depuis boiler-box.fr 
+									Vérification de l'accès LIVE (il faut que les paramètres live et boilerbox soient définis à Oui 
+								****************************************************** */
+								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox'))
+								{
+									/*
+										La connexion locale doit pouvoir être fonctionnelle -> IL faut maintenant analyser le retour du ping
+										Si PING OK -> local vert
+									*/
+									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 0)
+									{
+										acces_distant_local = true;
+										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-vert.svg') }}";
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
+										{
+											acces_distant_live = true; 
+											img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-vert.svg') }}";	
+										}
+									} else {
+										/* Sinon si une connexion eCatcher est possible -> bleu */
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher') && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
+                                        {
+                                            img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') }}";
+                                            if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
+                                            {
+                                                img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
+                                                acces_ecatcher_live_only = true;
+                                            }
+                                        } else {
+											/* Sinon local et live en rouge */
+                                            img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') }}";
+                                            if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
+                                            {
+                                                img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
+                                            }
+                                        }
+									}
+								} else if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher'))
+								{
+									/* Si pas de connexion boilerbox mais une connexion pas ecatcher */
+									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3)
+									{
+										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') }}";
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
+                                    	{
+                                        	img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
+                                        	acces_ecatcher_live_only = true;
+                                    	}
+									} else if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 2) {
+										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') }}";
+                                        if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
+                                        {
+                                            img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
+                                            acces_ecatcher_live_only = true;
+                                        }
+									}
+									acces_ecatcher_local_only = true;
+								}	
+							}
+						}
+
+						html += '<tr class="ligneAffaire">';
+							html += '<td class="CXXX" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+							html += $entsListeSites[index]['affaire'];
+							html += '</td>';
+	
+							html += '<td class="etatConnec" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+							if ($entsListeSites[index]['siteConnexion'])
+							{
+								if (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non'))
+								{
+									/* La connexion à distance est ok : Par ecatcher si ecatcher défini et que pas de boilerbox et pas de cloud */
+									if ( (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox')) && (! acces_distant_cloud) && Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher'))
+									{
+										html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-bleu.svg') }}" + '" alt="" class="imgEtatConnec">';
+									} else {
+										/* La connexion à distance est normallement ok mais les retours de ping sont ko et le cloud n'est pas à jour */
+										if ((acces_distant_cloud == false) && (acces_distant_local == false))
+										{
+											/* Pas de connexion cloud et ping Ko */
+											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-rouge.svg') }}" + '" alt="" class="imgEtatConnec">';
+										} else if ((acces_distant_cloud == true) && (cloud_a_jour == false) && (acces_distant_local == false)) {
+											/* Connexion Cloud - Cloud non à jour et ping Ko  */
+											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-orange.svg') }}" + '" alt="" class="imgEtatConnec">';	
+										} else {
+											/* La connexion à distance est ok et la connexion peut se faire sur un des outils local ou cloud */	
+											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec.svg') }}" + '" alt="" class="imgEtatConnec">';
+										}
+									}
+								} else {
+									/* Pas de connexion à distance possible  */
+									html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-gris.svg') }}" + '" alt="" class="imgEtatConnec">';
+								}
+							}	
+							html += '</td>';
+
+
+							html += '<td class="nomAffaire" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+							html += $entsListeSites[index]['intitule'];
+							html += '</td>';
+
+							html += '<td class="whiteSpace"></td>';
+							html += '<td class="connexionOn">';
+							if ((acces_distant_cloud == true) && ($entsListeSites[index]['nbDbDonnees']))
+							{
+								if (getTodayDate() != $entsListeSites[index]['nbDbDonnees'].slice(0,10))
+								{
+									html += '<p class="popUpCloud">Cloud mis à jour</br>le ' + $entsListeSites[index]['nbDbDonnees'].slice(0,10) + '</p>';
+								}
+							}
+							html += '<img src="' + img_cloud + '" alt="" class="iconeConnec"';
+							if (acces_distant_cloud == true)
+							{
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + "{{ url_cloud }}" + '\');"';
+							}
+							html += '>';
+							html += '</td>';
+
+							html += '<td class="whiteSpace"></td>';
+
+							html += '<td class="connexionOn">';
+							if ((acces_ecatcher_live_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
+							{
+								html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
+							}
+							html += '<img src="' + img_live + '" alt="" class="iconeConnec"';
+							if ((acces_distant_live == true) && ($entsListeSites[index]['siteConnexion']['codeLive'] != null)) 
+							{
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entsListeSites[index]['siteConnexion']['codeLive']  + '\');"';
+							}
+							html += '>';
+							html += '</td>';
+
+							html += '<td class="whiteSpace"></td>';
+							
+							html += '<td class="connexionOn">';
+							if ((acces_ecatcher_local_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
+							{
+								html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
+							}
+							html += '<img src="' + img_locale + '" alt="" class="iconeConnec"';
+							if (acces_distant_local == true) 
+							{
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + '\');"';
+							}
+							html += '>';
+							html += '</td>';
+						html += '</tr>';
+						/*	DEBUG
+							Affichage de la liste des champs de l'entité Site
+							$.each($entsListeSites[index], function(sous_index, sous_value) {
+								alert(sous_index + ' - ' + sous_value);
+							});
+						*/
+					});
+					$("tbody").html(html);
+					rechercheOnPage();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('error ' + textStatus + ' - -' + errorThrown );
+                }
+            });
+    }
+
+
+
+
+
+	$(document).ready(function() 
+	{
+		/* On rafraichi la page toutes les minutes pour obtenir les derniers résultats des pings */
+    	/*$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);*/
+		$refreshPourSite = setInterval(function() { getListeSites(); }, 5000);
+
+	    var xhr = getXHR();
+	    xhr.onreadystatechange = function(event) {
+	        if (this.readyState === XMLHttpRequest.DONE) {
+	            if (this.status === 200) {
+	                var tabReponse = xhr.responseText.split(';');
+	                $login_distant = tabReponse[0];
+	                $password_distant = tabReponse[1];
+	            } else {
+	                console.log("Pas de réponse à la requête Jquery pour l'obtention du login mot de passe d'accés aux sites distants");
+	            }
+	        }
+	    };
+	    xhr.open("POST", "{{ path('lci_boilerbox_getUserLog') }}", true);
+	    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	    xhr.send();
+	});
+
+	function publicationCommentaire() {
+		if ($('#inputMonCommentaire').val() != '') {
+                if($('#inputMonCommentaire').data('id')) {
+                    actionSurCommentairesSite('modifier', $('#inputMonCommentaire'), null);
+                } else {
+                    actionSurCommentairesSite('creer', $('#inputMonCommentaire'), null);
+                }
+            }
+	}
+	$(function() {
+        // Lors de la perte du focus de l'input du commentaire on créé ou on modifie le commentaire  (Seulement si  le commentaire n'est pas vide)
+        // Un commentaire est à modifier lorsque l'attribute data-id est défini sur l'élément DOM : #inputMonCommentaire
+        /*$('#inputMonCommentaire').focusout(function() {
+            if ($(this).val() != '') {
+                if($('#inputMonCommentaire').data('id')) {
+                    actionSurCommentairesSite('modifier', this, null);
+                } else {
+                    actionSurCommentairesSite('creer', this, null);
+                }
+            }
+        });*/
+
+		$('.addPieceJointe').click(function() {
+            $('#fichier').trigger('click');
+        });
+
+		// Lors de la selection de fichiers ceux ci sont inclus dans un tableau qui sera envoyé pour être persisté dans l'entité site
+		$("#fichier").change(function (){
+			// Récupération de l'objet fichier ajouté
+            var fileName = $(this).val();
+            $(".filename").html(fileName);
+			var names = [];
+			var html = '';
+			// Récupération du nom du fichier
+    		for (var i = 0; i < $(this).get(0).files.length; ++i) {
+				var name = $(this).get(0).files[i].name;	
+        		names.push($(this).get(0).files[i].name);
+    		}
+			var $form = $('form[name="fileinfo"]').get(0);
+			var $fd = new FormData($form);
+			var $id_site = $('#infoAffaire').data('id');
+			$('#fichierIdSite').val($id_site);
+			$fd.append('site_id', $('#infoAffaire').data('id'));
+			// Envoi du fichier en ajax
+            $.ajax({
+                url: "{{ path('lci_ajax_set_site_fichier') }}",
+                type: 'POST',
+                data: new FormData($form),
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function ($dataEntityFichier, textStatus, jqXHR) {
+					var $entityFichier = JSON.parse($dataEntityFichier);
+					var $dtInsertion = new Date($entityFichier.dtImportation);
+
+					var $obj_html = $('<div class="piecesJointe"><div class="apercuPieceJointe ' + $entityFichier.extension + '"></div></div>');
+					var $obj_piecejointe = $('<div class="infoPieceJointe"><p><a href="http://' + window.location.host + $entityFichier.url + '" download="' + $entityFichier.alt + '">' + decoupeTexte($entityFichier.alt, 19) + '</a></p><div class="nomDatePieceJointe"><p class="namePersonnePieceJointe">' + $entityFichier.informations + '</p><p>'  + $dtInsertion.getDate() + ' ' + formatter.format($dtInsertion) + ' ' + $dtInsertion.getFullYear() + '</p></div>');
+                    // Fonction qui ajoute le lien suppression, créer l'evenement de suppression et associe les différents objets
+                    ajoutLiens($obj_html, $obj_piecejointe, $entityFichier.id);
+                    $('#ensemblePieceJointe').prepend($obj_html);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+					console.log('error ' + textStatus + ' - -' + errorThrown );
+                }
+            });
+        });
+	});
+
+		// Fonction qui réinitialise le contenu du commentaire 
+		// Elle est appelée lors de l'affichage de la popup et aprés de l'enregistrement d'un nouveau commentaire ou d'une modification de commentaire
+		// La réinitalisation de l'attribut data-id permet de redéfinir l'élément DOM comme un nouveau commentaire
+		function reinitialiseMonCommentaire() {
+			$('#inputMonCommentaire').val('');
+            $('#inputMonCommentaire').data('id', '');
+		}
+
+		// Fonction qui nettoie la popup des toutes les anciennes données affichées
+		function clearPopup() 
+		{
+			// Si à la fin de l'url un identifiant existe c'est que nous somme revenu sur la popup site suite à la modification d'un site.
+			// Lors de la fermeture de la popup on relance la page pour supprimer l'identifiant de l'url
+			var tableau_url = window.location.href.split('/');
+			if($.isNumeric(tableau_url[tableau_url.length - 1])) 
+			{
+				redirection('retourAccueil');
+			}
+
+			reinitialiseMonCommentaire();
+			$('#fluxCommentaire').html('');
+			$('#ensemblePieceJointe').html('');
+			$clearHtml = '<p class="labelInfoSite">Nom</p><p class="infoAffaireIntitule forLabelInfoSite"></p><p class="labelInfoSite">Affaire</p><p class="infoAffaireAffaire forLabelInfoSite"></p><p class="labelInfoSite">Url</p><p class="infoAffaireUrl forLabelInfoSite"></p><p class="labelInfoSite">Code Live</p><p class="infoAffaireCodeLive forLabelInfoSite"></p><p class="labelInfoSite">Connexion 3G / 4G</p><p class="infoAffaire3G4G forLabelInfoSite"></p><p class="labelInfoSite">Connexion ADSL</p><p class="infoAffaireADSL forLabelInfoSite"></p><p class="labelInfoSite">Acces Cloud</p><p class="infoAffaireCloud forLabelInfoSite"></p><p class="labelInfoSite">Access Live</p><p class="infoAffaireLive forLabelInfoSite"></p><p class="labelInfoSite">Acces Local</p><p class="infoAffaireLocal forLabelInfoSite"></p><p class="labelInfoSite">Acces Ecatcher</p><p class="infoAffaireEcatcher forLabelInfoSite"></p>';
+            $('#resumeAffaire').html($clearHtml);
+			$('#infoAffaire').data('id', null)
+			$img_cloud = null;
+			$img_live = null;
+			$img_locale = null;
+            $('#pictoConnexion img:first').off('click');
+            $("#pictoConnexion img:eq(1)").off('click');
+            $('#pictoConnexion img:last').off('click');
+			$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);
+		}
+
+		// Fonction appelée lors de la demande de modification d'un commentaire : 
+		// Permet de définir l'identifiant du commentaire et son contenu selon les valeurs data-* définis sur le SPAN cliqué
+		function preActionModificationCommentaire($action, $dom_element, $auteur_login) {
+			if ( ("{{ app.user.username }}" == $auteur_login) || ("{{ app.user.username }}" == "Admin") )
+			{
+				// On place un timeout pour s'assurer que les actions debutent après les actions de focus out
+				setTimeout(function() {
+					$commentaire = $($dom_element).data('commentaire');
+            		$id_commentaire = $($dom_element).data('id');
+            		$('#inputMonCommentaire').val($commentaire);
+            		$('#inputMonCommentaire').data('id', $id_commentaire)
+            		$('#inputMonCommentaire').focus();
+				}, 100);
+			}
+		}
+
+		// Fonction qui appelle en AJAX la fonction de création, modification ou suppression de commentaire et qui actualise la liste des commentaires
+		function actionSurCommentairesSite($action, $dom_element, $auteur_login) {
+			// Seul l'auteur du commentaire ou l'admin peut le supprimer
+			if ($action == 'supprimer') 
+			{
+				if ( ("{{ app.user.username }}" != $auteur_login) && ("{{ app.user.username }}" != 'Admin') )
+            	{
+					return 0;
+				}
+			}
+			var $id_site = $('#infoAffaire').data('id');
+			var $auteur = "{{ app.user.label }}";
+			var $auteur_login = "{{ app.user.username }}";
+			var $auteur_couleur = "{{ app.user.couleur }}";
+			switch($action) {
+				case 'creer':
+					$commentaire = $($dom_element).val();
+					$.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'creer', commentaire: $commentaire, idSite: $id_site })
+                		.done(function($data) {
+							var $dtCreationCommentaire = new Date();
+                    		$html = '<div class="autreCommentateur"><div class="infoCommentateur"><div class="rondCompte ' + $auteur_couleur + '"> ' + getFirstLetters($auteur) + '</div><p class="nomComentateur">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="dateCommentaire">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="commentaire">' + nl2br($commentaire) + '</p><p class="deleteOrModifyCommentaire"><span class="modifyCommentaire" data-id="' + $data + '" data-commentaire="' + $commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')" >Modifier</span> - <span class="deleteCommentaire" data-id="' + $data + '" onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p></div>';
+                    		$('#fluxCommentaire').prepend($html);
+							reinitialiseMonCommentaire();
+                		});
+					break;
+                case 'supprimer':
+                    $id_commentaire = $($dom_element).data('id');
+                    $.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'supprimer', idCommentaire:$id_commentaire})
+                    .done(function($data) {
+                        showPopUp($id_site, true);
+                    });
+                    break;
+				case 'modifier':
+					$id_commentaire = $($dom_element).data('id');
+					$commentaire = $($dom_element).val();
+					$.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'modifier', commentaire:$commentaire, idCommentaire:$id_commentaire})
+                        .done(function($data) {
+							reinitialiseMonCommentaire();
+							showPopUp($id_site, true);
+                        });
+                    break;
+			}
+		}
+
+		// Fonction d'affichage du popup
+        let actionerPopUp = document.getElementsByClassName('ligneAffaire');
+        let popUp = document.getElementById('infoAffaire');
+		let fonduPopUp = document.getElementById('fonduBlack');
+		// Paramètrage du formattage de date pour afficher les mois en francais et version courte
+		const formatter = new Intl.DateTimeFormat('fr', { month: 'short' });
+
+		// Fonction OUVERTURE DE LA POPUP SITE
+		// Permet d'afficher ou non le menu latéral et le fond noir transparent au clic du menu burger
+        function showPopUp($id_site, $forced=false,  img_cloud=null, acces_cloud=false, img_live=null, acces_live=false, img_locale=null, acces_local=false, acces_ecatcher_local_only=false, acces_ecatcher_live_only=false )
+		{
+			/*clearPopup();*/
+            if ((popUp.style.display === "block") && ($forced === false)) {
+				cacherPopup();
+            } else {
+			clearInterval($refreshPourSite);
+
+			// On désactive tous les liens des images vers accés distants dans la popup site
+			$('.connexionInfoAffaire img').addClass('desactive');
+			// On cache les messages 'Accès uniquement par eCatcher
+			$('a.infoMajLive p.popUpCloud').addClass('cacher');
+			$('a.infoMajLocal p.popUpCloud').addClass('cacher');
+
+
+			// On enregistre les url des images cloud, live et locale lorsqu'on affiche dans la popup
+            if (img_cloud != null) {
+                $img_cloud = img_cloud;
+            }
+            if (img_live != null) {
+                $img_live = img_live;
+            }
+            if (img_locale != null) {
+                $img_locale = img_locale;
+            }
+
+			$.post("{{ path('lci_ajax_get_site') }}", {idSite : $id_site})
+				.done(function($dataEntitySite) 
+				{
+					var $entitySite = JSON.parse($dataEntitySite);
+
+					/* Mise en place des fonction sur les images cloud, live et local pour accèder aux sites distants */
+            		if ($img_cloud != null) {
+            		    $('#pictoConnexion img:first').attr('src', $img_cloud);
+            		    if (acces_cloud == true) 
+						{
+							/* On met en place le message d'indication de la date de mise à jour du cloud */
+							var dateMaj;
+							if ($entitySite.nbDbDonnees) {
+								dateMaj = $entitySite.nbDbDonnees.split(';',1)[0];
+							} else {
+								dateMaj = "00-00-0000";
+							}
+                            $('a.infoMajCloud > p:first-child').html("Cloud mis à jour <br />le " + dateMaj);
+							$('a.infoMajCloud').removeClass('desactive');
+							$('a.infoMajCloud img').removeClass('desactive');
+            		        $('#pictoConnexion img:first').click(function() {
+            		            actionForm($entitySite.affaire, '{{ url_cloud}}');
+            		        });
+            		    } else {
+							$('a.infoMajCloud').addClass('desactive');
+						}
+            		}
+           			if ($img_live != null) {
+                		$("#pictoConnexion img:eq(1)").attr('src', $img_live);
+						// Connexion au Live effective depuis boilerbox
+						if (acces_live == true) {
+							$('a.infoMajLive img').removeClass('desactive');
+                            $("#pictoConnexion img:eq(1)").click(function() {
+                                actionForm($entitySite.affaire, $entitySite.siteConnexion.url + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entitySite.siteConnexion.codeLive);
+                            });
+						// Pas de live mais indication connexion depuis eCatcher
+                        } else if (acces_ecatcher_live_only == true) {
+							$('a.infoMajLive p.popUpCloud').removeClass('cacher');
+						}
+            		}
+
+            		if ($img_locale != null) {
+            		    $('#pictoConnexion img:last').attr('src', $img_locale);
+						if (acces_local == true) {
+							$('a.infoMajLocal img').removeClass('desactive');
+                            $('#pictoConnexion img:last').click(function() {
+								actionForm($entitySite.affaire, $entitySite.siteConnexion.url);
+							});
+            			} else if (acces_ecatcher_local_only == true) {
+							$('a.infoMajLocal p.popUpCloud').removeClass('cacher');
+						}
+					}
+					
+
+                    $('#infoAffaire').data('id', $entitySite.id);
+					$('.infoAffaireIntitule').text($entitySite.intitule);
+					$('.infoAffaireAffaire').text($entitySite.affaire);
+					$('.infoAffaireUrl').text('non définie');
+					$('.infoAffaireCodeLive').text('non défini');
+					$('.infoAffaire3G4G').text('non');
+					$('.infoAffaireADSL').text('non');
+
+					var $infoAffaireCloud = 'non';
+					var $infoAffaireLive  = 'non';
+                    var $infoAffaireLocal = 'non';
+                    var $infoAffaireEcatcher = 'non';
+					var $noConnection = false;
+					if($entitySite.siteConnexion) {
+						if ($entitySite.siteConnexion.url) {
+							$('.infoAffaireUrl').text($entitySite.siteConnexion.url);
+						}
+						if ($entitySite.siteConnexion.codeLive) {
+							$('.infoAffaireCodeLive').text($entitySite.siteConnexion.codeLive);
+						}
+						for($connexion in $entitySite.siteConnexion.typeConnexion) {
+							switch($entitySite.siteConnexion.typeConnexion[$connexion]) {
+								case '3g4g':
+									$('.infoAffaire3G4G').text('Oui');
+									break;
+								case 'adsl':
+									$('.infoAffaireADSL').text('Oui');
+									break;
+							}
+						}
+						for($acces in $entitySite.siteConnexion.accesDistant) {
+                            switch($entitySite.siteConnexion.accesDistant[$acces]) {
+                                case 'cloud':
+									$infoAffaireCloud = 'Oui';
+                                    break;
+                                case 'live':
+									$infoAffaireLive = 'Oui';
+                                    break;
+                                case 'boilerbox':
+									$infoAffaireLocal = 'Oui';
+                                    break;
+                                case 'ecatcher':
+									$infoAffaireEcatcher = 'Oui';
+                                    break;
+								case 'non':
+									$noConnection = true;
+							}
+						}
+						if ($noConnection == true) {
+							$infoAffaireLive = 'Non';
+							$infoAffaireLocal = 'Non';
+							$infoAffaireCloud = 'Non';
+							$infoAffaireEcatcher = 'Non';
+						}
+					}
+					$('.infoAffaireCloud').text($infoAffaireCloud);
+                    $('.infoAffaireLive').text($infoAffaireLive);
+                    $('.infoAffaireLocal').text($infoAffaireLocal);
+                    $('.infoAffaireEcatcher').text($infoAffaireEcatcher);
+
+					// Ajout des nouveaux paramètre de site
+					$html = '';
+					for($key in $entitySite.configurations) {
+						$html = '<p class="labelInfoSite">' + $entitySite.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.configurations[$key].valeur + '</p>' + $html;
+					}
+					$('#resumeAffaire').append($html);
+						
+					// Ajout des nouveaux paramètre de connexion
+					if($entitySite.siteConnexion) 
+					{
+                    	$html = '';
+                    	for($key in $entitySite.siteConnexion.configurations) {
+                        	$html = '<p class="labelInfoSite">' + $entitySite.siteConnexion.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.siteConnexion.configurations[$key].valeur + '</p>' + $html;
+						}
+						$('#resumeAffaire').append($html);
+					}
+	
+					// Ajout des nouveaux paramètre de type autre
+                    if($entitySite.siteAutres)
+                    {
+                        $html = '';
+                        for($key in $entitySite.siteAutres.configurations) {
+                        	$html = '<p class="labelInfoSite">' + $entitySite.siteAutres.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.siteAutres.configurations[$key].valeur + '</p>' + $html;
+						}
+						$('#resumeAffaire').append($html);
+					}
+
+					// Affichage des anciens commentaires
+					for($key in $entitySite.commentaires) {
+						var $dtCreationCommentaire = new Date($entitySite.commentaires[$key].dtCreation);
+						var $auteur = $entitySite.commentaires[$key].user.label;
+						var $auteur_login = $entitySite.commentaires[$key].user.username;
+						// On affiche les commentaires public -  et les commentaires privés si on a les droits Technicien ou Que l'on est l'auteur du commentaire
+						var $obj_html;
+						if (($entitySite.commentaires[$key].modePrive == false) || ($entitySite.commentaires[$key].modePrive && (($tech_granted) || ($entitySite.commentaires[$key].user.username == "{{ app.user.username }}"))))
+						{
+							$obj_html = $('<div class="autreCommentateur"><div class="infoCommentateur"><div class="rondCompte ' + $entitySite.commentaires[$key].user.couleur + '"> ' + getFirstLetters($auteur)  + '</div><p class="nomComentateur">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="dateCommentaire">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="commentaire">' + nl2br($entitySite.commentaires[$key].commentaire) + '</p>');
+							// Les commentaires ne peuvent être modifier que par le créateur du commentaire ou un admin
+							if (($entitySite.commentaires[$key].user.username == "{{ app.user.username }}") || ($tech_granted))
+							{
+								$obj_html.append($('<p class="deleteOrModifyCommentaire"><span class="modifyCommentaire" data-id="' + $entitySite.commentaires[$key].id + '" data-commentaire="' + $entitySite.commentaires[$key].commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')">Modifier</span> - <span class="deleteCommentaire" data-id="' + $entitySite.commentaires[$key].id + '"  onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p>'));
+							}
+							$obj_html.append($('</div>'));
+							$('#fluxCommentaire').prepend($obj_html);
+						}
+					}
+
+
+					/* Recherche des fichiers liés  si on a les droits Technicien ou Que l'on est l'auteur  */
+					for($key in $entitySite.fichiers) 
+					{
+						if (($entitySite.fichiers[$key].modePrive == false) || ($entitySite.fichiers[$key].modePrive && (($tech_granted) || ($entitySite.fichiers[$key].user.username == "{{ app.user.username }}"))))
+						{
+							var $dtImportation = new Date($entitySite.fichiers[$key].dtImportation); 
+							var $obj_html = $('<div class="piecesJointe"><div class="apercuPieceJointe ' + $entitySite.fichiers[$key].extension + ' "></div></div>');
+							var $obj_piecejointe = $('<div class="infoPieceJointe"><p><a href="http://' + window.location.host + $entitySite.fichiers[$key].url + '" download="' + $entitySite.fichiers[$key].alt + '">' + decoupeTexte($entitySite.fichiers[$key].alt, 19) + '</a></p><div class="nomDatePieceJointe"><p class="namePersonnePieceJointe">' + $entitySite.fichiers[$key].informations + '</p><p>'  + $dtImportation.getDate() + ' ' + formatter.format($dtImportation) + ' ' + $dtImportation.getFullYear() + '</p></div>');
+							
+							// Fonction qui ajoute le lien suppression, créer l'evenement de suppression et associe les différents objets
+							ajoutLiens($obj_html, $obj_piecejointe, $entitySite.fichiers[$key].modePrive,  $entitySite.fichiers[$key].id);
+							$('#ensemblePieceJointe').append($obj_html);
+						}
+					}
+					afficherPopup();
+				});
+            }
+        };
+		// Permet d'enlever la popUp Date au clic du fond noir transparent
+        fonduPopUp.onclick=function (){ 
+			cacherPopup();
+        };
+
+
+		// Fonction qui permet la connexion sur le site distant
+		function actionForm($code_affaire, $url) 
+		{
+    		var $nombreOptions;
+			// Pour le cloud : Indication de la base de donnée à charger
+			//   affiche le mesage d'erreur suivant si abscente : Doctrine ORM Manager named  does not exist
+			var $database = "boilerbox_" + $code_affaire;
+			$('#_database').val($database);
+
+
+    		// Si l'url comprend le message supervision : envoi tel quel sinon envoi vers la page login du site distant
+    		var $urlForm = '';
+    		if ($url.match(/supervision/g)) {
+    		    $urlForm = $url;
+    		} else {
+    		    if (($url.toLowerCase() == "http://c727-1.boiler-box.fr/") || ($url.toLowerCase() == "http://c727-2.boiler-box.fr/") || ($url.toLowerCase() == "http://c707.boiler-box.fr/")) {
+    		        $urlForm = $url + 'Symfony/web/app.php/login_check';
+    		    } else {
+					// Dans le cas ou la diffusion de l'adresse ip ne se fait pas mais que le site est en 3G avec une adresse que ne change donc que très rarement.		
+					// L'url est de la forme adresse ip
+					if (! $url.match(/http:\/\//g)) {
+                		$urlForm = 'http://' + $url + '/web/app.php/login_check';
+            		} else {
+						if (($url.match(/http:\/\/cloud.boiler-box-lts.fr\//)) || ($url.match(/http:\/\/54.36.104.188\//)) || ($url.match(/http:\/\/vps614872.ovh.net\//)) || ($url.match(/http:\/\/54.36.104.188:82\//)) ) {
+                    		$urlForm = $url + 'login_check';
+                		} else {
+                    		$urlForm = $url + 'web/app.php/login_check';
+                		}
+					}
+    		    }
+    		}
+    		$('#myForm').attr('action', $urlForm);
+    		if (($login_distant == null) || ($password_distant == null)) {
+    		    var xhr = getXHR();
+    		    xhr.open("POST", "{{ path('lci_boilerbox_getUserLog') }}", false);
+    		    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    		    xhr.send();
+    		    var tabReponse = xhr.responseText.split(';');
+    		    $('#_username').val(tabReponse[0]);
+    		    $('#_password').val(tabReponse[1]);
+    		} else {
+    		    $('#_username').val($login_distant);
+    		    $('#_password').val($password_distant);
+    		}
+    		document.forms['myForm'].submit();
+		}
+
+
+		function modifierSite() {
+			var $id_site = $('#infoAffaire').data('id');
+			var $tab_parametre = [];
+			$tab_parametre['id_site'] = $id_site;
+			redirection('modificationSite', $tab_parametre);
+		}
+
+		function afficherPopup() {
+			popUp.style.display = "block";
+            //fonduPopUp.style.display = "block";
+			$('#fonduBlack').removeClass('cacher');
+		}
+
+		function cacherPopup() {
+			clearPopup();
+			popUp.style.display = "none";
+            //fonduPopUp.style.display = "none";
+			$('#fonduBlack').addClass('cacher');
+		}
+
+		function triSur($champs_de_tri) {
+			$triActuel = "{{ champs_de_tri }}";
+			$ordre_de_tri = "{{ ordre_de_tri }}";
+			if ($triActuel == $champs_de_tri) {
+				switch($ordre_de_tri) {
+					case 'ASC':
+						$ordre_de_tri = 'DESC';
+						break;
+					case 'DESC':
+						$ordre_de_tri = 'ASC';
+                        break;
+				}
+			} else {
+				$ordre_de_tri = 'ASC';
+			}
+			$url = "{{ path('lci_boilerbox_accesSite') }}" + '?champs_de_tri=' + $champs_de_tri + '&ordre_de_tri=' + $ordre_de_tri;
+			window.location.assign($url);
+		}
+
+        // Fonction de recherche sur la page : On commence par rendre la fonction contains de jquery case-insensitive puis on declare la fonction de recherche
+        jQuery.expr[':'].contains = function(a, i, m) {
+            return jQuery(a).text().toUpperCase()
+                .indexOf(m[3].toUpperCase()) >= 0;
+        };
+        $(function() {
+            $('#searchBarInput').keyup(function(e) {
+				rechercheOnPage();
+            });
+        });
+
+		function rechercheOnPage() {
+			var $content = $.trim($('#searchBarInput').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
+			$("tbody tr.ligneAffaire").hide().filter(function( index ) {
+				var regex = new RegExp($content, 'i');
+				return regex.test($(this).text());
+			})
+			.show();
+		}
+
+		function getFirstLetters($label) {
+			/* Fonction pour récupérer la première lettre */
+			return $label.charAt(0).toLowerCase();
+
+			/* Fonction pour récupérer les intiales du text*/
+			var $pattern_first_letters = /^(.).+?\s(.).+?$/g;
+			if($tab = $pattern_first_letters.exec($label)) {
+				var $initiales = $tab[1] + $tab[2];
+				return($initiales.toLowerCase());
+			} else {
+				return $label.charAt(0).toLowerCase();
+			}
+		}
+		/*actioner.onclick = function showMenuLateral(){
+            if (nav.style.display === "block") {
+                nav.style.display = "none";
+                fondu.style.display = "none";
+            } else {
+                nav.style.display = "block";
+                fondu.style.display = "block";
+            }
+        };*/
+		// Fonction pour changer la bordure de la barre de recherche en focus
+		var barreRecherche = document.getElementById('searchBarEquipement');
+		var inputRecherche = document.getElementById('searchBarInput');
+		var imageRecherche = document.getElementById('imgSearchBar');
+		inputRecherche.onfocus = bordureBarreRecherche;
+		function bordureBarreRecherche(){
+			barreRecherche.style.borderColor = "var(--couleur-focus)";
+			inputRecherche.style.marginLeft = "0";
+			imageRecherche.style.display = "none";
+		}
+		inputRecherche.onblur = resetBordureBarreRecherche;
+		function resetBordureBarreRecherche(){
+			barreRecherche.style.borderColor = "var(--gris-clair)"
+			inputRecherche.style.marginLeft = "6px";
+			imageRecherche.style.display = "inline";
+		}
+	
+
+		function majDeDate() {
+		    var newDate = new Date();
+			return(fillNumber(newDate.getDate()) + '/' + fillNumber(newDate.getMonth() +  1) + '/' + newDate.getFullYear());
+		}
+
+		function fillNumber(num) {
+		    if (num.toString().length == 1) {
+		        return("0" + num);
+		    }
+		    return(num);
+		}
+
+        // Fonction qui switch entre mode privé et mode publique
+        function mySwitchMode() {
+			// On appel la fonction principale de changement de mode (définie dans firstLayoutLogged) sans demande de frafraichissement de la page
+			$Refresh_page = false;
+			$('#modePrivePublic').prop('checked', 'checked');
+			switchModePrivateTo();
+
+            // et on change le texte et la valeur dans l'entête 
+            var $p_modePrive;
+            if (! $Mode_prive)
+            {
+                $p_modePrive = "Attention, vous êtes en partage public <a class='lienModePartage' href='#' onClick='mySwitchMode(); return false;'>(passer en privé)</a>";
+                $('#infoAffaire header + p').removeClass('partagePrive');
+                $('#infoAffaire header + p').addClass('textWarning');
+            } else {
+                $p_modePrive = "Vous êtes en partage privé <a class='lienModePartage' href='#' onClick='mySwitchMode(); return false;'>(passer en public)</a>";
+                $('#infoAffaire header + p').removeClass('textWarning');
+                $('#infoAffaire header + p').addClass('partagePrive');
+            }
+            $('#infoAffaire header + p').html($p_modePrive);
+            return 0;
+        }
+
+
+		function ajoutLiens($obj_html, $obj_piecejointe, $fichier_mode_prive, $id) {
+			$obj_liensuppression = $('<a href="#" class="supprimerPieceJointe">supprimer</a>');
+			// Seul les administrateurs on le droit de suppression
+			if ($tech_granted) {
+				$obj_piecejointe.append($obj_liensuppression);
+			}
+			$obj_html.append($obj_piecejointe);
+			// Création d'un evenement lors du clic sur le lien pour supprimer l'objet de la page html
+			$obj_liensuppression.click(function(e) {
+				$obj_html.remove();
+				$.ajax({
+            	    url: "{{ path('lci_ajax_remove_fichier') }}",
+            	    type: "POST",
+            	    data: {id_fichier: $id},
+            	    done: function(msg) {
+            	        console.log('fichier remove' + msg);
+            	    },
+            	    error: function() {
+            	        console.log('erreur fichier remove');
+            	    }
+            	});
+				e.preventDefault();
+				return false;
+			});
+		}
+
+		$(function() {
+        	// si un identifiant site est donnée on ouvre la popup au chargement de la page
+        	if ("{{ idSite }}")
+        	{
+        	    $('tr.ligneAffaire td[data_idSite="{{ idSite }}"]').trigger('click');
+        	}
+		})
+
+	</script>
+{% endblock javascript %}

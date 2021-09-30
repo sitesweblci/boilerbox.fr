@@ -1,0 +1,18 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_site.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block title %} {{ parent() }}Bons d'interventions<br />Création d'un site{% endblock title %}
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1></div>
+<div class='menu_parc'>
+    <div class='menu_ligne1']>
+		{{ form(form) }}
+		{#
+		{{ form_start(form) }}
+		{{ form_end(form) }}
+		#}
+    </div>
+</div>
+{% endblock fos_user_content %}

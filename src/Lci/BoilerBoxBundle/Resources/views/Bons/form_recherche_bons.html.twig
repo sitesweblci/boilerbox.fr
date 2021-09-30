@@ -1,0 +1,136 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_recherche_bons.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block title %}{{ parent() }} Recherche de bons d'interventions{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+
+{# Thème personnel utilisé pour l'affichage des messages d'erreurs #}
+{% form_theme form 'templates/form/fields.html.twig' %}
+
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>Bon d'interventions</h1></div>
+<div class='listing'>
+	<div class='ajout_objet_min'>
+		<h1>Recherche</h1>
+		<div class='formulaire taille_texte_moyen' >
+        	{{ form_start(form, {'action':path('lci_bons_rechercher'), 'method':'POST', 'name':'myForm'}) }}
+        	{{ form_errors(form) }}
+				<div class='ligne_error'>{{ form_errors(form.numeroBA) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.numeroBA) }}</div><div>{{ form_widget(form.numeroBA) }}</div></div>
+
+                <div class='ligne_error'>{{ form_errors(form.saisie) }}</div>
+                <div class='nouveau_probleme_ligne' ><div>{{ form_label(form.saisie) }}</div><div>{{ form_widget(form.saisie) }}</div></div>
+
+                <div class='ligne_error'>{{ form_errors(form.userInitiateur) }}</div>
+                <div class='nouveau_probleme_ligne' ><div>{{ form_label(form.userInitiateur) }}</div><div>{{ form_widget(form.userInitiateur) }}</div></div>
+
+                <div class='ligne_error'>{{ form_errors(form.dateMinInitialisation) }}{{ form_errors(form.dateMaxInitialisation) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateMinInitialisation) }}</div><div>{{ form_widget(form.dateMinInitialisation) }} ({{ form_label(form.dateMaxInitialisation) }}{{ form_widget(form.dateMaxInitialisation) }})</div></div>
+
+				<div class='ligne_error'>{{ form_errors(form.user) }}</div>
+                <div class='nouveau_probleme_ligne' ><div>{{ form_label(form.user) }}</div><div>{{ form_widget(form.user) }}</div></div>
+
+                <div class='ligne_error'>{{ form_errors(form.site) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.site) }}</div><div>{{ form_widget(form.site) }}</div></div>
+
+				 <div class='ligne_error'>{{ form_errors(form.dateMinIntervention) }}{{ form_errors(form.dateMaxIntervention) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateMinIntervention) }}</div><div>{{ form_widget(form.dateMinIntervention) }} ({{ form_label(form.dateMaxIntervention) }}{{ form_widget(form.dateMaxIntervention) }})</div></div>
+
+				<div class='ligne_error'>{{ form_errors(form.numeroAffaire) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.numeroAffaire) }}</div><div>{{ form_widget(form.numeroAffaire) }}</div></div>
+
+                <div class='ligne_error'>{{ form_errors(form.dateMin) }}{{ form_errors(form.dateMax) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateMin) }}</div><div>{{ form_widget(form.dateMin) }} ({{ form_label(form.dateMax) }}{{ form_widget(form.dateMax) }})</div></div>
+
+				<div class='ligne_error'>{{ form_errors(form.nomDuContact) }}</div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.nomDuContact) }}</div><div>{{ form_widget(form.nomDuContact) }}</div></div>
+
+				<div class='ligne_error'></div>
+				<div class='nouveau_probleme_ligne'><div class='label_smalltext'>{{ form_label(form.sensValidation) }}</div></div>
+				<div class='nouveau_probleme_ligne'>
+					<div class='label_smalltext'>
+						{{ form_widget(form.sensValidation) }}
+					</div>
+					<div id='checkbox_validation'>
+						<div>{{ form_widget(form.validationTechnique) }}</div>
+						<div>{{ form_widget(form.validationHoraire) }}</div>
+						<div>{{ form_widget(form.validationSAV) }}</div>
+                    	<div>{{ form_widget(form.validationFacturation) }}</div>
+					</div>
+				</div>
+				<div class='ligne_error'></div>
+                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.valideur) }}</div><div>{{ form_widget(form.valideur) }}</div></div>
+
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+
+    	<div class='validation_formulaire_centre notToBePrinted'>
+    	    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche.png') }}" class="btn_menu" alt="Rechercher"
+    	        onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche_hover.png') }}"
+    	        onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_recherche.png') }}"
+    	        onClick="attente(); document.forms['myForm'].submit(); return false;">
+    	</div>
+	</div>
+</div>
+<div id="validation_formulaire_end_portrait" class='validation_formulaire_end'>
+	<div class='validation_formulaire_end notToBePrinted'>
+    	<img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" class="btn_menu" alt="Annuler"
+         onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}"
+         onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}"
+         onClick="attente(); redirection('bonsVisualiser'); return false;">
+	</div>
+</div>
+
+{% endblock fos_user_content %}
+
+
+
+
+{% block javascript %}
+<script type='text/javascript'>
+    $(document).ready(function(){
+        /* Mise en place de l'objet datepicker */
+		$("#obj_recherche_bons_attachement_dateMin" ).datepicker({ dateFormat: 'dd/mm/yy' });
+		$("#obj_recherche_bons_attachement_dateMax" ).datepicker({ dateFormat: 'dd/mm/yy' });
+        $("#obj_recherche_bons_attachement_dateMinInitialisation" ).datepicker({ dateFormat: 'dd/mm/yy' });
+        $("#obj_recherche_bons_attachement_dateMaxInitialisation" ).datepicker({ dateFormat: 'dd/mm/yy' });
+
+        $("#obj_recherche_bons_attachement_dateMinIntervention" ).datepicker({ dateFormat: 'dd/mm/yy' });
+        $("#obj_recherche_bons_attachement_dateMaxIntervention" ).datepicker({ dateFormat: 'dd/mm/yy' });
+
+
+
+		$('#obj_recherche_bons_attachement_sensValidation_0').click(function() {
+			selectionValideur(true);
+			$('#checkbox_validation').addClass('invisible');
+		});
+		$('#obj_recherche_bons_attachement_sensValidation_1').click(function() {
+            selectionValideur(true);
+			$('#checkbox_validation').removeClass('invisible');
+        });
+		$('#obj_recherche_bons_attachement_sensValidation_2').click(function() {
+			selectionValideur(false);
+			$('#checkbox_validation').removeClass('invisible');
+        });
+
+		$('#obj_recherche_bons_attachement_sensValidation_0').trigger("click");
+
+    });
+
+
+	// Lors de la selection d'un choix bons validés ou bons non validés, on autorise ou pas la selection du valideur
+	function selectionValideur($sens) {
+		if ($sens == false) {
+			$('#obj_recherche_bons_attachement_valideur').prop('disabled', true);
+			$('#obj_recherche_bons_attachement_valideur :nth-child(1)').prop('selected', 'selected');
+		} else {
+			$('#obj_recherche_bons_attachement_valideur').prop('disabled', false);
+		}
+	}
+</script>
+{% endblock javascript %}

@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boiler-Box Cloud CGU</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.39, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloud.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
+    <style>
+        html{
+            background: #f9f9f9 !important;
+        }
+        embed{
+            width: 960px;
+            height: 54vh;
+            margin-bottom: 24px;
+        }
+        .main-box{
+            margin-top: 24px;
+        }
+        .main-box__title{
+            margin-bottom: 16px;
+            padding: 24px;
+            padding-bottom: 0;
+        }
+        .main-box__content{
+            padding: 24px;
+            padding-top: 0;
+        }
+        #btnIdentified{
+            cursor: initial;
+        }
+    </style>  
+</head>
+
+<body>
+    <nav id="mainMenu">
+        <div id="left">
+            <div  id="lienWatermark" href="{{ path("lci_boilerbox_index") }}">
+                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="baselineLogo">
+                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
+                    <span class="initialeBaseline">B</span>OILER<br>
+                   <span class="initialeBaseline">C</span>ONTROL<br>
+                </p>
+            </div>
+        </div>
+        <div id="right">
+            <div id="btnIdentified" class="mainNavButton btnIdentified {{ app.user.couleur }}" href="">
+                <span>{{ app.user.label | slice(0,1) }}</span>
+            </div>
+        </div>
+    </nav>
+    <header class="sub-header sub-header--blue">
+        <h1 class="sub-header__title">Conditions Générales d'Utilisation</h1>
+    </header>
+
+    <section class="main-box main-box--table">
+        <h1 class="main-box__title main-box--table__title">Acceptation des CGU</h1>
+        <div class='main-box__content main-box__content--padding'>
+            <div class='formulaire_liste'>
+                <embed src="{{ path('lci_cgu_download', {'cgu': cgu.id}) }}" width=800 height=500 type='application/pdf'/>
+            </div>
+            <div class='main-box__btn'>
+				<a href="{{ path('lci_cgu_accepter') }}" class="btn btn--main">Accepter les CGU</a>
+            </div>
+        </div>
+    </section>
+</body>

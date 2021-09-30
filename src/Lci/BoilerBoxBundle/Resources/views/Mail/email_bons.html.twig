@@ -1,0 +1,37 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_bons.html.twig #}
+<!DOCTYPE html>
+<html>
+<head></head>
+
+<body>
+<div id='contenu_email'>
+		<h1 style='color:red; font-size:22px; margin-bottom:-10px;'>{{ titre }}</h1>
+	{% for contenu in tab_contenu %}
+		{# La premiere ligne correspond au titre #}
+		{% if contenu starts with '%P' %}
+			{# Ceci est un paragraphe #}
+			<p>{{ contenu|slice(2) }}
+		{% elseif contenu ends with '%P' %}
+			{{ contenu|slice(0,-2) }}</p>
+		{% elseif contenu starts with '%T'  %}
+			{# Ceci est un titre #}
+			<h2 style='text-decoration:underline; font-size:18px; margin-bottom:6px;'>{{ contenu|slice(2) }}</h2>
+		{% elseif contenu starts with '%G' %}
+			{# Un contenu en gras débute par '%G' #}
+			<span style='font-weight:bold;'>{{ contenu|slice(2) }}</span>
+		{% elseif contenu starts with '%C' %}
+			{# Un contenu de type correction débute par '%C' #}
+            <span style='color:green'>{{ contenu|slice(2) }}</span>
+		{% elseif contenu starts with '%M' %}
+			{# Ceci est un mail #}
+			<i>{{ contenu|slice(2) }}</i>
+		{% else %}
+			{{ contenu|raw }}
+		{% endif %}
+	{% endfor %}
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' width="400" />
+
+</body>
+</html>
+

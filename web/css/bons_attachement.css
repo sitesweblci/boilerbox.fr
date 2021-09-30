@@ -1,0 +1,151 @@
+
+
+div#entete_de_page {
+  margin-top: 0px;
+}
+
+#bloc_body {
+  	position: fixed;
+  	top: 50px;
+  	left: 0px;
+  	right: 0px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	z-index: 1;
+  	margin: auto;
+}
+
+
+
+h1#titre_affichage_siteBA {
+	font-size: 40px;
+	margin-bottom: 50px;
+}
+
+#div_principal {
+	position: relative;
+	box-sizing: border-box;
+	width: 80%;
+	height: 455px;
+
+	display: flex;
+	flex-direction: row;
+
+	justify-content: space-between;
+
+	border-style: ridge;
+}
+
+
+
+
+#encart_de_selection_du_site {
+	width: 20%;
+	min-width: 270px;
+}
+#encart_de_selection_du_site h1 {
+    width: 100%;
+    text-align: center;
+}
+#encart_de_selection_du_site select {
+    width: 99%;
+    text-align: center;
+	line-height: 2;
+	height: 30px;
+}
+
+
+
+
+
+
+#encart_du_site_actif {
+	position: relative;
+	width: 45%;
+	box-sizing: border-box;
+	border-style: ridge;
+
+	display: flex;
+	flex-direction: column;
+	padding-left: 10px;
+}
+#informations_site {
+	position: relative;
+	box-sizing: border-box;
+	height: 150px;
+
+	display: flex;
+	flex-flow: column;
+}
+#informations_site h1 {
+	width: 100%;
+	text-align: center;
+}
+#informations_site > div {
+    position: relative;
+    box-sizing: border-box;
+    height: 150px;
+    display: flex;
+}
+#informations_site div.adresse {
+	font-style: italic;
+}
+#informations_site h2 {
+	margin-top: 20px;
+	margin-bottom: 5px;
+	font-size: 18px;
+	border-bottom: 2px solid white;
+	width: 100%;
+}
+#informations_site div.informations {
+	height: 100%;
+	min-height: 100px;
+	width: 95%;
+	overflow: auto;
+	background-color: gray;
+	color: black;
+	border-style: ridge;
+
+}
+
+
+
+
+
+#encart_map_site {
+	position: relative;
+	width:35%;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#encart_map_site p {
+	font-style: italic;
+}
+
+
+
+
+#encart_fichiers_joint {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: black;
+    overflow: auto;
+    width: 90%;
+}
+#encart_fichiers_joint div{
+    min-width: 250px;
+    min-height: 150px;
+    overflow: auto;
+    border:1px solid black;
+    background: white;
+}
+
+
+#encart_fichiers_joint a {
+    color: black;
+    font-size: 12px;
+}

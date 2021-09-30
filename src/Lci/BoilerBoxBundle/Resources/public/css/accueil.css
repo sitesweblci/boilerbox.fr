@@ -1,0 +1,931 @@
+#blockDemo{
+	margin-left: 40px;
+	margin-top: 5px;
+}
+.lienDemo{
+	font-size: 1em;
+	color: white;
+}
+#titrePage{
+	margin-bottom: 24px;
+}
+#titrePage h1{
+	font-size: 1.8em;
+	font-weight: lighter;
+	color: var(--gris-profond);
+}
+#titrePage h2{
+	font-size: 1.8em;
+	font-weight: lighter;
+	color: black;
+}
+/* BARRE RECHERCHE ************************************/
+#searchBarEquipement{
+	width: 40%;
+}
+/* TABLEAU ********************************************/
+#myForm{
+	background-color: white;
+}
+#tableAffaire{
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0 5px;
+}
+.ligneAffaire{
+	background-color: white;
+	cursor: pointer;
+	position: relative;
+}
+#tableAffaire thead, #tableAffaire tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+/* THEAD ********************************************/
+#tableAffaire thead{
+	display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+#tableAffaire thead tr{
+	height: 10px;
+}
+#tableAffaire tr th{
+	text-align: center;
+	vertical-align: bottom;
+}
+#tableAffaire tr th{
+	font-size: 0.8em;
+	font-weight: normal;
+	color: var(--gris-profond);
+}
+.CXXXHead, .etatConnecHead, .nomAffaireHead, .connexionOnHead{
+	border-bottom: solid 1px var(--gris-profond);
+}
+.CXXXHead{
+	width: 20%;
+	min-width: 40px;
+	cursor: pointer;
+}
+.etatConnecHead{
+	width: 20%;
+	min-width: 40px;
+}
+.nomAffaireHead{
+	min-width: 180px;
+	cursor: pointer;
+}
+.connexionOnHead{
+	width: 40px;
+}
+.legendeTypeConnexion{
+	width: 20px;
+}
+tr th:last-child{
+	/*padding-right: 20px;
+	-webkit-padding-end: 10px;*/
+}
+/* LEGENDE THEAD **************************************/
+#legendeInfoConnexion{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width: 20px;
+	height: 20px;
+	border: 1px solid var(--gris-profond);
+	border-radius: 50%;
+	background-color: white;
+	background: rgb(255,255,255);
+	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%); 
+	color: var(--couleur-principale);
+	cursor: pointer;
+}
+#legendeInfoConnexion #stay p{
+	font-family: times new roman, serif;
+	font-style: italic;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+.explicationInfoConnexion{
+	display: none;
+	text-align: left;
+	position: absolute;
+	top: 0px;
+	right: 40px;
+	padding: 6px 10px;
+	background-color: white;
+	border: 1px solid var(--gris-profond);
+	border-radius: 3px;
+	z-index: 2;
+}
+.explicationInfoConnexion h1{
+	font-size: 1em;
+	font-weight: normal;
+	color: black;
+}
+.explicationInfoConnexion p{
+	font-size: 0.85em;
+	font-weight: normal;
+	color: var(--gris-profond);
+}
+#legendeInfoConnexion:hover > .explicationInfoConnexion{
+	display: block;
+}
+/* TBODY ********************************************/
+#tableAffaire tbody{
+	display: block;
+    width: 100%;
+    min-height: 250px;
+    max-height: 465px;
+    overflow-y: scroll;
+	overflow-x: hidden;
+}
+#tableAffaire tbody tr{
+	height: 40px;
+	padding-right: 10px;
+	-webkit-padding-end: 4px;
+}
+#tableAffaire td, #tableAffaire td img{
+	vertical-align: middle;
+}
+#tableAffaire tr td{
+	text-align: center;
+	transition: background-color 0.2s ease-in-out;
+}
+.CXXX, .etatConnec, .nomAffaire {
+	height: 38px;
+}
+.CXXX, .etatConnec{
+	width: 20%;
+	min-width: 40px;
+	border: solid 1px var(--gris-clair);
+	border-radius: 0 0 0 5px;
+	border-right: none;
+}
+.etatConnec{
+	border-radius: 0;
+	border-left: none;
+}
+.imgEtatConnec{
+	width: 40px;
+	height: 40px;
+}
+.nomAffaire{
+	min-width: 180px;
+	border: solid 1px var(--gris-clair);
+	border-radius: 0 5px 5px 0;
+	border-left: none;
+}
+.connexionOn{
+	width: 40px;
+}
+.popUpCloud{
+	display: none;
+	visibility: hidden;
+	position: absolute;
+	box-sizing: border-box;
+    margin-top: -1px;
+    margin-left: -135px;
+    font-size: 13px;
+    line-height: 15px;
+    color: white;
+    background: var(--gris-profond);
+    border-radius: 3px;
+	height: 42px;
+ 	padding: 5px 20px;
+}
+.connexionOn:hover > .popUpCloud{
+	display: block;
+	visibility: visible;
+}
+.whiteSpace{
+	width: 0.5vw;
+	min-width: 8px;
+	border: none;
+}
+.whiteSpaceBorder{
+	width: 0.5vw;
+	min-width: 8px;
+	border: none;
+	border-bottom: solid 1px var(--gris-profond); 
+}
+.iconeConnec{
+	width: 40px;
+	height: 40px;
+}
+.ligneAffaire:hover > td.CXXX, .ligneAffaire:hover > td.etatConnec, .ligneAffaire:hover > td.nomAffaire{
+	background-color: var(--gris-clair);
+}
+tr td:last-child{
+	padding-right: 12px;
+	-webkit-padding-end: 6px;
+}
+/* BOUTON AJOUTER AFFAIRE *********************************************/
+#buttonAddAffaire{
+	padding: 8px 20px;
+	border-radius: 0 4px 4px 4px;
+	background-color: var(--gris-clair);
+	color: var(--gris-profond);
+	cursor: pointer;
+}
+/* POP UP *************************************************************************************************************/
+#infoAffaire{
+	display: none;
+	z-index: 6;
+    /*width: 70vw;
+    min-width: 500px;
+    max-width: 860px;
+    position: relative;
+	top: 50%; 
+    transform: translate(-50%, -50%);/* décalage de 50% de sa propre taille */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50%);
+    width: 75vw;
+    min-width: 500px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0;
+    border-radius: 0 10px 10px 10px;
+}
+#infoAffaire header{
+	padding: 22px 36px;
+	border-radius: 0 10px 0 0;
+	background-color: var(--couleur-principale);
+}
+#infoAffaire header h1{
+	font-size: 1.6em;
+	font-weight: lighter;
+	color: #c2d4ef;
+}
+#infoAffaire header h2{
+	font-size: 1.2em;
+	font-weight: lighter;
+	color: white;
+}
+/* CONTENU POP UP *********************************/
+#leftInfo{
+	width: 32%;
+	min-width: 220px;
+	padding: 6px 40px 6px 30px;
+	border-radius: 0 0 0 10px;
+	background-color: white;
+}
+#leftInfo > div{
+	margin-bottom: 24px;
+}
+#ensembleInfoAffaire h1{
+	margin: 10px 0;
+	font-size: 1.1em;
+	font-weight: normal;
+	color: black;
+}
+.pictoInfo{
+	margin-right: 8px;
+	width: auto;
+	height: 13px;
+}
+#pictoConnexion, #ensemblePieceJointe, #resumeAffaire{
+	padding-left: 20px;
+}
+/* CONNEXION **********************************/
+#choixModeConnexion{
+	display: none;
+}
+#pictoConnexion{
+	display: flex;
+	justify-content: space-between;
+}
+.connexionInfoAffaire{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#pictoConnexion .connexionInfoAffaire .popUpCloud{
+	margin-top: 60px;
+    margin-left: 0px;
+    color: white;
+    text-align: center;
+}
+#pictoConnexion .connexionInfoAffaire:hover > .popUpCloud{
+	display: block;
+	visibility: visible;
+}
+.imgConnexionInfoAffaire{
+	width: 56px;
+	height: auto;
+	margin-bottom: 4px;
+	cursor: pointer;
+}
+#pictoConnexion p{
+	font-size: 0.8em;
+	color: var(--gris-profond);
+}
+#ensembleInfoAffaire{
+	display: flex;
+	flex-direction: row;
+}
+/* PIECE JOINTE ********************************/
+#ensemblePieceJointe{
+	max-height: 80px;
+	margin-bottom: 16px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+}
+.piecesJointe{
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 4px;
+}
+.apercuPieceJointe{
+	width: 32px;
+	height: 36px;
+	border-radius: 2px;
+	background: url("../images/pieceJointe/imgPieceJointeInconnu.png") no-repeat center;
+}
+.apercuPieceJointe.txt {
+	background: url("../images/pieceJointe/imgPieceJointeTxt.png") no-repeat center;
+}
+.apercuPieceJointe.pdf {
+    background: url("../images/pieceJointe/imgPieceJointePDF.png") no-repeat center;
+}
+.apercuPieceJointe.xls, .apercuPieceJointe.xlsx {
+    background: url("../images/pieceJointe/imgPieceJointeXLS.png") no-repeat center;
+}
+.apercuPieceJointe.jpg, .apercuPieceJointe.jpeg {
+    background: url("../images/pieceJointe/imgPieceJointeJPG.png") no-repeat center;
+}
+.infoPieceJointe{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	line-height: 0.7em;
+}
+.infoPieceJointe > p a{
+	margin-left: 10px;
+	color: black;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-decoration: none;
+}
+.infoPieceJointe > p a:hover{
+	text-decoration: underline;
+}
+.nomDatePieceJointe{
+	display: flex;
+	flex-direction: row;
+}
+.nomDatePieceJointe .namePersonnePieceJointe{
+	margin-left: 10px;
+	margin-right: 4px;
+	font-size: 0.65em;
+	color: var(--gris-profond);
+}
+.piecesJointe p:last-child{
+	font-size: 0.65em;
+	color: var(--gris-clair-hover);
+}
+.supprimerPieceJointe{
+	margin-left: 10px;
+	font-size: 0.65em;
+	color: var(--couleur-principale);
+}
+.supprimerPieceJointe:hover{
+	text-decoration: underline;
+}
+/* INFOS SITE ******************************************/
+#resumeAffaire{
+	max-height: 280px;
+	overflow-y: auto;
+}
+#pictoTitreInformationAffaire{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#modifyInfoAffaire{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	width: 24px;
+	height: 24px;
+	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%);
+	border: solid 1px var(--gris-profond);
+	border-radius: 50%;
+	cursor: pointer;
+}
+#modifyInfoAffaire:hover{
+	background-color: var(--gris-clair);
+}
+.editInfo{
+	width: 12px;
+	height: 12px;
+}
+#modifyInfoAffaire:hover > #infoBulleModifyInfo{
+	display: inline-block;
+    visibility: visible;
+    opacity: 1;
+}
+.labelInfoSite{
+	margin-bottom: 2px;
+	font-size: 0.8em;
+	color: var(--gris-profond);	
+}
+.forLabelInfoSite{
+	margin-bottom: 10px;
+	font-size: 1em;
+	color: black;
+}
+/* ESPACE COMMENTAIRE *********************************/
+#espaceCommunautaireAffaire{
+	width: 68%;
+	padding: 10px 40px;
+	border-radius: 0 0 10px 0;
+	background-color: #f2f2f2;
+}
+.textWarning{
+	padding: 4px 0;
+	font-size: 0.9em;
+	color: white;
+	text-align: center;
+	background-color: red;
+}
+.partagePrive{
+	padding: 4px 0;
+	font-size: 0.9em;
+	color: white;
+	text-align: center;
+	background-color: var(--couleur-principale);
+}
+.lienModePartage{
+	color: var(--couleur-focus);
+	font-style: italic;
+}
+#switchToPrivate{
+	font-size: 0.9em;
+	color: var(--couleur-focus);
+	font-style: italic;
+}
+#formMonCommentaire{
+	display: block;
+	width: calc(100% - 28px);
+	padding: 0;
+	margin: 0;
+	margin-bottom: 4px;
+}
+.infoMonCommentaire{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+#fluxCommentaire{
+	max-height: 445px;
+	padding-right: 10px;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+}
+.rondCompte{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 22px;
+	height: 22px;
+	margin-right: 6px;
+	border-radius: 50%;
+	background-color: var(--variable-color-user);
+	font-size: 1em;
+	text-transform: lowercase;
+	color: white;
+}
+.inputMonCommentaire{
+	width: 100%;
+	margin: 0;
+	padding: 5px;
+	border: 1px solid var(--gris-clair-hover);
+	border-radius: 0 3px 3px 3px;
+	font-family: Calibri, Arial, sans-serif;
+	font-size: 1em;
+	overflow-x: hidden;
+	overflow-y: auto;
+	resize: vertical;
+}
+.inputMonCommentaire::placeholder{
+	font-size: 0.9em;
+	color: var(--gris-clair-hover);
+	font-style: italic;
+}
+#validationMonCommentaire{
+	margin: 0;
+	margin-top: 6px;
+	border-radius: 0 3px 3px 3px;
+	font-size: 0.9em;
+	float: right;
+}
+#formMonCommentaire .inputPublish{
+	padding: 4px 24px;
+    margin: 12px 0;
+	font-size: 1em;
+}
+#ensembleCommentaire{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.autreCommentateur{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin-bottom: 12px;
+}
+.infoCommentateur{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	align-items: baseline;
+	margin-bottom: 4px;
+}
+.nomComentateur{
+	align-self: baseline;
+	margin-right: 6px;
+	font-size: 1.0em;
+	font-weight: bold;
+	color: black;
+	text-transform: lowercase;
+}
+.nomComentateur:first-letter{
+	text-transform: capitalize;
+}
+.dateCommentaire{
+	align-self: baseline;
+	font-size: 0.7em;
+	color: var(--gris-profond);
+	font-weight: 300;
+}
+.commentaire{
+	width: calc(100% - 43px);
+    margin-left: 28px;
+    margin-bottom: 4px;
+    padding: 6px;
+    border: 1px solid var(--gris-clair-hover);
+    border-radius: 0 3px 3px 3px;
+    background-color: white;
+}
+.MaJStatut{
+	margin-left: 28px;
+	margin-bottom: 4px;
+	font-size: 1.05em;
+	color: black;
+	font-weight: normal;
+	font-style: italic;
+}
+.pieceJointeLien{
+	font-size: 1.0em;
+	color: blue;
+	font-style: normal;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.deleteOrModifyCommentaire{
+	margin-left: 28px;
+	font-size: 0.66em;
+	color: var(--gris-profond);
+}
+.deleteCommentaire, .modifyCommentaire{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/* RESPONSIVE 900px ***********************************************************************************************************************************/
+@media screen and (max-width: 900px){
+	#listingEquipement{
+	    width: 80vw;
+	    min-width: 540px;
+	    max-width: 850px;
+	}
+	#titrePage h1{
+		font-size: 1.6em;
+	}
+	#titrePage h2{
+		margin-bottom: 18px;
+		font-size: 1.6em;
+	}
+	#blockDemo{
+		margin-left: 20px;
+	}
+	.lienDemo{
+		font-size: 0.9em;
+		color: white;
+	}
+	/* LEGENDE **************************************/
+	#searchBarEquipement{
+		width: calc(100% - 20px);
+	}
+	#searchBarInput{
+		flex: 1;
+	}
+	#legendeConnexion p{
+		font-size: 0.6em;
+		white-space: nowrap;
+		text-overflow: hidden;
+	}
+	.rondConnexion{
+		width: 8px;
+		height: 8px;
+		margin-right: 5px;
+		border-radius: 50%;
+	}
+	/* POP UP **************************************/
+	#infoAffaire{
+	    width: 85vw;
+	    min-width: 500px;
+	    max-width: 960px;
+	}
+	#infoAffaire header{
+		padding: 12px 20px;
+	}
+	#leftInfo{
+		width: 32%;
+		min-width: 200px;
+		padding: 6px 20px;
+	}
+	#ensembleInfoAffaire h1{
+		margin: 12px 0;
+	}
+	#pictoConnexion, #ensemblePieceJointe, #resumeAffaire{
+		padding-left: 20px;
+	}
+	#pictoConnexion p{
+		font-size: 0.7em;
+	}
+	/* INFOS SITE ******************************************/
+	#resumeAffaire{
+		max-height: 310px;
+	}
+	.forLabelInfoSite{
+		margin-bottom: 8px;
+	}
+	/* ESPACE COMMENTAIRE *********************************/
+	#espaceCommunautaireAffaire{
+		width: 68%;
+		padding: 6px 20px;
+	}
+	#fluxCommentaire{
+		max-height: 450px;
+	}
+	.autreCommentateur{
+		overflow: hidden;
+		margin-bottom: 8px;
+	}
+}
+/* RESPONSIVE MOBILE 580 ********************************************************************************************************************************/
+@media screen and (max-width: 580px){
+	html{
+	    background: white no-repeat center fixed;
+	}
+	body{
+		position: fixed;
+		top: 0; right: 0; bottom: 0;
+	}
+	#mainMenu{
+		border-bottom: 1px solid var(--gris-clair-hover);
+	}
+	#blockDemo{
+		display: none;
+	}
+	#listingEquipement{
+	    width: calc(90% - 48px);
+	    min-width: 340px;
+	    max-width: 900px;
+	    margin-top: 51px;
+	    padding: 20px 24px 10px 24px;
+	    background: white;
+	    box-shadow: none;
+	}
+	#titrePage{
+		display: none;
+	}
+	/* LEGENDE *****************************************/
+	#legendeListeEquipement{
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
+		flex-wrap: nowrap;
+	}
+	#legendeConnexion{
+		justify-content: space-between;
+		width: 100%;
+		flex-wrap: wrap;
+	}
+	.rondConnexion{
+		width: 10px;
+		height: 10px;
+	}
+	#noConnexion{
+		margin-right: 0;
+	}
+	#searchBarEquipement{
+		margin-top: 12px !important;
+		margin-bottom: 0;
+	}
+	/* TABLEAU *****************************************/
+	.whiteSpace, .whiteSpaceBorder, .connexionOnHead, .connexionOn, .legendeTypeConnexion{
+		display: none;
+	}
+	#tableAffaire tbody{
+		height: 56vh;
+		min-height: 80px;
+		max-height: 800px;
+		padding-right: 6px;
+	}
+	#tableAffaire thead{
+		display: none;
+	}
+	#tableAffaire tbody tr td.whiteSpace{
+		display: none;
+	}
+	/* BOUTON AJOUTER AFFAIRE **************************/
+	#buttonAddAffaire{
+		padding: 12px 20px;
+	}
+	/* POP UP ********************************************/
+	#infoAffaire{
+		position: fixed;
+		top: 50%; left: 50%;
+		transform: translate(-50%, -50%);/* décalage de 50% de sa propre taille */
+		width: calc(100vw - 96px);
+		min-width: 250px;
+	}
+	#infoAffaire header{
+		padding: 12px 40px;
+	}
+	#infoAffaire header h1{
+		font-size: 1.8em;
+		text-align: center;
+		font-weight: normal;
+	}
+	#infoAffaire header h2{
+		font-size: 1.2em;
+		text-align: center;
+		font-weight: normal;
+	}
+	.textWarning{
+		display: none;
+	}
+	#leftInfo{
+		width: 100%;
+		padding: 10px 40px 20px 40px;
+		margin: 0 auto;
+		border-radius: 0 0 20px 20px;
+	}
+	#connexionAffaire{
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+	#choixModeConnexion{
+		display: block;
+		margin: 14px 0 10px 0;
+		font-size: 1.2em;
+		font-weight: lighter;
+		text-align: center;
+	}
+	#ensembleInfoAffaire h1{
+		display: none;
+	}
+	#pictoConnexion{
+		width: 180px;
+		height: 30vh;
+		max-height: 220px;
+		margin: 0 auto;
+		padding: 20px;
+		align-self: center;
+		justify-content: space-between;
+	}
+	#pictoConnexion .connexionInfoAffaire:first-child, #pictoConnexion .connexionInfoAffaire:last-child{
+        align-self: flex-end;
+    }
+	.connexionInfoAffaire{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.imgConnexionInfoAffaire{
+		width: 60px;
+		margin-bottom: 6px;
+	}
+	#pictoConnexion p{
+		font-size: 1em;
+	}
+	#pictoConnexion .connexionInfoAffaire:hover > .popUpCloud{
+		display: none;
+		visibility: hidden;
+	}
+	.partagePrive{
+		display: none;
+	}
+	.textWarning{
+		display: none;
+	}
+	/* PIECE JOINTE ********************************/
+	#ensemblePieceJointe{
+		display: none;
+	}
+	.addPieceJointe{
+		display: none;
+}
+	/* INFOS SITE ***********************************/
+	#resumeAffaire{
+		display: none;
+	}
+	#modifyInfoAffaire{
+		display: none;
+	}
+	/* ESPACE COMMENTAIRE ***************************/
+	#espaceCommunautaireAffaire{
+		display: none;
+	}
+}
+/* RESPONSIVE MOBILE 380 ******************************************************************************************************/
+@media screen and (max-width: 380px){
+	#listingEquipement{
+	    width: calc(100% - 60px);
+	    min-width: 20px;
+	    max-width: 380px;
+	    padding: 10px 0 22px 0;
+	}
+	#titrePage h2{
+		margin-bottom: 6px;
+		font-size: 1.1em;
+		font-weight: normal;
+	}
+	/* LEGENDE **************************************************/
+	#legendeConnexion p{
+		font-size: 0.55em;
+	}
+	.rondConnexion{
+		width: 6px;
+		height: 6px;
+		margin-right: 4px;
+	}
+	#searchBarEquipement{
+		margin-top: 4px;
+		height: 4px;
+	}
+	#connected, #outDated, #eCatcher, #nonConnected, #noConnexion{
+		margin-right: 4px;
+	}
+	/* TABLEAU **************************************************/
+	#tableAffaire{
+		border-spacing: 0 3px;
+	}
+	#tableAffaire tbody tr td{
+		font-size: 0.80em;
+	}
+	.CXXX{
+		width: 20%;
+	}
+	.etatConnec{
+		width: 20%;
+	}
+	.imgEtatConnec{
+		width: 30px;
+		height: 30px;
+	}
+	/* BOUTON AJOUTER AFFAIRE *************************************/
+	#buttonAddAffaire{
+		padding: 12px 24px;
+	}
+	#iconeTexteButtonAddAffaire p{
+		margin-left: 8px;
+		font-size: 0.8em;
+	}
+	/* POP UP *****************************************************/
+	#infoAffaire{
+		width: calc(100vw - 60px);
+		min-width: 250px;
+	}
+}
+/* RESPONSIVE HAUTEUR ***********************************************************************************************************************************/
+@media screen and (min-width: 380px) and (max-height: 800px){
+	#tableAffaire tbody{
+		max-height: 340px;
+	}
+}
+@media screen and (max-height: 780px){
+	#resumeAffaire{
+		max-height: 140px;
+	}
+	#fluxCommentaire{
+		max-height: 300px;
+		padding-right: 10px;
+		overflow-y: scroll;
+	}
+}

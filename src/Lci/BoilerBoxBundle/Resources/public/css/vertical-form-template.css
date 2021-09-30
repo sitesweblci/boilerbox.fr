@@ -1,0 +1,494 @@
+html{
+	background: none;
+	background-color: white;
+}
+#mainMenu{
+	border-bottom: 1px solid var(--gris-clair-hover);
+}
+#modifEquipement{
+	margin: 0;
+	padding: 0;
+}
+input:not([type=checkbox]):not([type=submit]){
+	margin: 0 !important;
+}
+input:not([type=checkbox]):placeholder{
+	color: transparent !important;
+}
+#titrePageModifEquip{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+/* HEADER INTERNE MON COMPTE ******************************/
+#rondMonCompte{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 46px;
+	height: 46px;
+	margin-right: 10px;
+	border-radius: 50%;
+	background-color: var(--variable-color-user);
+}
+#rondMonCompte span{
+	position: relative;
+	top: -3px;
+	font-size: 1.4em;
+	font-weight: normal;
+	vertical-align: top;
+	text-transform: lowercase;
+	color: white;
+}
+#titrePageMonCompte{
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+#headerInterne h1{
+	text-transform: capitalize;
+} 
+/* FORMULAIRE ***********************************************/
+div.form-group{
+	display: flex;
+	flex-direction: column;
+}
+div.form-group{
+	margin-top: 4px;
+}
+div.form-group div div.form-group{
+	margin-top: 4px;
+}
+.titreFormModif, .form-group label, .texteToLabel{
+	margin: 16px 0 4px 0;
+	font-size: 12px;
+	color: var(--gris-profond);
+}
+div.form-group input.texteToLabel{
+	margin: -20px 0 4px 0px !important;
+	padding: 0px;
+	border: none;
+	width: calc(100% - 25px);
+}
+div.form-group input:not(.texteToLabel).form-control{
+	margin: 0;
+}
+.alignCheckbox{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.checkbox{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+}
+.checkbox label{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+#modifEquioement input[type="checkbox"] {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+}
+#modifEquioement input[type=checkbox] {
+	width: 15px;
+    height: 15px;
+    margin-right: 15px;
+    background: #fff;
+    border: 1px solid var(--gris-clair-hover);
+    border-radius: 2px;
+}
+#modifEquioement input[type="checkbox"]:checked:before {
+	font-family: FontAwesome;
+	content: '\f00c';
+	display: block;
+	color: grey;
+	font-size: 13px;
+	position: absolute;
+}
+.alignCheckbox label {
+	margin-top: 0;
+	font-size: 0.8em;
+    color: black;
+}
+.form-group .labelInputCreated{
+	flex: 0.8 !important;
+	padding: 2px 0 !important;
+	color: var(--gris-profond);
+	border: 1px solid #ffffff !important;
+}
+.form-group .labelInputCreated:focus{
+	border: 1px solid var(--couleur-focus) !important;
+}
+/* FORMULAIRE MON COMPTE *******************/
+#monCompteProfil, #monCompteAuthentification, #monCompteAutre{
+	margin: 0 40px;
+}
+.formMonCompte{
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	margin: 0;
+	padding: 0;
+}
+.formMonCompte h3{
+	margin: 16px 0;
+	font-size: 12pt;
+	font-weight: 600;
+	color: var(--couleur-principale);
+	text-transform: none;
+}
+.formMonCompte h3:first-child:not(.champsAdmin){
+	margin: 16px 0 12px 0;
+}
+.fauxLabel{
+	margin-top: 16px;
+    font-family: Calibri, Arial, sans-serif;
+	font-size: 0.85em;
+	color: var(--gris-profond);
+	text-transform: none;
+}
+.champsAdmin{
+	margin-bottom: 16px;
+}
+.champsAdmin label{
+	margin-bottom: 4px;
+}
+.champsAdmin select{
+	height: initial;
+}
+.titreFormModif{
+	margin: 0;
+	margin-top: 16px;
+    font-family: Calibri, Arial, sans-serif;
+	font-size: 0.85em;
+	color: var(--gris-profond);
+}
+.explication{
+	margin: 4px 0 12px 0;
+	font-size: 0.8em;
+}
+h3 + .explication{
+	margin-top: 16px;
+}
+.sousExplication{
+	color: var(--gris-profond);
+	font-size: 0.8em;
+	font-style: italic;
+}
+.desactive .form-control{
+	padding-left: 0 !important;
+}
+/* SELECTION LANGUE ******************************************/
+#choixLangue{
+	position: relative;
+	display: flex;
+	display: none; /* à supprimer une fois la mise en place des autres langues*/
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+.select_wrap{
+	box-sizing: border-box;
+	width: 200px;
+	height: 30px;
+	margin: 6px 0 12px 0;
+	background: url('http://www.foxrep.com/wp-content/uploads/2017/11/Down-Arrow-PNG.png')
+		no-repeat right 10px center #ffffff;
+	background-size: 12px auto;
+	border: 1px solid var(--gris-profond);
+	border-radius: 2px;
+}
+.select_wrap span{
+	display: block;
+	padding-left: 12px;
+	font-size: 0.8em;
+	line-height: 28px;
+	text-transform: capitalize;
+	cursor: pointer;
+}
+.select_wrap ul{
+	box-sizing: border-box;
+	display: none;
+	position: relative;
+	right: 1px;
+	top: -2px;
+	width: 200px;
+	list-style-type: none;
+	background-color: white;
+	border: 1px solid var(--gris-profond);
+	border-top: none;
+	border-radius: 0 0 2px 2px;
+}
+.select_wrap ul li{
+	display: block;
+	padding: 6px 12px;
+	font-size: 0.8em;
+	color: black;
+	text-transform: capitalize;
+	cursor: pointer;
+}
+.select_wrap span img, .select_wrap ul li img{
+	display: inline-block;
+	vertical-align: middle;
+	width: 20px;
+	height: auto;
+	margin-top: -2px;
+	margin-right: 10px;
+}
+.select_wrap ul li:hover{
+	background-color: var(--couleur-focus);
+}
+/* ROND COULEUR ***********************************************/
+#containerCouleurUser{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 24px;
+}
+.rondCouleurUser{
+	width: 32px;
+	height: 32px;
+	border: 4px solid white;
+	border-radius: 50%;
+	background-color: red;
+	cursor: pointer;
+}
+.rondCouleurUser:hover{
+	border: 4px solid var(--gris-clair);
+}
+.rondCouleurUserActif, .rondCouleurUserActif:hover{
+	border: 4px solid var(--couleur-focus);
+}
+#rondCouleurUserOrange{background-color: #ff4a0b;}
+#rondCouleurUserJaune{background-color: #ffb600;}
+#rondCouleurUserBleu{background-color: #1e88d8;}
+#rondCouleurUserVert{background-color: #22bf02;}
+#rondCouleurUserRouge{background-color: #ea0a0a;}
+#rondCouleurUserAzur{background-color: #04baac;}
+#rondCouleurUserViolet{background-color: #ab35ef;}
+#rondCouleurUserMagenta{background-color: #e60064;}
+/* NOUVEAU PARAMETRE ***********************/
+.newParametre{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin-top: 14px;
+	padding: 12px 40px 12px 40px;
+	overflow-y: auto;
+	background-color: var(--gris-clair);
+	border-radius: 4px;
+}
+.newParametre .form-group{
+	margin-bottom: 6px;
+}
+.newParametre .control-label{
+	display: none;
+}
+.newParametre p{
+	font-size: 1em;
+}
+.crossCloseContainer{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	align-self: flex-end;
+	background-color: var(--gris-clair);
+	width: 20px;
+	height: 20px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out;
+}
+.crossCloseContainer:hover{
+	background-color: var(--gris-clair-hover)
+}
+.crossCloseContainer:before, .crossCloseContainer:after{
+	content:'';
+	display: block;
+	width: 14px;
+	height: 1px;
+	background-color: var(--gris-profond);
+}
+.crossCloseContainer:before{
+	transform: rotate(45deg);
+}
+.crossCloseContainer::after{
+	transform: translateY(-1px) rotate(-45deg);
+}
+.labelUseless{
+	display: none;
+}
+#modifEquipement input[type=text]::placeholder{
+	color: transparent;
+}
+/* ENREGISTREMENT ***********************/
+#boutonsForm{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 500px;
+	margin: 40px auto;
+}
+.eyeCatcher{
+	margin: 0 0 12px 0;
+	padding: 10px 0;
+	border-radius: 0 4px 4px 4px;
+}
+
+/* RESPONSIVE MOBILE ******************************************************************************************************/
+@media screen  and (max-width: 550px){
+	/* HEADER ******************************/
+	.headerInterne{
+		height: 90px;
+	}
+	#modifEquipement h1{
+		font-size: 1em;
+	}
+	.headerInterne h2{
+		font-size: 0.8em;
+		line-height: 0.9em;
+		text-transform: lowercase;
+		text-transform: capitalize;
+	}
+	#rondMonCompte{
+		width: 30px;
+		height: 30px;
+	}
+	#rondMonCompte span{
+		top: -1px;
+		font-size: 1.1em;
+	}
+	/* ONGLETS ****************************/
+	.tab-wrapper{
+		margin-top: 0px;
+	}
+	.tab-wrapper__tabs{
+		width: 100vw;
+	}
+	.tab-wrapper__tabs__tab{
+		border: none;
+		height: 34px;
+		font-size: 0.9em;
+	}
+	.tab-wrapper__tabs__tab.active,
+	.tab-wrapper__tabs__tab.active:hover{
+		border: none;
+	}
+	.tab-wrapper__content{
+		width: calc(100vw - 60px);
+		margin-top: 10px;
+		padding: 0px 30px 14px 30px;
+		background-color: white;
+	}
+	/* FORMULAIRE *************************/
+	#home, #pricing, #about{
+		margin: 0 32px;
+	}
+	.alignCheckbox label{
+		color: black;
+	}
+	.formModifEquipement input[type=text], .form-group input[type=text]{
+		flex: 1;
+	    margin: 0;
+	    margin-top: 6px;
+	    padding: 5px 6px;
+	}
+	.formMaxHeightMonCompte > div {
+		margin-top: 10px;
+	}
+	.fauxLabel{
+		margin-top: 10px;
+	}
+	/* NOUVEAU PARAMETRE *******************/
+	.newParametre{
+		margin-top: 6px;
+		padding: 10px 16px 10px 16px;
+		max-height: 118px;
+	}
+	.newParametre p{
+		font-size: 0.8em;
+	}
+	/* AJOUT PARAMETRE *********************/
+	.buttonAddParametre{
+		padding: 10px 20px;
+	}
+	.iconeTexteButtonAddParametre p{
+		font-size: 0.8em;
+	}
+	/* ENREGISTREMENT *********************/
+	#boutonsForm{
+		width: calc(100% - 60px);
+		flex-wrap: wrap;
+	}
+	.eyeCatcher{
+		width: 100%;
+		margin-bottom: 14px;
+		padding: 12px 0;
+		font-size: 0.9em;
+	}
+@media screen and (max-width: 460px){
+	/* HEADER *****************************/
+	.headerInterne{
+		height: 70px;
+	}
+	.headerInterne h1{
+		font-size: 0.85em;
+	}
+	.headerInterne h2{
+		font-size: 0.70em;
+		line-height: 0.8em;
+	}
+	#rondMonCompte{
+		width: 24px;
+		height: 24px;
+	}
+	#rondMonCompte span{
+		top: -1px;
+		font-size: 1em;
+	}
+	/* ONGLETS ****************************/
+	.tab-wrapper__tabs__tab{
+		font-size: 0.85em;
+	}
+	/* FORMULAIRE *************************/
+	.tab-wrapper__content{
+		padding: 0px 30px 8px 30px;
+	}
+	#home, #pricing, #about{
+		margin: 0;
+	}
+	#monCompteProfil, #monCompteAuthentification, #monCompteAutre{
+		margin: 0;
+	}
+	.tab-wrapper textarea {
+		height: 60px;
+	}
+	.explication{
+		font-size: 0.7em;
+	}
+	.sousExplication{
+		font-size: 0.9em;
+	}
+	.formMaxHeight{
+		max-height: 45vh;
+	}
+	.titreFormModif, .form-group label, .texteToLabel{
+		margin-top: 6px;
+		font-size: 0.75em !important;
+	}
+
+	/* ENREGISTREMENT ***********************/
+	#boutonsForm{
+		margin: 0 auto 20px auto;
+	}
+}

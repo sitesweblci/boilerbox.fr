@@ -1,0 +1,97 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Connexion/login.html.twig #}
+{% extends "LciBoilerBoxBundle::secondAccueilLayout.html.twig" %}
+
+{% set maintenance =  false %}
+
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+
+{% block google_map %}
+	{% if maintenance == false %}
+    	<iframe id='map_google' src="https://www.google.com/maps/d/embed?mid=1y0NIi4DoQQCO4sDyfxOMwqQ052U3X2TB" frameborder="0" width="100%" height="100%"></iframe>
+	{% endif %}
+{% endblock google_map %}
+
+{% block mdp %}
+	{% if maintenance == false %}
+		{% if not app.user %}<span style='padding-left:30px; text-decoration:underline;'><a href="{{ path('fos_user_resetting_request') }}">Mot de passe oublié</a></span>{% endif %}
+	{% endif %}
+{% endblock mdp %}
+
+{% block body %}
+{% if maintenance == false %}
+<div id='pagePrincipaleBody'>
+	 <section>
+	    <div class='boxlogin'>
+			<!--Logo-IBC-->
+			<div id='logo-IBC'>
+			    <img class="img" src="{{ asset('bundles/lciboilerbox/images/Layout-IPC_2014-11-05_03.png') }}" alt="lciLogo" />
+			    <div class="txt"><span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL</div>	
+			</div>
+			<div class="icone"><div class="logoChaudiere"></div></div>
+			<div class='affaire'><span>CONNEXION</span></div>
+			<form action="{{ path('fos_user_security_check') }}" method="post" name='myForm' autocomplete="off">
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+			    <input type="hidden" id="remember_me" name="_remember_me" value="on" />
+			    <input class='input_login' type="text" id="username" name="_username" placeholder="Identifiant" value="" required="required" x-moz-errormessage="Entrez un identifiant"  />
+			    <input class='input_login' type="password" placeholder="Mot de passe" id="password" name="_password" required="required" />
+			    <input type="hidden" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"></input>
+			    <div id='validationbouton'>
+					<a href='#' class='right' onClick="validationLogin();return false;" ><div class='bouton blue'><div class='bgbouton'>CONNEXION</div></div></a>
+			    </div>
+			</form>
+	    </div>
+	</section>
+    <div id='horodatage'>
+        <div id='heure' class='heure' title="Heure du système BoilerBox">{{ lHeure }}</div>
+        <div id='date' class='date'>{{ leJour }}</div>
+    </div>
+</div>
+{% else %}
+	<div style='background:black;text-align:center; padding:0px 50px 0px 50px;'><p>Le site est en maintenance.<br /><br /></p><p> Veuillez nous excuser pour la gène occasionnée.</p></div>
+{% endif %}
+{% endblock body %}
+
+{% block javascript %}
+
+{{ parent() }}
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+    document.getElementById('username').focus();
+
+    var erreur = {{ error|trans|json_encode|raw }};
+    if (erreur != '') {
+		$('#pagePrincipaleBody').addClass('shadowing');
+		desactivateLinks();
+		$('#siteIpc').on("click", closeMessageBox);
+		$('#messageboxTexte').text(erreur);
+		$('#messagebox').removeClass('cacher');
+    }
+    $(document).keypress(function(e){
+        if (e.keyCode == 13){
+            if ($('#messageboxTexte').text().trim() == '') {
+				validationLogin();
+            } else {
+				validation_messagebox();
+            }
+        }
+    });
+});
+
+function validationLogin() {
+    var xhr = getXHR();
+    var login = $('#username').val();
+    var password = $('#password').val();
+    var datas="login=" + login + "&password=" + password;
+    xhr.open("POST","{{ path('lci_boilerbox_defineUserLog') }}",false);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send(datas);
+    document.forms['myForm'].submit();
+}
+</script>
+{% endblock javascript %}

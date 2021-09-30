@@ -1,0 +1,18 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/index_site_gestion.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block title %} {{ parent() }}Bons d'interventions{% endblock title %}
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1></div>
+<div class='menu_parc'>
+    <div class='menu_ligne1'>
+		<img 	onClick="attente(); redirection('bonsSaisie'); return false;" 
+				class="btn_menu" 
+				src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}" 
+            	onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie_hover.png') }}"
+            	onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}"
+		/>
+    </div>
+</div>
+{% endblock fos_user_content %}

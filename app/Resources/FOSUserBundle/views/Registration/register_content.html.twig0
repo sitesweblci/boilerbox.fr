@@ -1,0 +1,92 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/newSite.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block boilerBoxCSS %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/monCompte.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+	<main id="monCompte">
+		<header class="headerInterne">
+			<p id="rondMonCompte"><span>m</span></p>
+			<div id="titrePageMonCompte">
+				<h1>michaël debuyck</h1>
+				<h2>identifiant</h2>
+			</div>
+		</header>
+		
+		<div id="contenuMonCompte">
+			<ul class="tabs">
+				<li class="active tab" data-tab-target="#monCompteInfos">Infos</li>
+				<li class="tab" data-tab-target="#monCompteConnexion">Connexion</li>
+				<li class="tab" data-tab-target="#monCompteAutre">Autre</li>
+			</ul>
+
+			<div class="tab-content">
+				<div id="monCompteInfos" class="active" data-tab-content>
+					<div class="formMaxHeightMonCompte">
+						<form class="formMonCompte">
+							<label for="site[intitule]">Nom</label>
+							<input type="text" id="site_intitule" name="site[intitule]">
+							<div class="ligne_error"></div>
+							<label for="site[affaire]">Prénom</label>
+							<input type="text" id="site_affaire" name="site[affaire]" maxlength="10">
+							<div class="ligne_error"></div>
+							<label for="site[affaire]">Adresse mail</label>
+							<input type="text" id="site_affaire" name="site[affaire]" maxlength="10">
+							<h3>Préférences</h3>
+							<label for="">Couleur</label>
+							<div id="containerCouleurUser">
+								<div id="rondCouleurUserOrange" class="rondCouleurUser rondCouleurUserActif"></div>
+								<div id="rondCouleurUserJaune" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserBleu" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserVert" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserRouge" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserAzur" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserViolet" class="rondCouleurUser"></div>
+								<div id="rondCouleurUserMagenta" class="rondCouleurUser"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+				<div id="monCompteConnexion" data-tab-content>
+					<div id="site_siteConnexion_accesDistant" class="formMaxHeightMonCompte">
+						<form class="formMonCompte">
+							<h3>Réinitialisation du mot de passe</h3>
+							<label for="oldPassword">Ancien mot de passe</label>
+							<input type="text" id="oldPassword">
+							<label for="newPassword">Nouveau mot de passe</label>
+							<input type="text" id="newPassword">
+							<label for="confirmNewPassword">Confirmer nouveau mot de passe</label>
+							<input type="text" id="confirmNewPassword">
+							<h3>Authentification à deux facteurs</h3>
+							<div class="flexBoxAuthentificationDoubleFacteur">
+								<label for="authentificationDoubleFacteur" id="switchAuthentificationDoubleFacteur">
+									<input type="checkbox" id="authentificationDoubleFacteur">
+									<span class="slider"></span>
+								</label>
+								<p>activer l'authentification à double facteur</p>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+				<div id="monCompteAutre" data-tab-content>
+					<div class="formMaxHeightMonCompte">
+						<form class="formMonCompte">
+						</form>
+					</div>
+				</div>
+			</div>
+			<div id="boutonsForm">
+				<div class="eyeCatcher">Enregistrer</div>
+				<div class="eyeCatcher eyecatcherGris">Annuler</div>
+			</div>
+		</div>
+	</main>
+{% endblock mainBody %}

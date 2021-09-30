@@ -1,0 +1,33 @@
+{% extends "FOSUserBundle::secondLayoutUser.html.twig" %}
+
+{% block boilerBoxCSS %}
+   {{ parent() }}
+   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloudLogin.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+<main id="passwordForget">
+	<div id="watermarkPassword">
+		<img src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="logo IBC" class="logoIBC">
+		<p class="baselineLogo">
+			<span class="initialeBaseline">I</span>NDUSTRIAL<br>
+			<span class="initialeBaseline">B</span>OILER<br>
+			<span class="initialeBaseline">C</span>ONTROL
+		</p>
+	</div>
+	<h1>mot de passe oublié ?</h1>
+	<p>Saisissez votre identifiant.
+	<br>Vous recevrez un mail de réinitialisation.
+	</p>
+	<form action="{{ path('lci_user_resetting_send_email') }}" method="POST" id="formPasswordForget">
+		{% if invalid_username is defined %}
+			<p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+		{% endif %}
+		<label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
+		<input type="text" id="username" name="username" required="required" placeholder="identifiant" />
+		<input type="submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" class="eyeCatcher"/>
+	</form>
+	<a class="eyeCatcher eyeCatcherGris" href="{{ path('fos_user_security_logout') }}">retour login</a>
+</main>
+{% endblock mainBody %}
+

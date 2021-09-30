@@ -1,0 +1,12 @@
+.pastille{
+	@include flex-row;
+	position: relative;
+	width: 20px;
+	height: 20px;
+	border: solid 1px var(--gris-profond);
+	border-radius: 50%;
+	background: linear-gradient(120deg,
+		rgba(255,255,255,1) 30%,
+		rgba(226,226,226,1) 70%,
+		rgba(226,226,226,1) 100%);
+}

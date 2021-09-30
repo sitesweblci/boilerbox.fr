@@ -1,0 +1,207 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/newSite.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% form_theme form 'form/fields_administration.html.twig' %}
+
+{% block boilerBoxCSS %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+    <style>
+        .btn--add{
+            margin-top: 24px;
+        }
+    </style>
+{% endblock boilerBoxCSS %}
+
+
+{% block mainBody %}
+	<main id="modifEquipement">
+        <header class="headerInterne">
+		  <h1>Paramètres de site</h1>
+        </header>
+        <div id="contenuModifEquipement" class="tab-wrapper">
+    		<ul class="tab-wrapper__tabs">
+                <li class="tab-wrapper__tabs__tab active" data-tab-target="#home">Infos</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#pricing">Connexion</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#about">Autre</li>
+            </ul>
+            <div class="tab-wrapper__content">
+    			{{ form_start(form, {'attr':{'class':'formModifEquipement'}, 'action':path('lci_register_site'), 'method':'POST', 'name':'myForm'}) }}
+                	<div id="home" class="active" data-tab-content>
+                	    <div>
+    						{{ form_row(form.intitule) }}
+    						<div class="ligne_error">{{ form_errors(form.intitule) }}</div>
+    						{{ form_row(form.affaire) }}		
+    						<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
+    					</div>
+    					<div class="newParametre addParametreInfos cacher">
+    						<p>Nouveau Paramètre</p>
+    						{{ form_widget(form.configurations) }}
+    					</div>
+    					<div id="addParametreInfos" class="btn btn--add">
+                            <div class="crossAdd"></div>
+                            Ajouter un autre paramètre
+    					</div>
+    				</div>
+    				
+        	        <div id="pricing" data-tab-content>
+    	                <div id="site_siteConnexion_accesDistant">
+							<p class="titreFormModif">Surveillance de la connexion</p>
+							<div class="alignCheckbox">
+								{{ form_widget(form.siteConnexion.surveillance) }}
+							</div>
+    						{{ form_row(form.siteConnexion.url) }}
+    						<p class="titreFormModif">{{ form_label(form.siteConnexion.accesDistant) }}</p>	
+    						<div class="alignCheckbox">
+    							{{ form_widget(form.siteConnexion.accesDistant) }}
+    						</div>
+    						<div class="titreFormModif">{{ form_label(form.siteConnexion.typeConnexion) }}</div>
+    						<div class="alignCheckbox">
+    							{{ form_widget(form.siteConnexion.typeConnexion) }}
+    						</div>
+    						<div class="ligne_error"></div>
+    						{{ form_row(form.siteConnexion.codeLive) }}
+    						<div class="ligne_error"></div>
+    					</div>
+                    	<div class="newParametre addParametreConnexion cacher">
+                    	    <p>Nouveau Paramètre</p>
+    						{{ form_widget(form.siteConnexion.configurations) }}
+                    	</div>
+    					<div id="addParametreConnexion" class="btn btn--add">
+                            <div class="crossAdd"></div>
+                            Ajouter un autre paramètre
+    					</div>
+    				</div>
+
+
+                	<div id="about" data-tab-content>
+                    	<div>
+                    	</div>
+    					<div class="newParametre addParametreAutre cacher">
+                            <p>Nouveau Paramètre</p>
+                            {{ form_widget(form.siteAutres.configurations) }}
+                        </div>
+                    	<div id="addParametreAutre" class="btn btn--add">
+                            <div class="crossAdd"></div>
+                            Ajouter un autre paramètre
+                        </div>
+                    </div>
+    			{{ form_end(form) }}
+    		</div>
+            <div id="boutonsForm">
+                <div class="eyeCatcher {{ app.user.couleur }}" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
+                <div class="eyeCatcher eyeCatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+            </div>
+        </div>
+	</main>
+{% endblock mainBody %}
+
+{% block javascript %}
+<script>
+    var $index = 0;
+
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    // Nouveaux paramètres crées
+    var $nb_new_param_infos = 0;
+    var $nb_new_param_connexion = 0;
+    var $nb_new_param_autre = 0;
+
+
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+
+
+    (function() {
+        // On récupére le container en javascript
+        var $container = $('div#site_configurations');
+        var $container_connexion = $('div#site_siteConnexion_configurations');
+        var $container_autres = $('div#site_siteAutres_configurations');
+
+        // On place un listener de click sur le lien 'ajouter un paramètre'
+        $('#addParametreInfos').click(function(e) {
+			$('.addParametreInfos').removeClass('cacher');
+            ajouterParametre($container, $container, 'infos');
+			$nb_new_param_infos ++;
+            e.preventDefault();
+        });
+        // On place un listener de click sur le lien 'ajouter un paramètre de connexion'
+        $('#addParametreConnexion').click(function(e) {
+			$('.addParametreConnexion').removeClass('cacher');
+            ajouterParametre($container_connexion, $container_connexion, 'connexion');
+			$nb_new_param_connexion ++;
+            e.preventDefault();
+        });
+        // On place un listener de click sur le lien 'ajouter un paramètre de type autres'
+        $('#addParametreAutre').click(function(e) {
+			$('.addParametreAutre').removeClass('cacher');
+            ajouterParametre($container_autres, $container_autres, 'autre');
+			$nb_new_param_autre ++;
+            e.preventDefault();
+        });
+
+    })();
+
+    function ajouterParametre($container, $lientAjout, $encart) {
+        var $template = $container.data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $index);
+        // Création d'une objet jquery contenant le template
+        $DOMTemplate = $($template);
+        // Ajout du lien de suppression
+        ajoutLienSuppression($DOMTemplate, $encart);
+        // Ajout du template sur le DOM
+		$lientAjout.after($DOMTemplate);
+        // Incrémentation du compteur de paramètres supplémentaires
+        $index ++;
+    }
+
+    // Ajout d'un lien de suppression à l'objet DOM == => Object { 0: div.form-group, length: 1 }
+    function ajoutLienSuppression($DOMTemplate, $encart) {
+        // Création d'un objet DOM du lien de suppression
+        var $lienSuppression = $('<div class="crossCloseContainer"></div>');
+        // Ajout du lien à l'élément DOM (élément de class form-group)
+        $DOMTemplate.prepend($lienSuppression);
+        // Ajout d'un évenement de suppression de l'élément DOM associé au lien
+        $lienSuppression.click(function(e) {
+            $DOMTemplate.remove();
+			$index --;
+			switch($encart) {
+				case 'infos':
+					$nb_new_param_infos --;
+					if ($nb_new_param_infos == 0) {
+						$('.addParametreInfos').addClass('cacher');
+					}
+					break;
+				case 'connexion':
+					$nb_new_param_connexion --;
+					if ($nb_new_param_connexion == 0) {
+						$('.addParametreConnexion').addClass('cacher');
+					}
+					break;
+				case 'autre':
+					$nb_new_param_autre --;
+					if ($nb_new_param_autre == 0) {
+						$('.addParametreAutre').addClass('cacher');
+					}
+					break;
+				}
+            e.preventDefault();
+        });
+    }
+</script>
+{% endblock javascript %}
+
+
+

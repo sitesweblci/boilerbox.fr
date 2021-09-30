@@ -1,0 +1,20 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/secondBonsLayoutLogged.html.twig #}
+{% extends "::firstLayoutLogged.html.twig" %}
+
+{% block liens_css %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/lightbox.css') }}" media='screen' />
+{% endblock liens_css %}
+
+{% block liens_url %}
+{{ parent() }}
+<input type='hidden' name='liens' id='liens' 
+    data-bonsSaisie = "{{ path('lci_bons_saisie') }}"
+    data-bonsVisualiser = "{{ path('lci_bons_visualiser') }}"
+	data-bonsVisualiserRefresh = "{{ path('lci_bons_visualiser', {'refresh':1}) }}"
+	data-accueilBons = "{{ path('lci_bons_attachements') }}"
+	data-affinerRechercheBon = "{{ path('lci_bons_rechercher') }}"
+	data-bons-SaisieSite = "{{ path('lci_bons_admin_site_creer') }}"
+	data-sitesBAVisualiser = "{{ path('lci_bons_sitesBA_visualiser') }}"
+/>  
+{% endblock liens_url %} 

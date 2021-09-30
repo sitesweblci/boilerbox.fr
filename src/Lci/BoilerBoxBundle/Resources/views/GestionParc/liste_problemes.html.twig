@@ -1,0 +1,248 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/GestionParc/liste_problemes.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+
+{% block title %} {{ parent() }}Gestion du parc{% endblock title %}
+
+{% block fos_user_content %}
+{{ parent() }}
+
+<p id='description_du_ticket'></p>
+
+<div class='listing notToBePrinted'>
+	<div class='listing2'>
+		<h1 style='position:relative;'>
+			Liste des problèmes techniques 
+			<span style="position:absolute; right:20px; top:10px;">{% if tableau_problemes | length  > 0 %}<img height="25" width="25" src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" onclick="window.print();">{% endif %}</span>
+		</h1>
+		<div class='formulaire_liste'>
+			<table class='tab_liste tableau_listing'>
+				<thead>
+					<tr><th class='zone_texte_mini'>Visu</th>
+						<th class='zone_texte_mini selectionnable' onClick="attente(); trie('id');">Ref</th>
+						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('dateSignalement');">Signalement</th>
+						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('intervenant');">Opérateur</th>
+						<th class='zone_texte_grand selectionnable' onClick="attente(); trie('module');">Module</th>
+						<th class='zone_texte_moyen selectionnable' onClick="attente(); trie('equipement');">Equipement</th>
+						<th class='zone_texte_moyen'>Description</th>
+						<th class='zone_texte_moyen'>Solution</th>
+						<th class='zone_texte_petit'>Fichiers</th>
+						<th class='zone_texte_mini selectionnable' onClick="attente(); trie('bloquant');">Bloque</th>
+						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('corrige');">Corrigé</th>
+						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('cloture');">Clos</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for key, tabErreur in tableau_problemes %}
+					<tr><td class='zone_texte_mini centrer'>
+							<img 	class='selectionnable' 
+									src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}" 
+									name="change_probleme_{{ tabErreur.id }}" 
+									onClick="changeProbleme({{ tabErreur.id }});" 
+									alt="Visualiser le problème" 
+							/>
+						</td>
+						<td class='zone_texte_mini'>{{ tabErreur.id }}</td>
+						<td class='zone_texte_petit'>{{ tabErreur.dateSignalement|date('d-m-Y') }}</td>
+						<td class='zone_texte_petit'>{% if tabErreur.user is not null %}{{ tabErreur.user.username }}{% endif %}</td>
+						<td class='td_liste_pb_module zone_texte_grand'><div>{% for key2, module in tabErreur.module %}{% if tabErreur.module[key2].present == true %}+ {% else %}- {% endif %}{{ tabErreur.module[key2].numero }} ({{ tabErreur.module[key2].nom }})</div><div><span class='regular'>{{ tabErreur.module[key2].dateMouvement|date("d-m-Y") }}</span></div>{% if loop.index != tabErreur.module|length %}<br />{% endif %}{% endfor %}</td>
+						<td class='zone_texte_moyen'>{{ tabErreur.equipement.type }}</td>
+						<td id="td_listePb_description_{{ loop.index }}" class='zone_texte_moyen zone_texte_ellipsis affiche_description' 
+							onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
+							onmouseleave='resetInfos();' style="color:{% if tabErreur.cloture == 1 %}green{% elseif tabErreur.corrige == 1 %}orange{% elseif tabErreur.bloquant == 1 %}red{% else %}white{% endif %}">
+								{{ tabErreur.description }}
+						</td>
+						<td id="td_listePb_solution_{{ loop.index }}"    class='zone_texte_moyen zone_texte_ellipsis affiche_solution'    
+							onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
+							onmouseleave='resetInfos();' style="color:{% if tabErreur.cloture == 1 %}green{% elseif tabErreur.corrige == 1 %}orange{% elseif tabErreur.bloquant == 1 %}red{% else %}white{% endif %}">
+								{{ tabErreur.solution }}
+						</td>
+						<td class='zone_texte_petit'>{% if tabErreur.fichiersJoint|length != 0 %}X{% endif %}</td>
+						<td class='zone_texte_mini centrer'>{% if tabErreur.bloquant == 1 %}X{% endif %}</td>
+						<td class='zone_texte_petit'>{% if tabErreur.corrige == 1 %}{% if tabErreur.dateCorrection != null %}{{ tabErreur.dateCorrection|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+						<td class='zone_texte_petit'>{% if tabErreur.cloture == 1 %}{% if tabErreur.dateCloture != null %}{{ tabErreur.dateCloture|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<form method='post' name='form_tri' action={{ path('lci_tri_recherche_problemes') }}>
+				<input type='hidden' id='champs_tri' name='champs_tri' />
+			</form>
+			<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
+				<input type='hidden' id='id_probleme' name='id_probleme' />
+			</form>
+    	</div>
+	</div>
+    <div class='debut_ligne'>
+		<br />
+        <img 	onClick="attente(); redirection('affinerRecherche');" 
+				class="btn_menu" 
+				alt="Affiner la recherche"
+				src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" />
+    </div>
+</div>
+
+<div class='validation_formulaire_end'>
+    {% if tableau_problemes | length  > 0 %}
+        <div>
+			<img 	onClick="attente(); redirection('export');"
+					class="btn_menu"
+					alt="Exporter la liste"
+					src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export.png') }}"
+            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export_hover.png') }}"
+            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export.png') }}"
+          	/>
+		</div>
+    {% endif %}
+    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+        <div>
+			<img 	onClick="attente(); redirection('signalerProblemeTechnique');"
+					class="btn_menu"
+					alt="Signaler un problème"
+					src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme.png') }}" 
+            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme_hover.png') }}"
+            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme.png') }}"
+            	/>
+		</div>
+        <div>
+			<img 	onClick="attente(); myRedirection();" 
+					class="btn_menu"
+					alt="Retour"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 
+            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
+            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
+            />
+		</div>
+    {% else %}
+        <div>
+			<img 	onClick="attente(); redirection('menuGestionParcModules');"
+					class="btn_menu" 
+					alt="Retour"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 
+            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
+            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
+         	/>
+		</div>
+    {% endif %}
+</div>
+
+
+
+<div class='impression notToBeShown'>
+    <div>
+		<div>
+			<table class='impression_problemes'>
+				<thead>
+					<tr><th class='en-tete'>{% include "form/version_boilerbox.html.twig" %}</th></tr>
+					<tr><th class='titre'>Tâches journalières</th></tr>
+				</thead>
+                <tfoot>
+                    <tr><td><span>Le {{ "now"|date("d/m/Y") }}</span><span class='fin_de_page'></span></td></tr>
+                </tfoot>
+				<tbody>
+					<tr>
+						<td>
+                    		{% for key, tabErreur in tableau_problemes %}
+								<table class='impression_problemes_body'>
+                    				<tr style='border-style: solid; border-width: 2px 0px 0 2px;'>
+                        				<th class='zone_texte_mini'>Ref</th>
+                        				<th class='zone_texte_mini'>Module</th>
+                        				<th class='zone_texte_tres_grand'>Equipement</th>
+                    				</tr>
+                    				<tr>
+                        				<td class='zone_texte_mini'>{{ tabErreur.id }}</td>
+                        				<td class='zone_texte_mini'><div>{% for key2, module in tabErreur.module %}{{ tabErreur.module[key2].numero }}{% endfor %}</div></td>
+                        				<td class='zone_texte_tres_grand'>{{ tabErreur.equipement.type }}</td>
+                    				</tr>
+									<tr><td colspan='3'>
+											<div style='font-weight:bold; margin-top:10px;'>Description :</div>
+											<div>{{ tabErreur.description }}</div>
+										</td>
+									</tr>
+                                    {% if tabErreur.solution is not empty %}
+									<tr><td colspan='3'>
+											<div style='font-weight:bold; margin-top:10px;'>Solution :</div>
+                                            <div>{{ tabErreur.solution }}</div>
+										</td>
+									</tr>
+									{% endif %}
+                    				<tr><td colspan='3'>
+											{% if tabErreur.fichiersJoint is not empty %}
+												<div style='font-weight:bold; margin-top:10px;'>Fichiers liés :</div>
+												<div>{% for fichier in tabErreur.fichiersJoint %}
+														{{ fichier.alt }}<br />
+													 {% endfor %}
+												</div>
+											{% endif %}
+										</td>
+									</tr>
+									<tr><td colspan='3'><div style='font-weight:bold; margin-top:10px; height:100px;'>Notes :</div></td></tr>
+								</table>
+                    		{% endfor %}
+						</td>
+					</tr>
+				</tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type='text/javascript'>
+	var $from;
+	$(document).ready(function(){
+        $.ajax({
+            url: "{{ path('lci_ajax_get_variableDeSession') }}",
+            method: "get",
+			data: {'variable':'fromVar'}
+        }).done(function(valeur) {
+			$from = $.parseJSON(valeur);
+        });
+	});
+
+	function trie($champs) {
+		$('#champs_tri').val($champs);
+		document.forms['form_tri'].submit();
+	}
+	
+	function changeProbleme(numeroProbleme) {
+		$('#id_probleme').val(numeroProbleme);
+		document.forms['form_change'].submit();
+	}
+
+	function afficheInfos(reference, cloture, corrige, bloquant, texte) {
+		$('#entete_de_page').addClass('invisible');
+		var classe = 'probleme taille_texte_grand';
+		if (cloture == 1) {
+			classe = 'ok taille_texte_grand';
+		} else if (corrige == 1) {
+			classe = 'mid taille_texte_grand';
+		} else if (bloquant == 1) {
+			classe = 'nok taille_texte_grand';
+		} else {
+			classe = 'def taille_texte_grand';
+		}
+		$("#description_du_ticket").attr('class', classe);
+		$("#description_du_ticket").html('Ticket : ' + reference + '<br />' + $('#' + texte).text());
+	}
+
+	function resetInfos() {
+		$('#entete_de_page').removeClass('invisible');
+		$("#description_du_ticket").html('');
+	}
+
+	function myRedirection() {
+		switch($from){
+			case 'parcDesModules' :
+				redirection('menuGestionParcModules');
+				break;
+			case 'parcDesEquipements' :
+				redirection('menuGestionParcEquipements');
+				break;
+			default:
+				redirection('retourMenu');
+				break;
+		}
+	} 
+</script>
+{% endblock fos_user_content %}

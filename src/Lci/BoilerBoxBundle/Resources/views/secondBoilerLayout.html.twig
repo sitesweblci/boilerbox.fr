@@ -1,0 +1,34 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/secondBoilerLayout.html.twig #}
+{# Page utilisée pour la partie GESTION DU MOT DE PASSE #}
+
+{% extends "::firstLayout.html.twig" %}
+
+{% block liens_url %}
+{{ parent() }}
+<input type='hidden' name='liens' id='liens' 
+    data-retourMenu="{{ path('lci_gestion_admin') }}",
+    data-retourAccueil="{{ path('lci_boilerbox_index') }}"
+    data-menuSite="{{ path('lci_accueil_register_site') }}" 
+    data-menuUtilisateur="{{ path('lci_accueil_register_user') }}"
+    data-gestionLiens="{{ path('lci_registration_link') }}"
+    data-utilitaires="{{ path('lci_utils_homepage') }}"
+/>  
+{% endblock liens_url %} 
+
+
+{% block liens_menu %}
+{% endblock liens_menu %}
+
+
+{% block body %}
+    {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+    {% block fos_user_content %}
+		<div id='entete_de_page'><h1>Paramètres BoilerBox</h1></div>
+    {% endblock fos_user_content %}
+
+    <script type='text/javascript'>
+        /* Remplacement du menu 'outils' par 'accueil' */
+        $('#lien_menu_boiler_outil').html("<a href={{ path('lci_boilerbox_index') }} title='Retour accueil'>Accueil</a>");
+        $('#sousmenu_boiler_deroulant1').addClass('nopadding');
+    </script>
+{% endblock %}

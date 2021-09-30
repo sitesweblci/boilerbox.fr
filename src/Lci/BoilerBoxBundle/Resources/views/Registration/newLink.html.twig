@@ -1,0 +1,384 @@
+{# /src/Lci/BoilerBoxBundle/Resources/views/Registration/newLink.html.twig #}
+{# extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+
+{% block mainBody %}
+
+<div class='listing'>
+<div class='ajout_objet' id="zoneFormulaire">
+	<h1>Gestion des liens</h1>
+
+	<div class='formulaire'>
+		<div>
+			<div id='zoneUser'>
+				<h1>Choix de l'utilisateur</h1>
+				<div class='display_flex_row'>
+					<div>
+						<select name='listeUsers' id='listeUsers'>
+							{% for user in liste_users %}
+								<option  value="{{ user.id }}">{{ user.label }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div>
+						<img 	onClick="attente(); getListeSites();"
+								alt="Associer des sites"
+								class='btn_associer' 
+								src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" 
+								onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites_hover.png') }}" 
+								onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id='separateur'>ou</div>
+
+		<div>
+			<div id='zoneSite'>
+				<h1>Choix du site</h1>
+				<div class='display_flex_row'>
+					<div>
+						<select name='listeSites' id='listeSites'>
+							{% for site in liste_sites %}
+								<option value="{{ site.id }}">{{ site.affaire }} - {{ site.intitule }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div>
+						<img 	onClick="attente(); getListeUsers();"
+								alt="Associer des utilisateurs"
+								class='btn_associer' 
+								src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" 
+								onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs_hover.png') }}" 
+								onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class='validation_formulaire_solo'>
+			<img 	onClick="attente(); redirection('retourAccueil');"
+					class="btn_menu"
+					alt="Annuler"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" />
+		</div>
+	</div>
+</div>
+
+
+
+<div id='zoneSites' class='cacher'>
+	<form name='MyForm' method='post' action="{{ path('lci_registration_link') }}">
+		<input type='hidden' name='idUtilisateur' id='idUtilisateur'>
+		<div class='listing'>
+			<div class='listing2'>
+				<h1>GESTION DES LIENS</h1>
+				<h2></h2>
+				<div class='formulaire_liste'>
+					<div id='check_sites'>
+						<table class='tab_liste_liens tableau_listing'>
+							<thead>
+								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Sélect. tous</span></th>
+									<th class='zone_texte_petit'>Code</th>
+									<th class='zone_texte_grand'>Nom</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for site in liste_sites %}
+									<tr><td class='zone_texte_petit'><input type='checkbox' name="{{ site.id }}" id="check_{{ site.id }}" /></td>
+										<td class='zone_texte_petit'>{{ site.affaire }}</td>
+										<td class='zone_texte_grand'>{{ site.intitule }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='validation_formulaire_end'>
+			<div><img 	onClick="attente(); document.forms['MyForm'].submit();"
+						class="btn_menu"
+						alt="Enregistrer"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"  />
+			</div>
+			<div><img 	onClick="attente(); reinitFormulaire();"
+						class="btn_menu"
+						alt="Retour"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
+			</div>
+		</div>
+	</form>
+</div>
+
+
+
+<div id='zoneUsers' class='cacher'>
+	<form name='MyForm2' method='post' action="{{ path('lci_registration_userslink') }}">
+		<input type='hidden' name='idSite' id='idSite'>
+		<div class='listing'>
+			<div class='listing2'>
+				<h1>GESTION DES LIENS</h1>
+				<h2></h2>
+				<div class='formulaire_liste'>	
+					<div id='check_users'>
+						<table class='tab_liste_liens tableau_listing'>
+							<thead>
+								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Sélect. tous</span></th>
+									<th class='zone_texte_moyen' onclick="compare('nom')">Nom</th>
+									<th class='zone_texte_grand' onclick="compare('roles')">Rôle</th>
+								</tr>
+							</thead>
+							<tbody id='tableau_utilisateurs'>
+								{% for user in liste_users %}
+									<tr>
+										<td class='zone_texte_petit' data-intitule='id'><input type='checkbox' name="{{ user.id }}" id="checkUser_{{ user.id }}" /></td>
+										<td class='zone_texte_moyen' data-intitule='nom'>{{ user.label }}</td>
+										<td class='zone_texte_grand' data-intitule='roles'>( {{ user.myGetRolesHtml | raw }} )</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='validation_formulaire_end'>
+			<div><img 	onClick="attente(); document.forms['MyForm2'].submit();"
+						class="btn_menu" 
+						alt="Enregistrer"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" />
+			</div>
+			<div><img 	onClick="attente(); reinit2Formulaire();"
+						class="btn_menu"
+						alt="Retour"
+						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
+			</div>
+		</div>
+	</form>	
+</div>
+</div>
+{% endblock mainBody %}
+
+{% block javascript %}
+
+
+<script type='text/javascript'>
+    /* Variables :  tableau , direction du tri, champs du tri */
+    var tableau = new Array();
+    var directionTri = 'asc';
+    var choixTri = '';
+
+
+    //	Affichage de la liste des sites pour les affecter à l'utilisateur sélectionné
+    function getListeSites() {
+		//	Récupération de l'identifiant de l'utilisateur
+ 		var idUser = $('#listeUsers').val();
+		//	Appel AJAX pour récupération de la liste des sites affectés à l'utilisateur sélectionné
+		var xhr = getXHR();
+		xhr.open("POST","{{ path('lci_ajax_get_userSites') }}",false);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		var datas = "idUser="+idUser;
+		xhr.send(datas);
+		//	Récupération du retour AJAX : liste des sites affectés à l'utilisateur sélectionné
+		var listeUserSites = $.parseJSON(xhr.responseText);
+		// 	Pour chacun des sites affecté à l'utilisateur : Coche du checkbox correspondant	
+		$.each(listeUserSites, function( key, value ) {
+		    $('#check_'+key).prop('checked', true);
+		});
+		$('#zoneSites h2').html('Liste des sites autorisés à "' + $('#listeUsers :checked').text() + '"');
+		$('#zoneFormulaire').addClass('cacher');
+		$('#zoneSites').removeClass('cacher');
+		fin_attente();
+    }
+
+
+    function getListeUsers() {
+		// Récupération de l'identifiant du site
+		var idSite	= $('#listeSites').val();
+		// Appel AJAX pour récupération de la liste des utilisateurs affectés au site sélectionné
+		var xhr = getXHR();
+		xhr.open("POST","{{ path('lci_ajax_get_siteUsers') }}",false);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		var datas = "idSite="+idSite;
+		xhr.send(datas);
+		// Récupération du retour AJAX : liste des utilisateurs affectés au site sélectionné
+		var listeSiteUsers = $.parseJSON(xhr.responseText);
+		// Pour chacun des utilisateurs affecté au site : Coche du checkbox correspondant
+		$.each(listeSiteUsers, function( key, value ) {
+			$('#checkUser_'+key).prop('checked', true);
+		});
+		$('#zoneUsers h2').html('Liste des utilisateurs autorisés à "' + $('#listeSites :checked').text() + '"');
+		$('#zoneUsers').removeClass('cacher');
+		$('#zoneFormulaire').addClass('cacher');
+		fin_attente();
+    }
+
+    // Réinitialisation du formulaire après clic sur Associer des Sites
+    function reinitFormulaire() {
+		var checkboxes = $('#check_sites').find(':checkbox');
+		checkboxes.prop('checked', false);
+		$('#zoneSites').addClass('cacher');
+		$('#zoneFormulaire').removeClass('cacher');
+		fin_attente();
+    }
+
+    //      Réinitialisation du formulaire après clic sur Associer des utilisateurs
+    function reinit2Formulaire() {
+        var userscheckboxes = $('#check_users').find(':checkbox');
+        userscheckboxes.prop('checked', false);
+        $('#zoneUsers').addClass('cacher');
+		$('#zoneFormulaire').removeClass('cacher');
+		fin_attente();
+    }
+
+    function checkAll(listeName) {
+		if(listeName == 'users') {
+			// Récupération de l'ensemble des valeurs de la checkbox
+			var checkboxes = $('#check_users').find(':checkbox');
+			// Si la case 'Tous les sites est coché'
+			if($('input[name=checkAllUsers]').prop('checked') == true) {
+				// Coche de toutes les valeurs de la checkbox
+				checkboxes.prop('checked', true);
+			} else { 
+				checkboxes.prop('checked', false);
+			}
+		}
+
+		if(listeName == 'sites') {
+			var checkboxes = $('#check_sites').find(':checkbox');
+			if($('input[name=checkAllSites]').prop('checked') == true) {
+				checkboxes.prop('checked', true);
+			} else {
+				checkboxes.prop('checked', false);
+			}
+		}
+    }
+
+	$(document).ready(function() {
+		// On définit l'id de l'utilisateur sélectionné par défaut dans la liste déroulante
+		$('#idUtilisateur').val($('select[name="listeUsers"]').val());
+		// changement de l'id utilisateur lors de la sélection d'un nouvel utilisateur
+		$('select[name="listeUsers"]').on('change', function() {
+			$('#idUtilisateur').val(this.value);
+		});
+
+
+		// On définit l'id de l'utilisateur sélectionné par défaut dans la liste déroulante
+		$('#idSite').val($('select[name="listeSites"]').val());
+		// changement de l'id utilisateur lors de la sélection d'un nouvel utilisateur
+		$('select[name="listeSites"]').on('change', function() {
+			$('#idSite').val(this.value);
+		});
+
+	});
+
+	/**********************************/
+
+    function compare(quoi) {
+        var $srcImgVisualiser = $('#entete_de_page').data('src');
+        litTableauPhp();
+        /* Nouveau tableau des données triées */
+        var nouveauTableau = '';
+
+        /* Si on clic sur le même champs tri inverse */
+        if (choixTri == quoi) {
+            if (directionTri == 'asc') {
+                directionTri = 'desc';
+            } else {
+                directionTri = 'asc';
+            }
+        } else {
+            choixTri = quoi;
+            directionTri = 'asc';
+        }
+        /* Si on clic sur le même champs tri inverse */
+        switch(quoi) {
+            case 'nom':
+                tableau.sort(compareNom);
+                break;
+            case 'roles':
+                tableau.sort(compareRoles);
+                break;
+        }
+
+        /* Création du nouveau tableau */
+        $.each(tableau, function(index, value){
+            nouveauTableau += "<tr>";
+            nouveauTableau += "<td class='zone_texte_petit' data-intitule='id'> <input type='checkbox' name='" + tableau[index]['id'] + "' id='checkUser_" + tableau[index]['id'] + "' /></td>";
+			nouveauTableau += "<td class='zone_texte_moyen' data-intitule='nom'>" + tableau[index]['nom'] + "</td>";
+			nouveauTableau += "<td class='zone_texte_grand' data-intitule='roles'>" + tableau[index]['roles'] + "</td>";
+            nouveauTableau += "</tr>";
+       	});
+    	$('#tableau_utilisateurs').html(nouveauTableau);
+		getListeUsers();
+    }
+
+
+
+
+
+    function compareNom(a, b) {
+        if (a.nom == b.nom) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (a.nom < b.nom )?-1:1;
+        } else {
+            return (a.nom < b.nom )?1:-1;
+        }
+    }
+
+	
+    function compareRoles(a, b) {
+        if (a.roles == b.roles) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (a.roles < b.roles )?-1:1;
+        } else {
+            return (a.roles < b.roles )?1:-1;
+        }
+    }
+
+
+
+    /* Enregistrement du tableau php dans un tableau javascript  pour le réaffichage après le tri*/
+    /* parcours des lignes */
+    function litTableauPhp() {
+        tableau = new Array();
+        $('#tableau_utilisateurs').children().each(function() {
+            var ligne = new Object();
+            /* parcours des colonnes */
+            $(this).children().each(function() {
+                switch ($(this).data('intitule')) {
+					case 'id':
+						ligne.id = $(this).children().attr('name');
+                    case 'nom':
+                        ligne.nom = $(this).text().trim();
+                        break;
+                    case 'roles':
+                        ligne.roles = $(this).html();;
+                        break;
+                }
+            });
+            tableau.push(ligne);
+        });
+	}
+
+
+</script>
+{% endblock javascript %}
+

@@ -1,0 +1,31 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_probleme_technique.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+<div id='contenu_email'>
+	{% for contenu in liste_contenus %}
+		{# La premiere ligne correspond au titre #}
+		{% if loop.index == 1 %}
+			<h1 style='color:red; font-size:22px; margin-bottom:-10px;'>{{ contenu }}</h1>
+		{% elseif contenu starts with '%T'  %}
+			{# Un titre de ligne débute par '%T' #}
+			<h2 style='text-decoration:underline; font-size:18px; margin-bottom:6px;'>{{ contenu|slice(2) }}</h2>
+		{% elseif contenu starts with '%G' %}
+			{# Un contenu en gras débute par '%G' #}
+			<span style='font-weight:bold;'>{{ contenu|slice(2) }}</span>
+		{% elseif contenu starts with '%C' %}
+			{# Un contenu de type correction débute par '%C' #}
+            <span style='color:green'>{{ contenu|slice(2) }}</span>
+		{% else %}
+			{{ contenu|raw }}
+		{% endif %}
+	{% endfor %}
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' />
+
+</body>
+</html>
+

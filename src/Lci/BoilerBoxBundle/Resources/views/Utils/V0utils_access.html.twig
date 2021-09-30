@@ -1,0 +1,111 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Utils/utils_access.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{% block fos_user_content %}
+<div class='listing' style='margin-top:-50px;'>
+	<div class='listing2'>
+		<h1>Disponibilité des Sites</h1>
+		<div class='formulaire_liste'>
+			<form id='form_access' name='form_access' method='post' action="{{ path('lci_utils_validChoice') }}">
+			<input type='hidden' id='choixUtilitaire' name='choixUtilitaire' value='refreshAccess' />
+				<table class='tab_liste tableau_listing'>
+					<thead>
+						<tr>
+							<th class='zone_texte_petit centrer'>Rafraichir</th>
+							<th class='zone_texte_petit centrer'>Disponibilité</th>
+							<th class='zone_texte_petit'>Code Affaire</th>
+							<th class='zone_texte_moyen'>Site</th>
+							<th class='zone_texte_moyen'>Date du test</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for entity_site in entities_sites %}
+							{% if not (entity_site.getUrl|lower matches '/supervision/') %}
+								<tr>	
+									<td class='zone_texte_petit centrer'><input type='radio' name='refreshAccessId' value='{{ entity_site.getId }}' onClick="document.forms['form_access'].submit();" /></td>
+									<td class='zone_texte_petit centrer feuTricolor'>
+										<div class={% if entity_site.getDisponibilite == '0' %}"ok"
+														{% elseif entity_site.getDisponibilite ==  '1' %}"mid"
+														{% elseif entity_site.getDisponibilite ==  '2' %}"nok"
+														{% elseif entity_site.getDisponibilite ==  '3' %}"ecatcher"
+														{% elseif entity_site.getDisponibilite ==  '4' %}"inaccessible"
+													{% endif %}>
+										</div>
+									</td>
+									<td class='zone_texte_petit'>{{ entity_site.getAffaire }}</td>
+									<td class='zone_texte_moyen'><a href='#' onclick="atteindreSite('{{ entity_site.getUrl }}');return false;">{{ entity_site.getIntitule }}</a></td>
+									<td class='zone_texte_moyen'>{% if not entity_site.getDateAccess is empty %}{{ entity_site.getDateAccess | date("d / M / Y - H:i:s") }}{% endif %}</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</form>
+			<form method="post" name='form_getSite' id='form_getSite'>
+				<input type="hidden" id="remember_me" name="_remember_me" value="on" />
+				<input type="hidden" id="_username"   name="_username"    value="" />
+				<input type="hidden" id="_password"   name="_password"    value="" />
+				<input type="hidden" id="_label" 	  name="_label" 	  value="{{ label }}" />
+			</form>
+		</div>
+	</div>
+	<div style='font-size:13px;'>
+		Rafraichissement approximatif : Un site (~{{ delais_netcat }}s) - La page (~{{ delais_netcat * entities_sites|length }}s) <br/>
+	</div>
+	<div class='display_flex_row'>
+		<div id='tab_legende_disponibilite_site' class='display_flex_column feuTricolor'>
+			<div class='display_flex_row_start'>
+				<div class='ok'></div><div>Connexion ok</div>
+			</div>
+			<div class='display_flex_row_start'>
+				<div class='mid'></div><div>En attente de test de connexion</div>
+			</div>
+			<div class='display_flex_row_start'>
+				<div class='nok'></div><div>Connexion ko</div>
+			</div>
+            <div class='display_flex_row_start'>
+                <div class='inaccessible'></div><div>Inaccessible depuis boiler-box.fr</div>
+            </div>
+		</div>
+		<div>
+			<img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir.png') }}" onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir_hover.png') }}" onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir.png') }}" onClick="refreshAllAccess();" class="img_validation_formulaire btn_menu" alt="Rafraichir">
+			<img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}"     onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 	onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 	  onClick="attente(); redirection('utilitaires');" 		  class="img_validation_formulaire btn_menu" alt="Annuler">
+		</div>
+	</div>
+	<div id='tableau_detail_disponibilite'>
+		<h1>Détails</h1>
+		<div class='detail'>
+			{% if not tableau_detail is empty %}
+				{% for detail in tableau_detail %}
+					<div class='informations_disponibilite'>{{ detail|raw }}</div>
+				{% endfor %}
+			{% endif %}	
+		</div>
+	</div>
+</div>
+
+
+
+
+<script type='text/javascript'>
+	function atteindreSite(siteUrl) {
+		var urlForm = siteUrl+'Symfony/web/app.php/login_check';
+		$('#form_getSite').attr('action',urlForm);
+		var xhr = getXHR();
+			xhr.open("POST","{{ path('lci_boilerbox_getUserLog') }}",false);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send();
+			var tabReponse = xhr.responseText.split(';');
+			$('#_username').val(tabReponse[0]);
+			$('#_password').val(tabReponse[1]);
+		$('#form_getSite').submit();
+	}
+
+	function refreshAllAccess() {
+		attente();
+		$('#choixUtilitaire').val('searchAccess');
+		$('#form_access').submit();
+		return(0);
+	}
+</script>
+{% endblock fos_user_content %}

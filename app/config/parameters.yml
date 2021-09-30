@@ -1,0 +1,32 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: boilerbox
+    database_user: cargo
+    database_password: adm5667
+    mailer_transport: sendmail
+    mailer_user: LCI-group
+    mailer_password: adm5667
+    mailer_host: smtpcorp.com
+    mailer_delivery: Assistance_IBC@lci-group.fr
+    mail_debuggeur: j.desurmont@lci-group.fr
+    mailer_sender: Assistance_IBC@lci-group.fr
+    mailer_auth: login
+    mailer_port: 2525
+    locale: fr
+    secret: ThisTokenIsNotSoSecretChangeIt
+    gestionnaire_pieces: BENOITJO
+    gestionnaire_parc: BAZELISAL
+    gestionnaire_parc_externe: 0_AUTOMATICIENS
+    files_path: uploads
+    connectbd.class: Lci\BoilerBoxBundle\Services\ServiceConnexion
+    configuration.class: Lci\BoilerBoxBundle\Services\ServiceConfiguration
+    utilitaires.class: Lci\BoilerBoxBundle\Services\ServiceUtilitaires
+    cgu.class: Lci\BoilerBoxBundle\Services\ServiceCGU
+    authentication_success_handler.class: Lci\BoilerBoxBundle\Listeners\AuthenticationSuccessHandler
+    mailing.class: Lci\BoilerBoxBundle\Services\ServiceMailing
+    rapport.class: Lci\BoilerBoxBundle\Services\ServiceRapport
+    log.class: Lci\BoilerBoxBundle\Services\ServiceLog
+    mailer_disable: false

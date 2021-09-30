@@ -1,0 +1,107 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/accueilUserRegistration.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{#
+        /* Exemple de MSGBOX en javascript
+        $.msgBox({
+        title: "Ooops",
+        content: "Ohh dear! You broke it!!!",
+        type: "error",
+        buttons: [{ value: "Ok" }],
+        afterShow: function (result) { alert("Message has been shown!"); }
+        });
+        */
+
+#}
+
+{% block fos_user_content %}
+{{ parent() }}
+<div class='listing'>
+<div class='ajout_objet'>
+    <h1>Gestion des utilisateurs</h1>
+    <div class='formulaire'>
+        <form name='myForm' method='post' action="{{ path('lci_accueil_register_user') }}">
+            <input type='hidden' name='choixAction' id='choixAction'>
+			<div class='display_flex_row'>
+				<div>
+                    <select name='choix_utilisateur' id='choix_utilisateur'>
+                        {% for user in liste_users %}
+                            {% if user.label != 'Admin' %}
+                                <option value="{{ path('lci_update_user_own', {'idUtilisateur': user.id }) }}">{{ user.label }}</option>	
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+				<div>
+                    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
+						 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier_hover.png') }}"  
+					  	 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
+						 onClick="attente(); validFormulaire('updateUser');" 
+						 class="btn_moyen_picto" 
+						 alt="Modifier l'utilisateur"
+					/>
+                </div>
+				<div>
+					{% if is_granted('ROLE_SUPER_ADMIN') %}
+                	    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
+							 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer_hover.png') }}"	
+							 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
+							 onClick="attente(); validFormulaire('deleteUser');" 
+							 class="btn_moyen_picto" 
+							 alt="Supprimer l'utilisateur"
+						/>
+					{% endif %}
+				</div>
+            </div>
+        </form>
+    </div>
+    <div class='validation_formulaire'>
+        <img alt="Créer un utilisateur" 
+			class="btn_menu" 
+			src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur.png') }}" 
+			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur_hover.png') }}" 
+			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur.png') }}" 
+			onClick="attente(); validFormulaire('createUser');"
+		/>
+        <img alt="Retour"
+			 class="btn_menu"
+			 src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 			       
+			 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 				 
+			 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 
+			 onClick="attente(); redirection('retourMenu');" 
+		/>
+    </div>
+</div>
+</div>
+
+{% endblock fos_user_content %}
+
+{% block javascript %}
+	{{ parent() }}
+
+	<script type='text/javascript'>
+		function validFormulaire($choixAction) {
+        	var $utilisateur = $('#choix_utilisateur option:selected').html();
+        	if ($choixAction == 'deleteUser') {
+                $('#choixAction').val($choixAction);
+                document.forms['myForm'].submit();
+			} else if ($choixAction == 'updateUser') {
+				location.href = $('#choix_utilisateur option:selected').val();
+        	} else {
+        	    $('#choixAction').val($choixAction);
+        	    document.forms['myForm'].submit();
+        	}
+    	}
+
+    	$(document).ready(function() {
+    	    // Mise en place du focus sur la liste déroulante
+    	    document.getElementById('choix_utilisateur').focus();
+    	    $(document).keypress(function(e){
+    	        if(e.keyCode == 8){
+    	            // Bouton RETOUR
+    	            annuleFormulaire();
+    	        }
+    	    });
+    	});
+	</script>
+{% endblock javascript %}

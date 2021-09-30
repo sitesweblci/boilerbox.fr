@@ -1,0 +1,585 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_visu_bons.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block meta_viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.39, shrink-to-fit=no">
+{% endblock meta_viewport %}
+
+{% block title %}{{ parent() }} Visualisation des bons{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+
+{% block fos_user_content %}
+	{#
+	# Pour un utlisateur lambda, seul ses bons sont visualisables.
+	# Pour le service administration, tous les bons sont visualisables.
+	#}
+
+
+<div id='entete_de_page' data-src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+	<h1>{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
+</div>
+<div class='listing notToBePrinted'>
+	{% if filtre %}
+		<div class='texte_refresh_liste_ba' onClick='refeshResearch();'>
+			<div>Réinitialiser les filtres</div>
+			<div class='refresh_liste_ba'>
+				<span class='horizontal'></span>
+				<span class='vertical'></span>
+			</div>
+		</div>
+	{% endif %}
+    <div class='listing_all_bons'>
+        <div class='formulaire_liste'>
+            <table class='tab_liste tableau_listing'>
+                <thead id='contenu_head_tableau_bons'>
+					<tr>
+						<th>Enquête</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('numeroBA')">Bon</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('dateSignature');">Signé le</th>
+						<th scope='col' class='zone_texte_moyen selectionnable' onclick="compare('initiateur')">Initialisé par</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('dateInitialisation')">le</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('site');">Affaire</th> 
+						<th scope='col' class='zone_texte_moyen selectionnable' onclick="compare('nomDuSite');">Nom du site</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('dateDebutIntervention')">Du</th>
+						<th scope='col' class='zone_texte_mini selectionnable' onclick="compare('dateFinIntervention')">Au</th>
+						<th scope='col' class='zone_texte_moyen selectionnable' onclick="compare('label');">Intervenant</th>
+						<th scope='col' class='zone_texte_moyen selectionnable' onclick="compare('nomDuContact');">Nom du contact</th>
+						<th scope='col' class='zone_texte_grand'>
+							<div class='champs_validation_bon'>
+								<div>Validations</div>
+								<div class='sous_champs_validation_bon'>
+									<div>Tech.</div>
+									<div>H.</div>
+									<div>SAV</div>
+									<div>Fact.</div>
+								</div>
+							</div>
+						</th>
+						<th scope='col' class='zone_texte_mini'>Voir le bon</th>
+					</tr>
+				</thead>
+
+				<tbody id='contenu_tableau_bons'>
+					{% for ent_bons in entities_bon %}
+					<tr>
+						<td class='zone_texte_mini centrer' data-intitule='enquete' data-identifiant="{{ ent_bons.id }}">
+							{# Pour le secreteriat : Si aucune enquete n'est faite : Affichage d'une checkbox pour demander l'envoi d'une enquete
+													 Si une enquete est déjà faite affichage de l'information : EnqueteFaite
+							   Pour les autres : Affichage de l'information EnqueteFaite ou EnqueteNecessaire
+							#}
+							{% if is_granted('ROLE_SECRETERIAT') %}
+								{% if ent_bons.enqueteFaite %}
+									x
+								{% else %}
+									<input type='checkbox' onclick='setEnquete({{ ent_bons.id }})' {% if ent_bons.enqueteNecessaire %} checked {% endif %} />
+								{% endif %}
+							{% else %}
+								{% if ent_bons.enqueteFaite %}
+									x
+								{% else %}
+									{% if ent_bons.enqueteNecessaire %}
+										-
+									{% endif %}
+								{% endif %}
+							{% endif %}
+						</td>
+						<td class='zone_texte_mini' data-intitule='numeroBA'>
+							{{ ent_bons.numeroBA }}
+						</td>
+                        <td class='zone_texte_mini' data-intitule='dateSignature'>
+							{% if ent_bons.dateSignature is not null  %}
+                            	{{ ent_bons.dateSignature | date('d/m/Y')  }}
+							{% endif %}
+                        </td>
+                        <td class='zone_texte_moyen' data-intitule='initiateur'>
+                            {{ ent_bons.userInitiateur.label }}
+                        </td>
+                        <td class='zone_texte_mini' data-intitule='dateInitialisation'>
+							{% if ent_bons.dateInitialisation is not null  %}
+                            	{{ ent_bons.dateInitialisation | date('d/m/Y') }}
+							{% endif %}
+                        </td>
+						<td class='zone_texte_mini centrer' data-intitule='site'>
+							{{ ent_bons.numeroAffaire | upper }}
+						</td>
+						<td class='zone_texte_moyen' data-intitule='nomDuSite'>
+							{{ ent_bons.site.intitule }}
+						</td>
+                        <td class='zone_texte_mini' data-intitule='dateDebutIntervention'>
+							{% if ent_bons.dateDebutIntervention is not null  %}
+                            	{{ ent_bons.dateDebutIntervention | date('d/m/Y') }}
+							{% endif %}
+                        </td>
+                        <td class='zone_texte_mini' data-intitule='dateFinIntervention'>
+							{% if ent_bons.dateFinIntervention is not null  %}
+                            	{{ ent_bons.dateFinIntervention | date('d/m/Y') }}
+							{% endif %}
+                        </td>
+						<td class='zone_texte_moyen' data-intitule='label'>
+							{{ ent_bons.user.label }}
+						</td>
+                        <td class='zone_texte_moyen' data-intitule='nomDuContact'>
+                            {{ ent_bons.nomDuContact  }}
+                        </td>
+						<td class='zone_texte_grand' data-intitule='validation'>
+							<div class='champs_validation_bon'>
+								<div class='sous_champs_validation_bon'>
+                                    <div data-intitule='validationTechnique'>{% if ent_bons.validationTechnique %}{% if ent_bons.validationTechnique.valide %}x{% endif %}{% else %}&nbsp{% endif %}</div>
+                                    <div data-intitule='validationHoraire'>{% if ent_bons.validationHoraire %}{% if ent_bons.validationHoraire.valide %}x{% endif %}{% else %}&nbsp{% endif %}</div>
+                                    <div data-intitule='validationSav'>{% if ent_bons.validationSAV %}{% if ent_bons.validationSAV.valide %}x{% endif %}{% else %}&nbsp{% endif %}</div>
+                                    <div data-intitule='validationFacturation'>{% if ent_bons.validationFacturation %}{% if  ent_bons.validationFacturation.valide %}x{% endif %}{% else %}&nbsp{% endif %}</div>
+	                            </div>
+							</div>
+						</td>
+						<td class='zone_texte_mini cesure selectionnable centrer'>
+							<div onclick="afficherLeBon({{ ent_bons.id}});">
+								<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+							</div>
+                        </td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+    <div class='debut_ligne'>
+		<br />
+        <img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" 
+			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche_hover.png') }}" 
+			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" 
+			onClick="redirection('affinerRechercheBon'); return false;" 
+			class="btn_menu" 
+			alt="Affiner la recherche des bons">
+    </div>
+</div>
+
+{% if is_granted('ROLE_SAISIE_BA') %}
+<div id="validation_formulaire_end_portrait" class='validation_formulaire_end'>
+	<div class='validation_formulaire_end notToBePrinted'>
+	    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" class="btn_menu mobile" alt="Retour au menu"
+	         onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
+	         onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
+	         onClick="redirection('accueilBons'); return false;">
+	</div>
+</div>
+{% endif %}
+
+
+
+
+<form method='post' name='form_affiche_bon' action={{ path('lci_bons_afficher_unbon') }}>
+    <input type='hidden' id='id_bon' name='id_bon' />
+</form>
+
+{% endblock fos_user_content %}
+
+{% block javascript %}
+<script type='text/javascript'>
+	/* Variables :  tableau , direction du tri, champs du tri */
+	var tableau = new Array();
+	var directionTri = 'asc';
+	var choixTri = '';
+
+    function compareNomDuSite(a, b) {
+        if (a.nomDuSite == b.nomDuSite) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (a.nomDuSite < b.nomDuSite )?-1:1;
+        } else {
+            return (a.nomDuSite < b.nomDuSite )?1:-1;
+        }
+    };
+
+	function compareInitiateur(a, b) {
+        if (a.initiateur == b.initiateur) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (a.initiateur < b.initiateur )?-1:1;
+        } else {
+            return (a.initiateur < b.initiateur )?1:-1;
+        }
+    };
+
+
+    function compareNomDuContact(a, b) {
+        if (a.nomDuContact == b.nomDuContact) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (a.nomDuContact < b.nomDuContact )?-1:1;
+        } else {
+            return (a.nomDuContact < b.nomDuContact )?1:-1;
+        }
+    };
+
+
+
+    function compareSite(a, b) {
+        if (a.site == b.site) {
+            return 0;
+        }
+		if (directionTri == 'asc') { 
+        	return (a.site < b.site )?-1:1;
+		} else {
+			return (a.site < b.site )?1:-1;
+		}
+    };
+
+    function compareDateSignature(a, b) {
+        if (a.dateSignature == b.dateSignature) {
+            return 0;
+        }
+		if (directionTri == 'asc') {
+        	return (a.dateSignature < b.dateSignature )?-1:1;
+		} else {
+			return (a.dateSignature < b.dateSignature )?1:-1;
+		}
+    };
+
+/*
+    function compareDateInitialisation(a, b) {
+		alert(typeof(a.dateInitialisation));
+		date1 = new Date(a.dateInitialisation);
+		date2 = new Date(b.dateInitialisation);
+		alert(typeof(date1));
+		
+        if (a.dateInitialisation == b.dateInitialisation) {
+			return 0;
+		}
+		if (directionTri == 'asc') {
+            return (a.dateInitialisation < b.dateInitialisation )?-1:1;
+        } else {
+            return (a.dateInitialisation < b.dateInitialisation )?1:-1;
+        }
+    };
+*/
+    function compareDateInitialisation(a, b) {
+        date1 = new Date(a.dateInitialisation);
+        date2 = new Date(b.dateInitialisation);
+        if (date1 == date2) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (date1 < date2)?-1:1;
+        } else {
+            return (date1 < date2)?1:-1;
+        }
+    };
+
+    function compareDateDebutIntervention(a, b) {
+        date1 = new Date(a.dateDebutIntervention);
+        date2 = new Date(b.dateDebutIntervention);
+        if (date1 == date2) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (date1 < date2)?-1:1;
+        } else {
+            return (date1 < date2)?1:-1;
+        }
+    };
+
+
+    function compareDateFinIntervention(a, b) {
+        date1 = new Date(a.dateFinIntervention);
+        date2 = new Date(b.dateFinIntervention);
+        if (date1 == date2) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (date1 < date2)?-1:1;
+        } else {
+            return (date1 < date2)?1:-1;
+        }
+    };
+
+
+
+
+    function compareNumeroBA(a, b) {
+        if (a.numeroBA == b.numeroBA) {
+            return 0;
+        }
+		if (directionTri == 'asc') {
+        	return (a.numeroBA < b.numeroBA )?-1:1;
+		} else {
+			return (a.numeroBA < b.numeroBA )?1:-1;
+		}
+    };
+
+    function compareLabel(a, b) {
+        if (a.label == b.label) {
+            return 0;
+        }
+		if (directionTri == 'asc') {
+        	return (a.label < b.label)?-1:1;
+		} else {
+			return (a.label < b.label)?1:-1;
+		}
+    };
+
+
+    /* Enregistrement du tableau php dans un tableau javascript  pour le réaffichage après le tri*/
+	/* parcours des lignes */
+    function litTableauPhp() {
+		tableau = new Array();
+        $('#contenu_tableau_bons').children().each(function() {
+            var ligne = new Object();
+            /* parcours des colonnes */
+            $(this).children().each(function() {
+                switch ($(this).data('intitule')) {
+                    case 'enquete':
+						{% if is_granted('ROLE_SECRETERIAT') %}
+							if ($(this).text().trim()) {
+								ligne.enqueteNecessaire = null;
+								ligne.enqueteFaite = 'x';
+							} else {
+                        		ligne.enqueteNecessaire = $(this).children().is(':checked');
+								ligne.enqueteFaite = null;
+							}
+						{% else %}
+							ligne.enquete = $(this).text().trim();
+						{% endif %}
+                        ligne.id = $(this).data('identifiant');
+                        break;
+                    case 'nomDuSite':
+                        ligne.nomDuSite = $(this).text().trim();
+                        break;
+                    case 'nomDuContact':
+                        ligne.nomDuContact = $(this).text().trim();
+                        break;
+					case 'initiateur':
+						ligne.initiateur = $(this).text().trim();
+                        break;
+                    case 'site':
+                        ligne.site = $(this).text().trim();
+                        break;
+                    case 'numeroBA':
+                        ligne.numeroBA = $(this).text().trim();
+                        break;
+                    case 'label':
+                        ligne.label = $(this).text().trim();
+                        break;
+                    case 'dateSignature':
+                        ligne.dateSignature = $(this).text().trim();
+                        break;
+					case 'dateInitialisation':
+						ligne.dateInitialisation = $(this).text().trim();
+                        break;
+                    case 'dateDebutIntervention':
+                        ligne.dateDebutIntervention = $(this).text().trim();
+                        break;
+                    case 'dateFinIntervention':
+                        ligne.dateFinIntervention = $(this).text().trim();
+                        break;
+					case 'validation':
+						/* Faire une recherche pour chaque enfant */
+						$(this).children().children().children().each(function() {
+							switch ($(this).data('intitule')) {
+								case 'validationTechnique':
+									if ($(this).text().trim()) {
+										ligne.validationTechnique = 'x'
+									} else {
+										ligne.validationTechnique = '&nbsp';
+									}
+									break;	
+                                case 'validationHoraire':
+                                    if ($(this).text().trim()) {
+                                        ligne.validationHoraire = 'x'
+                                    } else {
+                                        ligne.validationHoraire = '&nbsp';
+                                    }
+                                    break;
+                                case 'validationSav':
+                                    if ($(this).text().trim()) {
+                                        ligne.validationSav = 'x'
+                                    } else {
+                                        ligne.validationSav = '&nbsp';
+                                    }
+                                    break;
+                                case 'validationFacturation':
+                                    if ($(this).text().trim()) {
+                                        ligne.validationFacturation = 'x'
+                                    } else {
+                                        ligne.validationFacturation = '&nbsp';
+                                    }
+                                    break;
+							}
+						});
+						break;
+                }
+            });
+            tableau.push(ligne);
+        });
+    }
+
+
+    function compare(quoi) {
+
+ 		var $srcImgVisualiser = $('#entete_de_page').data('src');
+
+		litTableauPhp();
+		/* Nouveau tableau des données triées */
+		var nouveauTableau = '';
+
+        /* Si on clic sur le même champs tri inverse */
+        if (choixTri == quoi) {
+            if (directionTri == 'asc') {
+                directionTri = 'desc';
+            } else {
+                directionTri = 'asc';
+            }
+        } else {
+			choixTri = quoi;
+			directionTri = 'asc';
+		}
+        /* Si on clic sur le même champs tri inverse */
+        switch(quoi) {
+			case 'nomDuSite':
+				 tableau.sort(compareNomDuSite);
+                break;
+            case 'nomDuContact':
+                 tableau.sort(compareNomDuContact);
+                break;
+			case 'initiateur':
+				tableau.sort(compareInitiateur);
+				break;
+            case 'site':
+                tableau.sort(compareSite);
+                break;
+            case 'numeroBA':
+                tableau.sort(compareNumeroBA);
+                break;
+            case 'label':
+                tableau.sort(compareLabel);
+                break;
+            case 'dateSignature':
+                tableau.sort(compareDateSignature);
+                break;
+			case 'dateInitialisation':
+				tableau.sort(compareDateInitialisation);
+                break;
+            case 'dateDebutIntervention':
+                tableau.sort(compareDateDebutIntervention);
+                break;
+            case 'dateFinIntervention':
+                tableau.sort(compareDateFinIntervention);
+                break;
+        }
+
+		/* Création du nouveau tableau */
+		$.each(tableau, function(index, value){
+			nouveauTableau += "<tr>";
+			nouveauTableau += "<td class='zone_texte_mini centrer' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
+			{% if is_granted('ROLE_SECRETERIAT') %}
+				if (tableau[index]['enqueteFaite']) {
+					nouveauTableau += "x";
+				} else {
+					nouveauTableau += "<input type='checkbox' onclick='setEnquete(" + tableau[index]['id'] + ")'";
+					if (tableau[index]['enqueteNecessaire']) {
+						 nouveauTableau += " checked "
+					}
+					nouveauTableau += "/>";
+				}
+			{% else %}
+                nouveauTableau += tableau[index]['enquete'];
+			{% endif %}
+			nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_mini' data-intitule='numeroBA'>";
+            nouveauTableau += tableau[index]['numeroBA'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_mini' data-intitule='dateSignature'>";
+            nouveauTableau += tableau[index]['dateSignature'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_moyen' data-intitule='initiateur'>";
+            nouveauTableau += tableau[index]['initiateur'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_mini' data-intitule='dateInitialisation'>";
+            nouveauTableau += tableau[index]['dateInitialisation'];
+            nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='zone_texte_mini centrer' data-intitule='site'>";
+			nouveauTableau += tableau[index]['site'];
+			nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='zone_texte_moyen' data-intitule='nomDuSite'>";
+			nouveauTableau += tableau[index]['nomDuSite'];
+			nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_mini' data-intitule='dateDebutIntervention'>";
+            nouveauTableau += tableau[index]['dateDebutIntervention'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_mini' data-intitule='dateFinIntervention'>";
+            nouveauTableau += tableau[index]['dateFinIntervention'];
+            nouveauTableau += "</td>";
+
+			if (tableau[index]['label']) {
+            	nouveauTableau += "<td class='zone_texte_moyen' data-intitule='label'>";
+            	nouveauTableau += tableau[index]['label'];
+            	nouveauTableau += "</td>";
+			}
+
+
+            nouveauTableau += "<td class='zone_texte_moyen' data-intitule='nomDuContact'>";
+            nouveauTableau += tableau[index]['nomDuContact'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='zone_texte_grand' data-intitule='validation'>";
+			nouveauTableau += "<div class='champs_validation_bon'>";
+			nouveauTableau += "<div class='sous_champs_validation_bon'>";
+			nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
+            nouveauTableau += "<div data-intitule='validationHoraire'>" + tableau[index]['validationHoraire'] + "</div>";
+            nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
+			nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
+			nouveauTableau += "</div>";
+            nouveauTableau += "</td>";
+	
+			nouveauTableau += "<td class='zone_texte_mini cesure selectionnable centrer'>";
+			nouveauTableau += "<div onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
+			nouveauTableau += "<img src='" + $srcImgVisualiser + "'>";
+			nouveauTableau += "</div>";
+			nouveauTableau += "</td>";
+			nouveauTableau += "</tr>";
+		});
+		$('#contenu_tableau_bons').html(nouveauTableau);
+    }
+
+	/* Fontion qui modifie la variable enqueteNecessaire d'un bon */
+	function setEnquete($idBon) {
+        $.ajax({
+            url: "{{ path('lci_ajax_bons_setEnquete') }}",
+            method: "post",
+            data: {'identifiant':$idBon}
+        }).done(function(msg){
+            /*alert('done ' + msg);*/
+        }).error(function(msg){
+            alert('error ' + msg);
+        });
+	}
+
+
+
+	function afficherLeBon($idBon) {
+		$('#id_bon').val($idBon);
+		document.forms['form_affiche_bon'].submit();
+	}
+
+	/* Fonction qui réinitialise les filtres de recherches */
+	function refeshResearch() {
+		attente(); 
+		redirection('bonsVisualiserRefresh');
+	}
+
+
+</script>
+{% endblock javascript %}

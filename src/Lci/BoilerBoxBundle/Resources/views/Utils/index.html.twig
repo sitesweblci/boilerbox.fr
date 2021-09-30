@@ -1,0 +1,35 @@
+{# /src/Lci/BoilerBoxBundle/Resources/views/Utils/index.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+
+{% block fos_user_content %}
+<div class='listing'>
+<div class='ajout_objet'>
+    <h1>Configuration</h1>
+	<div class='formulaire'>
+        <form id='form_utilitaires' name='form_utilitaires' method='post' action="{{ path('lci_utils_validChoice') }}">
+            <select name='choixUtilitaire' class='input_select'>
+                <option value='printAccess'>Affichage de la disponibilité des sites</option>
+				<option value='getionRoles'>Gestion des rôles utilisateurs</option>
+				<option value='afficheLogs'>Affichage des logs de connexion</option>
+            </select>
+        </form>
+    </div>
+	<div class='validation_formulaire'>
+		<img 	class="btn_menu" 
+				alt="Valider" 
+				onClick="attente(); document.forms['form_utilitaires'].submit();"
+				src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_valider.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_valider_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_valider.png') }}">
+
+		<img  	class="btn_menu" 
+				alt="Annuler" 
+				onClick="attente(); redirection('retourMenu');"
+				src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}">
+	</div>
+</div>
+</div>
+{% endblock fos_user_content %}

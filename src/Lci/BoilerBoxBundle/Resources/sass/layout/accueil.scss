@@ -1,0 +1,76 @@
+.accueil-box{
+	width: 75vw;
+	min-width: 500px;
+	max-width: 1024px;
+	margin: 8vh auto 0 auto;
+	padding: 2.5% 3% 1.5% 3%;
+	background: white;
+	border-radius: 0 10px 10px 10px;
+	box-shadow: 3px 3px 3px 2px rgba(0 0 0 / 30%);
+	&__title{
+		margin-bottom: 24px;
+		font-size: 1.8em;
+		font-weight: 300;
+		color: var(--gris-profond);
+	}
+	&__header{
+		@include flex-row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		margin-bottom: 6px;
+		&__legende{
+			@include flex-row;
+			justify-content: space-between;
+			flex-wrap: nowrap;
+			.legende-wrapper{
+				@include flex-row;
+				flex-wrap: nowrap;
+				margin-right: 14px;
+				font-size: 0.75em;
+				white-space: nowrap;
+				&:before{
+					content:'';
+					display: block;
+					width: 10px;
+					height: 10px;
+					margin-right: 5px;
+					border-radius: 50%
+				}
+				&:first-child{
+					&:before{
+						background: #2bcc2b
+					}
+				}
+				&:nth-child(0n + 2){
+					&:before{
+						background: #f49a22;
+					}
+				}
+				&:nth-child(0n + 3){
+					&:before{
+						background: #36aeea;
+					}
+				}
+				&:nth-child(0n + 4){
+					&:before{
+						background: #ef3f3f;
+					}
+				}
+				&:last-child{
+					&:before{
+						background: #848484;
+					}
+				}
+			}
+		}
+	}
+	&__content{
+		.accueil-table{
+
+		}
+
+	}
+	&__btn{
+		width: 100%;
+	}
+}

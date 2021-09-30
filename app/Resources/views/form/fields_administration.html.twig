@@ -1,0 +1,14 @@
+{# /app/Resources/views/form/fields_administration.html.twig #}
+
+{% block form_errors %}
+{% spaceless %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            <span class='erreur_formulaire'>
+                {# error.messageTemplate|trans(error.messageParameters, 'validators') #}
+                {{ error.message }}
+            </span>
+        {% endfor %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_errors %}

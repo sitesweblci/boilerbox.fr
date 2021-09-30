@@ -1,0 +1,45 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Accueil/accueil.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+{% block title %}{{ parent() }} Accueil{% endblock title %}
+
+{% block fos_user_content %}
+
+{{ parent() }}
+
+<div class='listing'>
+    <div class='menu_administration'>
+        <div class='menu_ligne1'>
+            <img onClick="attente(); redirection('menuUtilisateur');"
+				class="btn_menu" 
+				alt="Gestion des utilisateurs" 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs.png') }}" />
+
+            <img onClick="attente(); redirection('menuSite');"
+				class="btn_menu" 
+				alt="Gestion des sites" 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites_hover.png') }}"        
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites.png') }}" /> 
+        </div>
+        <div class='menu_ligne2'>
+            <img onClick="attente(); redirection('gestionLiens');"
+				class="btn_menu" 
+				alt="Gestion des liens" 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens_hover.png') }}"        
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens.png') }}" />
+			{% if is_granted('ROLE_SUPER_ADMIN') %}
+            	<img onClick="attente(); redirection('utilitaires');" 
+					class="btn_menu" 
+					alt="Utilitaires" 
+					src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires.png') }}" 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires_hover.png') }}"                
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires.png') }}"  />
+			{% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock fos_user_content %}

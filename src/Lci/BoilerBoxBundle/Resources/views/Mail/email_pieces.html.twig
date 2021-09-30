@@ -1,0 +1,26 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_pieces.html.twig #}
+<!DOCTYPE html>
+<html>
+<head></head>
+
+<body>
+<div id='contenu_email'>
+	<h1 style='color:red; font-size:20px; margin-bottom:-10px;'>Offre à faire pour le site {{ nom_site }}</h1>
+	<br />
+	<p style='line-height: 32px;'>
+		Bonjour, <br />
+		Une offre est à faire suite à l'intervention <b>N° {{ numero_bon }}</b> pour l'affaire <b>{{ nom_site }}</b> svp.<br />
+		(Demande effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})
+	<p>
+	<br /><br /><br />
+	<p>
+	    <div>IMPORTANT NOTICE</div>
+	    <div>*** Ce message est généré automatiquement. Merci de ne pas y répondre.***</div>
+	    <div>Assistance IBC</div>
+	</p>
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' width="400" />
+
+</body>
+</html>
+

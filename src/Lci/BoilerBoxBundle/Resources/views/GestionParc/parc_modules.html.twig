@@ -1,0 +1,98 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/GestionParc/parc_modules.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+
+{% block title %} {{ parent() }} Parc des modules{% endblock title %}
+
+{% block fos_user_content %}
+{{ parent() }}
+
+<div class='listing'>
+	<div class='listing2'>
+        <h1>Parc des modules</h1>
+		<div class='formulaire_liste'>
+			<table class='tab_liste tableau_listing'>
+				<thead class='tab_liste_modules'>
+					<tr><th class='zone_texte_mini'>Modif</th>
+						<th class='zone_texte_mini selectionnable'  onClick="attente();trie('numero');">N°</th>
+                        <th class='zone_texte_mini selectionnable'  onClick="attente();trie('actif');">Actif</th>
+						<th class='zone_texte_grand selectionnable' onClick="attente();trie('nom');">Nom</th>
+						<th class='zone_texte_mini selectionnable'  onClick="attente();trie('type');">Type</th>
+						<th class='zone_texte_mini selectionnable'  onClick="attente();trie('present');">Présent</th>
+						<th class='zone_texte_moyen selectionnable' onClick="attente();trie('dateMouvement');">Date</th>
+						{#<th class='zone_texte_moyen'>Destination</th>#}
+						<th class='zone_texte_petit'>Problèmes</th>
+					</tr>
+				</thead>
+				<tbody class='tab_liste_modules'>
+					{# Calcul du nombre de problèmes et du nombre de problèmes bloquants d'un module #}
+					{% for entityModule in entities_modules %} 
+						{% set nb_problemes = 0 %}
+						{% set nb_problemes_bloquant = 0 %}
+						{% for problem in entityModule.problemeTechnique %}
+							{% if problem.cloture == false %}
+								{% set nb_problemes = nb_problemes + 1 %}
+								{% if problem.bloquant == true %}
+									{% set nb_problemes_bloquant = nb_problemes_bloquant + 1 %}
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						<tr {% if entityModule.present != true %}style='color:#5858FA;'{% elseif nb_problemes_bloquant > 0 %}style='color:red;'{% elseif nb_problemes > 0 %}style='color:orange;'{% else %}style='color:green;'{% endif %}>
+							<td class='zone_texte_mini centrer selectionnable'>{% if is_granted('ROLE_RESPONSABLE_PARC') %}<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_modifier_module.png') }}" onClick="modifierModule({{ entityModule.id }});" />{% endif %}</td>
+							<td class='zone_texte_mini'>{{ entityModule.numero }}</td>
+                            <td class='zone_texte_mini'>{% if entityModule.actif == true %}X{% endif %}</td>
+							<td class='zone_texte_grand'>{{ entityModule.nom }}</td>
+							<td class='zone_texte_mini'>{{ entityModule.type }}</td>
+							<td class='zone_texte_mini'>{% if entityModule.present == true %}X{% endif %}</td>
+							<td class='zone_texte_moyen'>{% if entityModule.present == true %}Arrivé le {{ entityModule.dateMouvement|date('d/m/Y') }}{% else %}Parti le {{ entityModule.dateMouvement|date('d/m/Y') }}{% endif %}</td>
+							{#<td class='zone_texte_moyen'>{% if entityModule.site is not empty %}{{ entityModule.site.affaire }} - {{ entityModule.site.intitule }}{% endif %}</td>#}
+							<td class='zone_texte_petit selectionnable'><a class="a_nombre_problemes" onClick="afficheProblemes('{{ entityModule.id }}');return false;">{{ nb_problemes }}{% if nb_problemes > 0 and nb_problemes_bloquant > 0 %} ({{ nb_problemes_bloquant }} bloquant{% if nb_problemes_bloquant > 1 %}s{% endif %}){% endif %}</a></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+            <p style='padding-left:10px; font-size:0.9em;'>
+                <span style='font-style:italic;'>Légende :</span><br />
+                <span style='color:green;''>Module présent et fonctionnel</span><br />
+                <span style='color:orange;'>Module présent avec problème(s) non bloquant(s)</span><br />
+                <span style='color:red;'>Module présent avec problème(s) bloquant(s)</span><br />
+                <span style='color:#5858FA;'>Module non présent</span><br />
+            </p>
+			<form name='form_tri' method='post' action={{ path('lci_tri_parc_modules') }} />
+				<input type='hidden' name='champs_tri' id='champs_tri' />
+			</form>
+			<form name='form_change' method='post' action={{ path('lci_change_parc_modules') }} />
+				<input type='hidden' name='id_module' id='id_module' />
+			</form>		
+			<form name='form_modulePbs' method='post' action={{ path('lci_affiche_module_problemes') }} />
+				<input type='hidden' name='module_id' id='module_id' />
+			</form>
+		</div>
+	</div>
+	<div class='validation_formulaire_end'>
+		{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+			<div><img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_module.png') }}" onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_module_hover.png') }}" onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_module.png') }}" onClick="attente(); redirection('ajouterModuleFromParc'); return(false);" class="btn_menu" alt="Ajouter un module"></div>
+		{% endif %}
+		<div><img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"  onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"  onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" onClick="attente(); redirection('retourMenu'); return false;" class="btn_menu" alt="Retour au menu"></div>
+	</div>
+</div>
+
+
+<script type='text/javascript'>
+	function afficheProblemes($moduleId) {
+		$('#module_id').val($moduleId);
+		document.forms['form_modulePbs'].submit();
+	}
+
+    function trie(champs) {
+        $('#champs_tri').val(champs);
+        document.forms['form_tri'].submit();
+    }
+
+    function modifierModule(idModule) {
+        $('#id_module').val(idModule);
+        document.forms['form_change'].submit();
+    }
+</script>
+
+{% endblock fos_user_content %}
+

@@ -1,0 +1,237 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/visualiser_sitesBA.html.twig #}
+
+
+{# extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" #}
+{% extends "LciBoilerBoxBundle::secondBonsLayoutLogged.html.twig" %}
+
+
+{% block meta_viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, shrink-to-fit=no">
+{% endblock meta_viewport %}
+
+{% block title %}{{ parent() }} : Sites{% endblock title %}
+
+
+{% block boilerBoxCSS %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
+{% endblock boilerBoxCSS %}
+
+
+{% block mainBody %}
+
+<div id='bloc_1'>
+    <div id='entete_de_page'><h1>Sites d'interventions</h1></div>
+
+    <div id='bloc_2'>
+		<div class='inter_bloc_2_1'>
+			<h1>Sélection du site</h1>
+	        <select name='liste_sitesBA' id='liste_sitesBA' onChange='afficher_site()'>
+				<option selected disabled>Choose one</option>
+	            {% for site in ents_sitesBA %}
+	                <option id="{{ site.id }}">{{ site.intitule }}</option>
+	            {% endfor %}
+	        </select>
+
+            <div id='map'></div>
+            <div>
+                {% if ent_siteBA_actif.lienGoogle is not null %}
+                    <div id='map' style='height:450px; width:535px' class='cacher'></div>
+                    <iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" width="535" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+                {% else %}
+                    <p>Aucune carte enregistrée</p>
+                {% endif %}
+            </div>
+
+	    </div>
+
+		<div class='inter_bloc_2_1'>
+			<h1 id='titre_nouveau_siteBA'>{{ ent_siteBA_actif.intitule }}</h1>
+
+			<div id='informations_site'>
+				<div><h2><u>Adresse :</u></h2></div>
+				<div><div>{{ ent_siteBA_actif.adresse }}</div></div>
+
+				<div><h2><u>Contact{% if ent_siteBA_actif.contacts | length > 1 %}s{% endif %} :</u></h2></div>
+				{% for contact in ent_siteBA_actif.contacts %}
+					<div class='nouveau_contact'>
+						<div><b>{{ contact.nom }} {{ contact.prenom }}</b>
+							{% if contact.telephone is not empty %}
+								{% if contact.mail is not empty %}
+									- {{ contact.telephone }} - {{ contact.mail }}
+								{% else %}
+									- {{ contact.telephone }}
+								{% endif %}
+							{% else %}
+								{% if contact.mail is not empty %}
+									- {{ contact.mail }}
+								{% endif %}
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+
+				<div><h2><u>Informations complémentaires :</u></h2></div>
+				<div><div>{{ ent_siteBA_actif.informationsClient | nl2br }}</div></div>
+			</div>
+	    </div>
+
+		<div class='inter_bloc_2_2'>
+    		<h1>Liste des fichiers </h1>
+			<span id='spanShowArchive' style='font-size:16px'><b><u>Afficher les fichiers archivés : <input type='checkbox' id='chkShowArchive'  name='chkShowArchive' onClick="showArchive(this.name)" /></u></b></span>
+    		<div id='encart_fichiers_joint'>
+    		    {% if ent_siteBA_actif.fichiersJoint is not null %}
+    		        {% for fichier in ent_siteBA_actif.fichiersJoint %}
+    		            <div id="div_fichier_{{ fichier.id }}" class="div_fichier_{{ fichier.archive }}" {% if fichier.archive == true %} style="display:none" {% endif %}>
+							<input type='checkbox' name='archive' id='archive{{fichier.id}}'  {% if fichier.archive == true %}checked{% endif %} />
+    		                <a
+    		                id="{{ fichier.siteBA.id }}_{{ fichier.id }}"
+    		                href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}#"
+    		                download="{{ fichier.alt }}"
+    		                >
+    		                	{{ fichier.alt }}
+    		                </a>
+    		                <br />
+    		                {% if fichier.extension in ['jpeg', 'png', 'jpg']  %}
+    		                    <a href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" data-lightbox="image">
+    		                        <img src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" height='150px'>
+    		                    </a>
+    		                {% elseif fichier.extension in ['txt', 'pdf'] %}
+    		                     <iframe src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" ></iframe>
+    		                {% else %}
+    		                    <div width="250px" height="150px" ></div>
+    		                {% endif %}
+    		            </div>
+    		        {% endfor %}
+    		    {% endif %}
+    		</div>
+			{#
+			<div id='map' style='border:2px solid red'></div>
+            <div>
+				{% if ent_siteBA_actif.lienGoogle is not null %}
+					<div id='map' style='height:450px; width:535px' class='cacher'></div>
+					<iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" width="535" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+				{% else %}
+					<p>Aucune carte enregistrée</p>
+				{% endif %}
+			</div>
+			#}
+        </div>
+	</div>
+{% endblock mainBody %}
+
+
+{% block javascript %}
+	<script type='text/javascript'>
+		$(document).ready(function() {
+			$("#liste_sitesBA option[id='" + {{ ent_siteBA_actif.id }} + "']").prop('selected', true);
+			{% for fichier in ent_siteBA_actif.fichiersJoint %}
+				$("#archive{{ fichier.id }}").bind('click', function(){
+					archivage('{{ fichier.id }}', '{{ fichier.archive }}');
+				});
+			{% endfor %}
+		});
+
+		function afficher_site() {
+			$site_id = $('#liste_sitesBA option:selected').attr('id');
+			var $url = $('#liens').attr('data-sitesBAVisualiser') + '/' +  $site_id;
+			document.location.href = $url;
+		}	
+
+		function initAutocomplete() {
+			if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))  {
+				$('#mapIFrame').addClass('cacher');
+				$('#map').removeClass('cacher');
+				var $objPos = {};
+				$objPos.lat = parseFloat("{{ latitude }}");
+        		$objPos.lng = parseFloat("{{ longitude }}");
+				var maCarte = new google.maps.Map(document.getElementById('map'), {
+					center: $objPos,
+					zoom: parseInt("{{ zoomApi }}"),
+					mapTypeId: 'satellite'
+				});
+				var monMarqueur = new google.maps.Marker({
+					position: $objPos,
+					map: maCarte
+				});
+			}
+		}
+
+
+		function archivage(fichier_id, fichier_archive)
+		{
+			if (fichier_archive == true)
+			{
+				//alert("demande de désarchivage du fichier d'id : " + fichier_id);
+				$.ajax({
+                    type: "POST",
+                    url: "{{ path('lci_ajax_archivage_fichier_siteBA') }}",
+                    data: {
+                        id_fichier: fichier_id,
+                        archive: 0
+                    },
+                    success: function(response) {
+						// Lorsque l'archivage du fichier s'est bien passée :
+                        //  je change la fonction onclick pour qu'elle effectue un désarchivage
+                        //  je change la classe pour que la fonction showArchive prenne en compte la modification
+                        $("#div_fichier_" + fichier_id).attr("class", "div_fichier_");
+                        $("#archive" + fichier_id).unbind('click').bind('click', function() {archivage(fichier_id, false)});
+                    },
+                    error: function() {
+                        alert('error');
+						$("#archive" + fichier_id).prop("checked", true);
+                    }
+                });
+			} else {
+				//alert("demande d'archivage du fichier d'id : " + fichier_id);
+                $.ajax({
+					type: "POST",
+					url: "{{ path('lci_ajax_archivage_fichier_siteBA') }}", 
+					data: {
+						id_fichier: fichier_id, 
+						archive: true
+					},
+					success: function(response) {
+						// Lorsque l'archivage du fichier s'est bien passée : 
+						//  je change la fonction onclick pour qu'elle effectue un désarchivage 
+						//	je change la classe pour que la fonction showArchive prenne en compte la modification
+						//	si la case Affichage des fichiers archivés est décochée je cache le nouveau fichier archivé
+						$("#div_fichier_" + fichier_id).attr("class", "div_fichier_1");
+						$("#archive" + fichier_id).unbind('click').bind('click', function() {archivage(fichier_id, true)});
+						if ($("#chkShowArchive").is(':checked') == false)
+						{
+							$("#div_fichier_" + fichier_id).hide();
+						}
+					},
+					error: function() {
+						alert('error');
+						$("#archive" + fichier_id).prop("checked", false);
+					}
+                });
+			}
+		}
+
+
+		function showArchive(nom)
+		{
+            var affiche_archive = $("#chkShowArchive").is(':checked');
+			if (affiche_archive == false)
+			{
+				$('div.div_fichier_1').hide();
+			}
+			if (affiche_archive == true)
+            {
+                $('div.div_fichier_1').show();
+            }
+
+		}
+
+
+	</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete"  async defer></script>
+
+{% endblock javascript %}
+
+

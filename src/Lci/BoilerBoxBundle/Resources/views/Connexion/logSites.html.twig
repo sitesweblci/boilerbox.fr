@@ -1,0 +1,484 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Connexion/logSites.html.twig #}
+{% extends "LciBoilerBoxBundle::secondAccueilLayout.html.twig" %}
+
+{% block title %}{{ parent() }} : Acceuil{% endblock title %}
+
+{% block google_map %}
+	<iframe id='map_google' src="https://www.google.com/maps/d/u/0/embed?mid=1HvyRmqnv2__T4xk8EDwLBcZoulMvx7C1" frameborder="0" width="100%" height="100%"></iframe>
+{% endblock google_map %}
+
+{% block enTete_gauche %}
+	{{ parent() }}
+	{% if auth_double == false %}
+		<span style='font-size:14px; text-decoration:underline;'><a href="{{ path('lci_boilerbox_auth_activation') }}">Activer l'authentification à double facteur</a></span>
+	{% else %}
+		<span id='lien_desactivation_auth' style='font-size:14px; text-decoration:underline;'>
+			<a id="desactivation_auth" href="#" onClick="desactivationAuth();" data-url={{ path('lci_ajax_desactivation_auth') }}>Désactiver l'authentification à double facteur</a>
+		</span>
+	{% endif %}
+{% endblock enTete_gauche %}
+
+{% block body %}
+	<div id='pagePrincipaleBody'>
+		<section>
+			<div class='boxlogin'>
+				<!--Logo-IBC-->
+				<div id='logo-IBC'>
+				    <img class="img" src="{{ asset('bundles/lciboilerbox/images/Layout-IPC_2014-11-05_03.png') }}" alt="ipcLogo" />
+				    <div class="txt"><span>I</span>NDUSTRIAL<br /><span>B</span>OILER<br /><span>C</span>ONTROL</div>	
+				</div>
+				<div class='enTeteLogin'>
+					<div class='icone'><div class='logoChaudiere'><img class='img' src="{{ asset('bundles/lciboilerbox/images/chaudiere.png') }}" alt='chaudiereLogo' /></div></div>
+					<div class='optionAffaire'>	
+						<input type='radio' name='radLive' onClick='switchSite();' value='affaire' checked>Affaire
+						<input type='radio' name='radLive' onClick='switchSite();' value='module'>Module
+					</div>
+				</div>
+                <div id='legende_sites' style='color:black;'>
+                    <div><span class="feuTricolor_0"></span>Disponible</div> 									{# 0 -> Retour commande netcat ok : vert #}
+					<div><span class="feuTricolor_3"></span>Accessible seulement par eCatcher</div>             {# 3 -> Site accessible seulement depuis eCatcher : bleu #}
+                    {#<div><span class="feuTricolor_1"></span>Test en cours</div>#}								{# 1 -> orange - Non utilisé #}
+                    <div><span class="feuTricolor_2"></span>Non disponible actuellement</div>					{# 2 -> Retour commande netcat en erreur : rouge #}
+                    <div><span class="feuTricolor_4"></span>Non accessible à distance</div>						{# 4 -> Site non accessible : gris #}
+                </div>
+				<div class='checkLive'><input id='chk_live' type='checkbox' name='chkLive' onClick='switchLive();'>Live</div>
+				<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' autocomplete="off" data-urjax_desactivation_authl={{ path('lci_ajax_refreshASiteStatut') }}>
+					<input type="hidden" id="_database" name="_database" value="" />
+				    <input type="hidden" id="remember_me" name="_remember_me" value="on" />
+					<input type="hidden" id="_username" name="_username" value="" />
+					<input type="hidden" id="_password" name="_password" value="" />
+				    <input type="hidden" id="_label" name="_label" value="{{ label }}" />
+					<div class='destination_site'>
+                        {# ********************  SELECT DES MODULES *********************  #}
+                        <select name='select_sitesModule' id='select_sitesModule' class='cacher'>
+                            {% for site in liste_sites %}
+                                {# on définit la date de test du premier site testé #}
+                                {% if site.affaire | slice (0,1) == 'M' %}
+
+                                    {# *****  Définition des variables pour un affichage identique dans les select ******* #}
+                                    {% if site.connexion == "3g" %}
+                                        {% set connexion = "&nbsp;3g&nbsp;" %}
+                                    {% elseif site.connexion == "adsl" %}
+                                        {% set connexion = "Adsl" %}
+                                    {% else %}
+                                        {% set connexion = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" %}
+                                    {% endif %}
+
+                                    {% if site.affaire | length == 4 %}
+                                        {% set affaire = site.affaire ~ "&nbsp;&nbsp;" %}
+                                    {% else %}
+                                        {% set affaire = site.affaire %}
+                                    {% endif %}
+                                    {# ******************************************************************************* #}
+
+                                    <option value="{{ site.url }}" data-identifiant-module="{{ site.id }}"
+                                        {% if not site.accesDistant %}
+                                            class="feuTricolor_4"
+                                        {% else %}
+                                            {% if site.configBoilerBox %}
+                                                class="feuTricolor_{{ site.getDisponibilite }}"
+                                            {% else %}
+                                                disabled class="feuTricolor_3"
+                                            {% endif %}
+                                        {% endif %}
+                                    >
+                                        {{ affaire | raw }} ( {{ connexion | raw }} )&emsp;{{ site.intitule }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        {# ********************  SELECT DES LIVE DE MODULES  *********************  #}
+                        <select name='select_sitesModuleLive' id='select_sitesModuleLive' class='cacher'>
+                            {% for site in liste_sites %}
+                                {% if site.affaire  | slice (0,5) == 'live_M' %}
+
+
+                                    {# *****  Définition des variables pour un affichage identique dans les select ******* #}
+                                    {% if site.connexion == "3g" %}
+                                        {% set connexion = "&nbsp;3g&nbsp;" %}
+                                    {% elseif site.connexion == "adsl" %}
+                                        {% set connexion = "Adsl" %}
+                                    {% else %}
+                                        {% set connexion = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" %}
+                                    {% endif %}
+                                    {% if site.affaire | length == 9 %}
+                                        {% set affaire = site.affaire ~ "&nbsp;" %}
+                                    {% else %}
+                                        {% set affaire = site.affaire %}
+                                    {% endif %}
+                                    {# ******************************************************************************* #}
+
+                                    <option value="{{ site.url }}" data-identifiant-live-module="{{ site.id }}"
+                                        {% if not site.accesDistant %}
+                                            class="feuTricolor_4"
+                                        {% else %}
+                                            {% if site.configBoilerBox %}
+                                                class="feuTricolor_{{ site.getDisponibilite }}"
+                                            {% else %}
+                                                class="feuTricolor_3"
+                                            {% endif %}
+                                        {% endif %}
+                                    >
+                                        {{ affaire | raw }} ( {{ connexion | raw }} )&emsp;{{ site.intitule }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        {# ********************  SELECT DES SITES  *********************  #}
+                        <select name='select_sites' id='select_sites'>
+                            {% for site in liste_sites %}
+                                {% if site.affaire | slice (0,1) != 'M' %}
+                                    {# *****  Définition des variables pour un affichage identique dans les select ******* #}
+                                    {% if site.connexion == "3g" %}
+                                        {% set connexion = "&nbsp;3g&nbsp;" %}
+                                    {% elseif site.connexion == "adsl" %}
+                                        {% set connexion = "Adsl" %}
+                                    {% else %}
+                                        {% set connexion = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" %}
+                                    {% endif %}
+                                    {% if site.affaire | length == 4 %}
+                                        {% set affaire = site.affaire ~ "&nbsp;&nbsp;&nbsp;" %}
+                                    {% else %}
+                                        {% set affaire = site.affaire %}
+                                    {% endif %}
+                                    {# ******************************************************************************* #}
+
+                                    <option value="{{ site.url }}" data-identifiant-site="{{ site.id }}"
+									{% if not site.accesDistant %}
+										disabled class="feuTricolor_4"
+									{% else %}
+										{% if site.configBoilerBox %}
+											class="feuTricolor_{{ site.getDisponibilite }}"
+										{% else %}
+											disabled class="feuTricolor_3"
+										{% endif %}
+									{% endif %}
+									>
+										{{ affaire | raw }} ( {{ connexion | raw }} )&emsp;{{ site.intitule }}
+									</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        {# ********************  SELECT DES LIVE DE SITES  ********************* #}
+                        <select name='select_sitesLive' id='select_sitesLive' class='cacher'>
+                            {% for site in liste_sites %}
+                                {% if site.affaire | slice(0,5) == 'live_s' %}
+
+                                    {# *****  Définition des variables pour un affichage identique dans les select ******* #}
+                                    {% if site.connexion == "3g" %}
+                                        {% set connexion = "&nbsp;3g&nbsp;" %}
+                                    {% elseif site.connexion == "adsl" %}
+                                        {% set connexion = "Adsl" %}
+                                    {% else %}
+                                        {% set connexion = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" %}
+                                    {% endif %}
+                                    {% set affaire = site.affaire %}
+                                    {# ******************************************************************************* #}
+
+                                    <option value="{{ site.url }}" data-identifiant-live-site="{{ site.id }}"
+                                        {% if not site.accesDistant %}
+                                            class="feuTricolor_4"
+                                        {% else %}
+                                            {% if site.configBoilerBox %}
+                                                class="feuTricolor_{{ site.getDisponibilite }}"
+                                            {% else %}
+                                                class="feuTricolor_3"
+                                            {% endif %}
+                                        {% endif %}
+                                    >
+                                        {{ affaire | raw }} ( {{ connexion | raw }} )&emsp;{{ site.intitule }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+					</div>
+
+					<div id='horaireAction'>Mis à jour le {{ dateAccess }}</div>
+					<div id='validationbouton'>
+						<a href='#' class='right' onClick="stopFunctions();actionForm();return false;" ><div class='bouton blue'><div class='bgbouton'>ATTEINDRE</div></div></a>
+					</div>
+				</form>
+			</div>
+		</section>
+        <div id='horodatage'>
+            <div id='heure' class='heure' title="Heure du système BoilerBox">{{ lHeure }}</div>
+            <div id='date' class='date'>{{ leJour }}</div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block javascript %}
+
+{{ parent() }}
+
+<script type='text/javascript'>
+var exec_fonction = 1;
+var date_refresh;
+var $login_distant = null;
+var $password_distant = null;
+
+
+$(document).ready(function() {
+    var xhr = getXHR();
+	xhr.onreadystatechange = function(event) {
+		if (this.readyState === XMLHttpRequest.DONE) {
+			if (this.status === 200) {
+				var tabReponse = xhr.responseText.split(';');
+				$login_distant = tabReponse[0];
+				$password_distant = tabReponse[1];
+			} else {
+				console.log("Pas de réponse à la requete Jquery pour l'obtention du login mot de passe d'acces aux sites distant");
+			}
+		}
+	};
+    xhr.open("POST", "{{ path('lci_boilerbox_getUserLog') }}", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send();
+
+
+    $('#chk_live').attr('checked', false);
+	$('input[name="radLive"][value="affaire"]').prop('checked', 'checked');
+    document.getElementById('select_sites').focus();
+
+    /* Interception du clic sur le bouton ENTREE et simulation du clic sur le bouton ATTEINDRE */
+    $(document).keypress(function(e) {
+        if(e.keyCode == 13){
+			actionForm();
+        }
+    });
+	if (exec_fonction == 1 ) {
+		$("option[data-identifiant-site]").each(function(){
+			if (exec_fonction == 0) {
+				return false;
+			}
+    	    var id_site =  $(this).attr('data-identifiant-site');
+    	    refreshSiteStatut(id_site, 'site', false, false)
+    	});
+	}
+
+	if (exec_fonction == 1 ) {
+    	$("option[data-identifiant-module]").each(function(){
+            if (exec_fonction == 0) {
+                return false;
+            }
+    	    var id_site =  $(this).attr('data-identifiant-module');
+    	    refreshSiteStatut(id_site, 'module', false, false)
+    	});
+	}
+
+	if (exec_fonction == 1 ) {
+    	$("option[data-identifiant-live-module]").each(function(){
+            if (exec_fonction == 0) {
+                return false;
+            }
+    	    var id_site =  $(this).attr('data-identifiant-live-module');
+    	    refreshSiteStatut(id_site, 'live-module', false, false)
+    	});
+	}
+
+	if (exec_fonction == 1 ) {
+    	$("option[data-identifiant-live-site]").each(function(i){
+            if (exec_fonction == 0) {
+                return false;
+            }
+			var id_site =  $(this).attr('data-identifiant-live-site');
+			
+			if ($("option[data-identifiant-live-site]").last().index() == i) {
+				refreshSiteStatut(id_site, 'live-site', false, true);
+            } else {
+            	refreshSiteStatut(id_site, 'live-site', false, false)
+			}
+    	});
+	}
+});
+
+function stopFunctions() {
+	exec_fonction = 0;	
+}
+
+
+function refreshSiteStatut(id_site, destination, details, last) {
+    var url_refresh = $('#myForm').data('url');
+    $.ajax({
+        url: url_refresh,
+        type: 'POST',
+        data: 'idSite=' + id_site,
+        success: function(code_html, statut){
+			$.each(code_html, function(index_id, tab_retour) {
+                $.each(tab_retour, function(index_statut, value) {
+                    if (index_statut == 'statut') {
+						switch (value) {
+							case 'ok':
+								$("option[data-identifiant-" + destination + "='" + id_site + "']").attr('class', 'feuTricolor_0');
+								break;
+							case 'nok':
+								$("option[data-identifiant-" + destination + "='" + id_site + "']").attr('class', 'feuTricolor_2');
+								break;
+							case 'ecatcher':
+								$("option[data-identifiant-" + destination + "='" + id_site + "']").attr('class', 'feuTricolor_3');
+								break;
+							case 'inaccessible':
+								$("option[data-identifiant-" + destination + "='" + id_site + "']").attr('class', 'feuTricolor_4');
+								break;
+							default:
+								console.log('type non defini : ' + value);
+						}
+                    }
+					if (index_statut == 'date_test') {
+						date_refresh = value;	
+                    }
+                });
+            });
+			if (last == true) {
+				$('#horaireAction').text('Mis à jour à ' + date_refresh);
+			}
+    	}
+    });
+}
+
+// Fonction qui affiche ou cache le champs Live en fonction de la valeur de la checkbox
+function switchSite() {
+	cacheSite();	
+   	valeurRadioSite = $('input[name=radLive]:checked').val();
+	switch(valeurRadioSite) {
+		case 'affaire':
+			switch(valeurCheckSite) {
+				case 'live':
+					$('#select_sitesLive').removeClass('cacher');			
+					break;
+				case 'site':
+					$('#select_sites').removeClass('cacher');
+					break;
+			}
+			break;
+		case 'module':
+            switch(valeurCheckSite) {
+                case 'live':
+                    $('#select_sitesModuleLive').removeClass('cacher');
+                    break;
+                case 'site':
+                    $('#select_sitesModule').removeClass('cacher');
+                    break;
+            }
+			break;
+	}
+}
+
+
+function switchLive() {
+	if ($('input[name=chkLive]').is(':checked')) {
+		valeurCheckSite = 'live';
+	} else {
+		valeurCheckSite = 'site';
+	}
+	switchSite();
+}
+
+function cacheSite(){
+	$('#select_sitesModule').addClass('cacher');
+	$('#select_sitesModuleLive').addClass('cacher');
+	$('#select_sites').addClass('cacher');
+	$('#select_sitesLive').addClass('cacher');
+}
+
+
+
+function actionForm() {
+    valeurRadioSite = $('input[name=radLive]:checked').val();
+	var $objSelect; 
+	var $nombreOptions;
+	var $database = "boilerbox_";
+    switch(valeurRadioSite) {
+        case 'affaire':
+            switch(valeurCheckSite) {
+                case 'live':
+					$objSelect = $('#select_sitesLive');
+					$nombreOptions = $('#select_sitesLive option').size();
+                    $database += $('#select_sitesLive option:selected').text().trim().split(" ")[0].toLowerCase();
+                    break;
+                case 'site':
+                    $objSelect = $('#select_sites');
+					$nombreOptions = $('#select_sites option').size();
+                    $database += $('#select_sites option:selected').text().trim().split(" ")[0].toLowerCase();
+                    break;
+            }
+            break;
+        case 'module':
+            switch(valeurCheckSite) {
+                case 'live':
+                    $objSelect = $('#select_sitesModuleLive');
+					$nombreOptions = $('#select_sitesModuleLive option').size();
+                    $database += $('#select_sitesModuleLive option:selected').text().trim().split(" ")[0].toLowerCase();
+                    break;
+                case 'site':
+                    $objSelect = $('#select_sitesModule');
+					$nombreOptions = $('#select_sitesModule option').size();
+                    $database += $('#select_sitesModule option:selected').text().trim().split(" ")[0].toLowerCase();
+                    break;
+            }
+            break;
+    }
+
+	// Indication de la base à afficher dans le VPS
+	$('#_database').val($database);
+	//$('#_database').val('baseded');
+	
+	if ($nombreOptions == 0){
+		return 1;
+	}
+
+
+    // Si l'url comprend le message supervision : envoi tel quel sinon envoi vers la page login du site distant
+    var urlForm = '';
+	if ($objSelect.val().match(/supervision/g)) {
+		urlForm = $objSelect.val();
+	} else {
+		if (($objSelect.val().toLowerCase() == "http://c727-1.boiler-box.fr/") || ($objSelect.val().toLowerCase() == "http://c727-2.boiler-box.fr/") || ($objSelect.val().toLowerCase() == "http://c707.boiler-box.fr/")) {
+            {# Condition pour le test de la version 1.16.1 de boilerbox #}
+            urlForm = $objSelect.val() + 'Symfony/web/app.php/login_check';
+        } else {
+			// Dans le cas ou la diffusion de l'adresse ip ne se fait pas mais que le site est en 3G avec une adresse que ne change donc que très rarement.
+			// L'url est de la forme adresse ip
+            if (! $objSelect.val().match(/http:\/\//g)) {
+                urlForm = 'http://' + $objSelect.val()+ '/web/app.php/login_check';
+            } else {
+				// L'url renvoie vers le Cloud
+                if ( ($objSelect.val().match(/http:\/\/54.36.104.188\//)) || ($objSelect.val().match(/http:\/\/vps614872.ovh.net\//)) ) {
+                    urlForm = $objSelect.val() + 'login_check';
+                } else {
+                    urlForm = $objSelect.val() + 'web/app.php/login_check';
+                }
+            }
+        }
+	}
+    $('#myForm').attr('action', urlForm);
+	if (($login_distant == null) || ($password_distant == null)) {
+    	var xhr = getXHR();
+    	xhr.open("POST", "{{ path('lci_boilerbox_getUserLog') }}", false);
+    	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    	xhr.send();
+    	var tabReponse = xhr.responseText.split(';');
+    	$('#_username').val(tabReponse[0]);
+    	$('#_password').val(tabReponse[1]);
+	} else {
+		$('#_username').val($login_distant);
+		$('#_password').val($password_distant);
+	}
+    document.forms['myForm'].submit();
+}
+
+	function desactivationAuth() {
+		var $url_desativation_auth = $('#desactivation_auth').data('url');
+		$.ajax({
+            url: $url_desativation_auth,
+            success: function(html, status) {
+				$html = "<a href=\"{{ path('lci_boilerbox_auth_activation') }}\">Activer l'authentification à double facteur</a>";
+				$('#desactivation_auth').html($html);
+            }
+        });
+	}
+</script>
+{% endblock javascript %}

@@ -1,0 +1,178 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_rapport_suivi_des_sites.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		.alerte {
+			color: red;
+			background-color: red;
+			width: 60px;
+		}	
+		.alerte_ok {
+            color: green;
+            background-color: green;
+            width: 60px;
+        }
+		.alerte_script {
+            color: red;
+            background-color: red;
+        }
+		.alerte_script_texte {
+            color: black;
+            background-color: red;
+			text-align: center;
+        }
+		.ok {
+			color: green;
+            background-color: green;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+		th, td {
+			border: 2px solid black;
+			height: 20px;
+		}
+		th {
+			font-size: 0.9em;
+			padding: 0 10px;
+		}
+		td {
+			font-size: 0.85em;
+			padding-left: 10px;
+		}
+		.site {
+			width: 300px;
+		}
+		.temps {
+			width: 300px;
+			text-align: center;
+		}
+		h1 {
+			font-size: 25px;
+			font-weight: bold;
+			text-align: center;
+			height: 250px;
+		}
+		h2 {
+			font-size: 18px;
+			font-weight: bold;
+			text-align: right;
+	 	}
+
+	 	h3 {
+            font-size: 19px;
+            font-weight: bold;
+			border: 1px solid black;
+			text-align: center;
+        }
+
+	</style>
+</head>
+
+<body>
+<h2>{{ "now"|date_modify("-1 day")|localizeddate('none', 'none', 'FR-fr', null, 'EEEE d MMMM Y') }}</h2>
+<h1>Rapport de suivi des sites Lci</h1>
+
+<br />
+
+{#
+<h3>Liste des affaires ayant été injoignables plus de {{ tab_message['delais'] }} minutes le {{ "now"|date_modify("-1 day")|localizeddate('none', 'none', 'FR-fr', null, 'dd/MM/Y') }}</h3>
+<p>
+{% for key1, affaire in tab_message['rapport'] %}
+	{% if affaire['indisponibilite'] == 1 %}
+		<span> &nbsp; {{ affaire['affaire'] }} &nbsp; - </span>
+	{% endif %}
+{% endfor %}
+</p>
+#}
+
+<br />
+<hr>
+<br />
+{% set noConnexionEcatcher = false %}
+<h3>Sites sous surveillance (en erreur si une connexion est en echec plus de {{ tab_message['delais'] }} minutes dans la journée)</h3> 
+<table>
+	<tr>
+        <th class='site' style='border:2px solid white; color:white;'>Site</th>
+        <th colspan='2'>Indisponibilité <br />constatée</th>
+        <th class='temps'>Tps déconnexion eCatcher</th>
+        <th class='temps'>Tps déconnexion Boiler-Box</th>
+        <th class='temps'>Dernière connexion</th>
+    </tr>
+	{% for key1, affaire in  tab_message['rapport'] %}
+		{% if affaire['erreurScript'] is not empty %}
+		<tr>
+            <td>{{ affaire['affaire'] }} ( {{ key1 }} )</td>
+			<td colspan='2' class="alerte_script"></td>
+			<td colspan='3' class="alerte_script_texte">Erreur ({{ affaire['erreurScript'] }}) rencontrée. Veuillez contacter l'administrateur svp</td>
+		</tr>
+		{% elseif affaire['indisponibilite'] == 1 %}
+		<tr>
+			<td>{{ affaire['affaire'] }} ( {{ key1 }} )</td>
+			<td {% if affaire['echecEcatcher'] is defined %} class="alerte" {% else %} class="alerte_ok" {% endif %}></td>
+			<td {% if affaire['echecBoilerBox'] is defined or affaire['echecEcatcher'] is defined %} class="alerte" {% else %} class="alerte_ok" {% endif %}></td>
+			<td class='temps'>
+				{% if affaire['nombreEchecConnexionEcatcher'] is defined %} 
+					{% if affaire['dureeEchecEcatcher'] | date("H") >= 23 %}
+						Aucune connexion
+						{% set noConnexionEcatcher = true %}
+					{% else %}
+						{{ affaire['dureeEchecEcatcher'] | date("H \\h i \\m\\i\\n s \\s") }} ( {{ affaire['nombreEchecConnexionEcatcher'] }} perte{% if affaire['nombreEchecConnexionEcatcher'] > 1 %}s{% endif %} de connexion )
+					{% endif %}
+				{% else %}
+					OK
+				{% endif %}
+			</td>
+			<td class='temps'>
+    	        {% if affaire['nombreEchecConnexionBoilerBox'] is defined %}
+					{% if affaire['dureeEchecBoilerBox'] | date("H") >= 23 or noConnexionEcatcher == true %}
+                        Aucune connexion
+                    {% else %}
+    	            	{{ affaire['dureeEchecBoilerBox'] | date("H \\h i \\m\\i\\n s \\s") }} ( {{ affaire['nombreEchecConnexionBoilerBox'] }} perte{% if affaire['nombreEchecConnexionBoilerBox'] > 1 %}s{% endif %} de connexion )
+					{% endif %}
+				{% elseif affaire['nombreEchecConnexionEcatcher'] is defined %}
+					{% if affaire['dureeEchecEcatcher'] | date("H") >= 23 %}
+                        Aucune connexion
+                        {% set noConnexionEcatcher = true %}
+                    {% else %}
+                        {{ affaire['dureeEchecEcatcher'] | date("H \\h i \\m\\i\\n s \\s") }} ( {{ affaire['nombreEchecConnexionEcatcher'] }} perte{% if affaire['nombreEchecConnexionEcatcher'] > 1 %}s{% endif %} de connexion )
+                    {% endif %}
+    	        {% endif %}
+			</td>
+			<td>
+				{% if affaire['dateAccesEnSucces'] is not null  %}
+					{{ affaire['dateAccesEnSucces'] | localizeddate('none', 'none', 'FR-fr', null, 'd MMM Y à H:mm:ss') }}</span> sur {% if affaire['typeAccesEnSucces'] == 'ewon' %}eCatcher{% else %}boilerbox.fr{% endif %}
+				{% else %}
+					(tentative le) {{ affaire['dateAcces'] | date("d/m/Y à H\\hi")  }}
+				{% endif %}
+			</td>
+		</tr>
+		{% endif%}
+	{% endfor %}
+    {% for key1, affaire in  tab_message['rapport'] %}
+		{% if affaire['indisponibilite'] == 0 and affaire['erreurScript'] is empty %}
+    		<tr>
+    		    <td>{{ affaire['affaire'] }} ( {{ key1 }} )</td>
+    		    <td colspan='2' class='ok'>Site ok</td>
+    		    <td></td>
+    		    <td></td>
+    		    <td></td>
+    		</tr>
+		{% endif %}
+    {% endfor %}
+</table>
+
+<br />
+<p>
+	<div>IMPORTANT NOTICE</div>
+	<div>*** Ce message est généré automatiquement. Merci de ne pas y répondre.***</div>
+	<div>Assistance IBC</div>
+</p>
+<br />
+<img width="500" src="{{ image_link }}" alt='IPC' align='left' />
+</body>
+
+</html>
+

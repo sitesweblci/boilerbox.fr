@@ -1,0 +1,61 @@
+.main-box{
+	width: fit-content;
+	width: -moz-fit-content;
+	max-width: fit-content;
+	margin: 56px auto 80px auto;
+	padding: 48px;
+	border-radius: 6px;
+	background: white;
+	box-shadow: 0 0 2px 1px rgba(0,0,0,0.1);
+	&__title{
+		margin: 0 0 36px 0;
+		padding: 0 0 12px 0;
+		border-bottom: solid 1px var(--gris-clair);
+		@include title;
+		text-align: left;
+	}
+	&__content{
+		&--padding{
+			padding: 48px;
+			padding-top: 0;
+		}
+	}
+	&__btn{
+		@include flex-row;
+		justify-content: flex-end;
+	}
+	&--table{
+		padding: 0;
+		&__title{
+			padding: 48px;
+			padding-bottom: 0;
+			border: none;
+		}
+		&__content{
+			
+		}
+		&__btn{
+			padding: 48px;
+		}
+	}
+}
+@media screen and (max-height: 960px){
+	.main-box{
+		margin: 40px auto 48px auto;
+		&__content{
+			&--padding{
+				padding: 32px;
+				padding-top: 0;
+			}
+		}
+		&--table{
+			&__title{
+				padding: 32px;
+				padding-bottom: 0;
+			}
+			&__btn{
+				padding: 32px;
+			}
+		}
+	}
+}

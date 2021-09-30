@@ -1,0 +1,40 @@
+body { 
+ background:black;
+ color:white;
+ display:flex;
+ flex-direction:column;
+ text-align:center;
+}
+
+.lien { 
+ color:red;
+ text-decoration:underline;
+}	
+
+.message_info_erreur {
+ color:red;
+}
+
+input {
+ padding:3px;
+ border:1px solid #F5C5C5;
+ border-radius:5px;
+ width:200px;
+ box-shadow:1px 1px 2px #C0C0C0 inset;
+}
+
+input[type=submit], input[type=reset] {
+ width:100px;
+ margin-left:5px;
+ box-shadow:1px 1px 1px #D83F3D;
+ cursor:pointer;
+}
+
+input[type=submit]:hover {
+ background:green;
+}
+
+input[type=reset]:hover {
+ background:red;
+}
+

@@ -1,0 +1,38 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/index.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{% block title %} {{ parent() }}Bons d'interventions{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+{% block fos_user_content %}
+<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1></div>
+<div class='menu_bons'>
+    <div class='menu_ligne1'>
+		{% if is_granted('ROLE_SAISIE_BA') %}
+		<img 	onClick="attente(); redirection('bonsSaisie'); return false;"
+				class="btn_menu" 
+				alt="Saisie BA"
+				src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}" 
+            	onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie_hover.png') }}"
+            	onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}"
+		/>
+		{% endif %}
+		<img 	onClick="attente(); redirection('bonsVisualiser'); return false;"
+				class="btn_menu"
+				alt="Visualisation BA"
+				src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu.png') }}" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu_hover.png') }}"
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu.png') }}"
+		/>
+
+		<img    onClick="attente(); redirection('sitesBAVisualiser'); return false;"
+                class="btn_menu"
+                alt="Visualisation Sites BA"
+                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA.png') }}"
+                onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA_hover.png') }}"
+                onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA.png') }}"
+        />
+    </div>
+</div>
+{% endblock fos_user_content %}

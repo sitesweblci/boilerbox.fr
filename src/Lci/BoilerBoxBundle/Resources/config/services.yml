@@ -1,0 +1,4 @@
+services:
+#    lci_boiler_box.example:
+#        class: Lci\BoilerBoxBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

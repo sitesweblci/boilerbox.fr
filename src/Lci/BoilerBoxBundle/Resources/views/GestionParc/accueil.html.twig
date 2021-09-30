@@ -1,0 +1,52 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/GestionParc/accueil.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+{% block title %} {{ parent() }}Gestion du parc{% endblock title %}
+
+{% block fos_user_content %}
+{{ parent() }}
+<div class='menu_parc'>
+    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+        <div class='menu_ligne1'>
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_module.png') }}" class="btn_menu" alt="Ajouter un module"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_module_hover.png') }}"    
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_module.png') }}"    
+				onClick="attente(); changeAjaxFromVar('accueil'); redirection('ajouterModuleFromAccueil');">
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_signaler_probleme.png') }}" class="btn_menu" alt="Signaler un problème" 
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_signaler_probleme_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_signaler_probleme.png') }}" 
+				onClick="attente(); changeAjaxFromVar('probleme'); definirVariableProvenance('accueil'); redirection('signalerProblemeTechnique');">
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules.png') }}" class="btn_menu" alt="Parc des modules"
+                onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules_hover.png') }}"
+                onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules.png') }}"
+                onClick="attente(); changeAjaxFromVar('parc'); redirection('parcModules');">
+        </div>
+        <div class='menu_ligne2'>
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_equipement.png') }}" class="btn_menu" alt="Ajouter un équipement"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_equipement_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_ajouter_equipement.png') }}"  
+				onClick="attente(); redirection('ajouterEquipementFromAccueil');">
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes.png') }}" class="btn_menu" alt="Liste des problèmes"
+                onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes_hover.png') }}"
+                onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes.png') }}"
+                onClick="attente(); definirVariableProvenance('liste'); redirection('afficherProblemesAdmin');">
+			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements.png') }}" class="btn_menu" alt="Parc des équipements"
+                onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements_hover.png') }}"
+                onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements.png') }}"
+                onClick="attente(); changeAjaxFromVar('parcEquipements'); redirection('parcEquipements');">
+        </div>
+    {% else %}
+        <div class='menu_ligne1'>
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes.png') }}"   onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes_hover.png') }}" onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_liste_problemes.png') }}"     onClick="attente(); redirection('afficherProblemes');" class="btn_menu" alt="Liste des problèmes">
+            <img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules.png') }}" class="btn_menu" alt="Parc des modules"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules_hover.png') }}"    
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_modules.png') }}"        
+				onClick="attente(); changeAjaxFromVar('parc'); redirection('parcModules');">
+			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements.png') }}" class="btn_menu" alt="Parc des équipements"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements_hover.png') }}"
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutonsMenu/btnMenu_parc_equipements.png') }}"
+				onClick="attente(); changeAjaxFromVar('parcEquipements'); redirection('parcEquipements');">
+        </div>
+    {% endif %}
+</div>
+
+{% endblock fos_user_content %}

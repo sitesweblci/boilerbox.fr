@@ -1,0 +1,15 @@
+{# templates/form/fields.html.twig #}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        {%- for error in errors -%}
+			{# On n'affiche qu'une erreur par champs #}
+			{% if loop.index0 == 0 %}
+            	<span class='messagesErreur'>{{ error.message }}</span>
+			{% endif %}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+~
+

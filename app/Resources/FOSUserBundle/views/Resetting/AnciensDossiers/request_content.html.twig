@@ -1,0 +1,24 @@
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+{% block fos_user_content %}
+<div class='listing'>
+	<div class='ajout_objet'>
+	    <h1>Réinitialisation du mot de passe</h1>
+	    <div id='formulaire'>
+			<form action="{{ path('lci_user_resetting_send_email') }}" method="POST">
+			    <div>
+			        {% if invalid_username is defined %}
+			            <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+			        {% endif %}
+			        <label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
+			        <input type="text" id="username" name="username" required="required" />
+			    </div>
+			    <div>
+			        <input type="submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" />
+			    </div>
+			</form>
+	    </div>
+	</div>
+</div>
+{% endblock fos_user_content %}
+

@@ -1,0 +1,4 @@
+services:
+     lci_files:
+         class: 'Lci\FilesBundle\Services\ServiceFiles'
+         arguments: ["@templating", "%files_path%"]

@@ -1,0 +1,41 @@
+# src/Lci/BoilerBoxBundle/Resources/config/validation.yml
+Lci\BoilerBoxBundle\Entity\Site:
+    properties:
+        intitule:
+            - NotBlank:
+            - Length: 
+                min: 3
+                max: 50
+                minMessage: "L'intitulé doit faire au minimum 3 caractères"
+                maxMessage: "L'intitulé doit faire au maximum 50 caractères"
+        affaire:
+            - NotBlank:
+            - Length:
+                min: 4
+                max: 20
+                minMessage: "L'affaire doit faire au minimum 4 caractères"
+                maxMessage: "L'affaire doit faire au maximum 20 caractères"
+
+
+Lci\BoilerBoxBundle\Entity\SiteConnexion:
+    properties:
+        url:
+            - NotBlank:
+            - Url:
+            - Length:
+                max: 200
+                maxMessage: "L'url ne doit pas dépasser 200 caractères"
+
+
+Lci\BoilerBoxBundle\Entity\User:
+    properties:
+        label:
+            - NotBlank:
+            - Length:
+                max: 100
+                maxMessage: "L'url ne doit pas dépasser 100 caractères"
+        email:
+           - Email:
+               message: "'{{ value }}' n'est pas un email valide."
+        username:
+           - NotBlank:

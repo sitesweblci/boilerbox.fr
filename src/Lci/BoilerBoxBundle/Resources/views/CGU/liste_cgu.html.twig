@@ -1,0 +1,273 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_visu_bons.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block meta_viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.39, shrink-to-fit=no">
+{% endblock meta_viewport %}
+
+{% block title %}{{ parent() }} Visualisation des CGU{% endblock title %}
+
+{% block boilerBoxCSS %}
+    {{parent() }}
+    <style>
+        html{
+            background: #f9f9f9 !important;
+        }
+        .flex-table{
+            max-width: 1024px;
+        }
+    </style>
+{% endblock boilerBoxCSS %}  
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+
+{# {% block fos_user_content %} #}
+{% block mainBody %}
+    {#
+    # Pour un utlisateur lambda, seul ses bons sont visualisables.
+    # Pour le service administration, tous les bons sont visualisables.
+    #}
+
+    <header class="sub-header sub-header--blue">
+        <h1 id="entete_de_page" class="sub-header__title" data-src="/bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png">Conditions Générales d'Utilisation</h1>
+    </header>
+
+    {# <div id='entete_de_page' data-src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+        <h1>Liste des CGU</h1>
+    </div> #}
+    <section class="main-box main-box--table">
+        <h1 class="main-box__title main-box--table__title">Liste des CGU</h1>
+        {% if filtre %}
+            <div class='texte_refresh_liste_ba' onClick='refeshResearch();'>
+                <div>Réinitialiser les filtres</div>
+                <div class='refresh_liste_ba'>
+                    <span class='horizontal'></span>
+                    <span class='vertical'></span>
+                </div>
+            </div>
+        {% endif %}
+        <div class="main-box__content">
+            <table class='flex-table' aria-labels="tableau liste des version des CGU">
+                <thead class="flex-table__thead">
+                <tr class="flex-table__row">
+                    <th scope='col' class='selectionnable' onclick="compare('version')">Version</th>
+                    <th scope='col' class='selectionnable' onclick="compare('date');">Mis en place le</th>
+                    <th scope='col' class='selectionnable' onclick="compare('validite')">En cours de validité</th>
+                    <th scope='col' class='selectionnable' onclick="compare('obligatoire')">Obligation d'acceptation</th>
+                    <th scope='col' class='cell-action'></th>
+                </tr>
+                </thead>
+                <tbody id="contenu_tableau_cgu" class="flex-table__tbody">
+                    {% for cgu in tab_cgu %}
+                        <tr class="flex-table__row" data-id="{{ cgu.id }}" data-url-delete="{{ path('lci_cgu_delete', {'cgu': cgu.id}) }}" data-open="{{ path('lci_cgu_download', {'cgu': cgu.id}) }}">
+                            <td data-intitule='version' onClick="{{ "location.href ='" ~ path('lci_cgu_download', {'cgu': cgu.id}) ~ "'" }}">
+                                {{ cgu.version }}
+                            </td>
+                            <td data-intitule='date' onClick="{{ "location.href ='" ~ path('lci_cgu_download', {'cgu': cgu.id}) ~ "'" }}">
+                                {{ cgu.dtImportation | date('d/m/Y')  }}
+                            </td>
+                            <td data-intitule='validite' onClick="{{ "location.href ='" ~ path('lci_cgu_download', {'cgu': cgu.id}) ~ "'" }}">
+                                {{ cgu.cguCourant ? 'Oui' : 'Non' }}
+                            </td>
+                            <td data-intitule='obligatoire' onClick="{{ "location.href ='" ~ path('lci_cgu_download', {'cgu': cgu.id}) ~ "'" }}">
+                                {{ cgu.cguObligatoire ? 'Oui' : 'Non' }}
+                            </td>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <td class="cell-action">
+                                    <span class="tooltip-wrapper" onClick="{{ "location.href ='" ~ path('lci_cgu_delete', {'cgu': cgu.id}) ~ "'" }}">
+                                        <svg width="12" height="14" viewBox="0 0 12 14" class="svg" style="enable-background:new 0 0 12 14;" xml:space="preserve">
+                                            <g>
+                                                <path class="svg-background" d="M1,12c0,1.1,0.9,2,2,2h6c1.1,0,2-0.9,2-2V4H1V12z"/>
+                                                <path class="svg-background" d="M11,1H9c0-0.6-0.4-1-1-1H4C3.4,0,3,0.4,3,1H1C0.4,1,0,1.4,0,2c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1
+                                                        C12,1.4,11.6,1,11,1z"/>
+                                            </g>
+                                        </svg>
+                                        <span class="tooltip">Supprimer</span>
+                                    </span>
+                                </td>
+                            {% elseif is_granted('ROLE_MANAGER') == false %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if is_granted('ROLE_ADMIN') %}
+            <div class='main-box__btn main-box--table__btn'>
+				<a href="{{ path('lci_cgu_form') }}" class="btn btn--main">Ajouter</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock mainBody %}
+{# {% endblock fos_user_content %} #}
+
+{% block javascript %}
+    <script type='text/javascript'>
+
+        /* Variables :  tableau , direction du tri, champs du tri */
+        var tableau = [];
+        var directionTri = 'asc';
+        var choixTri = '';
+
+        function compareVersion(a, b) {
+            if (a.version === b.version) {
+                return 0;
+            }
+            if (directionTri === 'asc') {
+                return (a.version < b.version )?-1:1;
+            } else {
+                return (a.version < b.version )?1:-1;
+            }
+        }
+
+        function compareDate(a, b) {
+            if (a.date === b.date) {
+                return 0;
+            }
+            if (directionTri === 'asc') {
+                return (a.date < b.date )?-1:1;
+            } else {
+                return (a.date < b.date )?1:-1;
+            }
+        }
+
+        function compareValidite(a, b) {
+            if (a.validite === b.validite) {
+                return 0;
+            }
+            if (directionTri === 'asc') {
+                return (a.validite < b.validite )?-1:1;
+            } else {
+                return (a.validite < b.validite )?1:-1;
+            }
+        }
+
+        function compareObligatoire(a, b) {
+            if (a.obligatoire === b.obligatoire) {
+                return 0;
+            }
+            if (directionTri === 'asc') {
+                return (a.obligatoire < b.obligatoire )?-1:1;
+            } else {
+                return (a.obligatoire < b.obligatoire )?1:-1;
+            }
+        }
+
+        /* Enregistrement du tableau php dans un tableau javascript  pour le réaffichage après le tri*/
+        /* parcours des lignes */
+        function litTableauPhp() {
+            tableau = [];
+            $('#contenu_tableau_cgu').children().each(function() {
+                var ligne = {};
+                ligne.id = ($(this).data("id"));
+                ligne.urlDelete = ($(this).data("url-delete"));
+                ligne.open = ($(this).data("open"));
+                /* parcours des colonnes */
+                $(this).children().each(function() {
+                    switch ($(this).data('intitule')) {
+                        case 'version':
+                            ligne.version = $(this).text().trim();
+                            break;
+                        case 'date':
+                            ligne.date = $(this).text().trim();
+                            break;
+                        case 'validite':
+                            ligne.validite = $(this).text().trim();
+                            break;
+                        case 'obligatoire':
+                            ligne.obligatoire = $(this).text().trim();
+                            break;
+                    }
+                });
+                tableau.push(ligne);
+            });
+        }
+
+
+        function compare(quoi) {
+
+            var $srcImgVisualiser = $('#entete_de_page').data('src');
+
+            litTableauPhp();
+            /* Nouveau tableau des données triées */
+            var nouveauTableau = '';
+
+            /* Si on clic sur le même champs tri inverse */
+            if (choixTri === quoi) {
+                if (directionTri === 'asc') {
+                    directionTri = 'desc';
+                } else {
+                    directionTri = 'asc';
+                }
+            } else {
+                choixTri = quoi;
+                directionTri = 'asc';
+            }
+            /* Si on clic sur le même champs tri inverse */
+            switch(quoi) {
+                case 'version':
+                    tableau.sort(compareVersion);
+                    break;
+                case 'date':
+                    tableau.sort(compareDate);
+                    break;
+                case 'validite':
+                    tableau.sort(compareValidite);
+                    break;
+                case 'obligatoire':
+                    tableau.sort(compareObligatoire);
+                    break;
+            }
+
+            /* Création du nouveau tableau */
+            $.each(tableau, function(index, value){
+
+                nouveauTableau += "<tr class='flex-table__row' data-id='" + tableau[index]['id'] + "' data-open='" + tableau[index]['open'] + "' data-url-delete='" + tableau[index]['urlDelete'] + "' >";
+
+                nouveauTableau += "<td data-intitule='version' onClick='location.href =\""+ tableau[index]["open"] + "\"'>";
+                nouveauTableau += tableau[index]['version'];
+                nouveauTableau += "</td>";
+
+                nouveauTableau += "<td data-intitule='date' onClick='location.href =\""+ tableau[index]["open"] + "\"'>";
+                nouveauTableau += tableau[index]['date'];
+                nouveauTableau += "</td>";
+
+                nouveauTableau += "<td data-intitule='validite' onClick='location.href =\""+ tableau[index]["open"] + "\"'>";
+                nouveauTableau += tableau[index]['validite'];
+                nouveauTableau += "</td>";
+
+                nouveauTableau += "<td data-intitule='obligatoire' onClick='location.href =\""+ tableau[index]["open"] + "\"'>";
+                nouveauTableau += tableau[index]['obligatoire'];
+                nouveauTableau += "</td>";
+
+                // nouveauTableau += "<td class='cell-action'></td>";
+                {% if is_granted('ROLE_ADMIN') %}
+                nouveauTableau +="<td class='cell-action' onClick='location.href =\""+ tableau[index]["urlDelete"] + "\"'>" +
+                                    "<span class='tooltip-wrapper'>" +
+                                        "<svg width='12' height='14' viewBox='0 0 12 14' class='svg' style='enable-background:new 0 0 12 14;' xml:space='preserve'>"+
+                                            "<g>"+
+                                                "<path class='svg-background' d='M1,12c0,1.1,0.9,2,2,2h6c1.1,0,2-0.9,2-2V4H1V12z'/>"+
+                                                "<path class='svg-background' d='M11,1H9c0-0.6-0.4-1-1-1H4C3.4,0,3,0.4,3,1H1C0.4,1,0,1.4,0,2c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1"+
+                                                        "C12,1.4,11.6,1,11,1z'/>"+
+                                            "</g>"+
+                                        "</svg>"+
+                                        "<span class='tooltip'>Supprimer</span>"+
+                                    "</span>"+
+                                "</td>"
+                                
+
+                {% elseif is_granted('ROLE_MANAGER') == false %}
+                nouveauTableau += "<td></td>"
+                {% endif %}
+
+                nouveauTableau += "</tr>";
+            });
+            $('#contenu_tableau_cgu').html(nouveauTableau);
+        }
+
+    </script>
+{% endblock javascript %}

@@ -1,0 +1,407 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/changeUserOwnRegistration.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block boilerBoxCSS %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+    <main id="monCompte" data-isadmin="{{ is_granted('ROLE_ADMIN') }}">
+        <header class="headerInterne">
+            <p id="rondMonCompte" class="{{ app.user.couleur }}"><span>{{ app.user.label | slice(0,1) | upper }}</span></p>
+            <div id="titrePageMonCompte">
+                <h1>{{ app.user.prenom }} {{ app.user.nom }}</h1>
+                <h2>{{ app.user.username }}</h2>
+            </div>
+        </header>
+
+		{{ form_start(form, {'attr': {'class':'formMonCompte form'}}) }}
+        <div class="tab-wrapper">
+            <ul class="tab-wrapper__tabs">
+                <li class="tab-wrapper__tabs__tab active " data-tab-target="#monCompteProfil">Profil</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAuthentification">Authentification</li>
+				<li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAutre">Autre</li>
+            </ul>
+
+            <div class="tab-wrapper__content">
+                <div id="monCompteProfil" class="active" data-tab-content>
+                    <h3>Informations</h3>
+                    <div class='cacher'>
+                        {{ form_label(form.enabled) }}
+                        {{ form_widget(form.enabled) }}
+                        <div class="ligne_error">{{ form_errors(form.enabled) }}</div>
+                        {{ form_label(form.modePrive) }}
+                        {{ form_widget(form.modePrive) }}
+                        <div class="ligne_error">{{ form_errors(form.modePrive) }}</div>
+                        {{ form_label(form.langue) }}
+                        {{ form_widget(form.langue) }}
+                        <div class="ligne_error">{{ form_errors(form.langue) }}</div>
+                    </div>
+
+                    <div class="champsAdmin cacher" {% if form.username.vars.value == "Admin" %} style="pointer-events:none;"{% endif %}>
+                        {{ form_label(form.username) }}
+                        {{ form_widget(form.username) }}
+                        <div class="ligne_error">{{ form_errors(form.username) }}</div>
+                    </div>
+
+                    <div class='champsAdmin cacher'>
+                        {{ form_label(form.label) }}
+                        {{ form_widget(form.label) }}
+                        <div class="ligne_error">{{ form_errors(form.label) }}</div>
+                    </div>
+
+                    <div class='champsAdmin desactive'>
+                        {{ form_label(form.nom) }}
+                        {{ form_widget(form.nom) }}
+                        <div class="ligne_error">{{ form_errors(form.nom) }}</div>
+                    </div>
+
+                    <div class='champsAdmin desactive'>
+                        {{ form_label(form.prenom) }}
+                        {{ form_widget(form.prenom) }}
+                        <div class="ligne_error">{{ form_errors(form.prenom) }}</div>
+                    </div>
+
+                    <div class='champsAdmin desactive'>
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
+                        <div class="ligne_error">{{ form_errors(form.email) }}</div>
+                    </div>
+
+                    <div class='champsAdmin cacher'>
+                        {{ form_label(form.roles) }}
+                        <div>{{ form_widget(form.roles) }}</div>
+                        <div class="ligne_error">{{ form_errors(form.roles) }}</div>
+                    </div>
+
+                    <h3 class='champsAdmin cacher'>Activation du compte</h3>
+                    <div class='champsAdmin cacher' id="containerSwitchActivationCompte">
+                        <div class="flexBoxBoutonSwitch">
+                            <label for="activationCompte" id="switchActivationCompte" class="labelBoutonSwitch" data-href="">
+                                <input type="checkbox" id="activationCompte">
+                                <span class="slider"></span>
+                            </label>
+                            <p id='pActivationCompte'>Activer compte</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="monCompteAuthentification" data-tab-content>
+                    <div id="site_siteConnexion_accesDistant">
+                            <h3>Réinitialisation du mot de passe</h3>
+							<div class="champsAdmin">
+								{{ form_label(form.plainPassword.first) }}
+								{{ form_widget(form.plainPassword.first) }}
+								<div class="ligne_error">{{ form_errors(form.plainPassword.first) }}</div>
+							</div>
+
+							<div class="champsAdmin">
+                                {{ form_label(form.plainPassword.second) }}
+                                {{ form_widget(form.plainPassword.second) }}
+								<div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
+                            </div>
+                            <h3>Authentification à deux facteurs</h3>
+                            <div id="containerSwitchAuthentificationDoubleFacteur">
+                                <div class="flexBoxBoutonSwitch">
+                                    <label for="authentificationDoubleFacteur" id="switchAuthentificationDoubleFacteur" class="labelBoutonSwitch" data-href="{{ path('lci_boilerbox_auth_activation') }}">
+                                        <input type="checkbox" id="authentificationDoubleFacteur">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <p>Activer l'authentification à deux facteurs</p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div id="monCompteAutre" data-tab-content>
+                    <h3 {% if not form.vars.value.informations %} class='champsAdmin cacher'{% endif %}>Informations complémentaires</h3>
+                    <div {% if not form.vars.value.informations %} class='champsAdmin cacher' {% else %} class='champsAdmin desactive' {% endif %}>
+                        {{ form_label(form.informations) }}
+                        {{ form_widget(form.informations) }}
+                        <div class="ligne_error">{{ form_errors(form.informations) }}</div>
+                    </div>
+                    <h3>Mode de partage privé</h3>
+                    <p class="explication">
+                        Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
+                    </p>
+                    <div id="choixPrivePublicMonCompte">
+                        <div class="flexBoxBoutonSwitch">
+                            <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="labelBoutonSwitch" data-href="">
+                                <input type="checkbox" id="modePrivePublicMonCompte">
+                                <span class="slider"></span>
+                            </label>
+                            <p id='pModePrive'>Activer mode privé</p>
+                        </div>
+                    </div>
+                    <h3>Préférences</h3>
+                    <div id="choixLangue">
+                        <label>Langue</label>
+                        <div class="select_wrap">
+                            <span>Sélectionner</span>
+                            <ul>
+                                <li data-value="fr"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagFrench.png') }}" />Français</li>
+                                <li data-value="en"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagEnglish.png') }}" />English</li>
+                                <li data-value="de"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagDeutsch.png') }}" />Deutsch</li>
+                                <li data-value="cz"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagCzech.png') }}" />čeština</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="fauxLabel">Couleur</p>
+                    <p class="explication">
+                        La couleur choisie permettra de vous distinguer plus facilement sur les pages communautaire 
+                        <span class="sousExplication">( comme la section commentaire d'un site par exemple )</span>.
+                    </p>
+                    <div id="containerCouleurUser">
+                        <div id="rondCouleurUserOrange" class="rondCouleurUser" onClick="definirCouleur('persoInactif')" ></div>
+                        <div id="rondCouleurUserJaune" class="rondCouleurUser" onClick="definirCouleur('persoJaune')" ></div>
+                        <div id="rondCouleurUserBleu" class="rondCouleurUser" onClick="definirCouleur('persoBleu')" ></div>
+                        <div id="rondCouleurUserVert" class="rondCouleurUser" onClick="definirCouleur('persoVert')" ></div>
+                        <div id="rondCouleurUserRouge" class="rondCouleurUser" onClick="definirCouleur('persoRouge')" ></div>
+                        <div id="rondCouleurUserAzur" class="rondCouleurUser" onClick="definirCouleur('persoAzur')" ></div>
+                        <div id="rondCouleurUserViolet" class="rondCouleurUser" onClick="definirCouleur('persoViolet')" ></div>
+                        <div id="rondCouleurUserMagenta" class="rondCouleurUser" onClick="definirCouleur('persoMagenta')" ></div>
+                    </div>
+                </div>
+            </div>
+            <div id="boutonsForm">
+                <div id="boutonSubmit" class="eyeCatcher {{ app.user.couleur }}" onClick="attente(); document.forms['modification_user'].submit();">Enregistrer</div>
+				{# On renvoi l'administrateur vers la page de gestion des utilisateurs si il ne modifie pas son propre compte, sinon on le renvoi vers la page d'accueil #}
+				{% if is_granted('ROLE_ADMIN') %}
+					{% if form.username.vars.value != app.user.username %}
+						<div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('accueilConfUtilisateur');");>Annuler</div>
+					{% else %}
+						<div class="eyeCatcher eyeCatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+					{% endif %}
+				{% else %}
+                	<div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+				{% endif %}
+            </div>
+        </div>
+		{{ form_end(form) }}
+    </main>
+{% endblock mainBody %}
+
+
+
+{% block javascript %}
+<script type='text/javascript'>
+
+	// *********************** Gestion du slider Authentification double facteur ***********************************
+	// On vérifie si la clé double facteur est activée pour l'utilisateur. Si oui on bouge le bonton slider et on modifie pour appeler la fonction de désactivation double facteur en cas de selection du slider
+	if ($('#modification_user_totpKey').val() != '') 
+	{
+		$('#authentificationDoubleFacteur').prop('checked', true);
+		$('#containerSwitchAuthentificationDoubleFacteur p').text("Désactiver l'authentification à double facteur");
+	}
+	//***************************************************************************************************************/
+
+
+
+	// *********************** Gestion du slider Activation de compte ***********************************************/
+	// Lors du clic sur le slider 'activation compte' on déclanche l'évenement click du checkbox activation compte
+	$('#activationCompte').click(function() {
+		$('#modification_user_enabled').trigger('click');
+	});
+	function activationCompte() 
+	{
+		// On vérifie si le compte est activé ou désactivé pour modifier le slider en conséquence
+		if($('#modification_user_enabled').is(':checked'))
+		{
+			$('#pActivationCompte').text('Désactiver compte');
+			$('#activationCompte').prop('checked', true);
+		} else {
+			$('#activationCompte').prop('checked', false);
+			$('#pActivationCompte').text('Activer compte');
+		}
+	}
+	// Lors de l'évenement click du checkbox activation compte on appel la fonction qui change le text et le slider
+	$('#modification_user_enabled').click(function() {
+		activationCompte();
+	});
+	// On lance la fonction lors du chargement de la page pour être dans le bon 'etat' en fonction de la valeur du paramètre 'enabled'
+	activationCompte();
+	//***************************************************************************************************************/
+
+
+    // *********************** Gestion du slider Mode Privé ********************************************************/
+	// Lors du clic sur le slider ' on déclanche l'évenement click du checkbox 
+	$('#modePrivePublicMonCompte').click(function() {
+        $('#modification_user_modePrive').trigger('click');
+    });
+	function changeModePrive() 
+	{
+		if($('#modification_user_modePrive').is(':checked'))
+        {
+            $('#pModePrive').text('Désactiver mode privé');
+			$('#modePrivePublicMonCompte').prop('checked', true);
+		} else {
+			$('#pModePrive').text('Activer mode privé');
+            $('#modePrivePublicMonCompte').prop('checked', false);
+		}
+	}
+	// Lors de l'évenement click du checkbox on appel la fonction qui change le text et le slider
+	$('#modification_user_modePrive').click(function() {
+        changeModePrive();
+    });
+	// On lance la fonction lors du chargement de la page pour être dans le bon 'etat' 
+	changeModePrive();
+	//***********************************************************************************************************/
+
+
+
+	// *********************** Gestion du slider Langue *********************************************************/
+	// Au chargement de la page on indique la valeur de la langue de l'utilisateur dans le span
+	$(function() {
+		var valeur = $('#modification_user_langue').val();
+		//on affiche son contenu dans le span
+		$('.select_wrap span').html($('.select_wrap ul li[data-value="' + valeur + '"').html());
+	});
+
+    //ouverture et fermeture liste au click
+    $('.select_wrap').click(function() {
+      	$('.select_wrap ul').slideToggle(100);
+    });
+    //fermeture liste au blur
+    $('.select_wrap').mouseleave(function() {
+      	$('.select_wrap ul').slideUp(100);
+    });
+
+    //au click sur un li
+    $('.select_wrap ul li').click(function() {
+      	//on recupere son contenu
+      	var affichage = $(this).html();
+      	//on recupere sa valeur
+      	var valeur = $(this).data('value');
+
+      	//on affiche son contenu dans le span
+      	$('.select_wrap span').html(affichage);
+      	//on attribue sa valeur au champs du formulair
+	  	$('#modification_user_langue').val(valeur);
+    });
+
+
+
+
+
+
+
+	var couleurPerso = "{{ app.user.couleur }}";
+	var isAdmin = $('#monCompte').data("isadmin");
+	if (isAdmin) {
+		$('.champsAdmin').removeClass('cacher');
+		$('.champsAdmin').removeClass('desactive');
+	}
+    definirCouleur(couleurPerso);
+	$('#switchAuthentificationDoubleFacteur').click(function() {
+		document.location.href = $('#switchAuthentificationDoubleFacteur').data('href');
+	});
+
+    var $index = 0;
+
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+
+	function definirCouleur(couleur) {
+        changeCouleur(couleur);
+		$('#modification_user_couleur').val(couleur);	
+		$('#rondMonCompte').removeClass();
+		$('#rondMonCompte').addClass(couleur);
+		/* On retire la class de la couleur personnelle avant de lui ajouter la nouvelle classe de couleur*/
+		$('#boutonSubmit').removeClass(couleurPerso);
+		$('#boutonSubmit').addClass(couleur);
+		$('#btnIdentified').removeClass(couleurPerso);
+		$('#btnIdentified').addClass(couleur);
+		couleurPerso = couleur;
+	}
+    function changeCouleur(couleur){
+        switch(couleurPerso){
+            case 'persoInactif':
+            $('#rondCouleurUserOrange').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoJaune':
+            $('#rondCouleurUserJaune').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoBleu':
+            $('#rondCouleurUserBleu').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoVert':
+            $('#rondCouleurUserVert').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoRouge':
+            $('#rondCouleurUserRouge').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoAzur':
+            $('#rondCouleurUserAzur').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoViolet':
+            $('#rondCouleurUserViolet').removeClass('rondCouleurUserActif');
+            break;
+            case 'persoMagenta':
+            $('#rondCouleurUserMagenta').removeClass('rondCouleurUserActif');
+            break;
+        }
+        switch(couleur){
+            case 'persoInactif':
+            $('#rondCouleurUserOrange').addClass('rondCouleurUserActif');
+            break;
+            case 'persoJaune':
+            $('#rondCouleurUserJaune').addClass('rondCouleurUserActif');
+            break;
+            case 'persoBleu':
+            $('#rondCouleurUserBleu').addClass('rondCouleurUserActif');
+            break;
+            case 'persoVert':
+            $('#rondCouleurUserVert').addClass('rondCouleurUserActif');
+            break;
+            case 'persoRouge':
+            $('#rondCouleurUserRouge').addClass('rondCouleurUserActif');
+            break;
+            case 'persoAzur':
+            $('#rondCouleurUserAzur').addClass('rondCouleurUserActif');
+            break;
+            case 'persoViolet':
+            $('#rondCouleurUserViolet').addClass('rondCouleurUserActif');
+            break;
+            case 'persoMagenta':
+            $('#rondCouleurUserMagenta').addClass('rondCouleurUserActif');
+            break;
+        }
+    }
+
+    /*Vérification de la conformité des mots de passe si la checkbox est cochée
+    function checkPasswd() {
+        if ($('input[type="checkbox"][name="newPassword"]').is(':checked') == true) {
+            var passwd1 = $('#motDePasse').val();
+            var passwd2 = $('#verificationMotDePasse').val();
+            if (passwd1 == '') {
+                alert('Le mot de passe ne doit pas être vide');
+            } else if(passwd1 != passwd2) {
+                alert('Les mots de passes ne sont pas identiques');
+            } else {
+                document.forms['myForm'].submit();
+            }
+        } else {
+            document.forms['myForm2'].submit();
+        }
+        fin_attente();
+    }*/
+
+</script>
+{% endblock javascript %}
+
+
+
+

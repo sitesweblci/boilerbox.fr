@@ -1,0 +1,16 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_site_en_erreur.html.twig #}
+<!DOCTYPE html>
+<html>
+
+<body>
+<h1 {% if tab_message['erreur'] == true %}style='color: red; font-size:25px; margin-bottom:50px;' {% else %} style='color: blue; font-size:25px; margin-bottom:50px;' {% endif %}>{{ tab_message['titre'] }}</h1>
+	
+{% for message in tab_message['message'] %} 
+	{{ message | raw }} <br />
+{% endfor %}
+<br />
+<img width="300" src="{{ image_link }}" alt='IPC' align='left' />
+</body>
+
+</html>
+

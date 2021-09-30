@@ -1,0 +1,37 @@
+.flex-table{
+	border: none;
+	border-collapse: collapse;
+	&__thead{
+		color: var(--gris-profond);
+		font-size: 10pt;
+		font-weight: 400;
+		th{
+			padding-bottom: 16px;
+			text-align: left;
+			border-spacing: 0 30px;
+		}
+	}
+	&__tbody{
+		color: black;
+		font-size: 14pt;
+		font-weight: 400;
+		tr{
+			background: white;
+			cursor: pointer;
+			&:hover{
+				background: #e5e5e5;
+			}
+			td{
+				padding: 16px 0;
+				border-top: solid 1px #e5e5e5;
+				text-align: left;
+				border-spacing: 0 30px;
+			}
+		}
+
+	}
+	&__row{
+		@include flex-row;
+		justify-content: space-between;
+	}	
+}

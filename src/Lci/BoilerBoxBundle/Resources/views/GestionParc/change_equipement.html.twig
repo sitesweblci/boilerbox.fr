@@ -1,0 +1,53 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/GestionParc/change_equipement.html.twig #}
+{% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
+
+
+{% block fos_user_content %} 
+{{ parent() }}
+<div class='listing'>
+	<div class='ajout_objet'>
+		<h1>Changement d'état</h1>
+		<h2>Equipement : {{ form.type.vars.value }}</h2>
+	    <div class='formulaire'>
+			{{ form_start(form, {'action':path('lci_change_parc_equipements'), 'method':'POST', 'name':'myForm'}) }}
+				{{ form_errors(form) }}
+				<div>{{ form_widget(form.actif) }} {{ form_label(form.actif) }}</div>
+				<div class='cacher'>
+					{{ form_row(form.type) }}
+	                {{ form_row(form.id) }}
+	            </div>
+				{{ form_rest(form) }}
+			{{ form_end(form) }}
+	    </div>
+		<div class='validation_formulaire'> 
+			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" class="btn_menu" alt="Changer l'équipement"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement_hover.png') }}" 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" 
+				onClick="attente(); document.forms['myForm'].submit();" >
+			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" class="btn_menu" alt="Retour au parc"
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc_hover.png') }}" 	
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" 	  
+				onClick="attente(); redirection('parcEquipements');">
+		</div>
+	</div>
+</div>
+
+<script type='text/javascript'>	
+	$(document).ready(function(){
+		$('#equipement_actif').click(function() {
+			var $isNotChecked = $('#equipement_actif').is(':checked');
+			if (! $isNotChecked) {
+				if (confirm('Désactivation de l'équipement demandé !')) {
+					/* OK */
+					/* change OK + checked => not checked*/
+					$('#equipement_actif').prop('checked', false);
+				} else {
+					/* change ANNULER + checked => checked */
+            	    $('#equipement_actif').prop('checked', true);
+				}
+			}
+		});
+	});
+</script>
+{% endblock fos_user_content %}
+

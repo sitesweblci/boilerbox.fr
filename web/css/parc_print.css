@@ -1,0 +1,1408 @@
+html {
+  /*background: linear-gradient(to right,#252b33,#000000);*/
+  font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
+  /*color: #FFF;*/
+}
+
+
+/* Suppression des flèches sur les input de type integer */
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Chrome */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button { 
+-webkit-appearance: none;
+margin:0;
+}
+
+/* Opéra*/
+input::-o-inner-spin-button,
+input::-o-outer-spin-button { 
+-o-appearance: none;
+margin:0
+}
+
+img {
+  cursor: pointer;
+}
+
+input {
+  box-sizing: border-box;
+  border: none;
+}
+
+
+
+.cacher {
+  display: none;
+}
+.invisible {
+  visibility: hidden;
+}
+
+#bloc_header {
+  min-height: 50px; 
+}
+.entete_gauche {
+  display: flex;
+  flex-direction: column;
+}
+.logout {
+  position: absolute;
+  display: flex;
+  top: 10px;
+  right: 10px;
+  z-index: 99;
+}
+.logout>div {
+  margin-right: 15px;
+}
+.version_boilerbox p {
+  margin-top: 5px;
+  margin-bottom: 0px;
+  font-size: 12px;
+}
+.userLabel {
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+
+#bloc_body {
+  /*position: fixed;
+  top: 50px;
+  left: 0px;
+  right: 0px;
+  /*bottom: 0px;*/
+/*
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;*/
+}
+
+/* Utilisé sur la page d'accueil de la partie Administration */
+.menu_administration {
+  display: flex;
+  width: 400px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: -200px;
+}
+.menu_administration .validation_formulaire_retour {
+  order: 1;
+  margin-bottom: 50px;
+  margin-right: -20px;
+}
+
+.menu_administration .menu_ligne1 {
+  order: 2;
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+}
+.menu_administration .menu_ligne2 {
+  order: 3;
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+}
+/* ############################################################ */
+
+
+
+/* Utilisé sur la page d'accueil de la partie Parc Technique */
+.menu_parc {
+  display: flex;
+  width: 550px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: -200px;
+}
+.menu_parc .validation_formulaire_retour {
+  order: 1;
+  margin-bottom: 50px;
+  margin-right: -20px;
+}
+
+.menu_parc .menu_ligne1 {
+  order: 2;
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+}
+.menu_parc .menu_ligne2 {
+  order: 3;
+  display: flex;
+  justify-content: space-between;
+  width: 550px;
+}
+/* ############################################################ */
+
+
+
+.module_selectionne {
+  font-size: 13px;
+  font-style: italic;
+}
+.ajout_objet {
+  position: fixed
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 2px solid gray;
+  border-radius: 5px;
+  width: 450px;
+  margin-top: 200px;
+  margin-left: 150px;
+  padding-left: 20px;
+}
+
+.ajout_objet h1 {
+  margin-top: 30px;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  text-align: center;
+}
+
+.ajout_objet h2 {
+  text-transform: capitalize;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  margin-top: -6px;
+}
+
+.ajout_objet input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.form_zone_date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 350px;
+}
+
+
+.validation_formulaire {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 25px;
+  width: 350px;
+}
+
+.img_validation_formulaire {
+  height: 35px;
+}
+
+.validation_formulaire_end {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+.validation_formulaire_end div{
+  margin-left: 10px;
+}
+.validation_formulaire_solo {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  width: 350px;
+}
+
+.validation_formulaire_ticket {
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  margin-top: 10px;
+  width: 350px;
+}
+
+.ajout_objet .label_smalltext {
+  position: relative;
+  top: -3px;
+}
+
+
+.label_smalltext {
+  font-size: 13px;
+}
+.label_date {
+  font-size: 13px;
+}
+
+
+.input_txt {
+  width: 200px;
+  margin-bottom: 10px;
+}
+.input_select {
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.input_txt_large {
+  width: 350px;
+  height: 25px;
+  border-radius: 5px;
+  padding-left:10px;
+}
+.input_date {
+  width: 100px;
+  height: 25px;
+  border-radius: 5px;
+  padding-left:10px;
+}
+.input_checkbox {
+  margin: 0;
+}
+
+
+
+.btn_menu {
+  width: 170px;
+}
+.btn_small_menu {
+  width: 30px;
+}
+.btn_associer {
+  height: 30px;
+}
+.btn_picto {
+  width: 40px;
+}
+.btn_moyen_picto {
+  width: 25px;
+}
+.btn_petit_picto {
+  width: 15px;
+}
+
+
+
+.checkbox {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+
+.listing {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: -110px;
+}
+
+.listing2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.listing2 h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  width: 100%;
+  height: 50px;
+  margin: 0px;
+}
+
+.listing2 h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: black;
+  width: 100%;
+  height: 50px;
+  margin: 0px;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+a:link {
+  text-decoration: none;
+  color: white;
+}
+a:hover {
+  text-decoration: underline;
+  color: white;
+}
+a.a_nombre_problemes:hover {
+  text-decoration: none;
+  color: white;
+}
+a:visited {
+  text-decoration: none;
+  color: white;
+}
+a:active {
+  text-decoration: none;
+  color: white;
+}
+  
+
+.formulaire {
+  position: relative;
+  width: 350px;
+}
+
+.formulaire h1 {
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 0px;
+  text-transform: capitalize;
+}
+.formulaire select {
+  width: 280px;
+  min-height: 25px;
+  border-radius: 5px;
+}
+
+.formulaire select.input_select {
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.formulaire_liste {
+  box-sizing: border-box;
+}
+
+
+
+
+
+/* CSS commun à tous les tableaux de type listing */
+.formulaire_liste table.tableau_listing {
+  border-collapse: collapse;
+  border-spacing: 0;
+  /*background-color: #240909;*/
+}
+.formulaire_liste table.tableau_listing thead, tbody tr {
+  /*display: table;*/
+  table-layout: fixed;
+  /*background-color: #240909;*/
+}
+
+.formulaire_liste table.tableau_listing thead {
+  border:2px solid blue;
+  margin-top: 20px;
+  padding-top: 50px;
+}
+
+.formulaire_liste table.tableau_listing thead th {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.formulaire_liste table.tableau_listing thead th.titre {
+  color: red;
+  font-size: 25px;
+  text-align: center;
+}
+
+.formulaire_liste table.tableau_listing tbody {
+  display: block;
+  /*color: red; /*white;*/
+  /*max-height: 500px;*/
+  overflow-y: scroll;
+}
+.formulaire_liste table.tableau_listing tbody td {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 12.8px;
+  /*font-weight: 600;*/
+  letter-spacing: -1px;
+  border: none;
+}
+
+/*
+.formulaire_liste table.tableau_listing tbody tr:nth-child(even) {
+  background-color:#252b33;
+}
+.formulaire_liste table.tableau_listing tbody tr:nth-child(odd) {
+  background-color:#240909;
+}
+*/
+/* ############################################################# */
+
+
+
+/* CSS spécifique au tableau d'affichage du parc des modules */
+.formulaire_liste table.tab_liste .tab_liste_modules th {
+  height: 40px;
+  background-color: #A1ABE2;
+}
+.formulaire_liste table.tab_liste .tab_liste_modules td {
+  height: 30px;
+}
+/* ############################################################# */
+
+
+
+/* CSS commun aux tableaux du parc */
+.formulaire_liste table.tab_liste thead {
+  background-color: white;
+  color: black;
+}
+.formulaire_liste table.tab_liste thead th {
+  height: 40px;
+}
+.formulaire_liste table.tab_liste th, .formulaire_liste table.tab_liste td{
+  border-right: 1px solid gray;
+  min-height: 40px;
+}
+.formulaire_liste table.tab_liste tbody .zone_texte_ellipsis {
+  color: red;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* ############################################################# */
+
+
+
+
+.formulaire_liste .zone_texte_mini {
+  max-width: 50px;
+  min-width: 50px;
+}
+.formulaire_liste .centrer {
+  text-align: center !important;
+}
+.formulaire_liste .zone_texte_petit {
+  max-width: 100px;
+  min-width: 100px;
+}
+.formulaire_liste .zone_texte_moyen {
+  max-width: 150px;
+  min-width: 150px;
+}
+.formulaire_liste .zone_texte_grand {
+  max-width: 280px;
+  min-width: 280px;
+}
+.formulaire_liste .zone_texte_tres_grand {
+  max-width: 500px;
+  min-width: 500px;
+}
+
+
+.formulaire_liste td.zone_texte_grand {
+  font-size:0.9em;
+}
+
+
+
+div.impression {
+  font-size: 14px;
+  margin-left: 20px;
+  counter-reset: numero_page; 
+}
+
+table.impression_problemes thead th.titre {
+  height: 100px;
+  font-size: 22px;
+  width: 500px;
+}
+
+table.impression_problemes thead th.en-tete {
+  text-align: left;
+  font-weight: normal;
+  font-size: 10px;
+  padding-top: 10px;
+}
+
+table.impression_problemes span.fin_de_page:after {
+  display:inline-block; counter-increment:numero_page; content:"Page " counter(numero_page); width:98%; text-align:right; margin-top:-25px; margin-bottom:30px;
+}
+
+table.impression_problemes_body {
+  border: 2px solid black;
+  margin-bottom: 10px;
+  page-break-inside: avoid;
+}
+
+table.impression_problemes_body th, table.impression_problemes_body td {
+  padding-left: 10px;
+}
+
+table.impression_problemes_body th {
+  border-right: 2px solid gray;
+  height: 20px;
+  text-align: left;
+}
+
+table.impression_problemes_body td {
+  vertical-align: top;
+}
+
+table.impression_problemes_body .zone_texte_mini {
+  max-width: 70px;
+  min-width: 70px;
+}
+table.impression_problemes_body .centrer {
+  text-align: center !important;
+}
+table.impression_problemes_body .zone_texte_petit {
+  max-width: 100px;
+  min-width: 100px;
+}
+table.impression_problemes_body .zone_texte_moyen {
+  max-width: 150px;
+  min-width: 150px;
+}
+table.impression_problemes_body .zone_texte_grand {
+  max-width: 280px;
+  min-width: 280px;
+}
+table.impression_problemes_body .zone_texte_tres_grand {
+  max-width: 500px;
+  min-width: 500px;
+}
+
+
+
+
+
+.selectionnable {
+  cursor: pointer;
+}
+
+
+.debut_ligne {
+  margin-bottom: 20px;
+}
+.fin_liste {
+  margin-top: 25px;
+}
+
+.export_liste_problemes {
+  position: absolute;
+  left: 0px;
+}
+
+.regular { 
+  font-weight: normal !important;
+}
+
+.centrer {
+  text-align: center;
+}
+
+
+.def {
+  color: white;
+}
+.mid {
+  color: orange;
+}
+.ok {
+  color: green;
+}
+.nok {
+  color: red;
+}
+
+
+
+.taille_texte_grand {
+  font-size: 18px;
+}
+
+.taille_texte_moyen {
+  font-size: 16px;
+}
+
+.taille_texte_petit {
+  font-size: 12px;
+}
+
+.ajout_espace_top {
+  margin-top: 20px;
+}
+.position_logo_fiche_ticket {
+  margin-top: 60px;
+  margin-left: 40px;
+}
+
+#description_du_ticket {
+  position: fixed;
+  max-width: 1300px; 
+  top: 100px; 
+  text-align: center;
+}
+
+.td_liste_pb_module {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.nouveau_probleme_ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.nouveau_probleme_ligne div{
+  min-width: 175px;
+}
+.nouveau_probleme_ligne div.texte_box {
+  width: calc(100% - 0.5em);
+  height: calc(100% - 0.5em);
+}
+.formulaire a:link {
+  text-decoration: none;
+  color: #0066FF;
+}
+.formulaire a:hover {
+  text-decoration: underline;
+  color: #0066FF;
+}
+.formulaire a.a_nombre_problemes:hover {
+  text-decoration: none;
+  color: #0066FF;
+}
+.formulaire a:visited {
+  text-decoration: none;
+  color: #0066FF;
+}
+.formulaire a:active {
+  text-decoration: none;
+  color: #0066FF;
+}
+
+
+.frm_texte_box {
+  width: 100%;
+  height: 80px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.validation_formulaire_ticket .div_fichier_joint {
+  height: 170px;
+  overflow: auto;
+}
+
+
+.validation_formulaire_ticket .div_boutons_validation {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.menu_raccourci {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+  width:220px;
+  top: 60px;
+  right: -180px;
+}
+.menu_raccourci>div {
+  display: flex;
+  align-items: center;
+  width:100%;
+}
+.petit_menu_principal {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  display: flex;
+  justify-content: space-between;
+  width: 35px;
+}
+.menu_date {
+  position: relative;
+  top: 10px;;
+  width: 350px;
+  font-size: 12px;
+}
+
+.frm_lien_centrer {
+  width: 100%;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+
+
+
+
+
+
+.input_login {
+  border: #006ab3 solid 3px;
+  border-radius: 3px;
+  font-size: 16px;
+  height: 28px;
+  margin: 10px 10px;
+  padding: 0 10px;
+  background: #292929;
+  color: #FFF;
+  width: 204px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+
+#horaireAction {
+  color: black;
+  font-size: 10px;
+  text-align: right;
+  padding-right: 13px;
+}
+.boxlogin {
+  z-index:5;
+  background: #FFF;
+  width: 250px;
+  position: fixed;
+  left: 5%;
+  top: 50%;
+  margin-top: -250px;
+  vertical-align: middle;
+  border-radius: 20px;
+  text-align: left;
+  border-top-left-radius: 0;
+  -moz-box-shadow: 8px 8px 12px #000;
+  -webkit-box-shadow: 8px 8px 12px #000;
+  box-shadow: 8px 8px 12px #000;
+  padding: 5px 5px 20px 5px;
+}
+#logo-IBC {
+  margin: 0 0 10px 0;
+}
+#logo-IBC .img {
+  width: 81px;
+  height: 81px;
+  float: left;
+  background: no-repeat;
+  display: block;
+}
+#logo-IBC .txt {
+  padding: 18px 0 0 89px;
+  display: block;
+  color: #4b4b4b;
+  text-align: left;
+  font-size: 22px;
+  line-height: 15pt;
+}
+#logo-IBC span {
+  color: #0a71b4;
+}
+.icone {
+  width: 60px;
+  height: 75px;
+  background: #FFF;
+  display: inline-block;
+  margin: 15px 5px 10px 10px;
+  border-radius: 5px;
+  border: 3px solid #4b4b4b;
+  background: url(../images/chaudiere.png) no-repeat;
+  background-position: 4px 15px;
+}
+.codeaffaire {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 16px;
+  color: #4b4b4b;
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+}
+.logoChaudiere {
+  margin-top: 25px;
+}
+.affaire {
+  width: 160px;
+  height: 76px;
+  position: absolute;
+  color: #333;
+  display: inline-block;
+  margin-top: 35px;
+}
+.affaire span {
+  font-family: Verdana, Geneva, sans-serif;
+  text-align: left;
+  line-height: normal;
+  font-size: 16px;
+  color: #4b4b4b;
+  display: table-cell;
+  vertical-align: middle;
+  height: 76px;
+  padding-left: 10px;
+}
+.boxlogin .bouton {
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 16px;
+  margin: 13px 0 0 5px;
+  float: right;
+  margin-right: 10px;
+  text-transform: uppercase;
+  background: none;
+}
+.bouton.blue {
+  color: #006ab3;
+  border: #006ab3 solid 3px;
+}
+.bouton.green {
+  color: #3fa740;
+  border: #3fa740 solid 3px;
+}
+.bouton.red {
+  color: #FF0000;
+  border: #FF0000 solid 3px;
+}
+#_submit {
+  background: none;
+  border: none;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #006ab3;
+  margin: 2px;
+  height: 21px;
+  font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+  padding: -1px 8px -3px 8px;
+}
+#_submit:hover {
+  background: #006ab3;
+  width: auto;
+  display: inline-block;
+  padding: -1px 8px -3px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+}
+#horodatage {
+  z-index: 1;
+  margin: 20px;
+  text-align: center;
+  color: #264d68;
+  font-weight: bold;
+  position: fixed;
+  right: 2%;
+  bottom: 2%;
+}
+.heure {
+  font-size: 120px;
+  line-height: 55px;
+}
+.date {
+  font-size: 55px;
+  text-transform: uppercase;
+}
+#messagebox {
+  position: fixed;
+  z-index: 5;
+  background-color: #333;
+  width: 460px;
+  top: 300px;
+  left: 50%;
+  margin-left: -250px;
+  color: #FFF;
+  padding: 10px 20px 20px 20px;
+  border: #000 solid 3px;
+}
+#messagebox a {
+  color: inherit;
+  text-transform: uppercase;
+}
+#messagebox .bouton {
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 16px;
+}
+.right {
+  width: 100%;
+  text-align: right;
+}
+.cacher {
+  display: none;
+}
+.bgbouton {
+  background: none;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 2px 8px 1px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  width: 200px;
+}
+.green .bgbouton:hover {
+  background: #3fa740;
+  width: auto;
+  display: inline-block;
+  padding: 2px 8px 1px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #FFF;
+  width: 200px;
+}
+.blue .bgbouton:hover {
+  background: #006ab3;
+  width: auto;
+  display: inline-block;
+  padding: 2px 8px 1px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #FFF;
+  width: 200px;
+}
+.red .bgbouton:hover {
+  background: #FF0000;
+  width: auto;
+  display: inline-block;
+  padding: 2px 8px 1px 8px;
+  margin: 2px;
+  border-radius: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #FFF;
+  width: 200px;
+}
+.shadowing {
+  opacity: 0.3;
+  filter: alpha(opacity=70);
+  z-index: 1;
+}
+.validationbouton div.bouton {
+  width: 130px;
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 5px;
+  padding-bottom: 3px;
+  border-radius: 15px;
+  border: #202a36 solid 3px;
+  font-size: 16px;
+  text-align: center;
+}
+.validationbouton a {
+  color: #FFF;
+  text-align: center;
+  text-transform: uppercase;
+}
+.btn-disable {
+  pointer-events: none;
+}
+.destination_site {
+  text-align: center;
+  width: 100%;
+}
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 99;
+}
+.logout a {
+  color: white;
+}
+.logout a:hover {
+  color: white;
+}
+.up_titre_page {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  z-index: 98;
+}
+.up_titre_page p {
+  font-size: 10px;
+}
+
+
+
+@media screen and (max-width:810px) and (max-height:600px) {
+.heure {
+  font-size: 50px;
+  line-height: 20px;
+}
+.date {
+  font-size: 40px;
+  text-transform: uppercase;
+}
+}
+@media screen and (max-width:550px) and (max-height:570px) {
+.heure {
+  font-size: 20px;
+  line-height: 15px;
+}
+.date {
+  font-size: 25px;
+  text-transform: uppercase;
+}
+}
+@media screen and (max-width:450px) and (max-height:570px) {
+#horodatage {
+  display: none;
+}
+}
+@media screen and (max-width:500px) and (min-height:570px) {
+.heure {
+  font-size: 20px;
+  line-height: 15px;
+}
+.date {
+  font-size: 25px;
+  text-transform: uppercase;
+}
+}
+
+
+
+
+@media screen and (max-height:500px) {
+.boxlogin {
+  background: #FFF;
+  width: 250px;
+  position: absolute !important;
+  left: 80px;
+  top: 5px;
+  margin-top: 5px;
+  vertical-align: middle;
+  border-radius: 20px;
+  text-align: left;
+  border-top-left-radius: 0;
+  -moz-box-shadow: 8px 8px 12px #000;
+  -webkit-box-shadow: 8px 8px 12px #000;
+  box-shadow: 8px 8px 12px #000;
+  padding: 5px 5px 20px 5px;
+}
+}
+
+
+
+@media screen and (max-height:400px) {
+.icone {
+  width: 60px;
+  height: 0px;
+  background: #FFF;
+  display: inline-block;
+  margin-bottom: 10px;
+  margin-top:-10px;
+  border-radius: 5px;
+  border: none;
+  background: url(../images/chaudiere.png) no-repeat;
+  background-position: 4px 15px;
+}
+.affaire {
+  width: 160px;
+  height: 20px;
+  position: absolute;
+  color: red;
+  display: inline-block;
+  margin-top: 10px;
+  padding-bottom: 0px;
+}
+.affaire span {
+  font-family: Verdana, Geneva, sans-serif;
+  text-align: left;
+  line-height: normal;
+  font-size: 16px;
+  color: #4b4b4b;
+  display: table-cell;
+  vertical-align: middle;
+  height: 40px;
+  padding-left: 10px;
+}
+}
+
+@media screen and (max-height:330px) {
+#logo-IBC {
+  display: none;
+}
+}
+
+.enTeteLogin {
+  position: relative;
+}
+.optionAffaire {
+  position: absolute;
+  color: #333;
+  display: inline-block;
+  top: 45%;
+  font-size: 15px;
+  text-align: center;
+}
+
+.boxlogin select {
+  width:240px;
+}
+
+.checkLive {
+  color: #333;
+  font-size: 12px;
+}
+
+
+
+
+.display_flex_row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+.display_flex_column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.display_flex_row_start {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.display_flex_row_start div {
+  margin-right: 5px;
+}
+
+
+
+label[for="lci_user_registration_roles_0"] {
+ display: none;
+}
+
+#message_flashinfo {
+  position: fixed;
+  top: 100px;
+  display:flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#erreurs_formulaires {
+  position: fixed;
+  top: 200px;
+  display:flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.erreur_formulaire {
+  position:absolute; 
+  color:red;
+  padding-top: 7px; 
+  padding-left:10px;
+  margin-top: 14px;
+  font-size: 10px;
+  width:100%;
+}
+
+/* CSS pour la page gestion des liens */
+.formulaire #zoneUser h1, .formulaire #zoneSite h1  {
+  font-size: 13px;
+  text-align: left;
+  padding-left: 5px;
+  text-transform: none;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.formulaire #separateur {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom:10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+
+.formulaire #zoneUser select, .formulaire #zoneSite select {
+  width: 170px;
+  height: 15px;
+  font-size:12px;
+}
+
+
+
+
+.formulaire_liste table.tab_liste_liens th:first-child span {
+  position: relative;
+  font-size: 10px;
+  display: inline-block;
+  bottom: 5px;
+}
+.formulaire_liste table.tab_liste_liens th:first-child input[type='checkbox'] {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(0.6); /* IE */
+    -moz-transform: scale(0.6); /* FF */
+    -webkit-transform: scale(0.6); /* Safari and Chrome */
+    -o-transform: scale(0.6); /* Opera */
+    border-radius: 5px;
+}
+.formulaire_liste table.tab_liste_liens thead {
+  background-color: gray;
+  color: black;
+}
+
+.formulaire_liste table.tab_liste_liens th, td{
+  height: 15px;
+}
+.formulaire_liste table.tab_liste_liens thead th {
+  font-size: 12px;
+}
+/* ################################## */
+
+.administrateur {
+  color: greenyellow;
+}
+
+.technicien {
+  color: white;
+}
+
+.client {
+  color: red;
+}
+
+.responsable_de_parc {
+  color: cyan;
+}
+
+
+#tab_legende_disponibilite_site {
+  font-size: 12px;
+}
+
+.feuTricolor .nok, .ok, .mid {
+  height: 10px;
+}
+.feuTricolor .nok:before {
+  display: block; 
+  width:10px; 
+  height:10px; 
+  content: ''; 
+  background: red; 
+  border-radius: 50px;
+  margin: auto;
+}
+
+.feuTricolor .ok:before {
+  display: block; 
+  width:10px; 
+  height:10px; 
+  content: ''; 
+  background: green; 
+  border-radius: 50px;
+  margin: auto;
+}
+
+.feuTricolor .mid:before {
+  display: block; 
+  width:10px; 
+  height:10px; 
+  content: ''; 
+  background: orange; 
+  border-radius: 50px;
+  margin: auto;
+}
+
+#tableau_detail_disponibilite {
+  position: relative;
+  margin-top: 50px;
+  border:2px solid white;
+  border-radius: 5px;
+  height: 230px;
+  width: 715px;
+}
+#tableau_detail_disponibilite .detail {
+  overflow: auto;
+  background-color:#252b33;
+  height: 185px;
+}
+#tableau_detail_disponibilite h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  width: 100%;
+  height: 40px;
+  margin: 0px;
+  border-bottom: 2px solid white;
+  background-color:white;
+  color: black;
+}
+
+
+.cursor_wait {
+  cursor: wait;
+}
+.informations_disponibilite {
+  width: 100%; 
+  padding-left: 5px;
+}
+
+.notToBePrinted {
+  display: none;
+}
+
+.top_droit {
+	position: absolute; 
+    right: 0;
+}

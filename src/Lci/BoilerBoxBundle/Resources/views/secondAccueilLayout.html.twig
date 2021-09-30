@@ -1,0 +1,32 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/secondAccueilLayout.html.twig #}
+{% extends "::accueilLayout.html.twig" %}
+
+
+{% block liens_menu %}
+{{ parent() }}
+
+    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+		<div class='sousmenu_boiler'>
+           	<a href="{{ path('lci_gestion_parc') }}" title='Gestion du parc technique'>Parc technique {% if nombre_problemes_affectes is defined %}({{ nombre_problemes_affectes }}){% endif %}</a>
+		</div>
+    {% elseif is_granted('ROLE_TECHNICIEN') %}
+		<div class='sousmenu_boiler'>
+           <a href="{{ path('lci_problemes_affectes') }}" title='Gestion du parc technique'>Problèmes techniques {% if nombre_problemes_affectes is defined %}({{ nombre_problemes_affectes }}){% endif %}</a>
+		</div>
+    {% endif %}
+	{% if is_granted('ROLE_GESTION_BA') or is_granted('ROLE_TECHNICIEN') %}
+		<div class='sousmenu_boiler'>
+			<a href="{{ path('lci_bons_attachements') }}" title="Gestion des bons d'interventions">Bons d'interventions</a>
+		</div>
+	{% endif %}
+{% endblock liens_menu %}
+
+{% block javascript %}
+    {% include "boilerbox/connexion.js" %}
+{% endblock javascript %}
+
+{% block body %}
+    {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+    {% block fos_user_content %}
+	{% endblock fos_user_content %}
+{% endblock %}

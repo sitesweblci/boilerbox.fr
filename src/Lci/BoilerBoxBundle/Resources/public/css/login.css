@@ -1,0 +1,267 @@
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 8vh;
+    left: auto;
+    right: auto;
+    width: 12vw;
+    min-width: 300px;
+    margin: 0 auto;
+    padding: 60px 70px 16px 70px;
+    background: white;
+    border-radius: 0 10px 10px 10px;
+    box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.3);
+}
+#watermarkLogin{
+    display: flex;
+}
+#watermarkLogin .logoIBC{
+    width: 120px;
+    height: auto;
+}
+#watermarkLogin .baselineLogo{
+    margin-left: 10px;
+    align-self: center;
+    font-size: 1.6em;
+    line-height: 17pt;
+}
+#formLogin{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+#formLogin label, #loginLateral label{
+    font-size: 0.9em;
+    color: var(--couleur-principale);
+    text-transform: uppercase;
+    text-align: center;
+}
+#formLogin label{
+    margin-top: 2.5vh;
+}
+.identifiant, .password{
+    flex: 1;
+    margin-top: 1.2vh;
+    padding: 6px 0;
+    padding-left: 5px;
+    border: solid 1px white;
+    border-bottom: solid 1px var(--couleur-principale);
+    font-size: 0.9em;
+    text-align: center;
+}
+#formLogin input::placeholder{
+    font-size: 0.7em;
+    text-transform: uppercase;
+    text-align: center;
+}
+.wrongId{
+    border: solid 1px red;
+}
+#formLogin .missLogin{
+    visibility: hidden;
+    margin-top: 0.5vh;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    color: red;
+}
+#formLogin .missLoginVisible{ /* Class ajoutée grâce au JS */
+    visibility: visible;
+}
+.connectLogin, .connectLoginLateral{
+    padding: 6px 0;
+    align-self: center;
+    background: var(--variable-color-user);
+    border: none;
+    border-radius: 0 6px 6px 6px;
+    font-size: 1.3em;
+    font-family: Calibri, Arial, sans-serif;
+    font-weight: lighter;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+    transition-property: background-color;
+    transition-duration: 0.3s;
+}
+.connectLogin:hover, .connectLoginLateral:hover{
+    background: var(--variable-color-user-hover);
+}
+.connectLogin:active, .connectLoginLateral{
+    outline: transparent;
+}
+.connectLogin{
+    width: 100%;
+    margin-top: 3.5vh;
+}
+.forget{
+    margin-top: 3vh;
+    text-align: center;
+}
+.lienForget{
+    color: #008afc;
+    font-weight: normal;
+}
+.lienForget:hover{
+    color: #f40051;
+}
+.demo{
+    margin-top: 1.2vh;
+    text-align: center;
+}
+.linkDemo{
+    font-size: 0.9em;
+    color: #d8d8d8;
+    text-align: right;
+}
+.linkDemo:hover{
+    color: black;
+}
+/* MOT DE PASSE OUBLIÉ ******************************************************************************************************/
+main#passwordForget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 8vh;
+    left: auto;
+    right: auto;
+    width: 12vw;
+    min-width: 300px;
+    margin: 0 auto;
+    padding: 60px 70px 40px 70px;
+    background: white;
+    border-radius: 0 10px 10px 10px;
+    box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.3);
+}
+#watermarkPassword{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#watermarkPassword .logoIBC{
+    width: 120px;
+    height: auto;
+}
+#watermarkPassword .baselineLogo{
+    margin-left: 10px;
+    align-self: center;
+    font-size: 1.6em;
+    line-height: 17pt;
+}
+.initialeBaseline{
+    color: var(--couleur-principale);
+}
+#passwordForget h1{
+    margin: 40px 0 18px 0;
+    font-size: 1.2em;
+    color: var(--couleur-principale);
+    font-weight: normal;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+#passwordForget h1+p{
+    font-size: 0.85em;
+    line-height: 1em;
+    color: var(--gris-profond);
+    text-align: center;
+}
+#formPasswordForget{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 30px;
+}
+#formPasswordForget label{
+    font-size: 0.9em;
+    color: var(--couleur-principale);
+    text-transform: uppercase;
+    text-align: center;
+}
+#formPasswordForget input{
+    margin-top: 1.2vh;
+    padding: 6px 0;
+    border: solid 1px white;
+    border-bottom: solid 1px var(--couleur-principale);
+    font-size: 0.9em;
+    text-align: center;
+}
+#formPasswordForget input:focus{
+	border: 1px solid var(--couleur-focus);
+}
+#formPasswordForget input[type=submit]{
+    margin-top: 40px;
+    padding: 10px 0;
+    border: none;
+    font-size: 1.2em;
+}
+#formPasswordForget input::placeholder{
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    text-align: center;
+}
+main#passwordForget .eyeCatcherGris{
+    width: 90%;
+}
+/* RESPONSIVE TABLETTE ******************************************************************************************************/
+@media screen  and (max-width: 768px){
+    .identifiant, .password{
+        border: solid 1px white;
+        border: solid 1px var(--couleur-principale);
+    }
+    #formPasswordForget input{
+        border: solid 1px var(--couleur-principale);
+    }
+}
+/* RESPONSIVE MOBILE ******************************************************************************************************/
+@media screen and (max-width: 460px){
+    html{
+        background: none;
+        background-color: white;
+    }
+    #mainMenu{
+        border-bottom: 1px solid #d8d8d8;
+    }
+    main, main#passwordForget {
+        position: static;
+        width: calc(100% - 80px);
+        min-width: 100px;
+        margin: 0 auto;
+        padding: 0 40px 12px 40px;
+        background: white;
+        border-radius: none;
+        box-shadow: none;
+    }
+    #watermarkLogin, #watermarkPassword{
+        display: none;
+    }
+    #formLogin, #formPasswordForget{
+        width: 100%;
+    }
+    #formLogin label, #formPasswordForget{
+        margin-top: 5vh;
+    }
+    .identifiant, .password{
+        margin-top: 3vh;
+        padding-left: 5px;
+    }
+    main#passwordForget .eyeCatcherGris{
+        width: 100%;
+    }
+    .connectLogin{
+        padding: 10px 0;
+        margin-top: 4vh;
+        font-size: 1.2em;
+        font-weight: normal;
+    }
+    .forget{
+        margin-top: 5vh;
+        font-size: 0.9em;
+    }
+    .demo{
+        margin-top: 3vh;
+    }
+}

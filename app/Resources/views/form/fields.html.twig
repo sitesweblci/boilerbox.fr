@@ -1,0 +1,13 @@
+{# /app/Resources/views/form/fields.html.twig #}
+
+
+{% block form_errors %}
+    <div class='error_rendered'>
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            {{ error.message }}
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock form_errors %}
+

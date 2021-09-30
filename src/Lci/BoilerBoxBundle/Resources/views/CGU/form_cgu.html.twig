@@ -1,0 +1,72 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/CGU/form_cgu.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block boilerBoxCSS %}
+    {{parent() }}
+    <style>
+        html{
+            background: #f9f9f9 !important;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
+{% endblock boilerBoxCSS %}    
+
+{% block title %}{{ parent() }} Ajout de CGU{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+{# Thème personnel utilisé pour l'affichage des messages d'erreurs #}
+{% form_theme form 'templates/form/fields.html.twig' %}
+
+{% block mainBody %}
+    <header class="sub-header sub-header--blue">
+        <h1 class="sub-header__title">Conditions Générales d'Utilisation</h1>
+    </header>
+    <section class='main-box'>
+        <h1 class="main-box__title">Formulaire d'ajout</h1>
+        <div class='main-box__content'>
+            {{ form_start(form, {'method':'POST', 'name':'myForm', 'attr':{'class':'form'}}) }}
+            {{ form_errors(form) }}
+            <div class="form__field">
+                <label for="lci_boilerboxbundle_cgu_version">Numéro de version</label>
+                {{ form_widget(form.version) }}
+            </div>
+            <div class="form__field">
+                {{ form_label(form.cguObligatoire) }}
+                {{ form_widget(form.cguObligatoire) }}
+            </div>
+            <div class="form__field">
+                {{ form_label(form.cguCourant) }}
+                {{ form_widget(form.cguCourant) }}
+            </div>
+            <div class="form__field">
+                {{ form_widget(form.file) }}
+            </div>
+            {{ form_rest(form) }}
+            <button id="submit-myForm" type="submit" class="cacher">
+            </button>
+            <div class="form__button">
+                <a href="{{ path("lci_cgu_show") }}" class="btn btn--second">Retour</a>
+                <button type="submit" class="btn_menu btn btn--main" alt="Enregistrer"
+                     onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}"
+                     onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"
+                     onClick="document.getElementById('submit-myForm').click(); return false;">
+                     Enregistrer
+                 </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock mainBody %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            // pas défaut cguCourant est sur oui et on le bloque sur oui
+            $('input[type="radio"][name="lci_boilerboxbundle_cgu[cguCourant]"]:not(:checked)').attr('disabled', true);
+        });
+    </script>
+{% endblock javascript %}

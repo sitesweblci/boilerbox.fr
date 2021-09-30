@@ -1,0 +1,21 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/mail.css') }}" media='screen' />
+</head>
+
+<body>
+<div id='contenu_email' style='margin-bottom:200px;min-height:800px;border:2px solid black;'>
+	<h1 style='margin-bottom:50px;'>{{ tab_message['titre'] }}<h1>
+	<h2>
+		{{ tab_message['site'] }} <br /><br />
+		{{ tab_message['contact'] }}
+	</h2>
+	<h4>{{ tab_message['fichiers'] }}</h4>
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' />
+
+</body>
+</html>
+

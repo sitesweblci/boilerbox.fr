@@ -1,0 +1,39 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Mail/email_rapport_indisponibilite.html.twig #}
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+
+	<body>
+		<h1>Rapports d'indisponibilité des sites Boiler-box</h1>
+		{%  if str_erreur_crontab != null %}
+			<h2 style='color:red;'>{{ str_erreur_crontab }}</h2>
+		{% endif %}
+
+        <h2>Résumé</h2>
+        <div style='color:red; font-height:30px;'>
+            <h3>- {{ t_entities_sites_indisponibles | length }} site{% if t_entities_sites_indisponibles | length > 1 %}s{% endif %} indisponible{% if t_entities_sites_indisponibles | length > 1 %}s{% endif %}</h3>
+            <h3>- {{ t_entities_sites_injoignables | length }} site{% if t_entities_sites_injoignables| length > 1 %}s{% endif %} injoignable{% if t_entities_sites_injoignables | length > 1 %}s{% endif %}</h3>
+        </div>
+
+		<h2>Liste des sites (et de leur Live) indisponibles</h2>
+		<table>
+		<tr><th style='text-align:left'>Affaire</th><th style='text-align:left'>Nom de l'affaire</th><th>Indisponible depuis le</th></tr>
+        {% for entity_site in t_entities_sites_indisponibles %}
+           	<tr><td style='width:150px;'>{{ entity_site.affaire }}</td><td style='padding-right:50px;'>{{ entity_site.intitule }}</td><td>{{ entity_site.dateAccessSucceded | date('d-m-Y H:i:s') }}</td></tr>
+        {% endfor %}
+		</table>
+
+
+		<h2>Liste des sites injoignables</h2>
+		<table>
+        <tr><th style='text-align:left'>Affaire</th><th style='text-align:left'>Nom de l'affaire</th></tr>
+        {% for entity_site in t_entities_sites_injoignables %}
+           	<tr><td style='width:150px;'>{{ entity_site.affaire }}</td><td>{{ entity_site.intitule }}</td></tr>
+        {% endfor %}
+		</table>
+		<br />
+		<img src="{{ image_link }}" alt='IPC' align='center' width='400' />
+	</body
+</html>
+

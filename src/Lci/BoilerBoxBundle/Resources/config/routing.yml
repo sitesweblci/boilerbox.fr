@@ -1,0 +1,3 @@
+lci_rapport_disponibilite:
+    path: /rapport/disponibilite
+    defaults: { _controller: LciBoilerBoxBundle:Rapport:rapportDisponibilite }

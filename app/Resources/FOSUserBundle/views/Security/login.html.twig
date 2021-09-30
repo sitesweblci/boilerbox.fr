@@ -1,0 +1,103 @@
+{# app/FOSUserBundle/Resources/views/login.html.twig #}
+
+{% extends "FOSUserBundle::secondLayoutUser.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block title %}{{ parent() }} - Accueil{% endblock title %}
+
+{% block boilerBoxCSS %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/login.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
+    <style>
+    *{
+        box-sizing: initial;
+    }
+    .btn{
+        margin-top: 2vh;
+    }
+    </style>
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+<main>
+    <div id="watermarkLogin">
+        <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+        <p class="baselineLogo">
+            <span class="initialeBaseline">I</span>NDUSTRIAL<br>
+            <span class="initialeBaseline">B</span>OILER<br>
+            <span class="initialeBaseline">C</span>ONTROL<br>
+        </p>
+    </div>
+    <form id="formLogin" method="post" name="myForm" action="{{ path("fos_user_security_check") }}">
+		<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+		<input type="hidden" id="remember_me" name="_remember_me" value="on" />
+		<input type="hidden" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"></input>
+
+
+        <label for="identifiant">identifiant</label>
+        <input type="text" class="identifiant" id="identifiant" name="_username" placeholder="identifiant" onblur="checkId(this)">
+        <p id="missId" class="missLogin">veuillez renseigner un identifiant valide.</p>
+
+        <label for="password">mot de passe</label>
+        <input type="password" class="password" id="password" name="_password" placeholder="mot de passe" onblur="checkPassword(this)">
+        <p id="missPassword" class="missLogin">mot de passe non conforme !</p>
+        
+        <button type="submit" class="btn btn--main" onClick='validationFormulaire();return false;'>se connecter</button>
+    </form>
+    <p class="forget"><a href="{{ path('fos_user_resetting_request') }}" class="lienForget">mot de passe oublié ?</a></p>
+    <p class="demo"><a href="http://demo.boiler-box.fr" class="linkDemo">Lien vers la démo</a></p>
+</main>
+
+{% block javascript %}
+	<script type='text/javascript'>
+    var id = document.getElementById('identifiant');
+    var password = document.getElementById('password');
+    var pId = document.getElementById('missId');
+    var pPassword = document.getElementById('missPassword');
+
+    function checkId (id){
+        if (id.value.length < 3 || id.value.length > 25){
+            pId.classList.add("missLoginVisible");
+            id.classList.add("wrongId");
+        } else {
+            pId.classList.remove("missLoginVisible");
+            id.classList.remove("wrongId");
+        }
+    }
+    function checkPassword (password){
+        if (password.value.length < 3 || password.value.length > 25){
+            pPassword.classList.add("missLoginVisible");
+            password.classList.add("wrongId");
+        } else {
+            pPassword.classList.remove("missLoginVisible");
+            password.classList.remove("wrongId");
+        }
+    }
+
+	function validationFormulaire() {
+        var $login = $('#identifiant').val();
+        var $password = $('#password').val();
+        var url = "{{ path('lci_boilerbox_defineUserLog') }}";
+        $.ajax({
+            url : "{{ path('lci_boilerbox_defineUserLog') }}",
+            type : 'POST',
+            data : 'login=' + $login + '&password=' + $password,
+            dataType : 'html',
+            success : function(code_html, statut){
+                document.forms['myForm'].submit();
+            },
+            error : function(resultat, status, error){
+                alert("Erreur d'envoi des informations de login");
+            }            
+        });
+    };
+	</script>
+
+{% endblock javascript %}
+
+
+{% endblock mainBody %}
+
+
