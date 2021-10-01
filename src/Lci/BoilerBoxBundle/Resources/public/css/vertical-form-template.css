@@ -125,9 +125,6 @@ div.form-group input:not(.texteToLabel).form-control{
 	border: 1px solid var(--couleur-focus) !important;
 }
 /* FORMULAIRE MON COMPTE *******************/
-#monCompteProfil, #monCompteAuthentification, #monCompteAutre{
-	margin: 0 40px;
-}
 .formMonCompte{
 	display: flex;
 	flex-direction: column;

@@ -168,9 +168,6 @@ body {
 .btn--add:active .crossAdd:before, .btn--add:active .crossAdd:after {
   background: white;
 }
-.btn--wide {
-  width: 100%;
-}
 .btn:active {
   background: #511943;
   border-color: #330c29;
@@ -181,7 +178,22 @@ body {
   cursor: not-allowed;
   pointer-events: none;
   background: #e3e3e3;
-  color: #636363;
+  color: white;
+  box-shadow: none;
+  border: solid 1px #e3e3e3;
+}
+
+.pastille {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: solid 1px var(--gris-profond);
+  border-radius: 50%;
+  background: linear-gradient(120deg, white 30%, #e2e2e2 70%, #e2e2e2 100%);
 }
 
 .tooltip-wrapper {
@@ -245,19 +257,6 @@ body {
 }
 .search-bar__input::placeholder {
   color: var(--gris-clair-hover) !important;
-}
-
-.pastille {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 20px;
-  height: 20px;
-  border: solid 1px var(--gris-profond);
-  border-radius: 50%;
-  background: linear-gradient(120deg, white 30%, #e2e2e2 70%, #e2e2e2 100%);
 }
 
 .accueil-box {
@@ -327,6 +326,141 @@ body {
   background: #848484;
 }
 .accueil-box__btn {
+  width: 100%;
+}
+
+.flex-table {
+  width: 72vw;
+  min-width: 840px;
+  border: none;
+  border-collapse: collapse;
+}
+.flex-table__thead {
+  color: var(--gris-profond);
+}
+.flex-table__thead tr {
+  padding-right: 18px;
+}
+.flex-table__thead tr th {
+  width: 100%;
+  padding-bottom: 16px;
+  font-size: 10pt;
+  font-weight: 400;
+  text-align: left;
+}
+.flex-table__thead tr th.cell-action {
+  width: 50%;
+}
+.flex-table__thead tr th:first-child {
+  padding-left: 4vw;
+}
+.flex-table__tbody {
+  display: block;
+  overflow-y: scroll;
+  height: 36vh;
+  color: black;
+  font-size: 12pt;
+  font-weight: 400;
+}
+.flex-table__tbody tr {
+  background: white;
+  border-top: solid 1px #e5e5e5;
+  cursor: pointer;
+}
+.flex-table__tbody tr td {
+  width: 100%;
+  padding: 12px 0;
+  text-align: left;
+}
+.flex-table__tbody tr td:first-child {
+  padding-left: 4vw;
+}
+.flex-table__tbody tr td.cell-action {
+  position: relative;
+  width: 50%;
+  visibility: hidden;
+  text-align: center;
+}
+.flex-table__tbody tr:last-child {
+  border-bottom: solid 1px #e5e5e5;
+}
+.flex-table__tbody tr:hover {
+  background: #e5e5e5;
+}
+.flex-table__tbody tr:hover .cell-action {
+  visibility: visible;
+}
+.flex-table__row {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.form {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+}
+.form .form__field {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0 0 34px 0;
+}
+.form .form__field label {
+  margin: 0 0 6px 0;
+  font-size: 9pt;
+  color: var(--gris-profond);
+}
+.form .form__field input {
+  margin-bottom: 0 !important;
+}
+.form .form__field input[type=file] {
+  padding: 0 !important;
+  border: none !important;
+}
+.form .form__field input[type=file]:focus {
+  border: none !important;
+}
+.form .form__field input[type=text], .form .form__field input[type=password], .form .form__field select {
+  width: 360px !important;
+  background: #f9f9f9 !important;
+  border: solid 1px var(--gris-clair-hover) !important;
+  height: initial !important;
+  font-size: 14pt !important;
+  padding: 6px 0 6px 10px !important;
+}
+.form .form__field input[type=text]:focus, .form .form__field input[type=password]:focus, .form .form__field select:focus {
+  border-color: var(--couleur-focus) !important;
+}
+.form .form__field input[type=text]::placeholder, .form .form__field input[type=password]::placeholder, .form .form__field select::placeholder {
+  color: transparent !important;
+}
+.form .form__field .radio {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  justify-content: flex-start;
+}
+.form .form__field .radio label {
+  color: black;
+  font-size: 12pt;
+  font-weight: 300;
+}
+.form .form__button {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  justify-content: flex-end;
   width: 100%;
 }
 
@@ -412,139 +546,57 @@ body {
     text-align: left;
   }
 }
-.form {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
-}
-.form .form__field {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  margin: 0 0 34px 0;
-}
-.form .form__field label {
-  margin: 0 0 6px 0;
-  font-size: 9pt;
-  color: var(--gris-profond);
-}
-.form .form__field input {
-  margin-bottom: 0 !important;
-}
-.form .form__field input[type=file] {
-  padding: 0 !important;
-  border: none !important;
-}
-.form .form__field input[type=file]:focus {
-  border: none !important;
-}
-.form .form__field input[type=text], .form .form__field input[type=password], .form .form__field select {
-  width: 360px !important;
-  background: #f9f9f9 !important;
-  border: solid 1px var(--gris-clair-hover) !important;
-  height: initial !important;
-  font-size: 14pt !important;
-  padding: 6px 0 6px 10px !important;
-}
-.form .form__field input[type=text]:focus, .form .form__field input[type=password]:focus, .form .form__field select:focus {
-  border-color: var(--couleur-focus) !important;
-}
-.form .form__field input[type=text]::placeholder, .form .form__field input[type=password]::placeholder, .form .form__field select::placeholder {
-  color: transparent !important;
-}
-.form .form__field .radio {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  justify-content: flex-start;
-}
-.form .form__field .radio label {
-  color: black;
-  font-size: 12pt;
-  font-weight: 300;
-}
-.form .form__button {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  justify-content: flex-end;
-  width: 100%;
+[data-tab-content] {
+  display: none;
 }
 
-.flex-table {
-  width: 72vw;
-  min-width: 840px;
-  border: none;
-  border-collapse: collapse;
-}
-.flex-table__thead {
-  color: var(--gris-profond);
-}
-.flex-table__thead tr {
-  padding-right: 18px;
-}
-.flex-table__thead tr th {
-  width: 100%;
-  padding-bottom: 16px;
-  font-size: 10pt;
-  font-weight: 400;
-  text-align: left;
-}
-.flex-table__thead tr th.cell-action {
-  width: 50%;
-}
-.flex-table__thead tr th:first-child {
-  padding-left: 4vw;
-}
-.flex-table__tbody {
+.active[data-tab-content] {
   display: block;
-  overflow-y: scroll;
-  height: 36vh;
-  color: black;
-  font-size: 12pt;
-  font-weight: 400;
 }
-.flex-table__tbody tr {
-  background: white;
-  border-top: solid 1px #e5e5e5;
-  cursor: pointer;
+
+.tab-wrapper {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  margin: -36px auto 0 auto;
 }
-.flex-table__tbody tr td {
-  width: 100%;
-  padding: 12px 0;
-  text-align: left;
-}
-.flex-table__tbody tr td:first-child {
-  padding-left: 4vw;
-}
-.flex-table__tbody tr td.cell-action {
-  position: relative;
-  width: 50%;
-  visibility: hidden;
-  text-align: center;
-}
-.flex-table__tbody tr:last-child {
-  border-bottom: solid 1px #e5e5e5;
-}
-.flex-table__tbody tr:hover {
-  background: #e5e5e5;
-}
-.flex-table__tbody tr:hover .cell-action {
-  visibility: visible;
-}
-.flex-table__row {
+.tab-wrapper__tabs {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  justify-content: space-between;
-  flex-wrap: nowrap;
+  width: 500px;
+  background: var(--gris-clair-hover);
+  font-size: 1em;
+  color: black;
+  border-radius: 0 0 4px 0;
+  list-style: none;
+}
+.tab-wrapper__tabs__tab {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  width: 33.33%;
+  height: 36px;
+  border-radius: 0 4px 0 0;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.tab-wrapper__tabs__tab.active {
+  background: white;
+  color: var(--couleur-principale);
+  border: solid 1px var(--gris-clair-hover);
+  border-bottom: none;
+}
+.tab-wrapper__content {
+  width: 500px;
+  margin-top: 10px;
+  background: white;
+}
+.tab-wrapper__content > *:not(#boutonsForm) {
+  margin: 0 40px;
 }
 
 /*# sourceMappingURL=style.css.map */

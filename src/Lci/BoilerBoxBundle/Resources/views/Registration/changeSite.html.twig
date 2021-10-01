@@ -30,66 +30,65 @@
                 <li class="tab-wrapper__tabs__tab" data-tab-target="#about">Autre</li>
             </ul>
             <div class="tab-wrapper__content">
-                	<div id="home" class="active" data-tab-content>
-                	    <div>
-    						{{ form_row(form.intitule) }}
-    						<div class="ligne_error">{{ form_errors(form.intitule) }}</div>
-    						{{ form_row(form.affaire) }}		
-    						<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
-    						{{ form_row(form.configurations) }}
-    					</div>
-    					<div class="newParametre addParametreInfos cacher">
-    						<p id='pParametreInfos'>Nouveau Paramètre</p>
-    					</div>
-    					<div id="addParametreInfos" class="btn btn--add">
-    							<div class="crossAdd"></div>
-                            	Ajouter un autre paramètre d'information
-                        	</div>
-    					</div>
-    				</div>
-    				
-        	        <div id="pricing" class="" data-tab-content>
-    	                <div id="site_siteConnexion_accesDistant">
-							<p class="titreFormModif">Surveillance de la connexion</p>
-                            <div class="alignCheckbox">
-                                {{ form_widget(form.siteConnexion.surveillance) }}
-                            </div>
-    						{{ form_row(form.siteConnexion.url) }}
-    						<p class="titreFormModif">{{ form_label(form.siteConnexion.accesDistant) }}</p>	
-    						<div class="alignCheckbox">
-    							{{ form_widget(form.siteConnexion.accesDistant) }}
-    						</div>
-    						<p class="titreFormModif">{{ form_label(form.siteConnexion.typeConnexion) }}</p>
-    						<div class="alignCheckbox">
-    							{{ form_widget(form.siteConnexion.typeConnexion) }}
-    						</div>
-    						<div class="ligne_error"></div>
-    						{{ form_row(form.siteConnexion.codeLive) }}
-    						<div class="ligne_error"></div>
-    						{{ form_widget(form.siteConnexion.configurations) }}
-    					</div>
-                    	<div class="newParametre addParametreConnexion cacher">
-                    	    <p id='pParametreConnexion'>Nouveau Paramètre</p>
-                    	</div>
-    					<div id="addParametreConnexion" class="btn btn--add">
-                            <div class="crossAdd"></div>
-                            Ajouter un autre paramètre de connexion
-    					</div>
-    				</div>
 
-
-                	<div id="about" class="" data-tab-content>
-                    	<div>
-    						{{ form_widget(form.siteAutres.configurations) }}
-                    	</div>
-    					<div class="newParametre addParametreAutre cacher">
-                            <p id='pParametreAutres'>Nouveau Paramètre</p>
-                        </div>
-                    	<div id="addParametreAutre" class="btn btn--add ">
-                            <div class="crossAdd"></div>
-                            Ajouter un autre paramètre</p>
-                        </div>
+                <div id="home" class="active" data-tab-content>
+                	<div>
+    					{{ form_row(form.intitule) }}
+    					<div class="ligne_error">{{ form_errors(form.intitule) }}</div>
+    					{{ form_row(form.affaire) }}		
+    					<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
+    					{{ form_row(form.configurations) }}
+    				</div>
+    				<div class="newParametre addParametreInfos cacher">
+    					<p id='pParametreInfos'>Nouveau Paramètre</p>
+    				</div>
+    				<div id="addParametreInfos" class="btn btn--add">
+    					<div class="crossAdd"></div>
+                            Ajouter un autre paramètre d'information
                     </div>
+    			</div>
+
+                <div id="pricing" class="" data-tab-content>
+                    <div id="site_siteConnexion_accesDistant">
+                        <p class="titreFormModif">Surveillance de la connexion</p>
+                        <div class="alignCheckbox">
+                            {{ form_widget(form.siteConnexion.surveillance) }}
+                        </div>
+                        {{ form_row(form.siteConnexion.url) }}
+                        <p class="titreFormModif">{{ form_label(form.siteConnexion.accesDistant) }}</p>	
+                        <div class="alignCheckbox">
+                            {{ form_widget(form.siteConnexion.accesDistant) }}
+                        </div>
+                        <p class="titreFormModif">{{ form_label(form.siteConnexion.typeConnexion) }}</p>
+                        <div class="alignCheckbox">
+                            {{ form_widget(form.siteConnexion.typeConnexion) }}
+                        </div>
+                        <div class="ligne_error"></div>
+                        {{ form_row(form.siteConnexion.codeLive) }}
+                        <div class="ligne_error"></div>
+                        {{ form_widget(form.siteConnexion.configurations) }}
+                    </div>
+                    <div class="newParametre addParametreConnexion cacher">
+                        <p id='pParametreConnexion'>Nouveau Paramètre</p>
+                    </div>
+                    <div id="addParametreConnexion" class="btn btn--add">
+                        <div class="crossAdd"></div>
+                        Ajouter un autre paramètre de connexion
+                    </div>
+                </div>
+
+                <div id="about" class="" data-tab-content>
+                    <div>
+                        {{ form_widget(form.siteAutres.configurations) }}
+                    </div>
+                    <div class="newParametre addParametreAutre cacher">
+                        <p id='pParametreAutres'>Nouveau Paramètre</p>
+                    </div>
+                    <div id="addParametreAutre" class="btn btn--add ">
+                        <div class="crossAdd"></div>
+                        Ajouter un autre paramètre</p>
+                    </div>
+                </div>
     		</div>
             <div id="boutonsForm">
                 <div class="eyeCatcher {{ app.user.couleur }}" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
