@@ -6,7 +6,9 @@ use Lci\BoilerBoxBundle\Entity\CGU;
 use Lci\BoilerBoxBundle\Form\Type\CGUType;
 use Otp\Otp;
 use ParagonIE\ConstantTime\Encoding;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +16,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CGUController extends Controller
 {
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
     public function formCGUAction(Request $request)
     {
         $cgu = new CGU();
@@ -32,6 +38,9 @@ class CGUController extends Controller
         ));
     }
 
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
     public function deleteCGUAction(Request $request, CGU $cgu)
     {
         if ($cgu->getCguCourant()) {
@@ -46,6 +55,9 @@ class CGUController extends Controller
         return $this->redirectToRoute('lci_cgu_show');
     }
 
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
     public function showCGUAction()
     {
         return $this->render('@LciBoilerBox/CGU/liste_cgu.html.twig', array(
@@ -54,8 +66,29 @@ class CGUController extends Controller
         ));
     }
 
+    /**
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
     public function telechargerCGUAction(CGU $cgu) {
         // Envoi de la réponse
+        $chemin_file = $cgu->getUploadsDirectory().$cgu->getFilename();
+        $response = new Response();
+        if (is_file($chemin_file)) {
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'inline;filename="'.$cgu->getFilename().'"');
+            $response->headers->set('Content-Length', filesize($chemin_file));
+            $response->setContent(file_get_contents($chemin_file));
+            $response->setCharset('UTF-8');
+        } else {
+            $response->setContent('file not found');
+        }
+
+        return $response;
+    }
+
+    public function telechargerCGUCourantesAction() {
+        $cgu = $this->getDoctrine()->getManager()->getRepository(CGU::class)->findOneBy(['cguCourant' => true]);
+
         $chemin_file = $cgu->getUploadsDirectory().$cgu->getFilename();
         $response = new Response();
         if (is_file($chemin_file)) {

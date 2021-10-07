@@ -17,21 +17,17 @@
 </head>
 
 <body>
-	   <nav id="mainMenu">
+	<nav id="mainMenu">
         <div id="left">
-            <div id="containerMenuBurger">
-                <div id="menuBurger">
-                    <span class="line"></span>
-                    <span class="line"></span>
-                    <span class="line"></span>
-                </div>
+            <div id="containerMenuBurger" class="burger">
+                <span></span>
             </div>
-            <a  id="lienWatermark" href="{{ path("lci_boilerbox_index") }}">
-                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-                <p class="baselineLogo">
-                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
-                    <span class="initialeBaseline">B</span>OILER<br>
-                   <span class="initialeBaseline">C</span>ONTROL<br>
+            <a  id="lienWatermark" class="watermark" href="{{ path("lci_boilerbox_index") }}">
+                <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="watermark__baseline">
+                    <span>INDUSTRIAL</span>
+                    <span>BOILER</span>
+                    <span>CONTROL</span>
                 </p>
             </a>
         </div>
@@ -84,26 +80,22 @@
         </ul>
     </div>
 
-    <nav id="menuLateral" class=''>
-        <div id="containerBaselineLogo">
-            <div id="containerMenuBurgerMenuLateral">
-                <div id="menuBurgerLateral">
-                    <span class="line"></span>
-                    <span class="line"></span>
-                    <span class="line"></span>
-                </div>
+    <nav id="menuLateral" class="side-nav">
+        <div id="containerBaselineLogo" class="side-nav__header">
+            <div id="containerMenuBurgerMenuLateral" class="burger burger--close">
+                <span></span>
             </div>
-            <a id="watermarkMenuLateral" href="{{ path("lci_boilerbox_index") }}">
-                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-                <p class="baselineLogo">
-                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
-                    <span class="initialeBaseline">B</span>OILER<br>
-                    <span class="initialeBaseline">C</span>ONTROL<br>
+            <a id="watermarkMenuLateral" class="watermark" href="{{ path("lci_boilerbox_index") }}">
+                <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="watermark__baseline">
+                    <span>INDUSTRIAL</span>
+                    <span>BOILER</span>
+                    <span>CONTROL</span>
                 </p>
             </a>
         </div>
  
-        <div id="scrollNav" class="styleScrollBar">
+        <div id="scrollNav" class="side-nav__content styleScrollBar">
             <ul id="commonNav">
                 <li>
                     <a href='{{ path("lci_boilerbox_index")}}' class="linkNavLat">
@@ -137,6 +129,14 @@
                 	    </a>
                 	</li>
 				{% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li>
+                        <a href="{{ path('lci_cgu_show') }}" class="linkNavLat">
+                            <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navListings.svg') }}" alt="icône cgu" class="imgNavLat">
+                            <span class="nameNavLat">CGU</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
 
             <ul id="account">
@@ -144,12 +144,6 @@
 					<a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}" class="linkNavLat">
 						<img src="{{ asset('bundles/lciboilerbox/images/img/nav/navAccount.svg') }}" alt="icône mon compte" class="imgNavLat">
 						<span class="nameNavLat">mon compte</span>
-					</a>
-                </li>
-                <li>
-					<a href="{{ path('lci_cgu_show') }}" class="linkNavLat">
-						<img src="{{ asset('bundles/lciboilerbox/images/img/nav/navListings.svg') }}" alt="icône cgu" class="imgNavLat">
-						<span class="nameNavLat">CGU</span>
 					</a>
                 </li>
             </ul>
@@ -163,6 +157,11 @@
             </ul>
         </div>
 
+        <div class="side-nav__footer">
+            <a target="_blank" href="{{ path('lci_cgu_courantes') }}">
+                Conditions Générales d'Utilisation
+            </a>
+        </div>
     </nav>
 
     <div id='popUpError' class='cacher' >
@@ -227,12 +226,12 @@
 
         // fonction pour afficher le menu latéral
         function showMenuLateral(){
-			if (!($('#menuLateral').hasClass('menuLateral--visible'))) {
-				$('#menuLateral').addClass('menuLateral--visible');
+			if (!($('#menuLateral').hasClass('side-nav--visible'))) {
+				$('#menuLateral').addClass('side-nav--visible');
                 $('#cartonBlack').removeClass('cacher');
                 base.style.overflowY = 'hidden';
             } else {
-				$('#menuLateral').removeClass('menuLateral--visible');
+				$('#menuLateral').removeClass('side-nav--visible');
                 $('#cartonBlack').addClass('cacher');
                 base.style.overflowY = "visible";
             }
@@ -240,7 +239,7 @@
         actioner.onclick = showMenuLateral;
         actionerLateral.onclick = showMenuLateral;
 		$('#cartonBlack').click(function() {
-			$('#menuLateral').removeClass('menuLateral--visible');
+			$('#menuLateral').removeClass('side-nav--visible');
 			$('#cartonBlack').addClass('cacher');
 			$('#popUpError').addClass('cacher');
             base.style.overflowY = "visible";

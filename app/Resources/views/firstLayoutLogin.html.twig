@@ -17,12 +17,12 @@
 {% block mainBandeau %}
 	 <nav id="mainMenu">
         <div id="left">
-            <a href="{{ path('fos_user_security_logout') }}" id="lienWatermark">
-                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-                <p class="baselineLogo">
-                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
-                    <span class="initialeBaseline">B</span>OILER<br>
-                    <span class="initialeBaseline">C</span>ONTROL<br>
+            <a id="lienWatermark" class="watermark" href="{{ path('fos_user_security_logout') }}">
+                <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="watermark__baseline">
+                    <span>INDUSTRIAL</span>
+                    <span>BOILER</span>
+                    <span>CONTROL</span>
                 </p>
             </a>
         </div>

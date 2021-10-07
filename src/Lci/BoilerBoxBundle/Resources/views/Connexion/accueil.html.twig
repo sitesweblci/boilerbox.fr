@@ -197,7 +197,7 @@ window.location.search: "?query=1"
 									<img src="{{ img_cloud }}" 
 										 alt="" 
 										 class="iconeConnec" 
-										 {% if acces_distant_cloud == true %} onClick="actionForm('{{ site.affaire }}', '{{ url_cloud}}');" {% endif %}
+										 {% if acces_distant_cloud == true %} onClick="actionForm('{{ site.affaire }}', '{{ url_cloud}}', '{{ site.version }}');" {% endif %}
 									>
 								</td>
 								<td class="whiteSpace"></td>
@@ -208,7 +208,7 @@ window.location.search: "?query=1"
 	                        	    <img src="{{ img_live }}"
 	                        	         alt=""
 	                        	         class="iconeConnec"
-	                        	        {% if (acces_distant_live == true) and (site.siteConnexion.codeLive != null) %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}web/app.php/fr/boilerboxlive/supervision/accueil?id={{ site.siteConnexion.codeLive  }}');" {% endif %}
+	                        	        {% if (acces_distant_live == true) and (site.siteConnexion.codeLive != null) %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}web/app.php/fr/boilerboxlive/supervision/accueil?id={{ site.siteConnexion.codeLive  }}', '{{ site.version }}');" {% endif %}
 	                        	    >
 	                        	</td>
 								<td class="whiteSpace"></td>
@@ -219,7 +219,7 @@ window.location.search: "?query=1"
 									<img src="{{ img_locale }}" 
 										 alt="" 
 										 class="iconeConnec" 
-										 {% if acces_distant_local == true %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}');" {% endif %}
+										 {% if acces_distant_local == true %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}', '{{ site.version }}');" {% endif %}
 									>
 								</td>
 							</tr>
@@ -319,6 +319,8 @@ window.location.search: "?query=1"
                                 <p class="infoAffaireLocal forLabelInfoSite">demo</p>
                                 <p class="labelInfoSite">Acces Ecatcher</p>
                                 <p class="infoAffaireEcatcher forLabelInfoSite">demo</p>
+								<p class="labelInfoSite">Version IPC</p>
+                                <p class="infoAffaireVersionIpc forLabelInfoSite">demo</p>
 							</div>
 					</div>
 				</div>
@@ -539,7 +541,7 @@ window.location.search: "?query=1"
 							html += '<img src="' + img_cloud + '" alt="" class="iconeConnec"';
 							if (acces_distant_cloud == true)
 							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + "{{ url_cloud }}" + '\');"';
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + "{{ url_cloud }}" + '\', \''+ $entsListeSites[index]['version'] + '\');"';
 							}
 							html += '>';
 							html += '</td>';
@@ -554,7 +556,7 @@ window.location.search: "?query=1"
 							html += '<img src="' + img_live + '" alt="" class="iconeConnec"';
 							if ((acces_distant_live == true) && ($entsListeSites[index]['siteConnexion']['codeLive'] != null)) 
 							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entsListeSites[index]['siteConnexion']['codeLive']  + '\');"';
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entsListeSites[index]['siteConnexion']['codeLive']  + '\', \'' + $entsListeSites[index]['version'] + '\');"';
 							}
 							html += '>';
 							html += '</td>';
@@ -569,7 +571,7 @@ window.location.search: "?query=1"
 							html += '<img src="' + img_locale + '" alt="" class="iconeConnec"';
 							if (acces_distant_local == true) 
 							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + '\');"';
+								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + '\', \'' + $entsListeSites[index]['version'] + '\');"';
 							}
 							html += '>';
 							html += '</td>';
@@ -596,6 +598,7 @@ window.location.search: "?query=1"
 
 	$(document).ready(function() 
 	{
+
 		/* On rafraichi la page toutes les minutes pour obtenir les derniers résultats des pings */
     	/*$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);*/
 		$refreshPourSite = setInterval(function() { getListeSites(); }, 5000);
@@ -708,7 +711,7 @@ window.location.search: "?query=1"
 			reinitialiseMonCommentaire();
 			$('#fluxCommentaire').html('');
 			$('#ensemblePieceJointe').html('');
-			$clearHtml = '<p class="labelInfoSite">Nom</p><p class="infoAffaireIntitule forLabelInfoSite"></p><p class="labelInfoSite">Affaire</p><p class="infoAffaireAffaire forLabelInfoSite"></p><p class="labelInfoSite">Url</p><p class="infoAffaireUrl forLabelInfoSite"></p><p class="labelInfoSite">Code Live</p><p class="infoAffaireCodeLive forLabelInfoSite"></p><p class="labelInfoSite">Connexion 3G / 4G</p><p class="infoAffaire3G4G forLabelInfoSite"></p><p class="labelInfoSite">Connexion ADSL</p><p class="infoAffaireADSL forLabelInfoSite"></p><p class="labelInfoSite">Acces Cloud</p><p class="infoAffaireCloud forLabelInfoSite"></p><p class="labelInfoSite">Access Live</p><p class="infoAffaireLive forLabelInfoSite"></p><p class="labelInfoSite">Acces Local</p><p class="infoAffaireLocal forLabelInfoSite"></p><p class="labelInfoSite">Acces Ecatcher</p><p class="infoAffaireEcatcher forLabelInfoSite"></p>';
+			$clearHtml = '<p class="labelInfoSite">Nom</p><p class="infoAffaireIntitule forLabelInfoSite"></p><p class="labelInfoSite">Affaire</p><p class="infoAffaireAffaire forLabelInfoSite"></p><p class="labelInfoSite">Url</p><p class="infoAffaireUrl forLabelInfoSite"></p><p class="labelInfoSite">Code Live</p><p class="infoAffaireCodeLive forLabelInfoSite"></p><p class="labelInfoSite">Connexion 3G / 4G</p><p class="infoAffaire3G4G forLabelInfoSite"></p><p class="labelInfoSite">Connexion ADSL</p><p class="infoAffaireADSL forLabelInfoSite"></p><p class="labelInfoSite">Acces Cloud</p><p class="infoAffaireCloud forLabelInfoSite"></p><p class="labelInfoSite">Access Live</p><p class="infoAffaireLive forLabelInfoSite"></p><p class="labelInfoSite">Acces Local</p><p class="infoAffaireLocal forLabelInfoSite"></p><p class="labelInfoSite">Acces Ecatcher</p><p class="infoAffaireEcatcher forLabelInfoSite"></p><p class="labelInfoSite">Version IPC</p><p class="infoAffaireVersionIpc forLabelInfoSite"></p>';
             $('#resumeAffaire').html($clearHtml);
 			$('#infoAffaire').data('id', null)
 			$img_cloud = null;
@@ -836,7 +839,7 @@ window.location.search: "?query=1"
 							$('a.infoMajCloud').removeClass('desactive');
 							$('a.infoMajCloud img').removeClass('desactive');
             		        $('#pictoConnexion img:first').click(function() {
-            		            actionForm($entitySite.affaire, '{{ url_cloud}}');
+            		            actionForm($entitySite.affaire, '{{ url_cloud}}', $entitySite.version);
             		        });
             		    } else {
 							$('a.infoMajCloud').addClass('desactive');
@@ -848,7 +851,7 @@ window.location.search: "?query=1"
 						if (acces_live == true) {
 							$('a.infoMajLive img').removeClass('desactive');
                             $("#pictoConnexion img:eq(1)").click(function() {
-                                actionForm($entitySite.affaire, $entitySite.siteConnexion.url + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entitySite.siteConnexion.codeLive);
+                                actionForm($entitySite.affaire, $entitySite.siteConnexion.url + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entitySite.siteConnexion.codeLive, $entitySite.version);
                             });
 						// Pas de live mais indication connexion depuis eCatcher
                         } else if (acces_ecatcher_live_only == true) {
@@ -861,7 +864,7 @@ window.location.search: "?query=1"
 						if (acces_local == true) {
 							$('a.infoMajLocal img').removeClass('desactive');
                             $('#pictoConnexion img:last').click(function() {
-								actionForm($entitySite.affaire, $entitySite.siteConnexion.url);
+								actionForm($entitySite.affaire, $entitySite.siteConnexion.url, $entitySite.version);
 							});
             			} else if (acces_ecatcher_local_only == true) {
 							$('a.infoMajLocal p.popUpCloud').removeClass('cacher');
@@ -871,6 +874,7 @@ window.location.search: "?query=1"
 
                     $('#infoAffaire').data('id', $entitySite.id);
 					$('.infoAffaireIntitule').text($entitySite.intitule);
+					$('.infoAffaireVersionIpc').text($entitySite.version);
 					$('.infoAffaireAffaire').text($entitySite.affaire);
 					$('.infoAffaireUrl').text('non définie');
 					$('.infoAffaireCodeLive').text('non défini');
@@ -882,6 +886,7 @@ window.location.search: "?query=1"
                     var $infoAffaireLocal = 'non';
                     var $infoAffaireEcatcher = 'non';
 					var $noConnection = false;
+
 					if($entitySite.siteConnexion) {
 						if ($entitySite.siteConnexion.url) {
 							$('.infoAffaireUrl').text($entitySite.siteConnexion.url);
@@ -1002,14 +1007,13 @@ window.location.search: "?query=1"
 
 
 		// Fonction qui permet la connexion sur le site distant
-		function actionForm($code_affaire, $url) 
+		function actionForm($code_affaire, $url, $version)
 		{
     		var $nombreOptions;
 			// Pour le cloud : Indication de la base de donnée à charger
 			//   affiche le mesage d'erreur suivant si abscente : Doctrine ORM Manager named  does not exist
 			var $database = "boilerbox_" + $code_affaire;
 			$('#_database').val($database);
-
 
     		// Si l'url comprend le message supervision : envoi tel quel sinon envoi vers la page login du site distant
     		var $urlForm = '';
@@ -1029,12 +1033,14 @@ window.location.search: "?query=1"
 								($url.match(/http:\/\/vps614872.ovh.net\//)) ||
 								($url.match(/http:\/\/54.36.104.188:82\//)) ||
 								($url.toLowerCase() == "http://c987.boiler-box.fr/") ||
-								($url.toLowerCase() == "http://d012.boiler-box.fr/")
+								($url.toLowerCase() == "http://d012.boiler-box.fr/") ||
+								($version.toLowerCase() === 'v3')
 								// ($url.toLowerCase() == "http://d006.boiler-box.fr/") ||
 								// ($url.toLowerCase() == "http://c924.boiler-box.fr/")
 						) {
                     		$urlForm = $url + 'login_check';
-                		} else {
+                		} else
+						{
                     		$urlForm = $url + 'web/app.php/login_check';
                 		}
 					}

@@ -297,6 +297,10 @@ lci_cgu_download:
     path: /lci/cgu/download/{cgu}
     defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::telechargerCGUAction }
 
+lci_cgu_courantes:
+    path: /lci/cgu/courantes
+    defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::telechargerCGUCourantesAction }
+
 lci_cgu_show:
     path: /lci/cgu/show
     defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::showCGUAction }

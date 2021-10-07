@@ -154,43 +154,6 @@ input[type=radio]{
     display: flex;
     justify-content: center;
 }
-#containerMenuBurger, #containerMenuBurgerMenuLateral{
-    align-self: center;
-    margin-right: 30px;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-}
-#containerMenuBurger:hover, #containerMenuBurgerMenuLateral:hover{
-    background: var(--gris-clair);
-}
-.line{
-    display: block;
-    width: 18px;
-    height: 2px;
-    margin: 3px auto;
-    background: var(--gris-profond);
-}
-#lienWatermark{
-    display: flex;
-    justify-content: center;
-    align-content: center;
-}
-#mainMenu .logoIBC, #menuLateral .logoIBC{
-    width: 42px;
-    height: 58px;
-}
-#mainMenu .baselineLogo, #menuLateral .baselineLogo{
-    align-self: center;
-    margin-left: 10px;
-    font-size: 0.8em;
-    color: black;
-    line-height: 9pt;
-}
-.initialeBaseline{
-    color: var(--couleur-principale);
-}
 #right{
     display: flex;
     justify-content: center;
@@ -412,38 +375,6 @@ a.mainNavButton:hover > .popUp{
     background: rgba(0, 0, 0, 0.7);
 }
 /* MENU LATERAL ****************************************************/
-#menuLateral{
-    z-index: 3;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    margin-left: -350px;
-    width: 350px;
-    background: white;
-    transition: all 0.15s ease-in-out;
-}
-#menuLateral.menuLateral--visible{
-    margin-left: 0;
-}
-#containerBaselineLogo{
-    display: flex;
-    flex-direction: row;
-    height: 58px;
-    padding-left: 35px;
-    background-color: white;
-    border-bottom: 1px solid var(--gris-clair-hover)
-}
-#watermarkMenuLateral{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
-}
-#scrollNav{
-    height: calc(100vh - 50px);
-    overflow-y: scroll;
-}
 .linkNavLat{
     display: flex;
     align-items: center;
@@ -1351,23 +1282,8 @@ a.mainNavButton:hover > .popUp{
         padding: 8px;
         margin-right: 14px;
     }
-    .line{
-        width: 18px;
-    }
-    #lienWatermark .logoIBC, #menuLateral .logoIBC{
-        height: 34px;
-        width: auto;
-    }
-    .logoIBC{
-        align-self: center;
-    }
     .popUpNav{
     	display: none;
-    }
-    #lienWatermark .baselineLogo, #menuLateral .baselineLogo{
-        font-size: 0.65em;
-        line-height: 7pt;
-        margin-left: 6px
     }
     #right{
         display: none;

@@ -49,6 +49,16 @@ class SiteType extends AbstractType
                     'required'      => true,
                     'trim'          => true
 				))
+                ->add('version', TextType::class, array(
+                    'label'         => 'Version de l\'ipc (ex: v3)',
+                    'attr'		    => array (
+                        'placeholder'   => "Version de l'ipc (ex: v3)",
+                        'class'         => '',
+                        'max_length'    => 10
+                    ),
+                    'required'      => true,
+                    'trim'          => true
+				))
 				->add('siteConnexion', SiteConnexionType::class, array(
 					'label'         => false
 				))

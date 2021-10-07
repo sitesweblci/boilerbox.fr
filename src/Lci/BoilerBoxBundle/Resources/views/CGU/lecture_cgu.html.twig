@@ -13,7 +13,7 @@
             background: #f9f9f9 !important;
         }
         embed{
-            width: 960px;
+            width: 1050px;
             height: 54vh;
             margin-bottom: 24px;
         }
@@ -38,12 +38,12 @@
 <body>
     <nav id="mainMenu">
         <div id="left">
-            <div  id="lienWatermark" href="{{ path("lci_boilerbox_index") }}">
-                <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-                <p class="baselineLogo">
-                    <span class="initialeBaseline">I</span>NDUSTRIAL<br>
-                    <span class="initialeBaseline">B</span>OILER<br>
-                   <span class="initialeBaseline">C</span>ONTROL<br>
+            <div class="watermark" href="{{ path("lci_boilerbox_index") }}">
+                <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="watermark__baseline">
+                    <span>INDUSTRIAL</span>
+                    <span>BOILER</span>
+                    <span>CONTROL</span>
                 </p>
             </div>
         </div>
@@ -61,7 +61,7 @@
         <h1 class="main-box__title main-box--table__title">Acceptation des CGU</h1>
         <div class='main-box__content main-box__content--padding'>
             <div class='formulaire_liste'>
-                <embed src="{{ path('lci_cgu_download', {'cgu': cgu.id}) }}" width=800 height=500 type='application/pdf'/>
+                <embed src="{{ path('lci_cgu_download', {'cgu': cgu.id}) }}" type='application/pdf'/>
             </div>
             <div class='main-box__btn'>
 				<a href="{{ path('lci_cgu_accepter') }}" class="btn btn--main">Accepter les CGU</a>

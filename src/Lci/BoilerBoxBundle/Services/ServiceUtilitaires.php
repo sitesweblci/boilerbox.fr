@@ -255,7 +255,7 @@ class ServiceUtilitaires {
                 }
 
 				// TEST NETCAT
-				echo "test netcat";
+				echo $entity_site->getAffaire()." test netcat";
 				$retour_test_netcat = $this->test_netcat($entity_site);
 				if ($retour_test_netcat === true) 
 				{
@@ -358,7 +358,7 @@ class ServiceUtilitaires {
                 }
 
 				// TEST NETCAT
-				echo "test netcat";
+				echo $entity_site->getAffaire()." test netcat";
 				$retour_test_netcat = $this->test_netcat($entity_site);
 				if ($retour_test_netcat === true)
 				{

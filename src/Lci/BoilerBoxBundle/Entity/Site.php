@@ -55,6 +55,14 @@ class Site
     /**
      * @var string
      *
+     * @ORM\Column(type="string",length=10)
+     * @Groups({"groupSite"})
+    */
+    protected $version;
+
+    /**
+     * @var string
+     *
 	 * Variable provenant des sites du Cloud
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"groupSite"})
@@ -240,6 +248,29 @@ class Site
     public function getAffaire()
     {
         return $this->affaire;
+    }
+
+    /**
+     * Set version
+     *
+     * @param string $version
+     * @return Site
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 
 
