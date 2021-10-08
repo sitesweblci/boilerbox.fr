@@ -26,22 +26,21 @@
                 <li class="tab-wrapper__tabs__tab" data-tab-target="#about">Autre</li>
             </ul>
             <div class="tab-wrapper__content">
-                {{ form_start(form, {'attr':{'class':'formModifEquipement form'},
-                        'action':path('lci_register_site'),
-                        'method':'POST',
-                        'name':'myForm'}) }}
-                    <div id="home" class="active" data-tab-content>
-                        <div>
-                            {{ form_row(form.intitule) }}
-                            <div class="ligne_error">{{ form_errors(form.intitule) }}</div>
-                            {{ form_row(form.affaire) }}        
-                            <div class="ligne_error">{{ form_errors(form.affaire) }}</div>
-                        </div>
-                        <div class="newParametre addParametreInfos cacher">
-                            <p>Nouveau Paramètre</p>
-                            {{ form_widget(form.configurations) }}
-                        </div>
-                        <div id="addParametreInfos" class="btn btn--add">
+    			{{ form_start(form, {'attr':{'class':'formModifEquipement form'}, 'action':path('lci_register_site'), 'method':'POST', 'name':'myForm'}) }}
+                	<div id="home" class="active" data-tab-content>
+                	    <div>
+    						{{ form_row(form.intitule) }}
+    						<div class="ligne_error">{{ form_errors(form.intitule) }}</div>
+    						{{ form_row(form.affaire) }}		
+    						<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
+                            {{ form_row(form.version) }}
+                            <div class="ligne_error">{{ form_errors(form.version) }}</div>
+    					</div>
+    					<div class="newParametre addParametreInfos cacher">
+    						<p>Nouveau Paramètre</p>
+    						{{ form_widget(form.configurations) }}
+    					</div>
+    					<div id="addParametreInfos" class="btn btn--add">
                             <div class="crossAdd"></div>
                             Ajouter un autre paramètre
                         </div>
