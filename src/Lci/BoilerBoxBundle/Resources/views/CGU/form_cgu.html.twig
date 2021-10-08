@@ -9,7 +9,6 @@
             background: #f9f9f9 !important;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
 {% endblock boilerBoxCSS %}    
 
 {% block title %}{{ parent() }} Ajout de CGU{% endblock title %}
@@ -46,7 +45,7 @@
             {{ form_rest(form) }}
             <button id="submit-myForm" type="submit" class="cacher">
             </button>
-            <div class="form__button">
+            <div class="form__btn">
                 <a href="{{ path("lci_cgu_show") }}" class="btn btn--second">Retour</a>
                 <button type="submit" class="btn_menu btn btn--main" alt="Enregistrer"
                      onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}"

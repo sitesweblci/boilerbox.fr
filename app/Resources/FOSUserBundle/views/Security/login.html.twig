@@ -11,8 +11,12 @@
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/login.css') }}" />
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
     <style>
-    *{
-        box-sizing: initial;
+    .main-box{
+        position: relative;
+        top: 6vh;left: auto;right: auto;
+        margin: 0 auto;
+        padding: 60px 85px 16px 85px;
+        box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.3);
     }
     .btn{
         margin-top: 2vh;
@@ -21,28 +25,30 @@
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-<main>
-    <div id="watermarkLogin">
-        <img class="logoIBC" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-        <p class="baselineLogo">
-            <span class="initialeBaseline">I</span>NDUSTRIAL<br>
-            <span class="initialeBaseline">B</span>OILER<br>
-            <span class="initialeBaseline">C</span>ONTROL<br>
+<main class="main-box">
+    <div class="watermark">
+        <img class="watermark__logo--login" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+        <p class="watermark__baseline watermark__baseline--login">
+            <span>INDUSTRIAL</span>
+            <span>BOILER</span>
+            <span>CONTROL</span>
         </p>
     </div>
-    <form id="formLogin" method="post" name="myForm" action="{{ path("fos_user_security_check") }}">
+    <form class="form form--login" method="post" name="myForm" action="{{ path("fos_user_security_check") }}">
 		<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 		<input type="hidden" id="remember_me" name="_remember_me" value="on" />
 		<input type="hidden" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"></input>
 
 
+        
+        <input type="text" id="identifiant" name="_username" placeholder="identifiant" onblur="checkId(this)">
         <label for="identifiant">identifiant</label>
-        <input type="text" class="identifiant" id="identifiant" name="_username" placeholder="identifiant" onblur="checkId(this)">
-        <p id="missId" class="missLogin">veuillez renseigner un identifiant valide.</p>
+        <p id="js-error-id" class="form--login__error">veuillez renseigner un identifiant valide.</p>
 
+        
+        <input type="password" id="password" name="_password" placeholder="mot de passe" onblur="checkPassword(this)">
         <label for="password">mot de passe</label>
-        <input type="password" class="password" id="password" name="_password" placeholder="mot de passe" onblur="checkPassword(this)">
-        <p id="missPassword" class="missLogin">mot de passe non conforme !</p>
+        <p id="js-error-pass" class="form--login__error">mot de passe non conforme !</p>
         
         <button type="submit" class="btn btn--main" onClick='validationFormulaire();return false;'>se connecter</button>
     </form>
@@ -54,25 +60,25 @@
 	<script type='text/javascript'>
     var id = document.getElementById('identifiant');
     var password = document.getElementById('password');
-    var pId = document.getElementById('missId');
-    var pPassword = document.getElementById('missPassword');
+    var pId = document.getElementById('js-error-id');
+    var pPassword = document.getElementById('js-error-pass');
 
     function checkId (id){
         if (id.value.length < 3 || id.value.length > 25){
-            pId.classList.add("missLoginVisible");
-            id.classList.add("wrongId");
+            pId.classList.add("visible");
+            id.classList.add("error");
         } else {
-            pId.classList.remove("missLoginVisible");
-            id.classList.remove("wrongId");
+            pId.classList.remove("visible");
+            id.classList.remove("error");
         }
     }
     function checkPassword (password){
         if (password.value.length < 3 || password.value.length > 25){
-            pPassword.classList.add("missLoginVisible");
-            password.classList.add("wrongId");
+            pPassword.classList.add("visible");
+            password.classList.add("error");
         } else {
-            pPassword.classList.remove("missLoginVisible");
-            password.classList.remove("wrongId");
+            pPassword.classList.remove("visible");
+            password.classList.remove("error");
         }
     }
 

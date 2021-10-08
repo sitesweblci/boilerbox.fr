@@ -4,7 +4,16 @@
 {% block boilerBoxCSS %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/monCompte.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+    <style>
+        .active > div > div{
+            margin-bottom: 16px;
+        }
+        .form-group{
+            width: 420px;
+            margin: 0 auto;
+        }
+    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
@@ -17,17 +26,18 @@
         </header>
 
 		{{ form_start(form, {'attr': {'class':'formMonCompte'}}) }}
-        <div id="contenuMonCompte">
-            <ul class="tabs">
-                <li class="active tab" data-tab-target="#monCompteProfil">Profil</li>
-                <li class="tab" data-tab-target="#monCompteAuthentification">Authentification</li>
-				<li class="tab" data-tab-target="#monCompteAutre">Autre</li>
+        <div id="contenuMonCompte" class="tab-wrapper">
+            <ul class="tab-wrapper__tabs">
+                <li class="tab-wrapper__tabs__tab active" data-tab-target="#monCompteProfil">Profil</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAuthentification">Authentification</li>
+				<li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAutre">Autre</li>
             </ul>
 
-            <div class="tab-content">
+            <div class="tab-wrapper__content">
                 <div id="monCompteProfil" class="active" data-tab-content>
                     <div class="formMaxHeightMonCompte">
 
+                        <h3>Informations</h3>
                         <div class='champsAdmin'>
                             {{ form_label(form.enabled) }}
                             {{ form_widget(form.enabled) }}
@@ -102,6 +112,7 @@
                 </div>
                 <div id="monCompteAutre" data-tab-content>
                     <div class="formMaxHeightMonCompte">
+                        <h3>Informations</h3>
                 		<div class='champsAdmin'>
                     		{{ form_label(form.informations) }}
                     		{{ form_widget(form.informations) }}
@@ -110,9 +121,9 @@
                     </div>
                 </div>
             </div>
-            <div id="boutonsForm">
-                <div class="eyeCatcher {{ app.user.couleur }}" onClick="attente(); document.forms['fos_user_registration_form'].submit();">Enregistrer</div>
-                <div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('accueilConfUtilisateur');");">Annuler</div>
+            <div class="form__btn form__btn--col">
+                <div class="btn btn--main {{ app.user.couleur }}" onClick="attente(); document.forms['fos_user_registration_form'].submit();">Enregistrer</div>
+                <div class="btn btn--second" onClick="attente(); redirection('accueilConfUtilisateur');">Annuler</div>
             </div>
         </div>
 		{{ form_end(form) }}

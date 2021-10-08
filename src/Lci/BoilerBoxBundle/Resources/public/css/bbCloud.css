@@ -85,7 +85,7 @@ label{
 .checkbox > label{
     margin: 0;
 }
-input:not([type="file"]):not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]):not(.texteToLabel):not(.identifiant):not(.password):not(#searchBarInput),
+input:not([type="file"]):not([type="radio"]):not([type="checkbox"]):not([type="submit"]):not([type="button"]):not(.texteToLabel):not(#identifiant):not(#password):not(#searchBarInput),
 textarea, select{
     display: inline-block;
     box-sizing: border-box;
@@ -105,9 +105,12 @@ textarea{
     height: 20vh;
     max-height: 150px;
 }
+select{
+    padding: 0;
+}
 option{
     font-size: 13px;
-    padding: 4px 0;
+    padding: 6px 0 6px 6px;
 }
 input, button, textarea{
     font-family: Calibri, Arial, sans-serif;

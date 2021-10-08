@@ -92,10 +92,9 @@
                     </div>
                 </div>
     		</div>
-            <div id="boutonsForm">
-                <div class="eyeCatcher {{ app.user.couleur }}" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
-                <div class="spaceBetween"></div>
-				<div class="eyeCatcher eyeCatcherGris" onClick="attente(); history.back();">Annuler</div>
+            <div class="form__btn form__btn--col">
+                <div class="btn btn--main {{ app.user.couleur }}" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
+				<div class="btn btn--second" onClick="attente(); history.back();">Annuler</div>
             </div>
         </div>
 	</main>

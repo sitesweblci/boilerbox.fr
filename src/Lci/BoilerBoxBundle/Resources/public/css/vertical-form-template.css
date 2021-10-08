@@ -156,7 +156,7 @@ div.form-group input:not(.texteToLabel).form-control{
 	margin-bottom: 4px;
 }
 .champsAdmin select{
-	height: initial;
+	height: 250px;
 }
 .titreFormModif{
 	margin: 0;

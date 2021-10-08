@@ -1,4 +1,4 @@
-main {
+/*main {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,24 +14,10 @@ main {
     background: white;
     border-radius: 0 10px 10px 10px;
     box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.3);
-}
-#watermarkLogin{
-    display: flex;
-}
-#watermarkLogin .logoIBC{
-    width: 120px;
-    height: auto;
-}
-#watermarkLogin .baselineLogo{
-    margin-left: 10px;
-    align-self: center;
-    font-size: 1.6em;
-    line-height: 17pt;
-}
-#formLogin{
+}*/
+/*#formLogin{
     display: flex;
     flex-direction: column;
-    width: 90%;
 }
 #formLogin label, #loginLateral label{
     font-size: 0.9em;
@@ -56,8 +42,8 @@ main {
     font-size: 0.7em;
     text-transform: uppercase;
     text-align: center;
-}
-.wrongId{
+}*/
+/*.wrongId{
     border: solid 1px red;
 }
 #formLogin .missLogin{
@@ -66,7 +52,7 @@ main {
     font-size: 0.7em;
     text-transform: uppercase;
     color: red;
-}
+}*/
 #formLogin .missLoginVisible{ /* Class ajoutée grâce au JS */
     visibility: visible;
 }
