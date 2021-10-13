@@ -1012,7 +1012,7 @@ window.location.search: "?query=1"
     		var $nombreOptions;
 			// Pour le cloud : Indication de la base de donnée à charger
 			//   affiche le mesage d'erreur suivant si abscente : Doctrine ORM Manager named  does not exist
-			var $database = "boilerbox_" + $code_affaire;
+			var $database = "boilerbox_" + $code_affaire.replace('-','');
 			$('#_database').val($database);
 
     		// Si l'url comprend le message supervision : envoi tel quel sinon envoi vers la page login du site distant
