@@ -72,7 +72,7 @@ class TableauDeBordController extends AbstractController
 		            	$e_replication->setMessageEtatIo($info_replication['Slave_IO_State']);
 		            	$e_replication->setRetard($info_replication['Seconds_Behind_Master']);
 		            	$e_replication->setMessageErreur($info_replication['Last_IO_Error']);
-						array_push($tableau_des_entites_de_replications, $e_replication);
+						$tableau_des_entites_de_replications[] = $e_replication;
 					} else {
 						// MAIL ERREUR Envoi d'un mail d'erreur
 					}

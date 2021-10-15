@@ -173,19 +173,19 @@ public function exportListeProblemesAction(Request $request) {
 		$tab_tmp = array($tab_probleme->getId());
 		// Bloquant
 		if ($tab_probleme->getBloquant() == true) {
-			array_push($tab_tmp, 'X');
+			$tab_tmp[] = 'X';
 		} else {
-			array_push($tab_tmp, '');
+			$tab_tmp[] = '';
 		}
 		// Coorigé
 		if ($tab_probleme->getCorrige() == true) {
             if ($tab_probleme->getDateCorrection() != null) {
-                 array_push($tab_tmp, $tab_probleme->getDateCorrection()->format('d/m/Y'));
+                 $tab_tmp[] = $tab_probleme->getDateCorrection()->format('d/m/Y');
             } else {
-				array_push($tab_tmp, 'X');
+				$tab_tmp[] = 'X';
 			}
         } else {
-			array_push($tab_tmp, '');
+			$tab_tmp[] = '';
 		}
 		// Date de signalement, Intervenant
 		array_push($tab_tmp, $tab_probleme->getDateSignalement()->format('d/m/Y'), $tab_probleme->getUser()->getUsername().' ('.$tab_probleme->getUser()->getLabel().')');
@@ -198,9 +198,9 @@ public function exportListeProblemesAction(Request $request) {
 		array_push($tab_tmp, $champs_module, $tab_probleme->getEquipement()->getType(), $tab_probleme->getDescription(), $tab_probleme->getSolution());
 		// Fichiers joints
 		if (count($tab_probleme->getFichiersJoint()) != 0) {
-			array_push($tab_tmp, 'X');
+			$tab_tmp[] = 'X';
 		} else {
-			array_push($tab_tmp, '');
+			$tab_tmp[] = '';
 		}
 		fputcsv($fichier_csv, $tab_tmp, $delimiteur);
 	}
@@ -219,7 +219,6 @@ public function exportListeProblemesAction(Request $request) {
 public function affectationAction(Request $request){
 	$this->constructPerso();
     $entityUser = $this->getUser();
-	$username = $entityUser->getUsername();
 	$objet_recherche_probleme = new ObjRechercheProbleme();
 	$objet_recherche_probleme->setIntervenantId($entityUser->getId());
 	$objet_recherche_probleme->setNonCloture(true);

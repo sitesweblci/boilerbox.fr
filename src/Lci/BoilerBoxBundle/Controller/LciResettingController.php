@@ -40,10 +40,6 @@ use FOS\UserBundle\Controller\ResettingController as BaseController;
 class LciResettingController extends BaseController
 {
     private $eventDispatcher;
-    private $formFactory;
-    private $userManager;
-    private $tokenGenerator;
-    private $mailer;
 
     /**
      * @var int
@@ -72,17 +68,18 @@ class LciResettingController extends BaseController
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
+
         if (null !== $user && !$user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.retry_ttl'))) {
 			return $this->redirectToRoute('fos_user_resetting_send_email', [
     			'request' => $request
 			], 307);
-		} else if ($user == null) {
-			return $this->render('FOSUserBundle:Resetting:userNotKnown.html.twig');
-		} else {
-			return $this->render('FOSUserBundle:Resetting:passwordAlreadyRequested.html.twig');
 		}
 
-        return new RedirectResponse($this->generateUrl('fos_user_resetting_check_email', array('username' => $username)));
+        if ($user == null) {
+			return $this->render('FOSUserBundle:Resetting:userNotKnown.html.twig');
+		}
+
+        return $this->render('FOSUserBundle:Resetting:passwordAlreadyRequested.html.twig');
     }
 
     /**

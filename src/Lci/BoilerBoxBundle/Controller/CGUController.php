@@ -4,12 +4,8 @@ namespace Lci\BoilerBoxBundle\Controller;
 
 use Lci\BoilerBoxBundle\Entity\CGU;
 use Lci\BoilerBoxBundle\Form\Type\CGUType;
-use Otp\Otp;
-use ParagonIE\ConstantTime\Encoding;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

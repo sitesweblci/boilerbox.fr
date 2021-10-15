@@ -383,40 +383,35 @@ window.location.search: "?query=1"
 
 
     //  Affichage de la liste des sites pour les affecter à l'utilisateur sélectionné
-    function getListeSites() 
-	{
-		$.ajax({
-                url: "{{ path('lci_ajax_get_userListeSites') }}",
-                type: 'POST',
-                success: function ($dataListeSites, textStatus, jqXHR) {
+    function getListeSites() {
+    	// on effectue l'ajax qu'en production
+		if (!location.href.includes('vps614872.ovh.net')) {
+			$.ajax({
+				url: "{{ path('lci_ajax_get_userListeSites') }}",
+				type: 'GET',
+				success: function ($dataListeSites, textStatus, jqXHR) {
 					var $entsListeSites = JSON.parse($dataListeSites);
 					var html = '';
 					var compteur = 0;
-					$.each($entsListeSites, function(index, value) 
-					{
-						compteur ++;
+					$.each($entsListeSites, function (index, value) {
+						compteur++;
 						var img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-gris.svg') }}";
 						var img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-gris.svg') }}";
 						var img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-gris.svg') }}";
 						var acces_distant_cloud = false;
 						var cloud_a_jour = false;
 						var acces_distant_live = false;
-                        var acces_distant_local = false;
-                        var acces_ecatcher_local_only = false;
+						var acces_distant_local = false;
+						var acces_ecatcher_local_only = false;
 						var acces_ecatcher_live_only = false;
-						if ($entsListeSites[index]['siteConnexion']) 
-						{
-							if (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non'))
-							{
+						if ($entsListeSites[index]['siteConnexion']) {
+							if (!Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non')) {
 								/* Le site Cloud est configuré */
-								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('cloud'))
-								{
+								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('cloud')) {
 									acces_distant_cloud = true;
 									/* On vérifie que les données du cloud sont à jour : Pour être à jour les données doivent avoir été actualisées le jour même et le nombre de données doit être != 0 */
-									if ($entsListeSites[index]['nbDbDonnees'])
-									{
-										if (($entsListeSites[index]['nbDbDonnees'].slice(0,10) == majDeDate()) && ($entsListeSites[index]['nbDbDonnees'].slice(11) != '0'))
-										{
+									if ($entsListeSites[index]['nbDbDonnees']) {
+										if (($entsListeSites[index]['nbDbDonnees'].slice(0, 10) == majDeDate()) && ($entsListeSites[index]['nbDbDonnees'].slice(11) != '0')) {
 											img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-vert.svg') }}";
 											cloud_a_jour = true;
 										} else {
@@ -431,150 +426,129 @@ window.location.search: "?query=1"
 									La connexion à distance est ok et peut se faire depuis boiler-box.fr 
 									Vérification de l'accès LIVE (il faut que les paramètres live et boilerbox soient définis à Oui 
 								****************************************************** */
-								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox'))
-								{
+								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox')) {
 									/*
 										La connexion locale doit pouvoir être fonctionnelle -> IL faut maintenant analyser le retour du ping
 										Si PING OK -> local vert
 									*/
-									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 0)
-									{
+									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 0) {
 										acces_distant_local = true;
 										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-vert.svg') }}";
-										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
-										{
-											acces_distant_live = true; 
-											img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-vert.svg') }}";	
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live')) {
+											acces_distant_live = true;
+											img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-vert.svg') }}";
 										}
 									} else {
 										/* Sinon si une connexion eCatcher est possible -> bleu */
-										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher') && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
-                                        {
-                                            img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') }}";
-                                            if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
-                                            {
-                                                img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
-                                                acces_ecatcher_live_only = true;
-                                            }
-                                        } else {
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher') && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3)) {
+											img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') }}";
+											if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live')) {
+												img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
+												acces_ecatcher_live_only = true;
+											}
+										} else {
 											/* Sinon local et live en rouge */
-                                            img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') }}";
-                                            if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
-                                            {
-                                                img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
-                                            }
-                                        }
+											img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') }}";
+											if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live')) {
+												img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
+											}
+										}
 									}
-								} else if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher'))
-								{
+								} else if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher')) {
 									/* Si pas de connexion boilerbox mais une connexion pas ecatcher */
-									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3)
-									{
+									if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3) {
 										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-bleu.svg') }}";
-										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
-                                    	{
-                                        	img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
-                                        	acces_ecatcher_live_only = true;
-                                    	}
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live')) {
+											img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-bleu.svg') }}";
+											acces_ecatcher_live_only = true;
+										}
 									} else if ($entsListeSites[index]['siteConnexion']['disponibilite'] == 2) {
 										img_locale = "{{ asset('bundles/lciboilerbox/images/img/connexionLocale-rouge.svg') }}";
-                                        if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live'))
-                                        {
-                                            img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
-                                            acces_ecatcher_live_only = true;
-                                        }
+										if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('live')) {
+											img_live = "{{ asset('bundles/lciboilerbox/images/img/connexionLive-rouge.svg') }}";
+											acces_ecatcher_live_only = true;
+										}
 									}
 									acces_ecatcher_local_only = true;
-								}	
+								}
 							}
 						}
 
 						html += '<tr class="ligneAffaire">';
-							html += '<td class="CXXX" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
-							html += $entsListeSites[index]['affaire'];
-							html += '</td>';
-	
-							html += '<td class="etatConnec" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
-							if ($entsListeSites[index]['siteConnexion'])
-							{
-								if (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non'))
-								{
-									/* La connexion à distance est ok : Par ecatcher si ecatcher défini et que pas de boilerbox et pas de cloud */
-									if ( (! Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox')) && (! acces_distant_cloud) && Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher'))
-									{
-										html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-bleu.svg') }}" + '" alt="" class="imgEtatConnec">';
-									} else {
-										/* La connexion à distance est normallement ok mais les retours de ping sont ko et le cloud n'est pas à jour */
-										if ((acces_distant_cloud == false) && (acces_distant_local == false))
-										{
-											/* Pas de connexion cloud et ping Ko */
-											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-rouge.svg') }}" + '" alt="" class="imgEtatConnec">';
-										} else if ((acces_distant_cloud == true) && (cloud_a_jour == false) && (acces_distant_local == false)) {
-											/* Connexion Cloud - Cloud non à jour et ping Ko  */
-											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-orange.svg') }}" + '" alt="" class="imgEtatConnec">';	
-										} else {
-											/* La connexion à distance est ok et la connexion peut se faire sur un des outils local ou cloud */	
-											html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec.svg') }}" + '" alt="" class="imgEtatConnec">';
-										}
-									}
+						html += '<td class="CXXX" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+						html += $entsListeSites[index]['affaire'];
+						html += '</td>';
+
+						html += '<td class="etatConnec" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+						if ($entsListeSites[index]['siteConnexion']) {
+							if (!Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('non')) {
+								/* La connexion à distance est ok : Par ecatcher si ecatcher défini et que pas de boilerbox et pas de cloud */
+								if ((!Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('boilerbox')) && (!acces_distant_cloud) && Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('ecatcher')) {
+									html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-bleu.svg') }}" + '" alt="" class="imgEtatConnec">';
 								} else {
-									/* Pas de connexion à distance possible  */
-									html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-gris.svg') }}" + '" alt="" class="imgEtatConnec">';
+									/* La connexion à distance est normallement ok mais les retours de ping sont ko et le cloud n'est pas à jour */
+									if ((acces_distant_cloud == false) && (acces_distant_local == false)) {
+										/* Pas de connexion cloud et ping Ko */
+										html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-rouge.svg') }}" + '" alt="" class="imgEtatConnec">';
+									} else if ((acces_distant_cloud == true) && (cloud_a_jour == false) && (acces_distant_local == false)) {
+										/* Connexion Cloud - Cloud non à jour et ping Ko  */
+										html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-orange.svg') }}" + '" alt="" class="imgEtatConnec">';
+									} else {
+										/* La connexion à distance est ok et la connexion peut se faire sur un des outils local ou cloud */
+										html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec.svg') }}" + '" alt="" class="imgEtatConnec">';
+									}
 								}
-							}	
-							html += '</td>';
+							} else {
+								/* Pas de connexion à distance possible  */
+								html += '<img src="' + "{{ asset('bundles/lciboilerbox/images/img/etatConnec-gris.svg') }}" + '" alt="" class="imgEtatConnec">';
+							}
+						}
+						html += '</td>';
 
 
-							html += '<td class="nomAffaire" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
-							html += $entsListeSites[index]['intitule'];
-							html += '</td>';
+						html += '<td class="nomAffaire" onclick="showPopUp(' + $entsListeSites[index]['id'] + ', false,  \'' + img_cloud + '\',' + acces_distant_cloud + ', \'' + img_live + '\',' + acces_distant_live + ', \'' + img_locale + '\',' + acces_distant_local + ',' + acces_ecatcher_local_only + ',' + acces_ecatcher_live_only + ')">';
+						html += $entsListeSites[index]['intitule'];
+						html += '</td>';
 
-							html += '<td class="whiteSpace"></td>';
-							html += '<td class="connexionOn">';
-							if ((acces_distant_cloud == true) && ($entsListeSites[index]['nbDbDonnees']))
-							{
-								if (getTodayDate() != $entsListeSites[index]['nbDbDonnees'].slice(0,10))
-								{
-									html += '<p class="popUpCloud">Cloud mis à jour</br>le ' + $entsListeSites[index]['nbDbDonnees'].slice(0,10) + '</p>';
-								}
+						html += '<td class="whiteSpace"></td>';
+						html += '<td class="connexionOn">';
+						if ((acces_distant_cloud == true) && ($entsListeSites[index]['nbDbDonnees'])) {
+							if (getTodayDate() != $entsListeSites[index]['nbDbDonnees'].slice(0, 10)) {
+								html += '<p class="popUpCloud">Cloud mis à jour</br>le ' + $entsListeSites[index]['nbDbDonnees'].slice(0, 10) + '</p>';
 							}
-							html += '<img src="' + img_cloud + '" alt="" class="iconeConnec"';
-							if (acces_distant_cloud == true)
-							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + "{{ url_cloud }}" + '\', \''+ $entsListeSites[index]['version'] + '\');"';
-							}
-							html += '>';
-							html += '</td>';
+						}
+						html += '<img src="' + img_cloud + '" alt="" class="iconeConnec"';
+						if (acces_distant_cloud == true) {
+							html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + "{{ url_cloud }}" + '\', \'' + $entsListeSites[index]['version'] + '\');"';
+						}
+						html += '>';
+						html += '</td>';
 
-							html += '<td class="whiteSpace"></td>';
+						html += '<td class="whiteSpace"></td>';
 
-							html += '<td class="connexionOn">';
-							if ((acces_ecatcher_live_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
-							{
-								html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
-							}
-							html += '<img src="' + img_live + '" alt="" class="iconeConnec"';
-							if ((acces_distant_live == true) && ($entsListeSites[index]['siteConnexion']['codeLive'] != null)) 
-							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entsListeSites[index]['siteConnexion']['codeLive']  + '\', \'' + $entsListeSites[index]['version'] + '\');"';
-							}
-							html += '>';
-							html += '</td>';
+						html += '<td class="connexionOn">';
+						if ((acces_ecatcher_live_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3)) {
+							html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
+						}
+						html += '<img src="' + img_live + '" alt="" class="iconeConnec"';
+						if ((acces_distant_live == true) && ($entsListeSites[index]['siteConnexion']['codeLive'] != null)) {
+							html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entsListeSites[index]['siteConnexion']['codeLive'] + '\', \'' + $entsListeSites[index]['version'] + '\');"';
+						}
+						html += '>';
+						html += '</td>';
 
-							html += '<td class="whiteSpace"></td>';
-							
-							html += '<td class="connexionOn">';
-							if ((acces_ecatcher_local_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3))
-							{
-								html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
-							}
-							html += '<img src="' + img_locale + '" alt="" class="iconeConnec"';
-							if (acces_distant_local == true) 
-							{
-								html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + '\', \'' + $entsListeSites[index]['version'] + '\');"';
-							}
-							html += '>';
-							html += '</td>';
+						html += '<td class="whiteSpace"></td>';
+
+						html += '<td class="connexionOn">';
+						if ((acces_ecatcher_local_only == true) && ($entsListeSites[index]['siteConnexion']['disponibilite'] == 3)) {
+							html += '<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>';
+						}
+						html += '<img src="' + img_locale + '" alt="" class="iconeConnec"';
+						if (acces_distant_local == true) {
+							html += 'onClick="actionForm(\'' + $entsListeSites[index]['affaire'] + '\', \'' + $entsListeSites[index]['siteConnexion']['url'] + '\', \'' + $entsListeSites[index]['version'] + '\');"';
+						}
+						html += '>';
+						html += '</td>';
 						html += '</tr>';
 						/*	DEBUG
 							Affichage de la liste des champs de l'entité Site
@@ -585,11 +559,12 @@ window.location.search: "?query=1"
 					});
 					$("tbody").html(html);
 					rechercheOnPage();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('error ' + textStatus + ' - -' + errorThrown );
-                }
-            });
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log('error ' + textStatus + ' - -' + errorThrown);
+				}
+			});
+		}
     }
 
 
@@ -1032,7 +1007,11 @@ window.location.search: "?query=1"
 								($url.match(/http:\/\/54.36.104.188\//)) ||
 								($url.match(/http:\/\/vps614872.ovh.net\//)) ||
 								($url.match(/http:\/\/54.36.104.188:82\//)) ||
+								($url.toLowerCase() == "http://c987.boiler-box.fr/") ||
+								($url.toLowerCase() == "http://d012.boiler-box.fr/") ||
 								($version.toLowerCase() === 'v3')
+								// ($url.toLowerCase() == "http://d006.boiler-box.fr/") ||
+								// ($url.toLowerCase() == "http://c924.boiler-box.fr/")
 						) {
                     		$urlForm = $url + 'login_check';
                 		} else
