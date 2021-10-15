@@ -99,7 +99,8 @@ window.location.search: "?query=1"
 									{% if 'cloud' in site.siteConnexion.accesDistant %}
 										{% set acces_distant_cloud = true %}
 										{# ##### On vérifie que les données du cloud sont à jour : Pour être à jour les données doivent avoir été actualisées le jour même et le nombre de données doit être != 0 #}
-										{% if ((site.nbDbDonnees | slice (0,10)  ==  date() | date('d/m/Y')) and (site.nbDbDonnees | slice (11) != '0')) %}
+										{# if ((site.nbDbDonnees | slice (0,10)  ==  date() | date('d/m/Y')) and (site.nbDbDonnees | slice (11) != '0')) #}
+										{% if (site.nbDbDonnees | slice (0,10)  ==  date() | date('d/m/Y'))  %}
 											{% set img_cloud  = asset('bundles/lciboilerbox/images/img/connexionCloud-vert.svg') %}
 											{% set cloud_a_jour = true %}
 	                        	    	{% else %}
@@ -410,8 +411,10 @@ window.location.search: "?query=1"
 								if (Object.values($entsListeSites[index]['siteConnexion']['accesDistant']).includes('cloud')) {
 									acces_distant_cloud = true;
 									/* On vérifie que les données du cloud sont à jour : Pour être à jour les données doivent avoir été actualisées le jour même et le nombre de données doit être != 0 */
-									if ($entsListeSites[index]['nbDbDonnees']) {
-										if (($entsListeSites[index]['nbDbDonnees'].slice(0, 10) == majDeDate()) && ($entsListeSites[index]['nbDbDonnees'].slice(11) != '0')) {
+									if ($entsListeSites[index]['nbDbDonnees'])
+									{
+										if ($entsListeSites[index]['nbDbDonnees'].slice(0,10) == majDeDate()) 
+										{
 											img_cloud = "{{ asset('bundles/lciboilerbox/images/img/connexionCloud-vert.svg') }}";
 											cloud_a_jour = true;
 										} else {
@@ -987,7 +990,7 @@ window.location.search: "?query=1"
     		var $nombreOptions;
 			// Pour le cloud : Indication de la base de donnée à charger
 			//   affiche le mesage d'erreur suivant si abscente : Doctrine ORM Manager named  does not exist
-			var $database = "boilerbox_" + $code_affaire;
+			var $database = "boilerbox_" + $code_affaire.replace('-','');
 			$('#_database').val($database);
 
     		// Si l'url comprend le message supervision : envoi tel quel sinon envoi vers la page login du site distant

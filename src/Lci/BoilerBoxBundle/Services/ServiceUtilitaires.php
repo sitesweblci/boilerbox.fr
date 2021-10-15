@@ -78,6 +78,7 @@ class ServiceUtilitaires {
                 }
                 $numAffaire = strtok($ewon['name'], ' ');
                 $this->ewons[$numAffaire] = array('name' => $ewon['name'], 'status' => $ewon['status']);
+				if ($this->debug) echo "eWon recupere : $numAffaire : ".$ewon['status']."\n";
                 if ('' !== $ewon['customAttributes'][1]) {
                     // pour les comptes ecatcher demandant de se connecter sur un autre
                     $this->ewons[$numAffaire]['affaire_principale'] = $ewon['customAttributes'][1];
@@ -338,6 +339,7 @@ class ServiceUtilitaires {
             {
 				// TEST ECATCHER
                 $retour_ewon_status = $this->getEwonStatusBoilerBox($entity_site);
+				if($this->debug) echo $entity_site->getAffaire()." test de connexion\n";
 
                 if ($retour_ewon_status == 'online')
                 {
@@ -423,7 +425,7 @@ class ServiceUtilitaires {
 		$tab_details = [];
 		// Retourne l'url du site
 		$tab_param_url = $this->recuperationSiteUrl($entity_site->getSiteConnexion()->getUrl());
-		if($this->debug) echo "Test du port 80";
+		if($this->debug) echo "Test du port 80\n";
 		// **** Récupération de l'adresse ip si l'url est de type DNS (http://***) sinon on enregistre l'adresse ip défini par l'url dans la variable
 		$pattern_dns = '/^[a-zA-Z]/';
 		if(! preg_match($pattern_dns, $tab_param_url['url']))
@@ -434,9 +436,9 @@ class ServiceUtilitaires {
 			$adresse_ip_site = exec($commande_adresse_ip_site, $tab_adresse_ip, $retour_commande);
 			if($this->debug) 
 			{
-				echo "<br />Commande Hosts";
-				echo "<br />Commande hosts : host -t A ".$tab_param_url['url']." ".$this->dnsServer." | grep 'has address' | awk -F' ' '{print $4}'";
-				echo "<br />Adresse : $adresse_ip_site";
+				echo "Commande Hosts\n";
+				echo "Commande hosts : host -t A ".$tab_param_url['url']." ".$this->dnsServer." | grep 'has address' | awk -F' ' '{print $4}'\n";
+				echo "Adresse : $adresse_ip_site\n";
 			}
 		}
 		if ($adresse_ip_site != '') {
@@ -476,12 +478,11 @@ class ServiceUtilitaires {
 
 	// Fonction qui prend en argument une url de type http://c671.boiler-box.fr/ (ou http://c714.boiler-box.fr:81/) et retourne l'url c671.boiler-box.fr (ou c714.boiler-box.fr)
 	private function recuperationSiteUrl($url) {
-		if($this->debug) echo "<br />Recuperation URL :".$url;
+		if($this->debug) echo "Recuperation URL :".$url."\n";
 	    $tab_param_url  = array();
 	    $pattern_url = '/^http:\/\/(.+?):?(\d*?)\/?$/';
 	    if (preg_match($pattern_url, $url, $tab_url)) 
 		{
-			if($this->debug) echo "<br />preg match";
 	        if (! isset($tab_url[2])) {
 	            $tab_url[2] = 80;
 	        } else {
@@ -495,7 +496,7 @@ class ServiceUtilitaires {
 	        $tab_param_url['url']  = $url;
 	        $tab_param_url['port'] = 80;
 	    }
-		if($this->debug) echo "<br />Retourn url : ".$tab_param_url['url'];
+		if($this->debug) echo "Retourn url : ".$tab_param_url['url']."\n";
 	    return($tab_param_url);
 	}
 

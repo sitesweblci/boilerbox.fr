@@ -423,7 +423,7 @@ function actionForm() {
     }
 
 	// Indication de la base à afficher dans le VPS
-	$('#_database').val($database);
+	$('#_database').val($database.replace('-',''));
 	//$('#_database').val('baseded');
 	
 	if ($nombreOptions == 0){
