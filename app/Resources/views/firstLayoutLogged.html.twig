@@ -39,10 +39,12 @@
             	    <span id="pParam" class="popUp">Paramètres</span>
             	</a>
 			{% endif %}
+			{#
             <a id="iconeLocalisation" class="mainNavButton spaceRoundedButton" href="https://www.google.com/maps/d/u/0/embed?mid=1HvyRmqnv2__T4xk8EDwLBcZoulMvx7C1" >
                 <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites" class="icones">
                 <span id="pLocalisation" class="popUp">Localisation</span>
             </a>
+			#}
 			<a id="btnIdentified" class="mainNavButton btnIdentified {{ app.user.couleur }}" href="">
                 <span>{{ app.user.label | slice(0,1) }}</span>
             </a>
@@ -103,25 +105,27 @@
                         <span class="nameNavLat">sites</span>
                     </a>
                 </li>
+				{#
                 <li>
                     <a href="https://www.google.com/maps/d/u/0/embed?mid=1HvyRmqnv2__T4xk8EDwLBcZoulMvx7C1" class="linkNavLat">
                         <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navLocalisation.svg') }}" alt="icône localisation" class="imgNavLat">
                         <span class="nameNavLat">localisation</span>
                     </a>
                 </li>
-                <li>
-                    <a href='{{ path("lci_gestion_parc")}}' class="linkNavLat">
-                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navProbTech.svg') }}" alt="icône problèmes techniques" class="imgNavLat">
-                        <span class="nameNavLat">problèmes techniques</span>
-                    </a>
-                </li>
-                <li>
-                    <a href='{{ path("lci_bons_attachements")}}' class="linkNavLat">
-                        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navBonsAttach.svg') }}" alt="icône bons d'interventions" class="imgNavLat">
-                        <span class="nameNavLat">bons d'interventions</span>
-                    </a>
-                </li>
+				#}
 				{% if is_granted('ROLE_TECHNICIEN') %}
+                	<li>
+                	    <a href='{{ path("lci_gestion_parc")}}' class="linkNavLat">
+                	        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navProbTech.svg') }}" alt="icône problèmes techniques" class="imgNavLat">
+                	        <span class="nameNavLat">problèmes techniques</span>
+                	    </a>
+                	</li>
+                	<li>
+                	    <a href='{{ path("lci_bons_attachements")}}' class="linkNavLat">
+                	        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navBonsAttach.svg') }}" alt="icône bons d'interventions" class="imgNavLat">
+                	        <span class="nameNavLat">bons d'interventions</span>
+                	    </a>
+                	</li>
                 	<li>
                 	    <a href='{{ path("lci_generation_mdp")}}' class="linkNavLat">
                 	        <img src="{{ asset('bundles/lciboilerbox/images/img/nav/navGenerateurMdp.svg') }}" alt="icône générateur mot de passe" class="imgNavLat">
