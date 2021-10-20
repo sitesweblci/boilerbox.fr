@@ -119,11 +119,11 @@
                         {{ form_widget(form.informations) }}
                         <div class="ligne_error">{{ form_errors(form.informations) }}</div>
                     </div>
-                    <h3>Mode de partage privé</h3>
-                    <p class="explication">
-                        Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
-                    </p>
 					{% if is_granted('ROLE_TECHNICIEN') %}
+                    	<h3>Mode de partage privé</h3>
+                    	<p class="explication">
+                    	    Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
+                    	</p>
                     	<div id="choixPrivePublicMonCompte">
                     	    <div class="flexBoxBoutonSwitch">
                     	        <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="labelBoutonSwitch" data-href="">
