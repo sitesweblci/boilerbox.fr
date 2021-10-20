@@ -123,15 +123,17 @@
                     <p class="explication">
                         Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
                     </p>
-                    <div id="choixPrivePublicMonCompte">
-                        <div class="flexBoxBoutonSwitch">
-                            <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="labelBoutonSwitch" data-href="">
-                                <input type="checkbox" id="modePrivePublicMonCompte">
-                                <span class="slider"></span>
-                            </label>
-                            <p id='pModePrive'>Activer mode privé</p>
-                        </div>
-                    </div>
+					{% if is_granted('ROLE_TECHNICIEN') %}
+                    	<div id="choixPrivePublicMonCompte">
+                    	    <div class="flexBoxBoutonSwitch">
+                    	        <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="labelBoutonSwitch" data-href="">
+                    	            <input type="checkbox" id="modePrivePublicMonCompte">
+                    	            <span class="slider"></span>
+                    	        </label>
+                    	        <p id='pModePrive'>Activer mode privé</p>
+                    	    </div>
+                    	</div>
+					{% endif %}
                     <h3>Préférences</h3>
                     <div id="choixLangue">
                         <label>Langue</label>
