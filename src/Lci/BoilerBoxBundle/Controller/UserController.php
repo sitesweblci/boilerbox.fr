@@ -16,50 +16,6 @@ use Lci\BoilerBoxBundle\Form\Type\ModificationUserType;
 
 class UserController extends Controller
 {
-
-    public function changePasswordAction(Request $request)
-    {
-        // Envoi vers la page de modification des informations
-        $user = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->find($this->getUser());
-        $form_user_update = $this->createForm(ModificationUserType::class, $user);
-        return $this->render('LciBoilerBoxBundle:Registration:changeUserRegistration.html.twig', array(
-            'user' => $user,
-            'form' => $form_user_update->createView()
-        ));
-
-        // Précédemment envoyé vers une page pour modifier son mdp
-        $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
-            throw new AccessDeniedException('This user does not have access to this section.');
-        }
-        $dispatcher = $this->get('event_dispatcher');
-        $event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_INITIALIZE, $event);
-        if (null !== $event->getResponse()) {
-            return $event->getResponse();
-        }
-        $formFactory = $this->get('fos_user.change_password.form.factory');
-        $form = $formFactory->createForm();
-        $form->setData($user);
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $event = new FormEvent($form, $request);
-            $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_SUCCESS, $event);
-            $userManager->updateUser($user);
-            if (null === $response = $event->getResponse()) {
-                $url = $this->generateUrl('fos_user_security_logout');
-                $response = new RedirectResponse($url);
-            }
-            $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
-            return $response;
-        }
-        return $this->render('LciBoilerBoxBundle:Registration:changePassword.html.twig', array(
-            'form' => $form->createView()
-        ));
-    }
-
-
     // Modification de l'utilisateur courant (Lorsqu'un utilisateur modifie ses propres informations
     public function userUpdateOwnAction($idUtilisateur, Request $request)
     {

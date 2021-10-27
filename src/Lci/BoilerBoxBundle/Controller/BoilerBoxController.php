@@ -264,7 +264,7 @@ class BoilerBoxController extends Controller
 // Fonction qui initialise la création d'une clé double facteur
 // Ou
 // Désactive l'authentification double facteur (si authentification déja activé)
-    public function activationAuthDoubleFacteurAction(SessionInterface $session)
+    public function activationAuthDoubleFacteurAction(SessionInterface $session, Request $request)
     {
         $em = $this->container->get('doctrine')->getManager();
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -285,7 +285,7 @@ class BoilerBoxController extends Controller
         // Mise de la clé dans le champs totpKey de l'utilisateur
         // Création du QRCode
         $user_email = $user->getEmail();
-        $url_qrcode = GoogleAuthenticator::getQrCodeUrl('totp', "BoilerBox ($user_email)", $secret);
+        $url_qrcode = GoogleAuthenticator::getQrCodeUrl('totp', $request->getHost()." ($user_email)", $secret);
         // On inscrit le qrcode dans les paramètres de l'utilisateur
         $user->setQrCode($url_qrcode);
         $em->flush();
