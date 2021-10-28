@@ -31,7 +31,7 @@
     	    <div class='version_boilerbox'>
 				{% block enTete_gauche %}
     	    	    <p>{% include "form/version_boilerbox.html.twig" %}
-						<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>Lien vers la démo</a></i></span>{% block mdp %}{% endblock mdp %}
+						{#<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>Lien vers la démo</a></i></span>{% block mdp %}{% endblock mdp %}#}
     	    	      	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
     	    	           	- Bienvenue
     	    	           	{% block lien_parc_technique %}

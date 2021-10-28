@@ -28,10 +28,12 @@
         </div>
 
         <div id="right">
+			{#
             <a id="iconeLocalisation" class="mainNavButton spaceRoundedButton" href="https://www.google.com/maps/d/embed?mid=1y0NIi4DoQQCO4sDyfxOMwqQ052U3X2TB" >
                 <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites" class="icones">
                 <p id="pLocalisation" class="popUp">Localisation</p>
             </a>
+			#}
             <a href="{{ path('fos_user_security_login') }}" id="btnUnidentified" class="mainNavButton">
                 <img src="{{ asset('bundles/lciboilerbox/images/img/nav/unidentified.svg') }}" alt="icône mon compte" id="iconeUnidentified" class="icones">
             </a>
