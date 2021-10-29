@@ -52,8 +52,7 @@ twig:
         # URL du cloud LTS
         #url_cloud: 'http://cloud.boiler-box-lts.fr/'
         # URL du cloud LCI
-        #url_cloud: 'http://54.36.104.188/'
-        url_cloud: 'http://54.36.104.188/'
+        url_cloud: 'http://cloud.boiler-box.fr/'
 
 
 # Doctrine Configuration
