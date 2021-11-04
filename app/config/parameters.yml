@@ -30,3 +30,4 @@ parameters:
     rapport.class: Lci\BoilerBoxBundle\Services\ServiceRapport
     log.class: Lci\BoilerBoxBundle\Services\ServiceLog
     mailer_disable: false
+    synchronisation.class: Lci\BoilerBoxBundle\Services\ServiceSynchronisation
