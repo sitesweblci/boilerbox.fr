@@ -4,178 +4,186 @@
 {% block boilerBoxCSS %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+    <style>
+        .form__field select:not(#fos_user_registration_form_langue){
+            padding: 0 !important;
+        }
+        .form__field select option{
+            padding: 6px;
+        }
+        @media screen and (max-width: 460px){
+            .form__field select:not(#fos_user_registration_form_langue){
+                padding: 6px 0 6px 10px !important;
+            }
+        }
+        
+    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
     <main id="monCompte" data-isadmin="{{ is_granted('ROLE_ADMIN') }}">
-        <header class="headerInterne">
-            <p id="rondMonCompte" class="{{ app.user.couleur }}"><span>{{ app.user.label | slice(0,1) | upper }}</span></p>
-            <div id="titrePageMonCompte">
-                <h1>{{ app.user.prenom }} {{ app.user.nom }}</h1>
-                <h2>{{ app.user.username }}</h2>
+        <header class="sub-header sub-header--grey">
+            <p class="sub-header__chip {{ app.user.couleur }}"><span>{{ app.user.label | slice(0,1) | upper }}</span></p>
+            <div class="sub-header__wrapper">
+                <h1 class="sub-header__title">{{ app.user.prenom }} {{ app.user.nom }}</h1>
+                <h2 class="sub-header__sub-title">{{ app.user.username }}</h2>
             </div>
         </header>
 
-		{{ form_start(form, {'attr': {'class':'formMonCompte form'}}) }}
-        <div class="tab-wrapper">
-            <ul class="tab-wrapper__tabs">
-                <li class="tab-wrapper__tabs__tab active " data-tab-target="#monCompteProfil">Profil</li>
-                <li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAuthentification">Authentification</li>
-				<li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAutre">Autre</li>
-            </ul>
+		{{ form_start(form, {'attr': {'class':'form'}}) }}
+            <div class="tab-wrapper">
+                <ul class="tab-wrapper__tabs">
+                    <li class="tab-wrapper__tabs__tab active " data-tab-target="#monCompteProfil">Profil</li>
+                    <li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAuthentification">Authentification</li>
+    				<li class="tab-wrapper__tabs__tab" data-tab-target="#monCompteAutre">Autre</li>
+                </ul>
 
-            <div class="tab-wrapper__content">
-                <div id="monCompteProfil" class="active" data-tab-content>
-                    <h3>Informations</h3>
-                    <div class='cacher'>
-                        {{ form_label(form.enabled) }}
-                        {{ form_widget(form.enabled) }}
-                        <div class="ligne_error">{{ form_errors(form.enabled) }}</div>
-                        {{ form_label(form.modePrive) }}
-                        {{ form_widget(form.modePrive) }}
-                        <div class="ligne_error">{{ form_errors(form.modePrive) }}</div>
-                        {{ form_label(form.langue) }}
-                        {{ form_widget(form.langue) }}
-                        <div class="ligne_error">{{ form_errors(form.langue) }}</div>
-                    </div>
+                <div class="tab-wrapper__content">
+                    <div id="monCompteProfil" class="active form__field" data-tab-content>
+                        <h3 class="form__field__title">Informations</h3>
+                        <div class='cacher'>
+                            {{ form_label(form.enabled) }}
+                            {{ form_widget(form.enabled) }}
+                            <div class="ligne_error">{{ form_errors(form.enabled) }}</div>
+                            {{ form_label(form.modePrive) }}
+                            {{ form_widget(form.modePrive) }}
+                            <div class="ligne_error">{{ form_errors(form.modePrive) }}</div>
+                            {{ form_label(form.langue) }}
+                            {{ form_widget(form.langue) }}
+                            <div class="ligne_error">{{ form_errors(form.langue) }}</div>
+                        </div>
 
-                    <div class="champsAdmin cacher" {% if form.username.vars.value == "Admin" %} style="pointer-events:none;"{% endif %}>
-                        {{ form_label(form.username) }}
-                        {{ form_widget(form.username) }}
-                        <div class="ligne_error">{{ form_errors(form.username) }}</div>
-                    </div>
+                        <div class="js-champs-admin cacher" {% if form.username.vars.value == "Admin" %} style="pointer-events:none;"{% endif %}>
+                            {{ form_label(form.username) }}
+                            {{ form_widget(form.username) }}
+                            <div class="ligne_error">{{ form_errors(form.username) }}</div>
+                        </div>
 
-                    <div class='champsAdmin cacher'>
-                        {{ form_label(form.label) }}
-                        {{ form_widget(form.label) }}
-                        <div class="ligne_error">{{ form_errors(form.label) }}</div>
-                    </div>
+                        <div class='js-champs-admin cacher'>
+                            {{ form_label(form.label) }}
+                            {{ form_widget(form.label) }}
+                            <div class="ligne_error">{{ form_errors(form.label) }}</div>
+                        </div>
 
-                    <div class='champsAdmin desactive'>
-                        {{ form_label(form.nom) }}
-                        {{ form_widget(form.nom) }}
-                        <div class="ligne_error">{{ form_errors(form.nom) }}</div>
-                    </div>
+                        <div class='js-champs-admin desactive'>
+                            {{ form_label(form.nom) }}
+                            {{ form_widget(form.nom) }}
+                            <div class="ligne_error">{{ form_errors(form.nom) }}</div>
+                        </div>
 
-                    <div class='champsAdmin desactive'>
-                        {{ form_label(form.prenom) }}
-                        {{ form_widget(form.prenom) }}
-                        <div class="ligne_error">{{ form_errors(form.prenom) }}</div>
-                    </div>
+                        <div class='js-champs-admin desactive'>
+                            {{ form_label(form.prenom) }}
+                            {{ form_widget(form.prenom) }}
+                            <div class="ligne_error">{{ form_errors(form.prenom) }}</div>
+                        </div>
 
-                    <div class='champsAdmin desactive'>
-                        {{ form_label(form.email) }}
-                        {{ form_widget(form.email) }}
-                        <div class="ligne_error">{{ form_errors(form.email) }}</div>
-                    </div>
+                        <div class='js-champs-admin desactive'>
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            <div class="ligne_error">{{ form_errors(form.email) }}</div>
+                        </div>
 
-                    <div class='champsAdmin cacher'>
-                        {{ form_label(form.roles) }}
-                        <div>{{ form_widget(form.roles) }}</div>
-                        <div class="ligne_error">{{ form_errors(form.roles) }}</div>
-                    </div>
-
-                    <h3 class='champsAdmin cacher'>Activation du compte</h3>
-                    <div class='champsAdmin cacher' id="containerSwitchActivationCompte">
-                        <div class="flexBoxBoutonSwitch">
-                            <label for="activationCompte" id="switchActivationCompte" class="labelBoutonSwitch" data-href="">
+                        <div class='js-champs-admin cacher'>
+                            {{ form_label(form.roles) }}
+                            <div>{{ form_widget(form.roles) }}</div>
+                            <div class="ligne_error">{{ form_errors(form.roles) }}</div>
+                        </div>
+                        <h3 class='form__field__title js-champs-admin cacher'>Activation du compte</h3>
+                        <div id="containerSwitchActivationCompte" class='js-champs-admin row-wrap cacher' >
+                            <label for="activationCompte" id="switchActivationCompte" class="switch" data-href="">
                                 <input type="checkbox" id="activationCompte">
-                                <span class="slider"></span>
+                                <span></span>
                             </label>
                             <p id='pActivationCompte'>Activer compte</p>
                         </div>
                     </div>
-                </div>
-                <div id="monCompteAuthentification" data-tab-content>
-                    <div id="site_siteConnexion_accesDistant">
-                            <h3>Réinitialisation du mot de passe</h3>
-							<div class="champsAdmin">
-								{{ form_label(form.plainPassword.first) }}
-								{{ form_widget(form.plainPassword.first) }}
-								<div class="ligne_error">{{ form_errors(form.plainPassword.first) }}</div>
-							</div>
 
-							<div class="champsAdmin">
+                    <div id="monCompteAuthentification" class="form__field" data-tab-content>
+                        <div id="site_siteConnexion_accesDistant">
+                            <h3 class="form__field__title">Réinitialisation du mot de passe</h3>
+                            <div class="js-champs-admin">
+                                {{ form_label(form.plainPassword.first) }}
+                                {{ form_widget(form.plainPassword.first) }}
+                                <div class="ligne_error">{{ form_errors(form.plainPassword.first) }}</div>
+                            </div>
+                            <div class="js-champs-admin">
                                 {{ form_label(form.plainPassword.second) }}
                                 {{ form_widget(form.plainPassword.second) }}
-								<div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
+                                <div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
                             </div>
-                            <h3>Authentification à deux facteurs</h3>
-                            <div id="containerSwitchAuthentificationDoubleFacteur">
-                                <div class="flexBoxBoutonSwitch">
-                                    <label for="authentificationDoubleFacteur" id="switchAuthentificationDoubleFacteur" class="labelBoutonSwitch" data-href="{{ path('lci_boilerbox_auth_activation') }}">
-                                        <input type="checkbox" id="authentificationDoubleFacteur">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <p>Activer l'authentification à deux facteurs</p>
-                                </div>
+                            <h3 class="form__field__title">Authentification à deux facteurs</h3>
+                            <div class="row-wrap">
+                                <label for="authentificationDoubleFacteur" id="switchAuthentificationDoubleFacteur" class="switch" data-href="{{ path('lci_boilerbox_auth_activation') }}">
+                                    <input type="checkbox" id="authentificationDoubleFacteur">
+                                    <span></span>
+                                </label>
+                                <p>Activer l'authentification à deux facteurs</p>
                             </div>
+                        </div>
                     </div>
-                </div>
-                <div id="monCompteAutre" data-tab-content>
-                    <h3 {% if not form.vars.value.informations %} class='champsAdmin cacher'{% endif %}>Informations complémentaires</h3>
-                    <div {% if not form.vars.value.informations %} class='champsAdmin cacher' {% else %} class='champsAdmin desactive' {% endif %}>
-                        {{ form_label(form.informations) }}
-                        {{ form_widget(form.informations) }}
-                        <div class="ligne_error">{{ form_errors(form.informations) }}</div>
-                    </div>
-                    <h3>Mode de partage privé</h3>
-                    <p class="explication">
-                        Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
-                    </p>
-                    <div id="choixPrivePublicMonCompte">
-                        <div class="flexBoxBoutonSwitch">
-                            <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="labelBoutonSwitch" data-href="">
+
+                    <div id="monCompteAutre" class="form__field" data-tab-content>
+                        <h3 {% if not form.vars.value.informations %} class='form__field__title js-champs-admin cacher'{% endif %}>Informations complémentaires</h3>
+                        <div {% if not form.vars.value.informations %} class='js-champs-admin cacher' {% else %} class='js-champs-admin desactive' {% endif %}>
+                            {{ form_label(form.informations) }}
+                            {{ form_widget(form.informations) }}
+                            <div class="ligne_error">{{ form_errors(form.informations) }}</div>
+                        </div>
+                        <h3 class="form__field__title">Mode de partage privé</h3>
+                        <p class="desc">
+                            Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
+                        </p>
+                        <div class="row-wrap">
+                            <label for="modePrivePublicMonCompte" id="switchModePrivePublicMonCompte" class="switch" data-href="">
                                 <input type="checkbox" id="modePrivePublicMonCompte">
-                                <span class="slider"></span>
+                                <span></span>
                             </label>
                             <p id='pModePrive'>Activer mode privé</p>
                         </div>
-                    </div>
-                    <h3>Préférences</h3>
-                    <div id="choixLangue">
-                        <label>Langue</label>
-                        <div class="select_wrap">
-                            <span>Sélectionner</span>
-                            <ul>
-                                <li data-value="fr"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagFrench.png') }}" />Français</li>
-                                <li data-value="en"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagEnglish.png') }}" />English</li>
-                                <li data-value="de"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagDeutsch.png') }}" />Deutsch</li>
-                                <li data-value="cz"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagCzech.png') }}" />čeština</li>
-                            </ul>
+                        <h3 class="form__field__title">Préférences</h3>
+                        <div id="choixLangue">
+                            <label>Langue</label>
+                            <div class="select_wrap">
+                                <span>Sélectionner</span>
+                                <ul>
+                                    <li data-value="fr"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagFrench.png') }}" />Français</li>
+                                    <li data-value="en"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagEnglish.png') }}" />English</li>
+                                    <li data-value="de"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagDeutsch.png') }}" />Deutsch</li>
+                                    <li data-value="cz"><img src="{{ asset('bundles/lciboilerbox/images/img/flag/flagCzech.png') }}" />čeština</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <p class="fauxLabel">Couleur</p>
-                    <p class="explication">
-                        La couleur choisie permettra de vous distinguer plus facilement sur les pages communautaire 
-                        <span class="sousExplication">( comme la section commentaire d'un site par exemple )</span>.
-                    </p>
-                    <div id="containerCouleurUser">
-                        <div id="rondCouleurUserOrange" class="rondCouleurUser" onClick="definirCouleur('persoInactif')" ></div>
-                        <div id="rondCouleurUserJaune" class="rondCouleurUser" onClick="definirCouleur('persoJaune')" ></div>
-                        <div id="rondCouleurUserBleu" class="rondCouleurUser" onClick="definirCouleur('persoBleu')" ></div>
-                        <div id="rondCouleurUserVert" class="rondCouleurUser" onClick="definirCouleur('persoVert')" ></div>
-                        <div id="rondCouleurUserRouge" class="rondCouleurUser" onClick="definirCouleur('persoRouge')" ></div>
-                        <div id="rondCouleurUserAzur" class="rondCouleurUser" onClick="definirCouleur('persoAzur')" ></div>
-                        <div id="rondCouleurUserViolet" class="rondCouleurUser" onClick="definirCouleur('persoViolet')" ></div>
-                        <div id="rondCouleurUserMagenta" class="rondCouleurUser" onClick="definirCouleur('persoMagenta')" ></div>
+                        <h4 class="form__field__sub-title">Couleur</h4>
+                        <p class="desc">
+                            La couleur choisie permettra de vous distinguer plus facilement sur les pages communautaire 
+                            <span class="desc__sub">( comme la section commentaire d'un site par exemple )</span>.
+                        </p>
+                        <div id="containerCouleurUser">
+                            <div id="rondCouleurUserOrange" class="rondCouleurUser" onClick="definirCouleur('persoInactif')" ></div>
+                            <div id="rondCouleurUserJaune" class="rondCouleurUser" onClick="definirCouleur('persoJaune')" ></div>
+                            <div id="rondCouleurUserBleu" class="rondCouleurUser" onClick="definirCouleur('persoBleu')" ></div>
+                            <div id="rondCouleurUserVert" class="rondCouleurUser" onClick="definirCouleur('persoVert')" ></div>
+                            <div id="rondCouleurUserRouge" class="rondCouleurUser" onClick="definirCouleur('persoRouge')" ></div>
+                            <div id="rondCouleurUserAzur" class="rondCouleurUser" onClick="definirCouleur('persoAzur')" ></div>
+                            <div id="rondCouleurUserViolet" class="rondCouleurUser" onClick="definirCouleur('persoViolet')" ></div>
+                            <div id="rondCouleurUserMagenta" class="rondCouleurUser" onClick="definirCouleur('persoMagenta')" ></div>
+                            </div>
                     </div>
                 </div>
+                <div class="form__btn form__btn--col">
+                    <div id="boutonSubmit" class="btn btn--main {# {{ app.user.couleur }} #}" onClick="attente(); document.forms['modification_user'].submit();">Enregistrer</div>
+    				{# On renvoi l'administrateur vers la page de gestion des utilisateurs si il ne modifie pas son propre compte, sinon on le renvoi vers la page d'accueil #}
+    				{% if is_granted('ROLE_ADMIN') %}
+    					{% if form.username.vars.value != app.user.username %}
+    						<div class="btn btn--second" onClick="attente(); redirection('accueilConfUtilisateur');");>Annuler</div>
+    					{% else %}
+    						<div class="btn btn--second" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+    					{% endif %}
+    				{% else %}
+                    	<div class="btn btn--second" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+    				{% endif %}
+                </div>
             </div>
-            <div id="boutonsForm">
-                <div id="boutonSubmit" class="eyeCatcher {{ app.user.couleur }}" onClick="attente(); document.forms['modification_user'].submit();">Enregistrer</div>
-				{# On renvoi l'administrateur vers la page de gestion des utilisateurs si il ne modifie pas son propre compte, sinon on le renvoi vers la page d'accueil #}
-				{% if is_granted('ROLE_ADMIN') %}
-					{% if form.username.vars.value != app.user.username %}
-						<div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('accueilConfUtilisateur');");>Annuler</div>
-					{% else %}
-						<div class="eyeCatcher eyeCatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
-					{% endif %}
-				{% else %}
-                	<div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
-				{% endif %}
-            </div>
-        </div>
 		{{ form_end(form) }}
     </main>
 {% endblock mainBody %}
@@ -287,8 +295,8 @@
 	var couleurPerso = "{{ app.user.couleur }}";
 	var isAdmin = $('#monCompte').data("isadmin");
 	if (isAdmin) {
-		$('.champsAdmin').removeClass('cacher');
-		$('.champsAdmin').removeClass('desactive');
+		$('.js-champs-admin').removeClass('cacher');
+		$('.js-champs-admin').removeClass('desactive');
 	}
     definirCouleur(couleurPerso);
 	$('#switchAuthentificationDoubleFacteur').click(function() {
@@ -317,11 +325,11 @@
 	function definirCouleur(couleur) {
         changeCouleur(couleur);
 		$('#modification_user_couleur').val(couleur);	
-		$('#rondMonCompte').removeClass();
-		$('#rondMonCompte').addClass(couleur);
+		$('.sub-header__chip').removeClass(couleurPerso);
+		$('.sub-header__chip').addClass(couleur);
 		/* On retire la class de la couleur personnelle avant de lui ajouter la nouvelle classe de couleur*/
-		$('#boutonSubmit').removeClass(couleurPerso);
-		$('#boutonSubmit').addClass(couleur);
+		// $('#boutonSubmit').removeClass(couleurPerso);
+		// $('#boutonSubmit').addClass(couleur);
 		$('#btnIdentified').removeClass(couleurPerso);
 		$('#btnIdentified').addClass(couleur);
 		couleurPerso = couleur;

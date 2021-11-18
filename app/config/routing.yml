@@ -189,6 +189,9 @@ lci_utils_homepage:
 lci_utils_validChoice:
     path:    /lci/admin/utilitaire/choix
     defaults: { _controller: LciBoilerBoxBundle:Utils:validChoice }
+lci_utils_afficheDispoSites:
+    path:    /lci/admin/utilitaire/afficheDispoSites
+    defaults: { _controller: LciBoilerBoxBundle:Utils:affichageDisponibiliteSites }
 
 
 # *****************************  Routes des Bons d'attachement ************************************** #

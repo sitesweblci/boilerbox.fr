@@ -8,27 +8,18 @@
 
 {% block boilerBoxCSS %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/login.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
     <style>
-    .main-box{
-        position: relative;
-        top: 6vh;left: auto;right: auto;
-        margin: 0 auto;
-        padding: 60px 85px 16px 85px;
-        box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.3);
-    }
-    .btn{
-        margin-top: 2vh;
-    }
+        .form--login .btn--main{
+            margin: 3vh 0;
+        }
     </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-<main class="main-box">
-    <div class="watermark">
-        <img class="watermark__logo--login" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
-        <p class="watermark__baseline watermark__baseline--login">
+<main class="main-box main-box--login">
+    <div class="watermark watermark--big">
+        <img class="watermark__logo watermark--big__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+        <p class="watermark__baseline watermark--big__baseline">
             <span>INDUSTRIAL</span>
             <span>BOILER</span>
             <span>CONTROL</span>
@@ -41,46 +32,33 @@
 
 
         
-        <input type="text" id="identifiant" name="_username" placeholder="identifiant" onblur="checkId(this)">
-        <label for="identifiant">identifiant</label>
-        <p id="js-error-id" class="form--login__error">veuillez renseigner un identifiant valide.</p>
+        <input type="text" id="identifiant" class="form--login__input" name="_username" placeholder="identifiant">
+        <label for="identifiant" class="form--login__label">identifiant</label>
+        <p class="form--login__error">veuillez renseigner un identifiant valide.</p>
 
         
-        <input type="password" id="password" name="_password" placeholder="mot de passe" onblur="checkPassword(this)">
-        <label for="password">mot de passe</label>
-        <p id="js-error-pass" class="form--login__error">mot de passe non conforme !</p>
+        <input type="password" id="password" class="form--login__input" name="_password" placeholder="mot de passe">
+        <label for="password" class="form--login__label">mot de passe</label>
+        <p class="form--login__error">mot de passe non conforme !</p>
         
         <button type="submit" class="btn btn--main" onClick='validationFormulaire();return false;'>se connecter</button>
     </form>
-    <p class="forget"><a href="{{ path('fos_user_resetting_request') }}" class="lienForget">mot de passe oublié ?</a></p>
-    <p class="demo"><a href="http://demo.boiler-box.fr" class="linkDemo">Lien vers la démo</a></p>
+    <a href="{{ path('fos_user_resetting_request') }}" class="link">mot de passe oublié ?</a>
+    {# <p class="demo"><a href="http://demo.boiler-box.fr" class="linkDemo">Lien vers la démo</a></p> #}
 </main>
 
 {% block javascript %}
 	<script type='text/javascript'>
-    var id = document.getElementById('identifiant');
-    var password = document.getElementById('password');
-    var pId = document.getElementById('js-error-id');
-    var pPassword = document.getElementById('js-error-pass');
-
-    function checkId (id){
-        if (id.value.length < 3 || id.value.length > 25){
-            pId.classList.add("visible");
-            id.classList.add("error");
-        } else {
-            pId.classList.remove("visible");
-            id.classList.remove("error");
+    $('.form--login input').on('blur', function checkInput(){
+        if($(this).val().length < 3 || $(this).val().length > 25){
+            $(this).addClass('error');
+            $(this).nextAll('p').eq(0).addClass("visible");
         }
-    }
-    function checkPassword (password){
-        if (password.value.length < 3 || password.value.length > 25){
-            pPassword.classList.add("visible");
-            password.classList.add("error");
-        } else {
-            pPassword.classList.remove("visible");
-            password.classList.remove("error");
-        }
-    }
+    });
+    $('.form--login input').on('focus', function resetInput(){
+        $(this).removeClass('error');
+        $(this).nextAll('p').eq(0).removeClass("visible");
+    });
 
 	function validationFormulaire() {
         var $login = $('#identifiant').val();

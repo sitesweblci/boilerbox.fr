@@ -4,52 +4,49 @@
 {% block boilerBoxCSS %}
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
-	<style>
-		.btn--main{
-			width: 100%;
-			margin-top: 32px;
-		}
-	</style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-	<header class="headerInterne">
-		<h1>Générateur de mot de passe</h1>
+	<header class="sub-header sub-header--blue">
+		<h1 class="sub-header__title">Générateur de mot de passe</h1>
 	</header>
-	<main id="formGenerationMdp">
-		<span>Je choisis de générer un mot de passe...</span>
-		{{ form_start(form) }}
+	<main {# id="formGenerationMdp" #} class="col-content">
+		<p class="col-content__desc">Je choisis de générer un mot de passe...</p>
+		{{ form_start(form, {'attr': {'class':'form'}}) }}
 		{{ form_widget(form.duree) }}
-		<span id="alerteV2" class="hidden">Pour les IBC ayant l’indice v2 en bas de la page « Accès »</span>
-		<div id="contenuFormGenerateur">
-			<div id="choixJournee"class="flexRow">
-				<div class="flexColumn">
-					<label id="labelJournee">Date</label>
-					{{ form_widget(form.ladate) }}
+		<div class="form__field">
+			<span id="alerteV2" class="cacher">Pour les IBC ayant l’indice v2 en bas de la page « Accès »</span>
+			<div id="contenuFormGenerateur">
+				<div id="choixJournee"class="flexRow">
+					<div class="flexColumn">
+						<label id="labelJournee">Date</label>
+						{{ form_widget(form.ladate) }}
+					</div>
+					<div id="blocHeure" class="flexColumn">
+						<label id="labelHeure">Heure</label>
+					    {{ form_widget(form.lheure) }}
+					</div>
 				</div>
-				<div id="blocHeure" class="flexColumn">
-					<label id="labelHeure">Heure</label>
-				    {{ form_widget(form.lheure) }}
-				</div>
-			</div>
-			<label>Niveau d'authentification</label>
-		    {{ form_widget(form.niveau) }}
+				<label>Niveau d'authentification</label>
+			    {{ form_widget(form.niveau) }}
 
-		    <div id="blocSite" class="flexColumn">
-			    <label>Site</label>
-			    {{ form_widget(form.site) }}
+			    <div id="blocSite" class="flexColumn">
+				    <label>Site</label>
+				    {{ form_widget(form.site) }}
+				</div>
+			    {{ form_rest(form) }}
 			</div>
-		    {{ form_rest(form) }}
 		</div>
-		<span class="wrapperSubmit">
-	    	<input type="submit" id="boutonGenerer" class="btn btn--main wide btn--disabled" />
-	    </span>
 
+		<div class="form__btn form__btn--col form__btn--not-allowed">
+	    	<button id="boutonGenerer" class="btn btn--main wide btn--disabled">Générer</button>
+	    	<a href="{{ path("lci_boilerbox_index")}}" class="btn btn--second">Retour</a>
+	    </div>
 
 	    <div id="popUpMdpGenere" class="popUpPrincipale cacher">
 	    	<div class="headerPopUpPrincipale">
 	    		<h1>Mot de passe généré !</h1>
-	    		<div class="crossCloseContainerEquipement" onclick="closePopUpPrincipale()"></div>
+	    		<div class="close-cross" onclick="closePopUpPrincipale()"></div>
 	    	</div>
 	    	<div class="contenuPopUpPrincipale">
 	    		<h2>Pensez à noter vos identifiants.</br>
@@ -77,20 +74,22 @@
 	function switchHeure(){
 		if ($('#generateur_mdp_duree_0').prop('checked') == true){
 			$('#generateur_mdp_duree label[for=generateur_mdp_duree_0]').addClass('generateurChecked');
-			$('#blocSite').css({'visibility': 'hidden'});
+			$('#blocSite').css({'display': 'none'});
 			$('#boutonGenerer').removeClass('btn--disabled');
+			$('.form__btn').removeClass('form__btn--not-allowed');
 		} else if ($("#generateur_mdp_duree_0").prop("checked") == false){ 
 			$('#generateur_mdp_duree label[for=generateur_mdp_duree_0]').removeClass('generateurChecked');
-			$('#blocSite').css({'visibility': 'visible'});
+			$('#blocSite').css({'display': 'block'});
 		} if ($('#generateur_mdp_duree_1').prop('checked') == true){
 			$('#generateur_mdp_duree label[for=generateur_mdp_duree_1]').addClass('generateurChecked');
 			$('#blocHeure').css({'display': 'none'});
 			$('#boutonGenerer').removeClass('btn--disabled');
-			$('#alerteV2').removeClass('hidden');
+			$('.form__btn').removeClass('form__btn--not-allowed');
+			$('#alerteV2').removeClass('cacher');
 		} else if ($("#generateur_mdp_duree_1").prop("checked") == false){
 			$('#generateur_mdp_duree label[for=generateur_mdp_duree_1]').removeClass('generateurChecked');
 			$('#blocHeure').css({'display': 'flex'});
-			$('#alerteV2').addClass('hidden');
+			$('#alerteV2').addClass('cacher');
 		}
 	};
 	inputHeure.onclick = switchHeure;

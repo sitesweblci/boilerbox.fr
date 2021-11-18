@@ -6,8 +6,8 @@
 
 {{ parent() }}
 
-<div class='listing'>
-    <div class='menu_administration'>
+<div class='{# listing #} main-content'>
+    {# <div class='menu_administration'>
         <div class='menu_ligne1'>
             <img onClick="attente(); redirection('menuUtilisateur');"
 				class="btn_menu" 
@@ -39,7 +39,37 @@
 					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires.png') }}"  />
 			{% endif %}
         </div>
+    </div> #}
+    <div class="card" onClick="attente(); redirection('menuUtilisateur');">
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/users.svg') }}" alt="Gestion des utilisateurs" >
+    	<div class="card__container">
+    		<h4 class="card__container__title">Gestion utilisateurs</h4>
+    		<p class="card__container__desc">Bla bla bla bla</p>
+    	</div>
     </div>
+    <div class="card" onClick="attente(); redirection('menuSite');">
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/sites.svg') }}" alt="Gestion des sites" >
+    	<div class="card__container">
+    		<h4 class="card__container__title">Gestion sites</h4>
+    		<p class="card__container__desc">Bla bla bla bla</p>
+    	</div>
+    </div>
+    <div class="card" onClick="attente(); redirection('gestionLiens');">
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/links.svg') }}" alt="Gestion des liens">
+    	<div class="card__container">
+    		<h4 class="card__container__title">Gestion liens</h4>
+    		<p class="card__container__desc">Bla bla bla bla</p>
+    	</div>
+    </div>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+	    <div class="card" onClick="attente(); redirection('utilitaires');">
+	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/utilitaires.svg') }}" alt="Utilitaires">
+	    	<div class="card__container">
+	    		<h4 class="card__container__title">Utilitaires</h4>
+	    		<p class="card__container__desc">Bla bla bla bla</p>
+	    	</div>
+	    </div>
+	{% endif %}
 </div>
 
 {% endblock fos_user_content %}

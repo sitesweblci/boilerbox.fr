@@ -1,14 +1,16 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/index.html.twig #}
 
-{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{# {% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %} #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
 {% block title %} {{ parent() }}Bons d'interventions{% endblock title %}
 
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 
 {% block fos_user_content %}
 <div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1></div>
-<div class='menu_bons'>
-    <div class='menu_ligne1'>
+<div class='{# menu_bons #} main-content'>
+    {# <div class='menu_ligne1'>
 		{% if is_granted('ROLE_SAISIE_BA') %}
 		<img 	onClick="attente(); redirection('bonsSaisie'); return false;"
 				class="btn_menu" 
@@ -33,6 +35,29 @@
                 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA_hover.png') }}"
                 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA.png') }}"
         />
+    </div> #}
+    {% if is_granted('ROLE_SAISIE_BA') %}
+	    <div class="card" onClick="attente(); redirection('bonsSaisie'); return false;">
+	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des bons d'interventions" >
+	    	<div class="card__container">
+	    		<h4 class="card__container__title">Saisie</h4>
+	    		<p class="card__container__desc">Bla bla bla bla</p>
+	    	</div>
+	    </div>
+    {% endif %}
+    <div class="card" onClick="attente(); redirection('bonsVisualiser'); return false;">
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu.svg') }}" alt="Visualisation des bons d'interventions" >
+    	<div class="card__container">
+    		<h4 class="card__container__title">Visualisation</h4>
+    		<p class="card__container__desc">Bla bla bla bla</p>
+    	</div>
+    </div>
+    <div class="card" onClick="attente(); redirection('sitesBAVisualiser'); return false;">
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu-site.svg') }}" alt="Visualisation des sites" >
+    	<div class="card__container">
+    		<h4 class="card__container__title">Visualisation sites</h4>
+    		<p class="card__container__desc">Bla bla bla bla</p>
+    	</div>
     </div>
 </div>
 {% endblock fos_user_content %}

@@ -10,7 +10,8 @@ h1 {
 }
 
 html {
-  background: linear-gradient(to right,#252b33,#000000);
+  /*background: linear-gradient(to right,#252b33,#000000);*/
+  background-color: #2f343d;
   font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
   color: #FFF;
 }
@@ -70,14 +71,14 @@ input {
 }
 
 
-#bloc_header {
+/*#bloc_header {
   position: fixed;
   display: flex;
   justify-content: space-between;
   top: 0px;
   height: 150px;
   width: 99%;
-}
+}*/
 
 #bloc_header_accueil {
   position: fixed;
@@ -109,7 +110,7 @@ input {
 
 
 
-#bloc_body {
+/*#bloc_body {
   position: fixed;
   top: 150px;
   left: 0px;
@@ -120,8 +121,14 @@ input {
   z-index: 1;
   margin: auto;
 }
-
-
+*/
+#bloc_body h1{
+  color: #3f83ef;
+  font-size: 18pt;
+  font-weight: 300;
+  text-align: center;
+  padding: 24px 0;
+}
 /* Utilisé sur la page d'accueil de la partie Administration */
 .menu_administration {
   display: flex;
@@ -150,10 +157,10 @@ input {
 /* ############################################################ */
 
 
-#entete_de_page {
+/*#entete_de_page {
   margin-top: -50px;
 }
-
+*/
 /* Utilisé sur la page d'accueil de la partie Parc Technique */
 .menu_parc {
   	display: flex;
@@ -424,10 +431,12 @@ input {
 .listing {
   	position: relative;
   	display: flex;
-  	flex-direction: column;
+  	/*flex-direction: column;*/
+    flex-flow: row wrap;
   	justify-content: center;
   	align-items: center;
-  	margin-top: 50px;
+    width: 80vw;
+    margin: 0 auto;
 }
 
 
@@ -1292,42 +1301,43 @@ a:active {
 
 /* ****************** Les menus de boiler-box **************************** */
 #menu_boiler {
-  z-index:1;
-  position: fixed;
+/*  z-index:1;
+  position: fixed;*/
   display: flex;
   justify-content: space-between;
-  z-index: 90;
+/*  z-index: 90;*/
   padding:5px 0px 5px 15px;
-  height:20px;
+/*  height:20px;
   top: 10px;
-  right: 100px;
+  right: 100px;*/
 }
-#menu_boiler a {
+/*#menu_boiler a {
   color: white;
-}
+}*/
 #menu_boiler a:hover {
-  color: red;
+  color: #3F83EF;
+  text-decoration: none;
 }
 #menu_boiler>div {
   margin-right: 15px;
 }
 
-.menu_boiler {
+/*.menu_boiler {
   text-decoration: none;
   min-width: 200px;
   text-align: center;
-}
+}*/
 
-.sousmenu_boiler {
+./*sousmenu_boiler {
   height: 25px;
 }
-
+*/
 .menu_boiler a:hover, .sousmenu_boiler a:hover, .menu_boiler a:active, .sousmenu_boiler a:active, .menu_boiler a:focus, .sousmenu_boiler a:focus {
     text-decoration: none;
 }
 
 #sousmenu_boiler_deroulant1 {
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   background: #4d6a79;
   padding: 5px 5px;
   border-radius: 20px;
@@ -1359,7 +1369,7 @@ a:active {
 /* Affichage Huawei */
 /* @media screen and (max-height:1000px) { */
 @media screen and (max-height:900px) {
-	#bloc_body {
+/*	#bloc_body {
 	  position: fixed;
 	  display: flex;
 	  top: 110px;
@@ -1369,7 +1379,7 @@ a:active {
 	  align-items: center;
 	  z-index: 1;
 	  margin: auto;
-	}
+	}*/
 
 	.ajout_objet_min {
 	  position: relative;
@@ -1418,10 +1428,10 @@ a:active {
         font-size: 25px;
     }
 
-    #entete_de_page {
+   /* #entete_de_page {
         font-size: 30px;
 		margin-top: -100px;
-    }
+    }*/
 
     .menu_boiler {
         min-width: 100px;

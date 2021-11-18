@@ -19,42 +19,39 @@ window.location.search: "?query=1"
 {% block boilerBoxCSS %}
    {{ parent() }}
    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+   <style>
+   	.info-box__header .close-cross{
+   		position: absolute;
+   		top: 14px;
+   		right: 14px;
+   	}
+   </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-		<main id="listingEquipement" class="accueil-box">
-			<h1 class="accueil-box__title">Sites</h1>
-			<div id="legendeListeEquipement" class="accueil-box__header">
-				<div id="legendeConnexion" class="accueil-box__header__legende">
-					<div class="legende-wrapper">
-						Connecté
-					</div>
-					<div class="legende-wrapper">
-						Pas à jour
-					</div>
-					<div class="legende-wrapper">
-						eCatcher
-					</div>
-					<div class="legende-wrapper">
-						Non connecté
-					</div>
-					<div class="legende-wrapper">
-						Désactivé
-					</div>
+		<main {# id="listingEquipement"  #}class="index-box">
+			<h1 class="index-box__title">Sites</h1>
+			<div {# id="legendeListeEquipement" #} class="index-box__header">
+				<div {# id="legendeConnexion"  #}class="index-box__header__legende">
+					<div>Connecté</div>
+					<div>Pas à jour</div>
+					<div>eCatcher</div>
+					<div>Non connecté</div>
+					<div>Désactivé</div>
 				</div>
-				<div id="searchBarEquipement" class="search-bar">
-					<span id="imgSearchBar" class="search-bar__img"/></span>
-					<input id='searchBarInput' class="search-bar__input" type="text" placeholder="Rechercher">
+				<div {# id="searchBarEquipement"  #}class="search-bar">
+					<span {# id="imgSearchBar"  #}class="search-bar__img"/></span>
+					<input id='js-search-site' class="search-bar__input" type="text" placeholder="Rechercher">
 				</div>
 			</div>
-			<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' class="accueil-box__contenu" autocomplete="off" data-urjax_desactivation_authl={{ path('lci_ajax_refreshASiteStatut') }}>
+			<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' class="index-box__content" autocomplete="off" data-urjax_desactivation_authl={{ path('lci_ajax_refreshASiteStatut') }}>
 				<input type="hidden" id="_database" name="_database" value="" />
                 <input type="hidden" id="remember_me" name="_remember_me" value="on" />
                 <input type="hidden" id="_username" name="_username" value="" />
                 <input type="hidden" id="_password" name="_password" value="" />
                 <input type="hidden" id="_label" name="_label" value="{{ label }}" />
 			
-				<table id="tableAffaire" class="accueil-table">
+				<table id="tableAffaire" class="index-table">
 					<thead>
 						<tr>
 							<th class="CXXXHead" onClick='triSur("affaire");'>Code</th>
@@ -62,10 +59,12 @@ window.location.search: "?query=1"
 							<th class="nomAffaireHead" onClick='triSur("intitule");'>Nom</th>
 							<th class="whiteSpace"></th> 
 							<th class="connexionOnHead">Cloud</th>
-							<th class="whiteSpaceBorder"></th>
-							<th class="connexionOnHead">Live</th>
-							<th class="whiteSpaceBorder"></th>
-							<th class="connexionOnHead">Local</th>
+							{% if is_granted('ROLE_TECHNICIEN') %}
+								<th class="whiteSpaceBorder"></th>
+								<th class="connexionOnHead">Live</th>
+								<th class="whiteSpaceBorder"></th>
+								<th class="connexionOnHead">Local</th>
+							{% endif %}
 							<th class="legendeTypeConnexion">
 								<div id="legendeInfoConnexion" class="pastille">
 									<div id="stay"><p class="stay">i</p></div>
@@ -80,7 +79,7 @@ window.location.search: "?query=1"
 						</tr>
 					</thead>
 
-					<tbody class="styleScrollBar">
+					<tbody class="scroll">
 						{% for site in liste_sites %}
 							{% set img_cloud  = asset('bundles/lciboilerbox/images/img/connexionCloud-gris.svg') %}
 							{% set img_live   = asset('bundles/lciboilerbox/images/img/connexionLive-gris.svg') %}
@@ -169,7 +168,7 @@ window.location.search: "?query=1"
 											{% if 'boilerbox' not in site.siteConnexion.accesDistant and not acces_distant_cloud and 'ecatcher' in site.siteConnexion.accesDistant %}
 												<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-bleu.svg') }}" alt="" class="imgEtatConnec">
 											{% else %}
-												{# La connexion à distance est normallement ok mais les retours de ping sont ko et le cloud n'est pas à jour #}
+												{# La connexion à distance est normalement ok mais les retours de ping sont ko et le cloud n'est pas à jour #}
 												{% if ((acces_distant_cloud == false) and (acces_distant_local == false)) %}
 													{# Pas de connexion cloud et ping Ko #}
 													<img src="{{ asset('bundles/lciboilerbox/images/img/etatConnec-rouge.svg') }}" alt="" class="imgEtatConnec">
@@ -196,155 +195,176 @@ window.location.search: "?query=1"
 										{% endif %}
 									{% endif %}
 									<img src="{{ img_cloud }}" 
-										 alt="" 
+										 alt="icone Cloud" 
 										 class="iconeConnec" 
 										 {% if acces_distant_cloud == true %} onClick="actionForm('{{ site.affaire }}', '{{ url_cloud}}', '{{ site.version }}');" {% endif %}
 									>
 								</td>
-								<td class="whiteSpace"></td>
-	                        	<td class="connexionOn">
-	                        	    {% if acces_ecatcher_live_only == true %}
-	                        	        <p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
-	                        	    {% endif %}
-	                        	    <img src="{{ img_live }}"
-	                        	         alt=""
-	                        	         class="iconeConnec"
-	                        	        {% if (acces_distant_live == true) and (site.siteConnexion.codeLive != null) %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}web/app.php/fr/boilerboxlive/supervision/accueil?id={{ site.siteConnexion.codeLive  }}', '{{ site.version }}');" {% endif %}
-	                        	    >
-	                        	</td>
-								<td class="whiteSpace"></td>
-								<td class="connexionOn">
-									{% if acces_ecatcher_local_only == true %}
-										<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
-									{% endif %}
-									<img src="{{ img_locale }}" 
-										 alt="" 
-										 class="iconeConnec" 
-										 {% if acces_distant_local == true %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}', '{{ site.version }}');" {% endif %}
-									>
-								</td>
+								{% if is_granted('ROLE_TECHNICIEN') %}
+									<td class="whiteSpace"></td>
+		                        	<td class="connexionOn">
+		                        	    {% if acces_ecatcher_live_only == true %}
+		                        	        <p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+		                        	    {% endif %}
+		                        	    <img src="{{ img_live }}"
+		                        	         alt=""
+		                        	         class="iconeConnec"
+		                        	        {% if (acces_distant_live == true) and (site.siteConnexion.codeLive != null) %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}web/app.php/fr/boilerboxlive/supervision/accueil?id={{ site.siteConnexion.codeLive  }}', '{{ site.version }}');" {% endif %}
+		                        	    >
+		                        	</td>
+									<td class="whiteSpace"></td>
+									<td class="connexionOn">
+										{% if acces_ecatcher_local_only == true %}
+											<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
+										{% endif %}
+										<img src="{{ img_locale }}" 
+											 alt="" 
+											 class="iconeConnec" 
+											 {% if acces_distant_local == true %} onClick="actionForm('{{ site.affaire }}', '{{ site.siteConnexion.url }}', '{{ site.version }}');" {% endif %}
+										>
+									</td>
+								{% endif %}
 							</tr>
 						{% endfor %}
 					</tbody>
 				</table>
 			</form>
 			{% if is_granted('ROLE_ADMIN') %}
-				<div class="accueil-box__btn btn btn--add" onClick='redirection("creationSite");'>
+				<div class="index-box__btn btn btn--add" onClick='redirection("creationSite");'>
 					<span class="crossAdd"></span>
 					<span>Ajouter un autre équipement</span>
 				</div>
 			{% endif %}
 		</main>
 
-		<div id="infoAffaire">
-			<header>
-				<div class="crossCloseContainerEquipement" onClick='cacherPopup()'></div>
-				<div id="titreAffaire">
-					<h1 class='infoAffaireAffaire'>dev</h1>
-					<h2 class='infoAffaireIntitule'>dev</h2>
-				</div>
+		{# Pop up regroupant les informations de site #}
+		<section id="infoAffaire" class="info-box">
+			<header class="info-box__header">
+				<div class="close-cross" onClick='cacherPopup()'></div>
+				<h1 class='infoAffaireAffaire info-box__header__code'>dev</h1>
+				<h2 class='infoAffaireIntitule info-box__header__nom'>dev</h2>
 			</header>
 			{# On affiche les options de mode privé / mode publique uniquement pour les comptes administrateurs #}
 			{% if app.user.modePrive == false %}
-				<p class="textWarning">Attention, vous êtes en partage public <a class="lienModePartage" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a></p>
+				<p class="info-box__mode info-box__mode--public">Attention, vous êtes en partage public
+					<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a>
+				</p>
 			{% else %}
-				<p class="partagePrive">Vous êtes en partage privé <a class="lienModePartage" href="#" onClick="mySwitchMode(); return false;">(passer en public)</a></p>
+				<p class="info-box__mode info-box__mode--private">Vous êtes en partage privé
+					<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en public)</a>
+				</p>
 			{% endif %}
-			<div id="ensembleInfoAffaire">
-				<div id="leftInfo">
-					<div id="connexionAffaire">
-						<p id="choixModeConnexion">Choisissez votre</br> mode de connexion</p>
-						<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoConnexion.svg') }}" alt="pictogramme connexion">Connexion</h1>
-						<div id="pictoConnexion">
-							<a class="connexionInfoAffaire infoMajCloud">
-								<p class="popUpCloud">Date de mise à jour du cloud</p>
-								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
-								<p>Cloud</p>
+			<div {# id="ensembleInfoAffaire" #} class="info-box__content">
+				<div {# id="leftInfo" #} class="info-box__content__settings">
+				{# <div id="connexionAffaire"> #}
+					<p id="choixModeConnexion">Choisissez votre</br> mode de connexion</p>
+					<h1 class="info-box__content__title">
+						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoConnexion.svg') }}" alt="pictogramme connexion">
+						Connexion
+					</h1>
+					<div id="js-pictoConnexion" class="connexion">
+						<a class="connexion__lien infoMajCloud tooltip-wrapper">
+							<img class="connexion__lien__img" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+							<span>Cloud</span>
+							<p class="tooltip">Date de mise à jour du cloud</p>
+						</a>
+						{% if is_granted('ROLE_TECHNICIEN') %}
+							<a class="connexion__lien infoMajLive tooltip-wrapper">
+								<img class="connexion__lien__img" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+								<span>Live</span>
+								<p class="tooltip">Connectez-vous<br>via eCatcher</p>
 							</a>
-							<a class="connexionInfoAffaire infoMajLive">
-								<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
-								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
-								<p>Live</p>
+							<a class="connexion__lien infoMajLocal tooltip-wrapper">
+								<img class="connexion__lien__img" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
+								<span>Local</span>
+								<p class="tooltip">Connectez-vous<br>via eCatcher</p>
 							</a>
-							<a class="connexionInfoAffaire infoMajLocal">
-								<p class="popUpCloud">Connectez-vous<br>via eCatcher</p>
-								<img class="imgConnexionInfoAffaire" src="{{ asset('bundles/lciboilerbox/images/img/connexionOn.svg') }}" alt="">
-								<p>Local</p>
-							</a>
-						</div>
+						{% endif %}
 					</div>
+				{# </div> #}
 
-					<div id="piecesJointesAffaire">
-						<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">Pièces jointes</h1>
-						<div id="ensemblePieceJointe" class="styleScrollBar"></div>
-						<div class="addPieceJointe btn btn--add">
-							<div class="crossAdd"></div>
-							Ajouter pièce jointe
-						</div>
-						<span style='display:none'>
-							<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
-								<input type='file' id='fichier' name='fichierDuSite'>
-								<input type='text' id='fichierIdSite' name='fichierIdSite'>
-							</form>
+				{# <div id="piecesJointesAffaire"> #}
+					<h1 class="info-box__content__title">
+						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
+						Pièces jointes
+					</h1>
+					<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
+					<div class="js-addPieceJointe btn btn--add">
+						<div class="crossAdd"></div>
+						Ajouter pièce jointe
+					</div>
+					<span style='display:none'>
+						<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
+							<input type='file' id='fichier' name='fichierDuSite'>
+							<input type='text' id='fichierIdSite' name='fichierIdSite'>
+						</form>
+					</span>
+				{# </div> #}
+
+				{# <div id="infoSiteAffaire"> #}
+					<div {# id="pictoTitreInformationAffaire" #} class="info-box__content__title info-box__content__title--wrapper">
+						<span>
+							<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">
+							Paramètres de site
 						</span>
-					</div>
-
-					<div id="infoSiteAffaire">
-						<div id="pictoTitreInformationAffaire">
-							<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">Paramètres de site</h1>
-							{% if is_granted('ROLE_ADMIN') %}
-								<div id="modifyInfoAffaire" onClick="modifierSite()">
-									<img class="editInfo" src="{{ asset('bundles/lciboilerbox/images/img/edit.svg') }}" alt="icone modification informations de l'affaire">
-									<p id="infoBulleModifyInfo" class="popUp">Modifier</p>
-								</div>
-							{% endif %}
-						</div>
-							<div id="resumeAffaire" class="styleScrollBar">
-								<p class="labelInfoSite">Nom</p>
-								<p class="infoAffaireIntitule forLabelInfoSite">demo</p>
-								<p class="labelInfoSite">Affaire</p>
-								<p class="infoAffaireAffaire forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Url</p>
-                                <p class="infoAffaireUrl forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Code Live</p>
-                                <p class="infoAffaireCodeLive forLabelInfoSite">demo</p>
-								<p class="labelInfoSite">Connexion 3G / 4G</p>
-                                <p class="infoAffaire3G4G forLabelInfoSite">demo</p>
-								<p class="labelInfoSite">Connexion ADSL</p>
-								<p class="infoAffaireADSL forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Acces Cloud</p>
-                                <p class="infoAffaireCloud forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Access Live</p>
-                                <p class="infoAffaireLive forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Acces Local</p>
-                                <p class="infoAffaireLocal forLabelInfoSite">demo</p>
-                                <p class="labelInfoSite">Acces Ecatcher</p>
-                                <p class="infoAffaireEcatcher forLabelInfoSite">demo</p>
-								<p class="labelInfoSite">Version IPC</p>
-                                <p class="infoAffaireVersionIpc forLabelInfoSite">demo</p>
+						{% if is_granted('ROLE_ADMIN') %}
+							<div id="modifyInfoAffaire" class="tooltip-wrapper" onClick="modifierSite()">
+								<img class="editInfo" src="{{ asset('bundles/lciboilerbox/images/img/edit.svg') }}" alt="icone modification informations de l'affaire">
+								<p id="infoBulleModifyInfo" class="popUp tooltip">Modifier</p>
 							</div>
+						{% endif %}
 					</div>
+					<div id="js-resumeAffaire" class="infos scroll">
+						<label>Nom</label>
+						<span class="infoAffaireIntitule">demo</span>
+						<label>Affaire</label>
+						<span class="infoAffaireAffaire">demo</span>
+						<label>Url</label>
+						<span class="infoAffaireUrl">demo</span>
+						<label>Code Live</label>
+						<span class="infoAffaireCodeLive">demo</span>
+						<label>Connexion 3G / 4G</label>
+						<span class="infoAffaire3G4G">demo</span>
+						<label>Connexion ADSL</label>
+						<span class="infoAffaireADSL">demo</span>
+						<label>Acces Cloud</label>
+						<span class="infoAffaireCloud">demo</span>
+						<label>Access Live</label>
+						<span class="infoAffaireLive">demo</span>
+						<label>Acces Local</label>
+						<span class="infoAffaireLocal">demo</span>
+						<label>Acces Ecatcher</label>
+						<span class="infoAffaireEcatcher">demo</span>
+						<label>Version IPC</label>
+						<span class="infoAffaireVersionIpc">demo</span>
+					</div>
+					<div></div>
+				{# </div> #}
 				</div>
-				<div id="espaceCommunautaireAffaire">
-					<h1><img class="pictoInfo" src="{{ asset('bundles/lciboilerbox/images/img/infoActivite.svg') }}" alt="pictogramme information">Activité</h1>
-					<div id="ensembleCommentaire">
-						<div id="monCommentaire">
-							<div class="infoMonCommentaire">
+				<div {# id="espaceCommunautaireAffaire"  #}class="info-box__content__social">
+					<h1 class="info-box__content__title">
+						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoActivite.svg') }}" alt="pictogramme information">
+						Activité
+					</h1>
+					{# <div id="ensembleCommentaire"> #}
+						{# <div id="monCommentaire"> #}
+							<div class="mon-comm">
 								<div class="rondCompte {{ app.user.couleur }}">{{ app.user.label | slice (0,1) }}</div>
-								<form id="formMonCommentaire">
+								<form {# id="formMonCommentaire" #} class="form">
 									<label for="inputMonCommentaire"></label>
-									<textarea class="inputMonCommentaire" id="inputMonCommentaire" name="inputMonCommentaire" placeholder="Votre commentaire" rows="2" maxlength="999"></textarea>
-									<p id="validationMonCommentaire" class="eyeCatcher inputPublish {{ app.user.couleur }}" onclick="publicationCommentaire();">Publier</p>
+									<textarea {# class="inputMonCommentaire" #} id="inputMonCommentaire" name="inputMonCommentaire" placeholder="Votre commentaire..." rows="4"maxlength="999"></textarea>
+									<p {# id="validationMonCommentaire"  #}class="btn btn--main" onclick="publicationCommentaire();">Publier</p>
 								</form>
 							</div>
-						</div>
+						{# </div> #}
 
-						<div id="fluxCommentaire" class="styleScrollBar styleScrollBarGris">
+						<div id="fluxCommentaire" class="flux-comm scroll scroll--gris">
 						</div>
-					</div>
+						<div></div>
+					{# </div> #}
 				</div>
 			</div>
-		</div>
+		</section>
 {% endblock mainBody %}
 {% block javascript %}
 	<script type="text/javascript">
@@ -620,7 +640,7 @@ window.location.search: "?query=1"
             }
         });*/
 
-		$('.addPieceJointe').click(function() {
+		$('.js-addPieceJointe').click(function() {
             $('#fichier').trigger('click');
         });
 
@@ -654,11 +674,11 @@ window.location.search: "?query=1"
 					var $entityFichier = JSON.parse($dataEntityFichier);
 					var $dtInsertion = new Date($entityFichier.dtImportation);
 
-					var $obj_html = $('<div class="piecesJointe"><div class="apercuPieceJointe ' + $entityFichier.extension + '"></div></div>');
-					var $obj_piecejointe = $('<div class="infoPieceJointe"><p><a href="http://' + window.location.host + $entityFichier.url + '" download="' + $entityFichier.alt + '">' + decoupeTexte($entityFichier.alt, 19) + '</a></p><div class="nomDatePieceJointe"><p class="namePersonnePieceJointe">' + $entityFichier.informations + '</p><p>'  + $dtInsertion.getDate() + ' ' + formatter.format($dtInsertion) + ' ' + $dtInsertion.getFullYear() + '</p></div>');
+					var $obj_html = $('<div class="attachement"><div class="attachement__img ' + $entityFichier.extension + '"></div></div>');
+					var $obj_piecejointe = $('<div class="attachement__infos"><a class="attachement__infos__name" href="http://' + window.location.host + $entityFichier.url + '" download="' + $entityFichier.alt + '">' + decoupeTexte($entityFichier.alt, 19) + '</a><div class="attachement__infos__author"><p class="attachement__infos__author__name">' + $entityFichier.informations + '</p><p class="attachement__infos__author__date">'  + $dtInsertion.getDate() + ' ' + formatter.format($dtInsertion) + ' ' + $dtInsertion.getFullYear() + '</p></div>');
                     // Fonction qui ajoute le lien suppression, créer l'evenement de suppression et associe les différents objets
                     ajoutLiens($obj_html, $obj_piecejointe, $entityFichier.id);
-                    $('#ensemblePieceJointe').prepend($obj_html);
+                    $('#js-ensemblePieceJointe').prepend($obj_html);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
 					console.log('error ' + textStatus + ' - -' + errorThrown );
@@ -688,16 +708,16 @@ window.location.search: "?query=1"
 
 			reinitialiseMonCommentaire();
 			$('#fluxCommentaire').html('');
-			$('#ensemblePieceJointe').html('');
-			$clearHtml = '<p class="labelInfoSite">Nom</p><p class="infoAffaireIntitule forLabelInfoSite"></p><p class="labelInfoSite">Affaire</p><p class="infoAffaireAffaire forLabelInfoSite"></p><p class="labelInfoSite">Url</p><p class="infoAffaireUrl forLabelInfoSite"></p><p class="labelInfoSite">Code Live</p><p class="infoAffaireCodeLive forLabelInfoSite"></p><p class="labelInfoSite">Connexion 3G / 4G</p><p class="infoAffaire3G4G forLabelInfoSite"></p><p class="labelInfoSite">Connexion ADSL</p><p class="infoAffaireADSL forLabelInfoSite"></p><p class="labelInfoSite">Acces Cloud</p><p class="infoAffaireCloud forLabelInfoSite"></p><p class="labelInfoSite">Access Live</p><p class="infoAffaireLive forLabelInfoSite"></p><p class="labelInfoSite">Acces Local</p><p class="infoAffaireLocal forLabelInfoSite"></p><p class="labelInfoSite">Acces Ecatcher</p><p class="infoAffaireEcatcher forLabelInfoSite"></p><p class="labelInfoSite">Version IPC</p><p class="infoAffaireVersionIpc forLabelInfoSite"></p>';
-            $('#resumeAffaire').html($clearHtml);
+			$('#js-ensemblePieceJointe').html('');
+			$clearHtml = '<label>Nom</label><span class="infoAffaireIntitule"></span><label>Affaire</label><span class="infoAffaireAffaire"></span><label>Url</label><span class="infoAffaireUrl"></span><label>Code Live</label><span class="infoAffaireCodeLive"></span><label>Connexion 3G / 4G</label><span class="infoAffaire3G4G"></span><label>Connexion ADSL</label><span class="infoAffaireADSL"></span><label>Acces Cloud</label><span class="infoAffaireCloud"></span><label>Access Live</label><span class="infoAffaireLive"></span><label>Acces Local</label><span class="infoAffaireLocal"></span><label>Acces Ecatcher</label><span class="infoAffaireEcatcher"></span><label>Version IPC</label><span class="infoAffaireVersionIpc"></span>';
+            $('#js-resumeAffaire').html($clearHtml);
 			$('#infoAffaire').data('id', null)
 			$img_cloud = null;
 			$img_live = null;
 			$img_locale = null;
-            $('#pictoConnexion img:first').off('click');
-            $("#pictoConnexion img:eq(1)").off('click');
-            $('#pictoConnexion img:last').off('click');
+            $('#js-pictoConnexion img:first').off('click');
+            $("#js-pictoConnexion img:eq(1)").off('click');
+            $('#js-pictoConnexion img:last').off('click');
 			$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);
 		}
 
@@ -737,7 +757,7 @@ window.location.search: "?query=1"
 					$.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'creer', commentaire: $commentaire, idSite: $id_site })
                 		.done(function($data) {
 							var $dtCreationCommentaire = new Date();
-                    		$html = '<div class="autreCommentateur"><div class="infoCommentateur"><div class="rondCompte ' + $auteur_couleur + '"> ' + getFirstLetters($auteur) + '</div><p class="nomComentateur">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="dateCommentaire">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="commentaire">' + nl2br($commentaire) + '</p><p class="deleteOrModifyCommentaire"><span class="modifyCommentaire" data-id="' + $data + '" data-commentaire="' + $commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')" >Modifier</span> - <span class="deleteCommentaire" data-id="' + $data + '" onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p></div>';
+                    		$html = '<div class="comm"><div class="comm__infos"><div class="rondCompte ' + $auteur_couleur + '"> ' + getFirstLetters($auteur) + '</div><p class="comm__infos__nom">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="comm__infos__date">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="comm__content">' + nl2br($commentaire) + '</p><p class="comm__action"><span data-id="' + $data + '" data-commentaire="' + $commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')" >Modifier</span> - <span data-id="' + $data + '" onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p></div>';
                     		$('#fluxCommentaire').prepend($html);
 							reinitialiseMonCommentaire();
                 		});
@@ -779,10 +799,10 @@ window.location.search: "?query=1"
 			clearInterval($refreshPourSite);
 
 			// On désactive tous les liens des images vers accés distants dans la popup site
-			$('.connexionInfoAffaire img').addClass('desactive');
+			$('.connexion__lien img').addClass('desactive');
 			// On cache les messages 'Accès uniquement par eCatcher
-			$('a.infoMajLive p.popUpCloud').addClass('cacher');
-			$('a.infoMajLocal p.popUpCloud').addClass('cacher');
+			$('a.infoMajLive > .tooltip').addClass('cacher');
+			$('a.infoMajLocal > .tooltip').addClass('cacher');
 
 
 			// On enregistre les url des images cloud, live et locale lorsqu'on affiche dans la popup
@@ -803,7 +823,7 @@ window.location.search: "?query=1"
 
 					/* Mise en place des fonction sur les images cloud, live et local pour accèder aux sites distants */
             		if ($img_cloud != null) {
-            		    $('#pictoConnexion img:first').attr('src', $img_cloud);
+            		    $('#js-pictoConnexion img:first').attr('src', $img_cloud);
             		    if (acces_cloud == true) 
 						{
 							/* On met en place le message d'indication de la date de mise à jour du cloud */
@@ -813,10 +833,10 @@ window.location.search: "?query=1"
 							} else {
 								dateMaj = "00-00-0000";
 							}
-                            $('a.infoMajCloud > p:first-child').html("Cloud mis à jour <br />le " + dateMaj);
+                            $('a.infoMajCloud > .tooltip').html("Cloud mis à jour <br />le " + dateMaj);
 							$('a.infoMajCloud').removeClass('desactive');
 							$('a.infoMajCloud img').removeClass('desactive');
-            		        $('#pictoConnexion img:first').click(function() {
+            		        $('#js-pictoConnexion img:first').click(function() {
             		            actionForm($entitySite.affaire, '{{ url_cloud}}', $entitySite.version);
             		        });
             		    } else {
@@ -824,28 +844,28 @@ window.location.search: "?query=1"
 						}
             		}
            			if ($img_live != null) {
-                		$("#pictoConnexion img:eq(1)").attr('src', $img_live);
+                		$("#js-pictoConnexion img:eq(1)").attr('src', $img_live);
 						// Connexion au Live effective depuis boilerbox
 						if (acces_live == true) {
 							$('a.infoMajLive img').removeClass('desactive');
-                            $("#pictoConnexion img:eq(1)").click(function() {
+                            $("#js-pictoConnexion img:eq(1)").click(function() {
                                 actionForm($entitySite.affaire, $entitySite.siteConnexion.url + 'web/app.php/fr/boilerboxlive/supervision/accueil?id=' + $entitySite.siteConnexion.codeLive, $entitySite.version);
                             });
 						// Pas de live mais indication connexion depuis eCatcher
                         } else if (acces_ecatcher_live_only == true) {
-							$('a.infoMajLive p.popUpCloud').removeClass('cacher');
+							$('a.infoMajLive > .tooltip').removeClass('cacher');
 						}
             		}
 
             		if ($img_locale != null) {
-            		    $('#pictoConnexion img:last').attr('src', $img_locale);
+            		    $('#js-pictoConnexion img:last').attr('src', $img_locale);
 						if (acces_local == true) {
 							$('a.infoMajLocal img').removeClass('desactive');
-                            $('#pictoConnexion img:last').click(function() {
+                            $('#js-pictoConnexion img:last').click(function() {
 								actionForm($entitySite.affaire, $entitySite.siteConnexion.url, $entitySite.version);
 							});
             			} else if (acces_ecatcher_local_only == true) {
-							$('a.infoMajLocal p.popUpCloud').removeClass('cacher');
+							$('a.infoMajLocal > .tooltip').removeClass('cacher');
 						}
 					}
 					
@@ -915,18 +935,18 @@ window.location.search: "?query=1"
 					// Ajout des nouveaux paramètre de site
 					$html = '';
 					for($key in $entitySite.configurations) {
-						$html = '<p class="labelInfoSite">' + $entitySite.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.configurations[$key].valeur + '</p>' + $html;
+						$html = '<label>' + $entitySite.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.configurations[$key].valeur + '</span>' + $html;
 					}
-					$('#resumeAffaire').append($html);
+					$('#js-resumeAffaire').append($html);
 						
 					// Ajout des nouveaux paramètre de connexion
 					if($entitySite.siteConnexion) 
 					{
                     	$html = '';
                     	for($key in $entitySite.siteConnexion.configurations) {
-                        	$html = '<p class="labelInfoSite">' + $entitySite.siteConnexion.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.siteConnexion.configurations[$key].valeur + '</p>' + $html;
+                        	$html = '<label>' + $entitySite.siteConnexion.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteConnexion.configurations[$key].valeur + '</span>' + $html;
 						}
-						$('#resumeAffaire').append($html);
+						$('#js-resumeAffaire').append($html);
 					}
 	
 					// Ajout des nouveaux paramètre de type autre
@@ -934,9 +954,9 @@ window.location.search: "?query=1"
                     {
                         $html = '';
                         for($key in $entitySite.siteAutres.configurations) {
-                        	$html = '<p class="labelInfoSite">' + $entitySite.siteAutres.configurations[$key].parametre + '</p><p class="infoAffaireConfiguration forLabelInfoSite">' + $entitySite.siteAutres.configurations[$key].valeur + '</p>' + $html;
+                        	$html = '<label>' + $entitySite.siteAutres.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteAutres.configurations[$key].valeur + '</span>' + $html;
 						}
-						$('#resumeAffaire').append($html);
+						$('#js-resumeAffaire').append($html);
 					}
 
 					// Affichage des anciens commentaires
@@ -948,11 +968,11 @@ window.location.search: "?query=1"
 						var $obj_html;
 						if (($entitySite.commentaires[$key].modePrive == false) || ($entitySite.commentaires[$key].modePrive && (($tech_granted) || ($entitySite.commentaires[$key].user.username == "{{ app.user.username }}"))))
 						{
-							$obj_html = $('<div class="autreCommentateur"><div class="infoCommentateur"><div class="rondCompte ' + $entitySite.commentaires[$key].user.couleur + '"> ' + getFirstLetters($auteur)  + '</div><p class="nomComentateur">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="dateCommentaire">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="commentaire">' + nl2br($entitySite.commentaires[$key].commentaire) + '</p>');
+							$obj_html = $('<div class="comm"><div class="comm__infos"><div class="rondCompte ' + $entitySite.commentaires[$key].user.couleur + '"> ' + getFirstLetters($auteur)  + '</div><p class="comm__infos__nom">' + $auteur.toLowerCase().charAt(0).toUpperCase() + $auteur.slice(1) + '</p><p class="comm__infos__date">' + $dtCreationCommentaire.toLocaleDateString() + ' à ' + $dtCreationCommentaire.toLocaleTimeString('fr-FR') + '</p></div><p class="comm__content">' + nl2br($entitySite.commentaires[$key].commentaire) + '</p>');
 							// Les commentaires ne peuvent être modifier que par le créateur du commentaire ou un admin
 							if (($entitySite.commentaires[$key].user.username == "{{ app.user.username }}") || ($tech_granted))
 							{
-								$obj_html.append($('<p class="deleteOrModifyCommentaire"><span class="modifyCommentaire" data-id="' + $entitySite.commentaires[$key].id + '" data-commentaire="' + $entitySite.commentaires[$key].commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')">Modifier</span> - <span class="deleteCommentaire" data-id="' + $entitySite.commentaires[$key].id + '"  onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p>'));
+								$obj_html.append($('<p class="comm__action"><span data-id="' + $entitySite.commentaires[$key].id + '" data-commentaire="' + $entitySite.commentaires[$key].commentaire + '" onClick="preActionModificationCommentaire(\'modifier\', this, \'' + $auteur_login + '\')">Modifier</span> - <span data-id="' + $entitySite.commentaires[$key].id + '"  onClick="actionSurCommentairesSite(\'supprimer\', this, \'' + $auteur_login + '\')">Supprimer</span></p>'));
 							}
 							$obj_html.append($('</div>'));
 							$('#fluxCommentaire').prepend($obj_html);
@@ -966,12 +986,12 @@ window.location.search: "?query=1"
 						if (($entitySite.fichiers[$key].modePrive == false) || ($entitySite.fichiers[$key].modePrive && (($tech_granted) || ($entitySite.fichiers[$key].user.username == "{{ app.user.username }}"))))
 						{
 							var $dtImportation = new Date($entitySite.fichiers[$key].dtImportation); 
-							var $obj_html = $('<div class="piecesJointe"><div class="apercuPieceJointe ' + $entitySite.fichiers[$key].extension + ' "></div></div>');
-							var $obj_piecejointe = $('<div class="infoPieceJointe"><p><a href="http://' + window.location.host + $entitySite.fichiers[$key].url + '" download="' + $entitySite.fichiers[$key].alt + '">' + decoupeTexte($entitySite.fichiers[$key].alt, 19) + '</a></p><div class="nomDatePieceJointe"><p class="namePersonnePieceJointe">' + $entitySite.fichiers[$key].informations + '</p><p>'  + $dtImportation.getDate() + ' ' + formatter.format($dtImportation) + ' ' + $dtImportation.getFullYear() + '</p></div>');
+							var $obj_html = $('<div class="attachement"><div class="attachement__img ' + $entitySite.fichiers[$key].extension + ' "></div></div>');
+							var $obj_piecejointe = $('<div class="attachement__infos"><a class="attachement__infos__name" href="http://' + window.location.host + $entitySite.fichiers[$key].url + '" download="' + $entitySite.fichiers[$key].alt + '">' + decoupeTexte($entitySite.fichiers[$key].alt, 19) + '</a><div class="attachement__infos__author"><p class="attachement__infos__author__name">' + $entitySite.fichiers[$key].informations + '</p><p class="attachement__infos__author__date">'  + $dtImportation.getDate() + ' ' + formatter.format($dtImportation) + ' ' + $dtImportation.getFullYear() + '</p></div>');
 							
 							// Fonction qui ajoute le lien suppression, créer l'evenement de suppression et associe les différents objets
 							ajoutLiens($obj_html, $obj_piecejointe, $entitySite.fichiers[$key].modePrive,  $entitySite.fichiers[$key].id);
-							$('#ensemblePieceJointe').append($obj_html);
+							$('#js-ensemblePieceJointe').append($obj_html);
 						}
 					}
 					afficherPopup();
@@ -1086,13 +1106,13 @@ window.location.search: "?query=1"
                 .indexOf(m[3].toUpperCase()) >= 0;
         };
         $(function() {
-            $('#searchBarInput').keyup(function(e) {
+            $('#js-search-site').keyup(function(e) {
 				rechercheOnPage();
             });
         });
 
 		function rechercheOnPage() {
-			var $content = $.trim($('#searchBarInput').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
+			var $content = $.trim($('#js-search-site').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
 			$("tbody tr.ligneAffaire").hide().filter(function( index ) {
 				var regex = new RegExp($content, 'i');
 				return regex.test($(this).text());
@@ -1113,31 +1133,17 @@ window.location.search: "?query=1"
 				return $label.charAt(0).toLowerCase();
 			}
 		}
-		/*actioner.onclick = function showMenuLateral(){
-            if (nav.style.display === "block") {
-                nav.style.display = "none";
-                fondu.style.display = "none";
-            } else {
-                nav.style.display = "block";
-                fondu.style.display = "block";
-            }
-        };*/
 		// Fonction pour changer la bordure de la barre de recherche en focus
-		var barreRecherche = document.getElementById('searchBarEquipement');
-		var inputRecherche = document.getElementById('searchBarInput');
-		var imageRecherche = document.getElementById('imgSearchBar');
-		inputRecherche.onfocus = bordureBarreRecherche;
-		function bordureBarreRecherche(){
-			barreRecherche.style.borderColor = "var(--couleur-focus)";
-			inputRecherche.style.marginLeft = "0";
-			imageRecherche.style.display = "none";
-		}
-		inputRecherche.onblur = resetBordureBarreRecherche;
-		function resetBordureBarreRecherche(){
-			barreRecherche.style.borderColor = "var(--gris-clair)"
-			inputRecherche.style.marginLeft = "6px";
-			imageRecherche.style.display = "inline";
-		}
+		$(".search-bar__input").on('focus', function searchFocus(){
+			if(!$(this).parents(".search-bar").hasClass('search-bar--focus')){
+				$(this).parents(".search-bar").addClass("search-bar--focus");
+			}
+		});
+		$(".search-bar__input").on('blur', function searchBlur(){
+			if($(this).parents(".search-bar").hasClass("search-bar--focus")){
+				$(this).parents(".search-bar").removeClass("search-bar--focus");
+			}
+		});
 	
 
 		function majDeDate() {
@@ -1154,7 +1160,7 @@ window.location.search: "?query=1"
 
         // Fonction qui switch entre mode privé et mode publique
         function mySwitchMode() {
-			// On appel la fonction principale de changement de mode (définie dans firstLayoutLogged) sans demande de frafraichissement de la page
+			// On appelle la fonction principale de changement de mode (définie dans firstLayoutLogged) sans demande de frafraichissement de la page
 			$Refresh_page = false;
 			$('#modePrivePublic').prop('checked', 'checked');
 			switchModePrivateTo();
@@ -1163,13 +1169,13 @@ window.location.search: "?query=1"
             var $p_modePrive;
             if (! $Mode_prive)
             {
-                $p_modePrive = "Attention, vous êtes en partage public <a class='lienModePartage' href='#' onClick='mySwitchMode(); return false;'>(passer en privé)</a>";
-                $('#infoAffaire header + p').removeClass('partagePrive');
-                $('#infoAffaire header + p').addClass('textWarning');
+                $p_modePrive = "Attention, vous êtes en partage public <a class='js-switch-mode' href='#' onClick='mySwitchMode(); return false;'>(passer en privé)</a>";
+                $('#infoAffaire header + p').removeClass('info-box__mode--private');
+                $('#infoAffaire header + p').addClass('info-box__mode--public');
             } else {
-                $p_modePrive = "Vous êtes en partage privé <a class='lienModePartage' href='#' onClick='mySwitchMode(); return false;'>(passer en public)</a>";
-                $('#infoAffaire header + p').removeClass('textWarning');
-                $('#infoAffaire header + p').addClass('partagePrive');
+                $p_modePrive = "Vous êtes en partage privé <a class='js-switch-mode' href='#' onClick='mySwitchMode(); return false;'>(passer en public)</a>";
+                $('#infoAffaire header + p').removeClass('info-box__mode--public');
+                $('#infoAffaire header + p').addClass('info-box__mode--private');
             }
             $('#infoAffaire header + p').html($p_modePrive);
             return 0;
@@ -1177,7 +1183,7 @@ window.location.search: "?query=1"
 
 
 		function ajoutLiens($obj_html, $obj_piecejointe, $fichier_mode_prive, $id) {
-			$obj_liensuppression = $('<a href="#" class="supprimerPieceJointe">supprimer</a>');
+			$obj_liensuppression = $('<a href="#" class="attachement__infos__delete">supprimer</a>');
 			// Seul les administrateurs on le droit de suppression
 			if ($tech_granted) {
 				$obj_piecejointe.append($obj_liensuppression);
@@ -1208,7 +1214,7 @@ window.location.search: "?query=1"
         	{
         	    $('tr.ligneAffaire td[data_idSite="{{ idSite }}"]').trigger('click');
         	}
-		})
+		});
 
 	</script>
 {% endblock javascript %}

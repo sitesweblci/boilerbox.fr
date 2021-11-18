@@ -16,22 +16,22 @@
 
 {% block mainBody %}
 	{{ form_start(form, {'action':path('lci_site_update', {'idSite':entity_site.id}), 'method':'POST', 'name':'myForm'}) }}
-	<main id="modifEquipement">
-        <header class="headerInterne">
-            <div id="titrePageModifEquip">
-                <h1>Paramètres de site</h1>
-                <h2>{{ form.vars.value.affaire}} : {{ form.vars.value.intitule }}</h2>
+	<main>
+        <header class="sub-header sub-header--grey">
+            <div class="sub-header__wrapper">
+                <h1 class="sub-header__title">Paramètres de site</h1>
+                <h2 class="sub-header__sub-title">{{ form.vars.value.affaire}} : {{ form.vars.value.intitule }}</h2>
             </div>
         </header>
         <div class="tab-wrapper">
     		<ul class="tab-wrapper__tabs">
-                <li class="tab-wrapper__tabs__tab active" data-tab-target="#home">Infos</li>
-                <li class="tab-wrapper__tabs__tab" data-tab-target="#pricing">Connexion</li>
-                <li class="tab-wrapper__tabs__tab" data-tab-target="#about">Autre</li>
+                <li class="tab-wrapper__tabs__tab active" data-tab-target="#infos">Infos</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#connexion">Connexion</li>
+                <li class="tab-wrapper__tabs__tab" data-tab-target="#autre">Autre</li>
             </ul>
             <div class="tab-wrapper__content">
 
-                <div id="home" class="active" data-tab-content>
+                <div id="infos" class="active form__field" data-tab-content>
                 	<div>
     					{{ form_row(form.intitule) }}
     					<div class="ligne_error">{{ form_errors(form.intitule) }}</div>
@@ -50,7 +50,7 @@
                     </div>
     			</div>
 
-                <div id="pricing" class="" data-tab-content>
+                <div id="connexion" class="form__field" data-tab-content>
                     <div id="site_siteConnexion_accesDistant">
                         <p class="titreFormModif">Surveillance de la connexion</p>
                         <div class="alignCheckbox">
@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <div id="about" class="" data-tab-content>
+                <div id="autre" class="form__field" data-tab-content>
                     <div>
                         {{ form_widget(form.siteAutres.configurations) }}
                     </div>
@@ -93,7 +93,7 @@
                 </div>
     		</div>
             <div class="form__btn form__btn--col">
-                <div class="btn btn--main {{ app.user.couleur }}" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
+                <div class="btn btn--main" onClick='attente(); soumettreLeFormulaire("site_submit");'>Enregistrer</div>
 				<div class="btn btn--second" onClick="attente(); history.back();">Annuler</div>
             </div>
         </div>

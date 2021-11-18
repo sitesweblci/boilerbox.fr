@@ -52,8 +52,8 @@
     font-size: 0.7em;
     text-transform: uppercase;
     color: red;
-}*/
-#formLogin .missLoginVisible{ /* Class ajoutée grâce au JS */
+}
+#formLogin .missLoginVisible{ /* Class ajoutée grâce au JS 
     visibility: visible;
 }
 .connectLogin, .connectLoginLateral{
@@ -103,9 +103,9 @@
 }
 .linkDemo:hover{
     color: black;
-}
+}*/
 /* MOT DE PASSE OUBLIÉ ******************************************************************************************************/
-main#passwordForget {
+/*main#passwordForget {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -191,9 +191,9 @@ main#passwordForget {
 }
 main#passwordForget .eyeCatcherGris{
     width: 90%;
-}
+}*/
 /* RESPONSIVE TABLETTE ******************************************************************************************************/
-@media screen  and (max-width: 768px){
+/*@media screen  and (max-width: 768px){
     .identifiant, .password{
         border: solid 1px white;
         border: solid 1px var(--couleur-principale);
@@ -201,10 +201,10 @@ main#passwordForget .eyeCatcherGris{
     #formPasswordForget input{
         border: solid 1px var(--couleur-principale);
     }
-}
+}*/
 /* RESPONSIVE MOBILE ******************************************************************************************************/
 @media screen and (max-width: 460px){
-    html{
+    /*html{
         background: none;
         background-color: white;
     }
@@ -249,5 +249,5 @@ main#passwordForget .eyeCatcherGris{
     }
     .demo{
         margin-top: 3vh;
-    }
+    }*/
 }

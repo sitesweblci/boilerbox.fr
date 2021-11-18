@@ -6,27 +6,7 @@
 	font-size: 1em;
 	color: white;
 }
-#titrePage{
-	margin-bottom: 24px;
-}
-#titrePage h1{
-	font-size: 1.8em;
-	font-weight: lighter;
-	color: var(--gris-profond);
-}
-#titrePage h2{
-	font-size: 1.8em;
-	font-weight: lighter;
-	color: black;
-}
-/* BARRE RECHERCHE ************************************/
-#searchBarEquipement{
-	width: 40%;
-}
 /* TABLEAU ********************************************/
-#myForm{
-	background-color: white;
-}
 #tableAffaire{
 	width: 100%;
 	table-layout: fixed;
@@ -223,74 +203,11 @@ tr td:last-child{
 	padding-right: 12px;
 	-webkit-padding-end: 6px;
 }
-/* BOUTON AJOUTER AFFAIRE *********************************************/
-#buttonAddAffaire{
-	padding: 8px 20px;
-	border-radius: 0 4px 4px 4px;
-	background-color: var(--gris-clair);
-	color: var(--gris-profond);
-	cursor: pointer;
-}
-/* POP UP *************************************************************************************************************/
-#infoAffaire{
-	display: none;
-	z-index: 6;
-    /*width: 70vw;
-    min-width: 500px;
-    max-width: 860px;
-    position: relative;
-	top: 50%; 
-    transform: translate(-50%, -50%);/* décalage de 50% de sa propre taille */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate( -50%, -50%);
-    width: 75vw;
-    min-width: 500px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0;
-    border-radius: 0 10px 10px 10px;
-}
-#infoAffaire header{
-	padding: 22px 36px;
-	border-radius: 0 10px 0 0;
-	background-color: var(--couleur-principale);
-}
-#infoAffaire header h1{
-	font-size: 1.6em;
-	font-weight: lighter;
-	color: #c2d4ef;
-}
-#infoAffaire header h2{
-	font-size: 1.2em;
-	font-weight: lighter;
-	color: white;
-}
 /* CONTENU POP UP *********************************/
-#leftInfo{
-	width: 32%;
-	min-width: 220px;
-	padding: 6px 40px 6px 30px;
-	border-radius: 0 0 0 10px;
-	background-color: white;
-}
-#leftInfo > div{
-	margin-bottom: 24px;
-}
-#ensembleInfoAffaire h1{
-	margin: 10px 0;
-	font-size: 1.1em;
-	font-weight: normal;
-	color: black;
-}
 .pictoInfo{
 	margin-right: 8px;
 	width: auto;
 	height: 13px;
-}
-#pictoConnexion, #ensemblePieceJointe, #resumeAffaire{
-	padding-left: 20px;
 }
 /* CONNEXION **********************************/
 #choixModeConnexion{
@@ -329,85 +246,7 @@ tr td:last-child{
 	display: flex;
 	flex-direction: row;
 }
-/* PIECE JOINTE ********************************/
-#ensemblePieceJointe{
-	max-height: 80px;
-	margin-bottom: 16px;
-	overflow-y: auto;
-	scrollbar-width: thin;
-}
-.piecesJointe{
-	display: flex;
-	flex-direction: row;
-	margin-bottom: 4px;
-}
-.apercuPieceJointe{
-	width: 32px;
-	height: 36px;
-	border-radius: 2px;
-	background: url("../images/pieceJointe/imgPieceJointeInconnu.png") no-repeat center;
-}
-.apercuPieceJointe.txt {
-	background: url("../images/pieceJointe/imgPieceJointeTxt.png") no-repeat center;
-}
-.apercuPieceJointe.pdf {
-    background: url("../images/pieceJointe/imgPieceJointePDF.png") no-repeat center;
-}
-.apercuPieceJointe.xls, .apercuPieceJointe.xlsx {
-    background: url("../images/pieceJointe/imgPieceJointeXLS.png") no-repeat center;
-}
-.apercuPieceJointe.jpg, .apercuPieceJointe.jpeg {
-    background: url("../images/pieceJointe/imgPieceJointeJPG.png") no-repeat center;
-}
-.infoPieceJointe{
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-start;
-	line-height: 0.7em;
-}
-.infoPieceJointe > p a{
-	margin-left: 10px;
-	color: black;
-	font-size: 0.8em;
-	font-weight: bold;
-	text-decoration: none;
-}
-.infoPieceJointe > p a:hover{
-	text-decoration: underline;
-}
-.nomDatePieceJointe{
-	display: flex;
-	flex-direction: row;
-}
-.nomDatePieceJointe .namePersonnePieceJointe{
-	margin-left: 10px;
-	margin-right: 4px;
-	font-size: 0.65em;
-	color: var(--gris-profond);
-}
-.piecesJointe p:last-child{
-	font-size: 0.65em;
-	color: var(--gris-clair-hover);
-}
-.supprimerPieceJointe{
-	margin-left: 10px;
-	font-size: 0.65em;
-	color: var(--couleur-principale);
-}
-.supprimerPieceJointe:hover{
-	text-decoration: underline;
-}
 /* INFOS SITE ******************************************/
-#resumeAffaire{
-	max-height: 280px;
-	overflow-y: auto;
-}
-#pictoTitreInformationAffaire{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
 #modifyInfoAffaire{
 	display: flex;
 	align-items: center;
@@ -416,7 +255,7 @@ tr td:last-child{
 	width: 24px;
 	height: 24px;
 	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%);
-	border: solid 1px var(--gris-profond);
+	border: solid 1px var(--gris-clair-hover);
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -432,23 +271,7 @@ tr td:last-child{
     visibility: visible;
     opacity: 1;
 }
-.labelInfoSite{
-	margin-bottom: 2px;
-	font-size: 0.8em;
-	color: var(--gris-profond);	
-}
-.forLabelInfoSite{
-	margin-bottom: 10px;
-	font-size: 1em;
-	color: black;
-}
 /* ESPACE COMMENTAIRE *********************************/
-#espaceCommunautaireAffaire{
-	width: 68%;
-	padding: 10px 40px;
-	border-radius: 0 0 10px 0;
-	background-color: #f2f2f2;
-}
 .textWarning{
 	padding: 4px 0;
 	font-size: 0.9em;
@@ -472,149 +295,12 @@ tr td:last-child{
 	color: var(--couleur-focus);
 	font-style: italic;
 }
-#formMonCommentaire{
-	display: block;
-	width: calc(100% - 28px);
-	padding: 0;
-	margin: 0;
-	margin-bottom: 4px;
-}
-.infoMonCommentaire{
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-}
-#fluxCommentaire{
-	max-height: 445px;
-	padding-right: 10px;
-	overflow-y: scroll;
-	scrollbar-width: thin;
-}
-.rondCompte{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 22px;
-	height: 22px;
-	margin-right: 6px;
-	border-radius: 50%;
-	background-color: var(--variable-color-user);
-	font-size: 1em;
-	text-transform: lowercase;
-	color: white;
-}
-.inputMonCommentaire{
-	width: 100%;
-	margin: 0;
-	padding: 5px;
-	border: 1px solid var(--gris-clair-hover);
-	border-radius: 0 3px 3px 3px;
-	font-family: Calibri, Arial, sans-serif;
-	font-size: 1em;
-	overflow-x: hidden;
-	overflow-y: auto;
-	resize: vertical;
-}
-.inputMonCommentaire::placeholder{
-	font-size: 0.9em;
-	color: var(--gris-clair-hover);
-	font-style: italic;
-}
-#validationMonCommentaire{
-	margin: 0;
-	margin-top: 6px;
-	border-radius: 0 3px 3px 3px;
-	font-size: 0.9em;
-	float: right;
-}
-#formMonCommentaire .inputPublish{
-	padding: 4px 24px;
-    margin: 12px 0;
-	font-size: 1em;
-}
-#ensembleCommentaire{
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-}
-.autreCommentateur{
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	margin-bottom: 12px;
-}
-.infoCommentateur{
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	flex-wrap: wrap;
-	align-items: baseline;
-	margin-bottom: 4px;
-}
-.nomComentateur{
-	align-self: baseline;
-	margin-right: 6px;
-	font-size: 1.0em;
-	font-weight: bold;
-	color: black;
-	text-transform: lowercase;
-}
-.nomComentateur:first-letter{
-	text-transform: capitalize;
-}
-.dateCommentaire{
-	align-self: baseline;
-	font-size: 0.7em;
-	color: var(--gris-profond);
-	font-weight: 300;
-}
-.commentaire{
-	width: calc(100% - 43px);
-    margin-left: 28px;
-    margin-bottom: 4px;
-    padding: 6px;
-    border: 1px solid var(--gris-clair-hover);
-    border-radius: 0 3px 3px 3px;
-    background-color: white;
-}
-.MaJStatut{
-	margin-left: 28px;
-	margin-bottom: 4px;
-	font-size: 1.05em;
-	color: black;
-	font-weight: normal;
-	font-style: italic;
-}
-.pieceJointeLien{
-	font-size: 1.0em;
-	color: blue;
-	font-style: normal;
-	text-decoration: underline;
-	cursor: pointer;
-}
-.deleteOrModifyCommentaire{
-	margin-left: 28px;
-	font-size: 0.66em;
-	color: var(--gris-profond);
-}
-.deleteCommentaire, .modifyCommentaire{
-	text-decoration: underline;
-	cursor: pointer;
-}
-
 /* RESPONSIVE 900px ***********************************************************************************************************************************/
 @media screen and (max-width: 900px){
-	#listingEquipement{
+	/*.accueil-box{
 	    width: 80vw;
 	    min-width: 540px;
 	    max-width: 850px;
-	}
-	#titrePage h1{
-		font-size: 1.6em;
-	}
-	#titrePage h2{
-		margin-bottom: 18px;
-		font-size: 1.6em;
 	}
 	#blockDemo{
 		margin-left: 20px;
@@ -624,7 +310,7 @@ tr td:last-child{
 		color: white;
 	}
 	/* LEGENDE **************************************/
-	#searchBarEquipement{
+/*	.search-bar{
 		width: calc(100% - 20px);
 	}
 	#searchBarInput{
@@ -640,7 +326,7 @@ tr td:last-child{
 		height: 8px;
 		margin-right: 5px;
 		border-radius: 50%;
-	}
+	}*/
 	/* POP UP **************************************/
 	#infoAffaire{
 	    width: 85vw;
@@ -676,9 +362,6 @@ tr td:last-child{
 		width: 68%;
 		padding: 6px 20px;
 	}
-	#fluxCommentaire{
-		max-height: 450px;
-	}
 	.autreCommentateur{
 		overflow: hidden;
 		margin-bottom: 8px;
@@ -689,17 +372,17 @@ tr td:last-child{
 	html{
 	    background: white no-repeat center fixed;
 	}
-	body{
+	/*body{
 		position: fixed;
 		top: 0; right: 0; bottom: 0;
 	}
 	#mainMenu{
 		border-bottom: 1px solid var(--gris-clair-hover);
-	}
+	}*/
 	#blockDemo{
 		display: none;
 	}
-	#listingEquipement{
+	/*.accueil-box{
 	    width: calc(90% - 48px);
 	    min-width: 340px;
 	    max-width: 900px;
@@ -707,22 +390,14 @@ tr td:last-child{
 	    padding: 20px 24px 10px 24px;
 	    background: white;
 	    box-shadow: none;
-	}
-	#titrePage{
-		display: none;
-	}
+	}*/
 	/* LEGENDE *****************************************/
-	#legendeListeEquipement{
+/*	.accueil-box__header{
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 		align-items: flex-start;
 		flex-wrap: nowrap;
-	}
-	#legendeConnexion{
-		justify-content: space-between;
-		width: 100%;
-		flex-wrap: wrap;
 	}
 	.rondConnexion{
 		width: 10px;
@@ -731,10 +406,10 @@ tr td:last-child{
 	#noConnexion{
 		margin-right: 0;
 	}
-	#searchBarEquipement{
+/*	.search-bar{
 		margin-top: 12px !important;
 		margin-bottom: 0;
-	}
+	}*/
 	/* TABLEAU *****************************************/
 	.whiteSpace, .whiteSpaceBorder, .connexionOnHead, .connexionOn, .legendeTypeConnexion{
 		display: none;
@@ -855,19 +530,14 @@ tr td:last-child{
 }
 /* RESPONSIVE MOBILE 380 ******************************************************************************************************/
 @media screen and (max-width: 380px){
-	#listingEquipement{
+	/*.accueil-box{
 	    width: calc(100% - 60px);
 	    min-width: 20px;
 	    max-width: 380px;
 	    padding: 10px 0 22px 0;
-	}
-	#titrePage h2{
-		margin-bottom: 6px;
-		font-size: 1.1em;
-		font-weight: normal;
-	}
+	}*/
 	/* LEGENDE **************************************************/
-	#legendeConnexion p{
+	#accueil-box__header__legende p{
 		font-size: 0.55em;
 	}
 	.rondConnexion{
@@ -875,10 +545,10 @@ tr td:last-child{
 		height: 6px;
 		margin-right: 4px;
 	}
-	#searchBarEquipement{
+/*	.search-bar{
 		margin-top: 4px;
 		height: 4px;
-	}
+	}*/
 	#connected, #outDated, #eCatcher, #nonConnected, #noConnexion{
 		margin-right: 4px;
 	}
@@ -908,24 +578,14 @@ tr td:last-child{
 		font-size: 0.8em;
 	}
 	/* POP UP *****************************************************/
-	#infoAffaire{
+/*	#infoAffaire{
 		width: calc(100vw - 60px);
 		min-width: 250px;
-	}
+	}*/
 }
 /* RESPONSIVE HAUTEUR ***********************************************************************************************************************************/
 @media screen and (min-width: 380px) and (max-height: 800px){
 	#tableAffaire tbody{
 		max-height: 340px;
-	}
-}
-@media screen and (max-height: 780px){
-	#resumeAffaire{
-		max-height: 140px;
-	}
-	#fluxCommentaire{
-		max-height: 300px;
-		padding-right: 10px;
-		overflow-y: scroll;
 	}
 }

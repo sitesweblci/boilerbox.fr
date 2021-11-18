@@ -13,13 +13,21 @@
 
 
     {% block liens_css %}
-		<link rel="stylesheet" type="text/css" href="{{ asset('css/parc.css') }}" media='screen' />
+		<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc.css') }}" media='screen' />
         <link rel="stylesheet" type="text/css" href="{{ asset('css/parc_print.css') }}" media='print' />
+        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
     {% endblock liens_css %}
 
 	<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/msgBoxLight.css') }}" />
-
+	<style>
+		html{
+			background: #242932;
+		}
+		body{
+			padding-left: 65px;
+		}
+	</style>
 
     {#
 	<script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
@@ -28,10 +36,113 @@
     <script type="text/javascript" src="{{ asset('js/jquery-dateFormat.min.js') }}"></script>
 </head>
 
-<body>
-    <div id='bloc_header' class='notToBePrinted'>
+<body style='padding-left:65px'>
+	<nav class="side-nav">
+        <div class="side-nav__content scroll">
+            <ul>
+                <li><a href="{{ path("lci_boilerbox_index")}}">
+                    <i class="index"></i><span>Accueil</span>
+                </a></li>
+                <li><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">
+                    <i class="account"></i><span>Mon compte</span>
+                </a></li>
+                <button>
+                    <i class="parc-tech"></i><span>Gestion parc technique</span>
+                </button>
+                <ul class="side-nav__sub-list">
+                    <li><a href="{{ path('lci_register_module', {'provenance':'accueil' }) }}">
+                        <i class="add-module"></i><span>Ajouter module</span>
+                    </a></li>
+                    <li><a href="{{ path('lci_register_problemeTechnique') }}">
+                        <i class="prob-tech"></i><span>Signaler problème tecnique</span>
+                    </a></li>
+                    <li><a href="{{ path('lci_gestion_modules') }}">
+                        <i class="parc-module"></i><span>Parc modules</span>
+                    </a></li>
+                    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+                        <li><a href="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}">
+                            <i class="add-equip"></i><span>Ajouter équipement</span>
+                        </a></li>
+                        <li><a href="{{ path('lci_affiche_problemes') }}">
+                            <i class="list-prob"></i><span>Liste problèmes techniques</span>
+                        </a></li>
+                        <li><a href="{{ path('lci_gestion_equipements') }}">
+                            <i class="parc-equip"></i><span>Parc équipements</span>
+                        </a></li>
+                    {% endif %}
+                </ul>
+                <button>
+                    <i class="bons-interv"></i><span>Bons d'interventions</span>
+                </button>
+                <ul class="side-nav__sub-list">
+                    {% if is_granted('ROLE_SAISIE_BA') %}
+                        <li><a href="{{ path('lci_bons_saisie') }}"> 
+                            <i class="saisie"></i><span>Saisie</span>
+                        </a></li>
+                    {% endif %}
+                    <li><a href="{{ path('lci_bons_visualiser') }}">
+                        <i class="visu"></i><span>Visualiser</span>
+                    </a></li>
+                    <li><a href="{{ path('lci_bons_sitesBA_visualiser') }}">
+                        <i class="visu-site"></i><span>Visu des sites</span>
+                    </a></li>
+                </ul>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('lci_cgu_show') }}">
+                        <i class="cgu"></i><span>CGU</span>
+                    </a></li>
+                {% endif %}
+                {% if is_granted('ROLE_TECHNICIEN') %}
+                    <li><a href="{{ path("lci_generation_mdp")}}">
+                        <i class="gene-mdp"></i><span>Générateur mot de passe</span>
+                    </a></li>
+                {% endif %}
+                <button>
+                    <i class="parametres"></i><span>Paramètres</span>
+                </button>
+                <ul class="side-nav__sub-list">
+                    <li><a href="{{ path('lci_accueil_register_user') }}">
+                        <i class="gestion-user"></i><span>Gestion utilisateurs</span>
+                    </a></li> 
+                    <li><a href="{{ path('lci_accueil_register_site') }}">
+                        <i class="gestion-site"></i><span>Gestion sites</span>
+                    </a></li>
+                    <li><a href="{{ path('lci_registration_link') }}">
+                        <i class="gestion-lien"></i><span>Gestion liens</span>
+                    </a></li>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <button>
+                            <i class="utilitaires"></i><span>Utilitaires</span>
+                        </button>
+                        <ul class="side-nav__sub-list">
+                            <li><a href="{{ path('lci_utils_afficheDispoSites') }}">
+                                <i class="dispo-site"></i><span>Disponibilités sites</span>
+                            </a></li>
+                            <li><a href="{{ path('lci_register_role') }}">
+                                <i class="gestion-role"></i><span>Gestion rôles</span>
+                            </a></li>
+                            <li><a href="{{ path('lci_affiche_logs_connexion') }}">
+                                <i class="logs"></i><span>Logs connexion</span>
+                            </a></li>
+                        </ul>
+                    {% endif %}
+                </ul>
+                <li><a href="{ path('fos_user_security_logout') }}">
+                    <i class="disconnect"></i><span>Se déconnecter</span>
+                </a></li>
+            </ul>
+        </div>
+        <div class="side-nav__footer">
+            <a target="_blank" href="{{ path('lci_cgu_courantes') }}">
+                C<span class="w54">onditions </span>G<span>énérales d'</span>U<span>tilisation</span>
+            </a>
+        </div>
+    </nav>
+
+
+    <header {# id='bloc_header' #} class='header header--admin notToBePrinted'>
     	{% block header %}
-    	<div class='entete_gauche'>
+    	{# <div class='entete_gauche'> #}
     	    <div class='version_boilerbox'>
     	        <p>{% include "form/version_boilerbox.html.twig" %}
 					<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>
@@ -43,29 +154,24 @@
 					{% endif %}
     	        </p>
         	</div>
-		</div>
+		{# </div> #}
 
-		<div id='messagebox' class='cacher'>
+		<div id='messagebox' class='message-box cacher'>
         	<div id='messageboxTexte'>
            	</div>
-           	<div class='right'><a href='#' style="height:30px;" onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='bgbouton'>ok</div></div></a>
+           	<div class='right'><a href='#' style="height:30px;" onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='btn btn--main'>ok</div></div></a>
 			</div>
         </div>
 
-        <div id='menu_boiler' class='notToBePrinted {% block class_menu_boiler %} {% endblock class_menu_boiler %}'>
+        <nav id='menu_boiler' class='notToBePrinted {% block class_menu_boiler %} {% endblock class_menu_boiler %}'>
            	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
            		{% if is_granted("ROLE_ADMIN") %}
-                   	<div class='menu_boiler'>
+                   	{# <div class='menu_boiler'> #}
                    		<a href="{{ path('lci_gestion_admin') }}" title='Administration'>Administration</a>
-                	</div>
+                	{# </div> #}
            		{% endif %}
 
-				<div 	class='menu_boiler' 
-						id='menu_boiler_deroulant1' 
-						onmouseover="afficheMenu(this)" 
-						onmouseout="cacheMenu(this)"
-						style="height:200px;"
-				>
+				<div {# class='menu_boiler'  #} id='menu_boiler_deroulant1' onmouseover="afficheMenu(this)" onmouseout="cacheMenu(this)"{# style="height:200px;" #}>
 					<span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
 					<div id='sousmenu_boiler_deroulant1' style='display:none'>
            				{% block liens_menu %}
@@ -73,15 +179,15 @@
            				{% endblock liens_menu %}
 					</div>
 				</div>
-				<div class='menu_boiler'>
+				{# <div class='menu_boiler'> #}
                		<a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
-           		</div>
+           		{# </div> #}
            	{% else %}
-           		<div class='menu_boiler'>
+           		{# <div class='menu_boiler'> #}
                		<a href="{{ path('fos_user_security_login') }}" id='lienDeconnexion' title='Connexion'>Connexion</a>
-           		</div>
+           		{# </div> #}
            	{% endif %}
-       	</div>
+       	</nav>
 
        	<div id='message_flashinfo'>
         	{% block messages_flash %}
@@ -98,7 +204,7 @@
        	 	</div>
        	</div>
     	{% endblock header %}
-    </div>
+    </header>
 
     {% block liens_url %}
 		<input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
@@ -116,7 +222,24 @@
 <script type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.msgBox.js') }}"></script>
+<script type="text/javascript">
+	$(".side-nav--admin li:not(.side-nav--admin__title)").on("click", function pageActive(){
+		$(".side-nav--admin li:not(.side-nav--admin__title").removeClass("active");
+		$(this).addClass("active");
+	});
+	$(".side-nav--admin button").on("click", function displaySubNav(){
+		$(this).next(".side-nav--admin__sub-list").toggleClass("displayed");
+	});
 
+	// Fonction side nav
+	$(".side-nav li").on("click", function pageActive(){
+	    $(".side-nav li").removeClass("active");
+	    $(this).addClass("active");
+	});
+	$(".side-nav button").on("click", function displaySubNav(){
+	    $(this).next(".side-nav__sub-list").toggleClass("displayed");
+	});
+</script>
 {% block javascript %}
 {% endblock javascript %}
 

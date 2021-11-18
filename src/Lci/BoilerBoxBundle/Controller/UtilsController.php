@@ -56,4 +56,21 @@ class UtilsController extends Controller
         }
         return new Response();
     }
+
+	public function affichageDisponibiliteSitesAction(Session $session)
+	{	
+        // Récupération de la liste des sites autorisés pour l'utilisateur connecté
+        $userLog = $session->get('userLog', array());
+        $user = $this->container->get('doctrine')->getManager()->getRepository('LciBoilerBoxBundle:User')->findOneBy(array('username' => $userLog['login']));
+        $this->label = $user->getLabel();
+        // Appel de la fonction associée à l'utilitaire demandé
+		$entities_site = $this->container->get('doctrine')->getManager()->getRepository('LciBoilerBoxBundle:Site')->findAll();
+		return $this->render('LciBoilerBoxBundle:Utils:utils_access.html.twig', array(
+                    'entities_sites' => $entities_site,
+                    'delais_netcat' => $this->delais_netcat,
+                    'tableau_detail' => $this->tab_details,
+                    'label' => $this->label
+        ));
+		return new Response();
+	}
 }

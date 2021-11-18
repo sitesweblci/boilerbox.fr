@@ -18,33 +18,74 @@ window.location.search: "?query=1"
 
 {% block boilerBoxCSS %}
    {{ parent() }}
-   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/authentification.css') }}" />
+	<style>
+	html{
+		background: #fafafa;
+	}
+	.main-box{
+		display: flex;
+		flex-flow: row wrap;
+		align-items: flex-start;
+	}
+	.main-box img{
+		width: 250px;
+		height: auto;
+		margin-right: 64px;
+	}
+	.form__infos{
+		margin: 0 0 64px 0;
+	}
+	.form__field #totp_key{
+		font-size: 18pt !important;
+	}
+	.form__btn{
+		margin-top: 64px;
+		align-self: flex-end;
+	}
+	.form__btn .btn{
+		font-size: 10pt;
+	}
+	</style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-		<h1>Authentification à double facteur</h1>
+	<header class="sub-header sub-header--blue">
+		<h1 class="sub-header__title">Authentification à double facteur</h1>
+	</header>
+
+	<main class="main-box">
 		{% if qrcode is defined %}
-			<p>Veuillez scanner le QrCode ci-dessous avec l'application [
-				<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=fr" target="_blank">
-					<span class="lien">Google Authenticator</span>
-				</a>
-				] et inscrire le code dans l'encart prévu à cet effet.
-			</p>
+			<img src="{{ qrcode }}" alt="QrCode à scanner" />
 		{% endif %}
-		<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' data-logout={{ path('fos_user_security_logout') }}>
+		<form action="{{ path('lci_boilerbox_accesSite') }}" method="post" name='myForm' id='myForm' class="form" data-logout={{ path('fos_user_security_logout') }}>
 			{% if qrcode is defined %}
-				<img src="{{ qrcode }}" alt="QrCode" /><br /><br />
+				<p class="form__infos form__infos--left">
+					Veuillez scanner le QrCode ci-contre</br>
+					avec l'application <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=fr" target="_blank">Google Authenticator</a>
+					</br>et inscrire le code dans l'encart prévu à cet effet.
+				</p>
+			{% elseif not qrcode is defined %}
+				<p class="form__infos">
+					Veuillez saisir le code généré</br>
+					sur votre application <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=fr" target="_blank">Google Authenticator</a>
+					</br> dans l'encart ci-dessous.
+				</p>
 			{% endif %}
 			{% for message in app.session.flashbag.get('info') %}
                 <span class='message_info_erreur'>{{ message }}</span>
             {% endfor %}
-            <br /><br />
-			<input type='text' id="totp_key" name="totp_key" placeholder="Placez ici le code généré" required>
-			<br /><br /><br />
-			<input type='submit' value='Envoyer'>
-			<input type='reset' value='Annuler' onClick="redirection('retourAccueil');">
+            <div class="form__field">
+            	<label for="totp_key">Code généré</label>
+				<input type='text' id="totp_key" name="totp_key" placeholder="Placez ici le code généré" required>
+			</div>
+			<div class="form__btn">
+				{% if qrcode is defined %}
+					<input type='reset' class="btn btn--second" value='Annuler' onClick="redirection('retourAccueil');">
+				{% endif %}
+				<input type='submit' class="btn btn--main" value='Envoyer'>
+			</div>
 		</form>
+	</main>
 {% endblock mainBody %}
 
 

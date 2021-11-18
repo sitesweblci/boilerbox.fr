@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
     {% block boilerBoxCSS %}
-         <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
+        <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
         <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloud.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
     {% endblock boilerBoxCSS %}
     
 	<title>{% block title %}BOILERBOX {% endblock title %}</title>
@@ -15,9 +16,9 @@
 
 <body>
 {% block mainBandeau %}
-	 <nav id="mainMenu">
-        <div id="left">
-            <a id="lienWatermark" class="watermark" href="{{ path('fos_user_security_logout') }}">
+	 <header class="header">
+        <nav>
+            <a class="watermark" href="{{ path('fos_user_security_logout') }}">
                 <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
                 <p class="watermark__baseline">
                     <span>INDUSTRIAL</span>
@@ -25,25 +26,25 @@
                     <span>CONTROL</span>
                 </p>
             </a>
-        </div>
+        </nav>
 
-        <div id="right">
-            <a id="iconeLocalisation" class="mainNavButton spaceRoundedButton" href="https://www.google.com/maps/d/embed?mid=1y0NIi4DoQQCO4sDyfxOMwqQ052U3X2TB" >
-                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites" class="icones">
-                <p id="pLocalisation" class="popUp">Localisation</p>
+        <nav>
+            {# <a class="header__nav tooltip-wrapper" href="https://www.google.com/maps/d/embed?mid=1y0NIi4DoQQCO4sDyfxOMwqQ052U3X2TB" >
+                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/localisation.svg') }}" alt="icône localisation des sites">
+                <p class="tooltip">Localisation</p>
+            </a> #}
+            <a href="{{ path('fos_user_security_login') }}" class="header__nav header__nav--unidentified">
+                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/unidentified.svg') }}" alt="icône mon compte">
             </a>
-            <a href="{{ path('fos_user_security_login') }}" id="btnUnidentified" class="mainNavButton">
-                <img src="{{ asset('bundles/lciboilerbox/images/img/nav/unidentified.svg') }}" alt="icône mon compte" id="iconeUnidentified" class="icones">
-            </a>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
 
-    <div id='popUpError' class='cacher' >
-        <div class="crossCloseContainerEquipement" onClick="clotureMessageErreur();"></div>
+    <div id='popUpError' class='message-box cacher'>
+        <div class="close-cross close-cross--light" onClick="clotureMessageErreur();"></div>
         {% if app.session.flashbag.peek('erreur') | length  > 0 %}
-            <h1>Erreur rencontrée</h1>
-            <div class="containerPopUpError">
+            <h1 class="message-box__title message-box__title--error">Erreur rencontrée</h1>
+            <div class="message-box__content">
                 <img src="{{ asset('bundles/lciboilerbox/images/img/warningError.svg') }}" alt="icône Erreur">
                 <p>
                     {% for message in app.session.flashbag.get('erreur') %}
@@ -53,7 +54,8 @@
             </div>
         {% endif %}
         {% if  app.session.flashbag.peek('info') | length  > 0 %}
-            <div class="containerPopUpError">
+            <h1 class="message-box__title">Informations</h1>
+            <div class="message-box__content">
                 <img src="{{ asset('bundles/lciboilerbox/images/img/warningInfo.svg') }}" alt="icône Info">
                 <p>
                     {% for message in app.session.flashbag.get('info') %}
@@ -62,7 +64,7 @@
                 </p>
             </div>
         {% endif %}
-        <p class="eyeCatcherGris" onClick="clotureMessageErreur();" style="box-sizing:border-box;width:100%;margin-top:24px;">compris</p>
+        <p class="btn btn--main" onClick="clotureMessageErreur();">compris</p>
     </div>
 
     <div id="cartonBlack" class="cacher"></div>
@@ -83,7 +85,7 @@
 <script type='text/javascript'>
 	$(document).ready(function() 
 	{
-		if(typeof($('#popUpError div.containerPopUpError p').html()) != 'undefined') 
+		if(typeof($('#popUpError .message-box__content p').html()) != 'undefined') 
 		{
 			$('#popUpError').removeClass('cacher')
 			$('#cartonBlack').removeClass('cacher')
