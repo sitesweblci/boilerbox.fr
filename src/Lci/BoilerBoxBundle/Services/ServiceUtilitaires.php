@@ -52,6 +52,7 @@ class ServiceUtilitaires {
 	// N'analyse que les sites accessibles ( paramètre configBoilerBox = true)
 	public function analyseAccess($sitesOuModules) 
 	{
+		set_time_limit(0);
 		if($this->debug) $this->service_log->setLog("\nNouveau test de suivi des sites");
 		// Mise à jour de la valeur du paramètre : date du dernier test de disponibilité des sites.
 		$date_du_jour = new \Datetime();
