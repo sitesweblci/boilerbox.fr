@@ -199,8 +199,9 @@ class User extends BaseUser
   		$this->validations = new ArrayCollection();
 		$this->couleur = '#004080';
 		$this->langue = 'fr';
-  $this->commentaires = new ArrayCollection();
-  $this->fichiersV2 = new ArrayCollection();
+  		$this->commentaires = new ArrayCollection();
+  		$this->fichiersV2 = new ArrayCollection();
+		$this->cguAccepte = false;
     }
 
     /**

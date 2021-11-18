@@ -78,3 +78,8 @@ services:
         class: 'Twig\Extensions\IntlExtension'
         tags:
             - { name: twig.extension }
+
+     lci_boilerbox.synchronisation:
+         class: "%synchronisation.class%"
+         arguments: ["@doctrine", "@lci_boilerbox.configuration", "@lci_boilerbox.log", "@lci_boilerbox.mailing", "%mail_debuggeur%"]
+

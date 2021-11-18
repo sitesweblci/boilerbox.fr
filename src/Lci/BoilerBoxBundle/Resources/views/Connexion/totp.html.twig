@@ -71,6 +71,7 @@ window.location.search: "?query=1"
 					</br> dans l'encart ci-dessous.
 				</p>
 			{% endif %}
+			
 			{% for message in app.session.flashbag.get('info') %}
                 <span class='message_info_erreur'>{{ message }}</span>
             {% endfor %}

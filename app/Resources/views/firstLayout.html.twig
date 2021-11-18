@@ -145,7 +145,7 @@
     	{# <div class='entete_gauche'> #}
     	    <div class='version_boilerbox'>
     	        <p>{% include "form/version_boilerbox.html.twig" %}
-					<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>
+					{#<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>#}
     	          	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
     	               	- Bienvenue
     	               	{% block lien_parc_technique %}
@@ -173,11 +173,6 @@
 
 				<div {# class='menu_boiler'  #} id='menu_boiler_deroulant1' onmouseover="afficheMenu(this)" onmouseout="cacheMenu(this)"{# style="height:200px;" #}>
 					<span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
-					<div id='sousmenu_boiler_deroulant1' style='display:none'>
-           				{% block liens_menu %}
-							<div class='sousmenu_boiler'><a href="{{ path('lci_change_password') }}" title='Changement de son mot de passe'>Gestion du mot de passe</a></div>
-           				{% endblock liens_menu %}
-					</div>
 				</div>
 				{# <div class='menu_boiler'> #}
                		<a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>

@@ -82,7 +82,7 @@
 					<div id='check_sites'>
 						<table class='tab_liste_liens tableau_listing'>
 							<thead>
-								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Sélect. tous</span></th>
+								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Select. tous</span></th>
 									<th class='zone_texte_petit'>Code</th>
 									<th class='zone_texte_grand'>Nom</th>
 								</tr>
@@ -132,7 +132,7 @@
 					<div id='check_users'>
 						<table class='tab_liste_liens tableau_listing'>
 							<thead>
-								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Sélect. tous</span></th>
+								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Select. tous (sauf Clients)</span></th>
 									<th class='zone_texte_moyen' onclick="compare('nom')">Nom</th>
 									<th class='zone_texte_grand' onclick="compare('roles')">Rôle</th>
 								</tr>
@@ -140,7 +140,7 @@
 							<tbody id='tableau_utilisateurs'>
 								{% for user in liste_users %}
 									<tr>
-										<td class='zone_texte_petit' data-intitule='id'><input type='checkbox' name="{{ user.id }}" id="checkUser_{{ user.id }}" /></td>
+										<td class='zone_texte_petit' data-intitule='id'><input type='checkbox' name="{{ user.id }}" id="checkUser_{{ user.id }}" data-client={% if 'client' in user.myGetRolesHtml %} 1 {% else %} 0 {% endif %}/></td>
 										<td class='zone_texte_moyen' data-intitule='nom'>{{ user.label }}</td>
 										<td class='zone_texte_grand' data-intitule='roles'>( {{ user.myGetRolesHtml | raw }} )</td>
 									</tr>
@@ -246,13 +246,16 @@
 
     function checkAll(listeName) {
 		if(listeName == 'users') {
-			// Récupération de l'ensemble des valeurs de la checkbox
-			var checkboxes = $('#check_users').find(':checkbox');
 			// Si la case 'Tous les sites est coché'
 			if($('input[name=checkAllUsers]').prop('checked') == true) {
+				// On coche tous les utilisateurs non client
+				var checkboxes = $('#check_users').find(':checkbox[data-client=0]');
 				// Coche de toutes les valeurs de la checkbox
 				checkboxes.prop('checked', true);
 			} else { 
+				// On décoche tous les utilisateurs non client
+				//var checkboxes = $('#check_users').find(':checkbox');
+				var checkboxes = $('#check_users').find(':checkbox[data-client=0]');
 				checkboxes.prop('checked', false);
 			}
 		}

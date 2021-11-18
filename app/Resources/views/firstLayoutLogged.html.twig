@@ -78,7 +78,7 @@
             <li><a href="{{ path('fos_user_security_logout') }}">se déconnecter</a></li>
         </ul>
     </div>
-
+    
     <nav class="side-nav">
         <div class="side-nav__content scroll">
             <ul>
@@ -88,47 +88,49 @@
                 <li><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">
                     <i class="account"></i><span>Mon compte</span>
                 </a></li>
-                <button>
-                    <i class="parc-tech"></i><span>Gestion parc technique</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    <li><a href="{{ path('lci_register_module', {'provenance':'accueil' }) }}">
-                        <i class="add-module"></i><span>Ajouter module</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_register_problemeTechnique') }}">
-                        <i class="prob-tech"></i><span>Signaler problème tecnique</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_gestion_modules') }}">
-                        <i class="parc-module"></i><span>Parc modules</span>
-                    </a></li>
-                    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
-                        <li><a href="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}">
-                            <i class="add-equip"></i><span>Ajouter équipement</span>
+                {% if is_granted('ROLE_TECHNICIEN') %}
+                    <button>
+                        <i class="parc-tech"></i><span>Gestion parc technique</span>
+                    </button>
+                    <ul class="side-nav__sub-list">
+                        <li><a href="{{ path('lci_register_module', {'provenance':'accueil' }) }}">
+                            <i class="add-module"></i><span>Ajouter module</span>
                         </a></li>
-                        <li><a href="{{ path('lci_affiche_problemes') }}">
-                            <i class="list-prob"></i><span>Liste problèmes techniques</span>
+                        <li><a href="{{ path('lci_register_problemeTechnique') }}">
+                            <i class="prob-tech"></i><span>Signaler problème tecnique</span>
                         </a></li>
-                        <li><a href="{{ path('lci_gestion_equipements') }}">
-                            <i class="parc-equip"></i><span>Parc équipements</span>
+                        <li><a href="{{ path('lci_gestion_modules') }}">
+                            <i class="parc-module"></i><span>Parc modules</span>
                         </a></li>
-                    {% endif %}
-                </ul>
-                <button>
-                    <i class="bons-interv"></i><span>Bons d'interventions</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    {% if is_granted('ROLE_SAISIE_BA') %}
-                        <li><a href="{{ path('lci_bons_saisie') }}"> 
-                            <i class="saisie"></i><span>Saisie</span>
+                        {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+                            <li><a href="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}">
+                                <i class="add-equip"></i><span>Ajouter équipement</span>
+                            </a></li>
+                            <li><a href="{{ path('lci_affiche_problemes') }}">
+                                <i class="list-prob"></i><span>Liste problèmes techniques</span>
+                            </a></li>
+                            <li><a href="{{ path('lci_gestion_equipements') }}">
+                                <i class="parc-equip"></i><span>Parc équipements</span>
+                            </a></li>
+                        {% endif %}
+                    </ul>
+                    <button>
+                        <i class="bons-interv"></i><span>Bons d'interventions</span>
+                    </button>
+                    <ul class="side-nav__sub-list">
+                        {% if is_granted('ROLE_SAISIE_BA') %}
+                            <li><a href="{{ path('lci_bons_saisie') }}"> 
+                                <i class="saisie"></i><span>Saisie</span>
+                            </a></li>
+                        {% endif %}
+                        <li><a href="{{ path('lci_bons_visualiser') }}">
+                            <i class="visu"></i><span>Visualiser</span>
                         </a></li>
-                    {% endif %}
-                    <li><a href="{{ path('lci_bons_visualiser') }}">
-                        <i class="visu"></i><span>Visualiser</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_bons_sitesBA_visualiser') }}">
-                        <i class="visu-site"></i><span>Visu des sites</span>
-                    </a></li>
-                </ul>
+                        <li><a href="{{ path('lci_bons_sitesBA_visualiser') }}">
+                            <i class="visu-site"></i><span>Visu des sites</span>
+                        </a></li>
+                    </ul>
+                {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('lci_cgu_show') }}">
                         <i class="cgu"></i><span>CGU</span>
@@ -139,36 +141,38 @@
                         <i class="gene-mdp"></i><span>Générateur mot de passe</span>
                     </a></li>
                 {% endif %}
-                <button>
-                    <i class="parametres"></i><span>Paramètres</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    <li><a href="{{ path('lci_accueil_register_user') }}">
-                        <i class="gestion-user"></i><span>Gestion utilisateurs</span>
-                    </a></li> 
-                    <li><a href="{{ path('lci_accueil_register_site') }}">
-                        <i class="gestion-site"></i><span>Gestion sites</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_registration_link') }}">
-                        <i class="gestion-lien"></i><span>Gestion liens</span>
-                    </a></li>
-                    {% if is_granted('ROLE_SUPER_ADMIN') %}
-                        <button>
-                            <i class="utilitaires"></i><span>Utilitaires</span>
-                        </button>
-                        <ul class="side-nav__sub-list">
-                            <li><a href="{{ path('lci_utils_afficheDispoSites') }}">
-                                <i class="dispo-site"></i><span>Disponibilités sites</span>
-                            </a></li>
-                            <li><a href="{{ path('lci_register_role') }}">
-                                <i class="gestion-role"></i><span>Gestion rôles</span>
-                            </a></li>
-                            <li><a href="{{ path('lci_affiche_logs_connexion') }}">
-                                <i class="logs"></i><span>Logs connexion</span>
-                            </a></li>
-                        </ul>
-                    {% endif %}
-                </ul>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <button>
+                        <i class="parametres"></i><span>Paramètres</span>
+                    </button>
+                    <ul class="side-nav__sub-list">
+                        <li><a href="{{ path('lci_accueil_register_user') }}">
+                            <i class="gestion-user"></i><span>Gestion utilisateurs</span>
+                        </a></li> 
+                        <li><a href="{{ path('lci_accueil_register_site') }}">
+                            <i class="gestion-site"></i><span>Gestion sites</span>
+                        </a></li>
+                        <li><a href="{{ path('lci_registration_link') }}">
+                            <i class="gestion-lien"></i><span>Gestion liens</span>
+                        </a></li>
+                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                            <button>
+                                <i class="utilitaires"></i><span>Utilitaires</span>
+                            </button>
+                            <ul class="side-nav__sub-list">
+                                <li><a href="{{ path('lci_utils_afficheDispoSites') }}">
+                                    <i class="dispo-site"></i><span>Disponibilités sites</span>
+                                </a></li>
+                                <li><a href="{{ path('lci_register_role') }}">
+                                    <i class="gestion-role"></i><span>Gestion rôles</span>
+                                </a></li>
+                                <li><a href="{{ path('lci_affiche_logs_connexion') }}">
+                                    <i class="logs"></i><span>Logs connexion</span>
+                                </a></li>
+                            </ul>
+                        {% endif %}
+                    </ul>
+                {% endif %}
                 <li><a href="{ path('fos_user_security_logout') }}">
                     <i class="disconnect"></i><span>Se déconnecter</span>
                 </a></li>

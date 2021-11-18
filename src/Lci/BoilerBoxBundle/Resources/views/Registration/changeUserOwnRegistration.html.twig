@@ -121,7 +121,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="monCompteAutre" class="form__field" data-tab-content>
                         <h3 {% if not form.vars.value.informations %} class='form__field__title js-champs-admin cacher'{% endif %}>Informations complémentaires</h3>
                         <div {% if not form.vars.value.informations %} class='js-champs-admin cacher' {% else %} class='js-champs-admin desactive' {% endif %}>
@@ -129,6 +128,7 @@
                             {{ form_widget(form.informations) }}
                             <div class="ligne_error">{{ form_errors(form.informations) }}</div>
                         </div>
+                        {% if is_granted('ROLE_TECHNICIEN') %}
                         <h3 class="form__field__title">Mode de partage privé</h3>
                         <p class="desc">
                             Le mode de partage privé permet à vos commentaires et pièces jointes d'être visibles uniquement par ceux d'un niveau d'administration élévé.
@@ -140,6 +140,7 @@
                             </label>
                             <p id='pModePrive'>Activer mode privé</p>
                         </div>
+                        {% endif %}
                         <h3 class="form__field__title">Préférences</h3>
                         <div id="choixLangue">
                             <label>Langue</label>

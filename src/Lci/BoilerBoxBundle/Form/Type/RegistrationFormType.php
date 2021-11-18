@@ -161,10 +161,6 @@ class RegistrationFormType extends BaseType
     }
 
 
-	public function setDefaultOptions(OptionsResolver $resolver) {
-	}
-
-
     /**
      * {@inheritdoc}
      */

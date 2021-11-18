@@ -1,7 +1,7 @@
-#ipc:
-#    resource: "@IpcBundle/Controller/"
-#    type:     annotation
-#    prefix:   /ipc
+ipc:
+    resource: "@IpcBundle/Controller/"
+    type:     annotation
+    prefix:   /ipc
 
 lci_files:
     resource: "@LciFilesBundle/Resources/config/routing.yml"
@@ -130,10 +130,7 @@ lci_site_update:
 lci_accueil_register_site:
     path: /lci/admin/register/accueil/site
     defaults: { _controller: LciBoilerBoxBundle:Admin:accueilSiteRegistration }
-lci_change_password:
-    path: /lci/user/change_password
-    defaults: { _controller: LciBoilerBoxBundle:User:changePassword }
-# Avant seul l'admin pouvait modifier les infos , maintenant les utilisateurs également mais uniquement leur propres compte
+
 lci_update_user_own:
     path: /lci/user/register/update/user/{idUtilisateur}
     defaults: { _controller: LciBoilerBoxBundle:User:userUpdateOwn }
@@ -238,12 +235,6 @@ lci_ajax_desactivation_auth:
 lci_ajax_get_site:
     path: /lci/boilerbox/ajax/get/site
     defaults: { _controller: LciBoilerBoxBundle:Ajax:getSite }
-lci_ajax_set_site_commentaire:
-    path: /lci/boilerbox/ajax/set/site/commentaire
-    defaults: { _controller: LciBoilerBoxBundle:Ajax:setCommentairesSite }
-lci_ajax_get_commentaires_site:
-    path: /lci/boilerbox/ajax/get/commentaires/site
-    defaults: { _controller: LciBoilerBoxBundle:Ajax:getCommentairesSite }
 lci_ajax_bon_contact_supp:
     path: /lci/bons/ajax/contact/supp
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }

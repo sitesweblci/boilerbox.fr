@@ -53,7 +53,7 @@ registration:
         message: |
             Bonjour <b>%username%</b> !<br /><br />
 
-            Pour finaliser la création de votre compte sur boilerbox.fr, merci de cliquer sur le lien suivant %confirmationUrl% <br /><br />
+            Pour finaliser la création de votre compte sur boilerbox.fr, merci de suivre le lien suivant %confirmationUrl% <br /><br />
             Votre mot de passe d'origine est identique à votre login ( %username% ). Il peut être changé depuis la page d'accueil de BoilerBox.<br /><br />
 
             Cordialement,<br />

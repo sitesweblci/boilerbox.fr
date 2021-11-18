@@ -9,6 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 
 class GenerateurMdpType extends AbstractType 
 {
@@ -38,10 +40,20 @@ class GenerateurMdpType extends AbstractType
 			->add('site', TextType::class);
 	}
 
+    /*
+     * @param OptionsResolver $resolver
+    */
+    public function configureOptions(OptionsResolver $resolver){
+        $resolver->setDefaults(array(
+            'data_class' => 'Lci\BoilerBoxBundle\Entity\GenerateurMdp'
+        ));
+	}
+/*
 	public function setDefaultsOptions(OptionResolverInterface $resolver) 
 	{
 	    $resolver->setDefaults(array('data_class' => 'Lci\BoilerBoxBundle\Entity\GenerateurMdp'));
 	}
+ */
 
 	public function getName() 
 	{
