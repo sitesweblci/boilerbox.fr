@@ -2,32 +2,38 @@
 
 {% block boilerBoxCSS %}
    {{ parent() }}
-   <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloudLogin.css') }}" />
+   <style>
+   .btn--main{
+   	margin: 3vh 0 12px 0;
+   }
+   </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-<main id="passwordForget">
-	<div id="watermarkPassword">
-		<img src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="logo IBC" class="logoIBC">
-		<p class="baselineLogo">
-			<span class="initialeBaseline">I</span>NDUSTRIAL<br>
-			<span class="initialeBaseline">B</span>OILER<br>
-			<span class="initialeBaseline">C</span>ONTROL
+<main class="main-box main-box--login">
+	<div class="watermark watermark--big">
+		<img src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="logo IBC" class="watermark__logo watermark--big__logo">
+		<p class="watermark__baseline watermark--big__baseline">
+			<span>INDUSTRIAL</span>
+			<span>BOILER</span>
+			<span>CONTROL</span>
 		</p>
 	</div>
-	<h1>mot de passe oublié ?</h1>
-	<p>Saisissez votre identifiant.
-	<br>Vous recevrez un mail de réinitialisation.
-	</p>
-	<form action="{{ path('lci_user_resetting_send_email') }}" method="POST" id="formPasswordForget">
+	<form action="{{ path('lci_user_resetting_send_email') }}" method="POST" class="form form--login">
+		<h1 class="form__title form--login__title">Mot de passe oublié ?</h1>
+		<p class="form__infos form--login__infos">
+			Saisissez votre identifiant.</br>
+			Vous recevrez un mail de réinitialisation.
+		</p>
 		{% if invalid_username is defined %}
 			<p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
 		{% endif %}
-		<label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
-		<input type="text" id="username" name="username" required="required" placeholder="identifiant" />
-		<input type="submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" class="eyeCatcher"/>
+		<input type="text" id="username" name="username" required="required" placeholder="identifiant ou mail"/>
+		<label for="username">{# {{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }} #}Identifiant ou mail</label>
+		<button type="submit"{#  value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" #} class="btn btn--main"/>Réintialiser</button>
+		<a class="btn btn--second" href="{{ path('fos_user_security_logout') }}">retour</a>
 	</form>
-	<a class="eyeCatcher eyeCatcherGris" href="{{ path('fos_user_security_logout') }}">retour login</a>
+	
 </main>
 {% endblock mainBody %}
 
