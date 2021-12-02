@@ -766,6 +766,7 @@ window.location.search: "?query=1"
                     $id_commentaire = $($dom_element).data('id');
                     $.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'supprimer', idCommentaire:$id_commentaire})
                     .done(function($data) {
+						$('#fluxCommentaire').html('');
                         showPopUp($id_site, true);
                     });
                     break;
@@ -775,6 +776,7 @@ window.location.search: "?query=1"
 					$.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'modifier', commentaire:$commentaire, idCommentaire:$id_commentaire})
                         .done(function($data) {
 							reinitialiseMonCommentaire();
+							$('#fluxCommentaire').html('');
 							showPopUp($id_site, true);
                         });
                     break;
@@ -796,27 +798,27 @@ window.location.search: "?query=1"
             if ((popUp.style.display === "block") && ($forced === false)) {
 				cacherPopup();
             } else {
-			clearInterval($refreshPourSite);
+				clearInterval($refreshPourSite);
 
-			// On désactive tous les liens des images vers accés distants dans la popup site
-			$('.connexion__lien img').addClass('desactive');
-			// On cache les messages 'Accès uniquement par eCatcher
-			$('a.infoMajLive > .tooltip').addClass('cacher');
-			$('a.infoMajLocal > .tooltip').addClass('cacher');
+				// On désactive tous les liens des images vers accés distants dans la popup site
+				$('.connexion__lien img').addClass('desactive');
+				// On cache les messages 'Accès uniquement par eCatcher
+				$('a.infoMajLive > .tooltip').addClass('cacher');
+				$('a.infoMajLocal > .tooltip').addClass('cacher');
 
 
-			// On enregistre les url des images cloud, live et locale lorsqu'on affiche dans la popup
-            if (img_cloud != null) {
-                $img_cloud = img_cloud;
-            }
-            if (img_live != null) {
-                $img_live = img_live;
-            }
-            if (img_locale != null) {
-                $img_locale = img_locale;
-            }
+				// On enregistre les url des images cloud, live et locale lorsqu'on affiche dans la popup
+            	if (img_cloud != null) {
+            	    $img_cloud = img_cloud;
+            	}
+            	if (img_live != null) {
+            	    $img_live = img_live;
+            	}
+            	if (img_locale != null) {
+            	    $img_locale = img_locale;
+            	}
 
-			$.post("{{ path('lci_ajax_get_site') }}", {idSite : $id_site})
+				$.post("{{ path('lci_ajax_get_site') }}", {idSite : $id_site})
 				.done(function($dataEntitySite) 
 				{
 					var $entitySite = JSON.parse($dataEntitySite);
