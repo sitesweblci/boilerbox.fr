@@ -308,6 +308,7 @@ class AjaxController extends Controller
         $ent_fichier = $em->getRepository('LciBoilerBoxBundle:FichierV2')->find($_POST['id_fichier']);
         $em->remove($ent_fichier);
         $em->flush();
+		return new Response();
     }
 
     // Fonction qui retourne une entité Site selon son id : Cette entité est serialisée pour lecture en javascript
