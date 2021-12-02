@@ -245,14 +245,16 @@ window.location.search: "?query=1"
 				<h2 class='infoAffaireIntitule info-box__header__nom'>dev</h2>
 			</header>
 			{# On affiche les options de mode privé / mode publique uniquement pour les comptes administrateurs #}
-			{% if app.user.modePrive == false %}
-				<p class="info-box__mode info-box__mode--public">Attention, vous êtes en partage public
-					<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a>
-				</p>
-			{% else %}
-				<p class="info-box__mode info-box__mode--private">Vous êtes en partage privé
-					<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en public)</a>
-				</p>
+			{% if is_granted('ROLE_TECHNICIEN') %}
+				{% if app.user.modePrive == false %}
+					<p class="info-box__mode info-box__mode--public">Attention, vous êtes en partage public
+						<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a>
+					</p>
+				{% else %}
+					<p class="info-box__mode info-box__mode--private">Vous êtes en partage privé
+						<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en public)</a>
+					</p>
+				{% endif %}
 			{% endif %}
 			<div {# id="ensembleInfoAffaire" #} class="info-box__content">
 				<div {# id="leftInfo" #} class="info-box__content__settings">
