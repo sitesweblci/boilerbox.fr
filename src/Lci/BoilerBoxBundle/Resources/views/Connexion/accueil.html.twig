@@ -767,6 +767,7 @@ window.location.search: "?query=1"
                     $.post("{{ path('lci_ajax_set_site_commentaire') }}", {action:'supprimer', idCommentaire:$id_commentaire})
                     .done(function($data) {
 						$('#fluxCommentaire').html('');
+						$('#js-ensemblePieceJointe').html('');
                         showPopUp($id_site, true);
                     });
                     break;
@@ -777,6 +778,7 @@ window.location.search: "?query=1"
                         .done(function($data) {
 							reinitialiseMonCommentaire();
 							$('#fluxCommentaire').html('');
+							$('#js-ensemblePieceJointe').html('');
 							showPopUp($id_site, true);
                         });
                     break;
