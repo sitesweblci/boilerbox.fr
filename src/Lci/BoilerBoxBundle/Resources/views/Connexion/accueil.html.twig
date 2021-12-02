@@ -719,8 +719,10 @@ window.location.search: "?query=1"
 			$img_live = null;
 			$img_locale = null;
             $('#js-pictoConnexion img:first').off('click');
-            $("#js-pictoConnexion img:eq(1)").off('click');
-            $('#js-pictoConnexion img:last').off('click');
+			{% if is_granted('ROLE_TECHNCIEN') %}
+            	$("#js-pictoConnexion img:eq(1)").off('click');
+            	$('#js-pictoConnexion img:last').off('click');
+			{% endif %}
 			$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);
 		}
 
@@ -850,6 +852,7 @@ window.location.search: "?query=1"
 							$('a.infoMajCloud').addClass('desactive');
 						}
             		}
+					{% if is_granted('ROLE_TECHNICIEN') %}
            			if ($img_live != null) {
                 		$("#js-pictoConnexion img:eq(1)").attr('src', $img_live);
 						// Connexion au Live effective depuis boilerbox
@@ -875,6 +878,7 @@ window.location.search: "?query=1"
 							$('a.infoMajLocal > .tooltip').removeClass('cacher');
 						}
 					}
+					{% endif %}
 					
 
                     $('#infoAffaire').data('id', $entitySite.id);
