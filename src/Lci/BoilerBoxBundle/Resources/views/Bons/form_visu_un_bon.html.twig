@@ -10,13 +10,162 @@
 
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+	html{
+		background: white;
+	}
+	</style>
+{% endblock liens_css %}
 
 {% block fos_user_content %}
-<div id='entete_de_page'><h1>Bons d'interventions</h1></div>
+<header {# id='entete_de_page' #} class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">Bons d'interventions</h1>
+</header>
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
 
+{# <main class="tab-wrapper">
+	<ul class="tab-wrapper__tabs">
+		<li class="tab-wrapper__tabs__tab active" data-tab-target="#infos">Infos</li>
+		<li class="tab-wrapper__tabs__tab" data-tab-target="#validation">Validation</li>
+		<li class="tab-wrapper__tabs__tab"data-tab-target="#commentaire">Commentaire</li>
+	</ul>
+	<div class="tab-wrapper__content">
+		<section id="infos" class="active" data-tab-content>
+			<div class='entete'>
+				<div>{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</div>
+				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+					<div onClick="updateBon({{ entity_bon.id }});">
+						<img alt='mise à jour' src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj.png') }}"
+						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj_hover.png') }}"
+						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/boutons/btn_bon_maj.png') }}">
+					</div>
+				{% endif %}
+			</div>
+			<h2>Demande {{ entity_bon.id }} (initialisée par {{ entity_bon.userInitiateur.label }})</h2>
+			<h1>Bon {{ entity_bon.numeroBA }}</h1>
+			<div class='afterH1'>
+				<span class='titre'>Signé le : </span>
+				{% if entity_bon.dateSignature is not null  %}
+					{{ entity_bon.dateSignature | date('d/m/Y')  }}
+				{% endif %}
+			</div>
+			<div>
+				<span class='titre'>Intervenant : </span>
+				{{ entity_bon.user.label }}
+			</div>
+			<div>
+				<span class='titre'>Site d'intervention : </span>
+				{{ entity_bon.site.intitule }}   ( {{ entity_bon.numeroAffaire | upper }} )
+			</div>
+			<div>
+				<span class='titre'>Période de l'intervention : </span>
+				{% if entity_bon.dateDebutIntervention is not null  %}
+					du {{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}
+				{% endif %}
+				{% if entity_bon.dateFinIntervention is not null  %} 
+					au {{ entity_bon.dateFinIntervention | date('d/m/Y')  }}
+				{% endif %}
+			</div>
+			{% if entity_bon.enqueteFaite %}
+				<div class='verte'>Enquête faite</div>
+			{% elseif entity_bon.enqueteNecessaire %}
+				<div class='bleue'>Enquête demandée</div>
+			{% else %}
+				<div class='rouge'>Pas d'enquête demandée</div>
+			{% endif %}
+			<div>
+				<span class='titre'>Nom du contact client : </span>
+				{{ entity_bon.nomDuContact }}
+			</div>
+			<div>
+				<span class='titre'>Email du contact : </span>
+				{{ entity_bon.emailContactClient }}
+			</div>
+			
+			<div class='liste_fichiers_du_bon'>
+				<h2>{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} 
+					{% if is_granted('ROLE_SAISIE_BA') %}
+						<div id='info_bulle_archive' class='fichier cacher'>Montrer / Cacher les fichiers archivés</div>
+						<div id='label_archive'>
+							Archives : 
+							<input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+						</div>
+					{% endif %}
+					<div id='info_bulle_fichier' class='fichier cacher'></div>
+					<div id='label_fichier' class='droite_div' style='top:15px;'>
+						<label class="switch">
+							<input type="checkbox" onClick="toggleFiles();">
+							<span class="slider"></span>
+						</label>
+					</div>
+				</h2>
+				<table class='table_boiler tab_fichiers'>
+					<thead>
+						<tr>
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								<th class='zone_texte_mini'>Archiver</th>
+							{% endif %}
+							<th class='zone_texte_geant'>Nom</th>
+							<th class='zone_texte_petit'>Visualiser</th>
+						</tr>
+					</thead>
+					<tbody id='table_des_fichiers'>
+						{% for fichier in entity_bon.fichiersPdf %}
+							<tr id="fichier_{{ fichier.id }}" {% if fichier.archive == true %}class="cacher archive"{% endif %}>
+								{% if is_granted('ROLE_SAISIE_BA') %}
+									<td class='zone_texte_mini'>
+										<img id="image_{{ fichier.id }}" 
+										{% if fichier.archive == false %}
+											src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}" 
+										{% else %}
+											src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}" 
+										{% endif %} 
+										onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"/>
+									</td>
+								{% endif %}
+								<td class='zone_texte_geant gauche selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+									<a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
+										{{ fichier.alt }}
+										{% if fichier.informations is not null %}
+											<br /><span class='informations_archivage'>{{ fichier.informations }}</span>
+										{% endif %}
+									</a>
+								</td>
+								<td class='zone_texte_petit selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+									<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+		<section id="validation">
+		</section>
+		<section id="commentaire" data-tab-content>
+			<div id='formulaire_bons_commentaires'>
+            	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires', 'class':'form'}) }}
+            	{{ form_errors(form_ajout_commentaires) }}
+            	    <div class="form__field">
+            	    	{{ form_label(form_ajout_commentaires.commentaires) }}
+            	    	{{ form_widget(form_ajout_commentaires.commentaires) }}
+            	    	{{ form_errors(form_ajout_commentaires.commentaires) }}
+            	    </div>
+					<div class='nouveau_probleme_ligne'></div>
+					<hr />
+					<div id='commentaires_bon'>{{ entity_bon.commentaires|raw|nl2br }}</div>
+					<div class='nouveau_probleme_ligne'></div>
+            	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+            	{{ form_end(form_ajout_commentaires) }}
+        	</div>
+		</section>
+	</div>
+</main> #}
+
 {# ***** ENCART DU BON ***** #}
-<div style='width:80%;'>
+<div class="" style='width:80%;'>
 	<div class='listing notToBePrinted'>
 		<div class='listing_raw'>
 	    	<div class='listing2'>
@@ -113,7 +262,7 @@
 				</div>
 			</div>
 
-			{# ***** ENCART DE VALIDATION ***** #}
+			
 			<div class = 'listing3'>
 				<div id='validation_des_bons_attachement'>
 	    		    <div><h1>Validation</h1></div>
@@ -363,6 +512,29 @@
 {% block javascript %}
 
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .bons-interv').addClass('active');
+    });
+    // Fonction affichage selon l'onglet sélectionné
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+
+
 	var $idBon = {{ entity_bon.id }};
     var $indexFichier;
     var $container;

@@ -6,82 +6,116 @@
 {% block fos_user_content %}
 {{ parent() }}
 
-<div class='listing'>
-	<div class='listing2'>
-        <h1>Parc des équipements</h1>
-		<div class='formulaire_liste'>
-			<table class='tab_liste tableau_listing'>
-				<thead class='tab_liste_modules'>
-					<tr><th class='zone_texte_mini'>Modif</th>
-						<th class='zone_texte_grand selectionnable'  onClick="attente();trie('type');">Type</th>
-                        <th class='zone_texte_mini selectionnable'  onClick="attente();trie('actif');">Actif</th>
-						<th class='zone_texte_petit'>Problèmes</th>
-					</tr>
-				</thead>
-				<tbody class='tab_liste_modules'>
-					{# Calcul du nombre de problèmes et du nombre de problèmes bloquants d'un module #}
-					{% for entityEquipement in entities_equipements %} 
-						{% set nb_problemes = 0 %}
-						{% set nb_problemes_bloquant = 0 %}
-						{% for problem in entityEquipement.problemeTechnique %}
-							{% if problem.cloture == false %}
-								{% set nb_problemes = nb_problemes + 1 %}
-								{% if problem.bloquant == true %}
-									{% set nb_problemes_bloquant = nb_problemes_bloquant + 1 %}
-								{% endif %}
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+	.main-box--table__legend .green::before{background: #4CBB17;}
+	.main-box--table__legend .orange::before{background: #FF8C00;}
+	.main-box--table__legend .red::before{background: #FF2400;}
+	.main-box--table__legend .blue::before{background: #0096FF;}
+	.flex-table tr th{
+		padding: 0 10px;
+		font-size: 8pt;
+	}
+	.flex-table tr{
+		cursor: initial;
+	}
+	.flex-table tr td{
+		padding: 4px 10px;
+		font-size: 10pt;
+	}
+	.flex-table .small{
+		width: calc(20% - 20px);
+	}
+	.flex-table .medium{
+		width: calc(40% - 20px);
+	}
+	.flex-table .wide{
+		width: calc(100% - 20px);
+	}
+	</style>
+{% endblock %}
+
+<main class='main-box main-box--table'>
+    <h1 class="main-box__title main-box--table__title">Parc des équipements</h1>
+	<div class='main-box__content'>
+		<table class='flex-table'>
+			<thead class='flex-table__thead'>
+				<tr class="flex-table__row">
+					<th class='small'>Modif.</th>
+					<th class='wide selectionnable' onClick="attente();trie('type');">Type</th>
+                    <th class='medium selectionnable'  onClick="attente();trie('actif');">Actif</th>
+					<th class='medium'>Problèmes</th>
+				</tr>
+			</thead>
+			<tbody class='flex-table__tbody'>
+				{# Calcul du nombre de problèmes et du nombre de problèmes bloquants d'un module #}
+				{% for entityEquipement in entities_equipements %} 
+					{% set nb_problemes = 0 %}
+					{% set nb_problemes_bloquant = 0 %}
+					{% for problem in entityEquipement.problemeTechnique %}
+						{% if problem.cloture == false %}
+							{% set nb_problemes = nb_problemes + 1 %}
+							{% if problem.bloquant == true %}
+								{% set nb_problemes_bloquant = nb_problemes_bloquant + 1 %}
 							{% endif %}
-						{% endfor %}
-						<tr {% if entityEquipement.actif != true %}style='color:#5858FA;'
-								{% elseif nb_problemes_bloquant > 0 %}style='color:red;'
-								{% elseif nb_problemes > 0 %}style='color:orange;'
-								{% else %}style='color:green;'
-							{% endif %}>
-							<td class='zone_texte_mini centrer selectionnable'>
-								{% if is_granted('ROLE_RESPONSABLE_PARC') %}
-									<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_modifier_module.png') }}" onClick="modifierEquipement({{ entityEquipement.id }});" />
-								{% endif %}
-							</td>
-							<td class='zone_texte_grand'>{{ entityEquipement.type }}</td>
-                            <td class='zone_texte_mini'>{% if entityEquipement.actif == true %}X{% endif %}</td>
-							<td class='zone_texte_petit selectionnable'><a class="a_nombre_problemes" onClick="afficheProblemes('{{ entityEquipement.id }}');return false;">{{ nb_problemes }}{% if nb_problemes > 0 and nb_problemes_bloquant > 0 %} ({{ nb_problemes_bloquant }} bloquant{% if nb_problemes_bloquant > 1 %}s{% endif %}){% endif %}</a></td>
-						</tr>
+						{% endif %}
 					{% endfor %}
-				</tbody>
-			</table>
-			<p style='padding-left:10px; font-size:0.9em;'>	
-				<span style='font-style:italic;'>Légende :</span><br />
-				<span style='color:green;''>Equipement actif et fonctionnel</span><br />
-				<span style='color:orange;'>Problèmes (non bloquants) sur l'équipement</span><br />
-				<span style='color:red;'>Problèmes bloquants sur l'équipement</span><br />
-				<span style='color:#5858FA;'>Equipement non actif</span><br />
-			</p>
-			<form name='form_tri' method='post' action={{ path('lci_tri_parc_equipements') }} />
-				<input type='hidden' name='champs_tri' id='champs_tri' />
-			</form>
-			<form name='form_change' method='post' action={{ path('lci_change_parc_equipements') }} />
-				<input type='hidden' name='id_equipement' id='id_equipement' />
-			</form>		
-			<form name='form_equipementPbs' method='post' action={{ path('lci_affiche_equipement_problemes') }} />
-				<input type='hidden' name='equipement_id' id='equipement_id' />
-			</form>
+					<tr class="flex-table__row"
+						{% if entityEquipement.actif != true %}
+							style='color:#0096FF; {# blue #}'
+						{% elseif nb_problemes_bloquant > 0 %}
+							style='color:#FF2400; {# red #}'
+						{% elseif nb_problemes > 0 %}
+							style='color:#FF8C00; {# orange #}'
+						{% else %}
+							style='color:#4CBB17; {# green #}'
+						{% endif %}
+					>
+						<td class='small centrer selectionnable'>
+							{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+								<img src="{{ asset('bundles/lciboilerbox/images/actions/modifier.svg') }}" onClick="modifierEquipement({{ entityEquipement.id }});" style="width:20px; height:20px;"/>
+							{% endif %}
+						</td>
+						<td class='wide'>{{ entityEquipement.type }}</td>
+                        <td class='medium'>{% if entityEquipement.actif == true %}X{% endif %}</td>
+						<td class='medium selectionnable'>
+							<a class="a_nombre_problemes" onClick="afficheProblemes('{{ entityEquipement.id }}');return false;">{{ nb_problemes }}{% if nb_problemes > 0 and nb_problemes_bloquant > 0 %} ({{ nb_problemes_bloquant }} bloquant{% if nb_problemes_bloquant > 1 %}s{% endif %}){% endif %}</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="main-box--table__legend">
+			<div class="green">Equipement actif et fonctionnel</div>
+			<div class="orange">Problèmes (non bloquants) sur l'équipement</div>
+			<div class="red">Problèmes bloquants sur l'équipement</div>
+			<div class="blue">Equipement non actif</div>
 		</div>
+		<form name='form_tri' method='post' action={{ path('lci_tri_parc_equipements') }} />
+			<input type='hidden' name='champs_tri' id='champs_tri' />
+		</form>
+		<form name='form_change' method='post' action={{ path('lci_change_parc_equipements') }} />
+			<input type='hidden' name='id_equipement' id='id_equipement' />
+		</form>		
+		<form name='form_equipementPbs' method='post' action={{ path('lci_affiche_equipement_problemes') }} />
+			<input type='hidden' name='equipement_id' id='equipement_id' />
+		</form>
 	</div>
-	<div class='validation_formulaire_end'>
+	<div class='main-box__btn main-box--table__btn'>
+		<button class="btn_menu btn btn--second" onClick="attente(); redirection('retourMenu'); return false;">Retour</button>
 		{% if is_granted('ROLE_RESPONSABLE_PARC') %}
-			<div><img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_equipement.png') }}" class="btn_menu" alt="Ajouter un équipement"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_equipement_hover.png') }}" 
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_ajouter_equipement.png') }}" 
-				onClick="attente(); redirection('ajouterEquipementFromParc'); return(false);"></div>
+			<button class="btn_menu btn btn--main" alt="Ajouter un équipement" onClick="attente(); redirection('ajouterEquipementFromParc'); return(false);">Ajouter équipement</button>
 		{% endif %}
-		<div><img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" class="btn_menu" alt="Retour au menu"
-			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"  
-			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 
-			onClick="attente(); redirection('retourMenu'); return false;"></div>
 	</div>
-</div>
+</main>
 
 
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    });
 	function afficheProblemes($equipementId) {
 		$('#equipement_id').val($equipementId);
 		document.forms['form_equipementPbs'].submit();

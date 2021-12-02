@@ -5,9 +5,9 @@
 {% extends "LciBoilerBoxBundle::secondBonsLayoutLogged.html.twig" %}
 
 
-{% block meta_viewport %}
+{# {% block meta_viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=0.5, shrink-to-fit=no">
-{% endblock meta_viewport %}
+{% endblock meta_viewport %} #}
 
 {% block title %}{{ parent() }} : Sites{% endblock title %}
 
@@ -16,114 +16,151 @@
     {{ parent() }}
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
+    <style>
+    html{
+    	background: #f2f2f2;
+    }
+    .grid{
+    	grid-template-columns: repeat(2, 1fr);
+    	grid-template-rows: 150px 1fr;
+    }
+    .grid__one{
+    	grid-row: 1;
+    	grid-column: 1;
+    }
+    .grid__two{
+    	grid-row: 1 / fr;
+    	grid-column:  2;
+    }
+    .grid__three{
+    	grid-row: 2 / fr;
+    	grid-column: 1;
+    }
+    .main-box{
+		width: initial;
+		min-width: initial;
+		max-width: initial;
+		margin: 0;
+	}
+	#mapIFrame{
+		width: 100%;
+	}
+    </style>
 {% endblock boilerBoxCSS %}
 
 
 {% block mainBody %}
-
-<div id='bloc_1'>
-    <div id='entete_de_page'><h1>Sites d'interventions</h1></div>
-
-    <div id='bloc_2'>
-		<div class='inter_bloc_2_1'>
-			<h1>Sélection du site</h1>
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">Bons d'intervention</h1>
+</header>
+<main {# id='bloc_1'  #}class="grid">
+	<section class='{# inter_bloc_2_1 #} grid__one main-box'>
+		<div class="form__field">
+			<label>Site</label>
 	        <select name='liste_sitesBA' id='liste_sitesBA' onChange='afficher_site()'>
 				<option selected disabled>Choose one</option>
 	            {% for site in ents_sitesBA %}
 	                <option id="{{ site.id }}">{{ site.intitule }}</option>
 	            {% endfor %}
 	        </select>
-
-            <div id='map'></div>
-            <div>
-                {% if ent_siteBA_actif.lienGoogle is not null %}
-                    <div id='map' style='height:450px; width:535px' class='cacher'></div>
-                    <iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" width="535" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-                {% else %}
-                    <p>Aucune carte enregistrée</p>
-                {% endif %}
-            </div>
-
 	    </div>
+    </section>
 
-		<div class='inter_bloc_2_1'>
-			<h1 id='titre_nouveau_siteBA'>{{ ent_siteBA_actif.intitule }}</h1>
+	<section class='{# inter_bloc_2_1 #} grid__two main-box'>
+		<h1 id='titre_nouveau_siteBA' class="main-box__title">{{ ent_siteBA_actif.intitule }}</h1>
+		<div id='informations_site'>
+			<div class="form__field">
+			<label>Adresse</label>
+			{{ ent_siteBA_actif.adresse }}
+		</div>
+		<div class="form__field">
+			<label>Contacts</label>
+			{% for contact in ent_siteBA_actif.contacts %}
+				<div class="flex flex--col" style="margin-bottom:8px;">
+					<span>{{ contact.nom }} {{ contact.prenom }}</span>
+					{% if contact.telephone is not empty %}
+						{% if contact.mail is not empty %}
+							<span>{{ contact.telephone }}</span>
+							<span>{{ contact.mail }}</span>
+						{% else %}
+							<span>{{ contact.telephone }}</span>
+						{% endif %}
+					{% else %}
+						{% if contact.mail is not empty %}
+							<span>{{ contact.mail }}</span>
+						{% endif %}
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+		
+		<div class="form__field">
+			<label>Informations complémentaires </label>
+			{{ ent_siteBA_actif.informationsClient | nl2br }}
+		</div>
+		<div>
+		    {% if ent_siteBA_actif.lienGoogle is not null %}
+		    	<div id='map' {# style='height:450px; width:535px'  #}class='cacher'></div>
+		    	<iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" frameborder="0" style="border:0" allowfullscreen></iframe>
+		    {% else %}
+		        <p>Aucune carte enregistrée</p>
+		    {% endif %}
+		</div>
+    </section>
 
-			<div id='informations_site'>
-				<div><h2><u>Adresse :</u></h2></div>
-				<div><div>{{ ent_siteBA_actif.adresse }}</div></div>
-
-				<div><h2><u>Contact{% if ent_siteBA_actif.contacts | length > 1 %}s{% endif %} :</u></h2></div>
-				{% for contact in ent_siteBA_actif.contacts %}
-					<div class='nouveau_contact'>
-						<div><b>{{ contact.nom }} {{ contact.prenom }}</b>
-							{% if contact.telephone is not empty %}
-								{% if contact.mail is not empty %}
-									- {{ contact.telephone }} - {{ contact.mail }}
-								{% else %}
-									- {{ contact.telephone }}
-								{% endif %}
-							{% else %}
-								{% if contact.mail is not empty %}
-									- {{ contact.mail }}
-								{% endif %}
-							{% endif %}
-						</div>
-					</div>
-				{% endfor %}
-
-				<div><h2><u>Informations complémentaires :</u></h2></div>
-				<div><div>{{ ent_siteBA_actif.informationsClient | nl2br }}</div></div>
-			</div>
-	    </div>
-
-		<div class='inter_bloc_2_2'>
-    		<h1>Liste des fichiers </h1>
-			<span id='spanShowArchive' style='font-size:16px'><b><u>Afficher les fichiers archivés : <input type='checkbox' id='chkShowArchive'  name='chkShowArchive' onClick="showArchive(this.name)" /></u></b></span>
-    		<div id='encart_fichiers_joint'>
-    		    {% if ent_siteBA_actif.fichiersJoint is not null %}
-    		        {% for fichier in ent_siteBA_actif.fichiersJoint %}
-    		            <div id="div_fichier_{{ fichier.id }}" class="div_fichier_{{ fichier.archive }}" {% if fichier.archive == true %} style="display:none" {% endif %}>
-							<input type='checkbox' name='archive' id='archive{{fichier.id}}'  {% if fichier.archive == true %}checked{% endif %} />
-    		                <a
-    		                id="{{ fichier.siteBA.id }}_{{ fichier.id }}"
-    		                href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}#"
-    		                download="{{ fichier.alt }}"
-    		                >
-    		                	{{ fichier.alt }}
-    		                </a>
-    		                <br />
-    		                {% if fichier.extension in ['jpeg', 'png', 'jpg']  %}
-    		                    <a href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" data-lightbox="image">
-    		                        <img src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" height='150px'>
-    		                    </a>
-    		                {% elseif fichier.extension in ['txt', 'pdf'] %}
-    		                     <iframe src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" ></iframe>
-    		                {% else %}
-    		                    <div width="250px" height="150px" ></div>
-    		                {% endif %}
-    		            </div>
-    		        {% endfor %}
-    		    {% endif %}
-    		</div>
-			{#
-			<div id='map' style='border:2px solid red'></div>
-            <div>
-				{% if ent_siteBA_actif.lienGoogle is not null %}
-					<div id='map' style='height:450px; width:535px' class='cacher'></div>
-					<iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" width="535" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-				{% else %}
-					<p>Aucune carte enregistrée</p>
-				{% endif %}
-			</div>
-			#}
-        </div>
-	</div>
+	<section class='{# inter_bloc_2_2 #} grid__three main-box'>
+		<h1>Liste des fichiers </h1>
+		<span id='spanShowArchive' style='font-size:16px'>
+			<b><u>Afficher les fichiers archivés : 
+				<input type='checkbox' id='chkShowArchive'  name='chkShowArchive' onClick="showArchive(this.name)" />
+			</u></b>
+		</span>
+		<div id='encart_fichiers_joint'>
+		    {% if ent_siteBA_actif.fichiersJoint is not null %}
+		        {% for fichier in ent_siteBA_actif.fichiersJoint %}
+		            <div id="div_fichier_{{ fichier.id }}" class="div_fichier_{{ fichier.archive }}" {% if fichier.archive == true %} style="display:none" {% endif %}>
+						<input type='checkbox' name='archive' id='archive{{fichier.id}}'  {% if fichier.archive == true %}checked{% endif %} />
+		                <a
+		                id="{{ fichier.siteBA.id }}_{{ fichier.id }}"
+		                href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}#"
+		                download="{{ fichier.alt }}"
+		                >
+		                	{{ fichier.alt }}
+		                </a>
+		                <br />
+		                {% if fichier.extension in ['jpeg', 'png', 'jpg']  %}
+		                    <a href="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" data-lightbox="image">
+		                        <img src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" height='150px'>
+		                    </a>
+		                {% elseif fichier.extension in ['txt', 'pdf'] %}
+		                     <iframe src="{{ asset('uploads/bonsAttachement/fichiersDesSitesBA/' ~ fichier.siteBA.id ~ '_' ~  fichier.url) }}" ></iframe>
+		                {% else %}
+		                    <div width="250px" height="150px" ></div>
+		                {% endif %}
+		            </div>
+		        {% endfor %}
+		    {% endif %}
+		</div>
+	</section>
+	{#<div id='map' style='border:2px solid red'></div>
+    <div>
+		{% if ent_siteBA_actif.lienGoogle is not null %}
+			<div id='map' style='height:450px; width:535px' class='cacher'></div>
+			<iFrame id='mapIFrame' src="{{ ent_siteBA_actif.lienGoogle  }}" width="535" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+		{% else %}
+			<p>Aucune carte enregistrée</p>
+		{% endif %}
+	</div>#}
+</main>
 {% endblock mainBody %}
 
 
 {% block javascript %}
 	<script type='text/javascript'>
+		// Fonction style barre de navigation page active
+	    $(window).on('load', function pageActive(){
+	    	$('.side-nav .bons-interv').addClass('active');
+	    });
 		$(document).ready(function() {
 			$("#liste_sitesBA option[id='" + {{ ent_siteBA_actif.id }} + "']").prop('selected', true);
 			{% for fichier in ent_siteBA_actif.fichiersJoint %}

@@ -1,31 +1,45 @@
 {# /src/Lci/BoilerBoxBundle/Resources/views/Utils/affiche_logs.html.twig #}
 {% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
 
+{% block liens_css %}
+    {{ parent() }}
+    <style>
+    .flex-table__tbody tr{
+        cursor: initial;
+    }
+    </style>
+{% endblock liens_css %}
+
+
 {% block fos_user_content %}
-<h1>Logs des connexions boiler-box</h1>
+<header class="sub-header sub-header--blue">
+    <h1 class="sub-header__title">Utilitaires</h1>
+</header>
 
 {% if message is defined %}
     <h2>{{ message }}</h2>
 {% endif %}
 
 {% if tab_fichier is defined %}
-<div class='listing notToBePrinted'>
-    <div class='listing2'>
-        <div class='formulaire_liste'>
-            <table class='tab_liste tableau_listing'>
-               <thead id='contenu_head_tableau_bons'>
-                    <tr><th class='zone_texte_moyen'>Horaire</th>
-                        <th class='zone_texte_moyen'>Information</th>
-                        <th class='zone_texte_geant'>Utilisateur</th>
+    <main class="main-box main-box--table">
+        <h1 class="main-box__title main-box--table__title">Logs de connexion</h1>
+        <div class="main-box__content">
+            <table class="flex-table">
+                <thead class="flex-table__thead">
+                    <tr class="flex-table__row">
+                        <th>Horaire</th>
+                        <th>Information</th>
+                        <th>Utilisateur</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="flex-table__tbody">
                     {% for ligne in tab_fichier %}
-                    <tr
-                        {% if ligne['connexion'] == 'Tentative de connexion' %}style='color:red; background-color:black; height:30px;'{% endif %}
-                        {% if ligne['connexion'] == 'Connexion' %}style='color:green; background-color:#252b33 !important; height:30px;'{% endif %}
-                        {% if ligne['connexion'] == 'Déconnexion' %}style='color:orange; background-color:black; height:30px;'{% endif %}
-                    >
+                    <tr class="flex-table__row"
+                        {% if ligne['connexion'] == 'Tentative de connexion' %}style='color:#FF2400;'{% endif %}
+                        {% if ligne['connexion'] == 'Connexion' %}style='color:#4CBB17;'{% endif %}
+                        {% if ligne['connexion'] == 'Déconnexion' %}style='color:#FF8C00;'
+                        {% endif %}
+                    > 
                         <td class='zone_texte_moyen'>Le {{ ligne['date'] }}</td>
                         <td class='zone_texte_moyen'>{{ ligne['connexion'] }}</td>
                         <td class='zone_texte_geant'>{{ ligne['utilisateur'] }}</td>
@@ -33,10 +47,19 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="main-box__btn main-box--table__btn">
+                <a href="{{ path('lci_utils_homepage') }}" class="btn btn--second">Retour</a>
+            </div>
         </div>
-    </div>
-</div>
+    </main>
 {% endif %}
-
 {% endblock fos_user_content %}
 
+{% block javascript %}
+<script type='text/javascript'>
+    // Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+        $('.side-nav .parametres').addClass('active');
+    });
+</script>
+{% endblock javascript %}

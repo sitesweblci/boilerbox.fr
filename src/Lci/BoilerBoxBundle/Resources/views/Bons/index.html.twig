@@ -1,63 +1,47 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/index.html.twig #}
 
-{# {% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %} #}
-{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{# {% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %} #}
 
 {% block title %} {{ parent() }}Bons d'interventions{% endblock title %}
 
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 
 {% block fos_user_content %}
-<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1></div>
-<div class='{# menu_bons #} main-content'>
-    {# <div class='menu_ligne1'>
-		{% if is_granted('ROLE_SAISIE_BA') %}
-		<img 	onClick="attente(); redirection('bonsSaisie'); return false;"
-				class="btn_menu" 
-				alt="Saisie BA"
-				src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}" 
-            	onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie_hover.png') }}"
-            	onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_saisie.png') }}"
-		/>
-		{% endif %}
-		<img 	onClick="attente(); redirection('bonsVisualiser'); return false;"
-				class="btn_menu"
-				alt="Visualisation BA"
-				src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu.png') }}" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu_hover.png') }}"
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visu.png') }}"
-		/>
-
-		<img    onClick="attente(); redirection('sitesBAVisualiser'); return false;"
-                class="btn_menu"
-                alt="Visualisation Sites BA"
-                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA.png') }}"
-                onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA_hover.png') }}"
-                onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/btnMenu_visuSitesBA.png') }}"
-        />
-    </div> #}
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1>
+</header>
+<div class='main-content'>
     {% if is_granted('ROLE_SAISIE_BA') %}
 	    <div class="card" onClick="attente(); redirection('bonsSaisie'); return false;">
 	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des bons d'interventions" >
 	    	<div class="card__container">
 	    		<h4 class="card__container__title">Saisie</h4>
-	    		<p class="card__container__desc">Bla bla bla bla</p>
+	    		<p class="card__container__desc">Créer un nouveau bon de saisie en renseignant les infos de site et d'intervention</p>
 	    	</div>
 	    </div>
     {% endif %}
     <div class="card" onClick="attente(); redirection('bonsVisualiser'); return false;">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu.svg') }}" alt="Visualisation des bons d'interventions" >
     	<div class="card__container">
-    		<h4 class="card__container__title">Visualisation</h4>
-    		<p class="card__container__desc">Bla bla bla bla</p>
+    		<h4 class="card__container__title">Visualiser</h4>
+    		<p class="card__container__desc">Liste des bons d'interventions<p>
     	</div>
     </div>
     <div class="card" onClick="attente(); redirection('sitesBAVisualiser'); return false;">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu-site.svg') }}" alt="Visualisation des sites" >
     	<div class="card__container">
-    		<h4 class="card__container__title">Visualisation sites</h4>
-    		<p class="card__container__desc">Bla bla bla bla</p>
+    		<h4 class="card__container__title">Visualiser sites</h4>
+    		<p class="card__container__desc">Synthése d'un site avec adresse, contact, fichiers etc...</p>
     	</div>
     </div>
 </div>
+
+<script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .bons-interv').addClass('active');
+    });
+</script>
+
 {% endblock fos_user_content %}

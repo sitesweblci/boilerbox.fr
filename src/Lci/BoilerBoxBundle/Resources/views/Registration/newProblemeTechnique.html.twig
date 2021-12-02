@@ -5,200 +5,151 @@
 
 {% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
 
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+		.main-box{
+			position: relative;
+		}
+		.form__field select, .form__field select option{
+			font-size: 10pt;
+		}
+	</style>
+{% endblock %}
+
 {% block fos_user_content %}
-
 {{ parent() }}
-
-<div class='listing'>
-	<div class='ajout_objet'>
-		{{ form_start(form, {'action':path('lci_register_problemeTechnique'), 'method':'POST', 'name':'myForm'}) }}	
-		<div class='petit_menu_principal'>
-			{% if type_probleme == 'update' %}
-				<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_mail.png') }}"  
-							onClick='attente(); sendAjaxMail(); fin_attente();' 
-							class="btn_petit_picto selectionnable" 
-							title='Envoyer un mail de rappel' 
-							alt="Mail de rappel"i
-						/>
-				</div>
-				<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" 
-							onClick='attente(); showPrintedVersion("{{ form.id.vars.value }}"); fin_attente();' 
-							class="btn_petit_picto selectionnable" 
-							title='Afficher la version imprimable' 
-							alt="Version imprimable"
-						/>
-				</div>
-			{% endif %}
-		</div>
-		<div class='menu_raccourci'>
-			<div>
-				<div><img 	id='picto_ajouter_module' 	  
-							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_module.png') }}" 
-							onClick="attente(); redirection('ajouterModuleFromTicket');" 
-							class="btn_picto" 
-							alt="Ajouter un module"
-						/>
-				</div>
-				<div><img 	id='picto_ajouter_module_hover' 
-							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_module_hover.png') }}" 
-							class="btn_menu cacher" 
-							alt="Ajouter un module"
-						/>
-				</div>
+<div class='main-box'>
+	{{ form_start(form, {'action':path('lci_register_problemeTechnique'), 'method':'POST', 'name':'myForm', 'class':'form'}) }}	
+	<div class='petit_menu_principal'>
+		{% if type_probleme == 'update' %}
+			<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_mail.png') }}"  
+						onClick='attente(); sendAjaxMail(); fin_attente();' 
+						class="btn_petit_picto selectionnable" 
+						title='Envoyer un mail de rappel' 
+						alt="Mail de rappel"i
+					/>
 			</div>
-			<div>
-				<div><img 	id='picto_ajouter_equipement' 	  
-							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_equipement.png') }}" 
-							onClick="attente(); redirection('ajouterEquipementFromTicket');" 
-							class="btn_picto" 
-							alt="Ajouter un equipement"
-						/>
-				</div>
-				<div><img 	id='picto_ajouter_equipement_hover' 
-							src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPictoPb_ajout_equipement_hover.png') }}" 
-							class="btn_menu cacher" 
-							alt="Ajouter un equipement"
-						/>
-				</div>
+			<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" 
+						onClick='attente(); showPrintedVersion("{{ form.id.vars.value }}"); fin_attente();' 
+						class="btn_petit_picto selectionnable" 
+						title='Afficher la version imprimable' 
+						alt="Version imprimable"
+					/>
 			</div>
-		</div>
-	
-		<h1>{{ titre }}</h1>
-		
-		<div class='formulaire'>
-			<div class='nouveau_probleme_ligne'>
-				<div>{{ form_widget(form.bloquant) }} {{ form_label(form.bloquant) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>
-					{{ form_errors(form.dateSignalement) }}
-					{{ form_label(form.dateSignalement) }}
-				</div>
-				<div>{{ form_widget(form.dateSignalement) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>
-					{{ form_errors(form.module) }}
-					{{ form_label(form.module) }}
-				</div>
-				<div>{{ form_widget(form.module) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div class='module_selectionne'>&nbsp;</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>{{ form_label(form.equipement) }}</div>
-				<div>{{ form_widget(form.equipement) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div class='texte_box'>
-					{{ form_errors(form.description) }}
-					{{ form_widget(form.description) }}
-				</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>{{ form_label(form.user) }}</div>
-				<div>{{ form_widget(form.user) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div class='texte_box'>
-					{{ form_errors(form.solution) }}
-					{{ form_widget(form.solution) }}
-				</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>{{ form_widget(form.corrige) }} {{ form_label(form.corrige) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div class='register_date_correctif invisible'>
-					{{ form_errors(form.dateCorrection) }}
-					{{ form_label(form.dateCorrection) }}
-				</div>
-				<div class='register_date_correctif invisible'>{{ form_widget(form.dateCorrection) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div>{{ form_widget(form.cloture) }} {{ form_label(form.cloture) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-				<div class='register_date_cloture invisible'>
-					{{ form_errors(form.dateCloture) }}
-					{{ form_label(form.dateCloture) }}
-				</div>
-				<div class='register_date_cloture invisible'>{{ form_widget(form.dateCloture) }}</div>
-			</div>
-			<div class='nouveau_probleme_ligne'>
-			</div>
-		</div>
-
-		<div class='validation_formulaire_ticket notToBePrinted'> 
-			<div class='div_fichier_joint'>
-				{% if type_probleme == 'update' %}
-					{% if entity_probleme.fichiersJoint is not empty %}
-						<div class='nouveau_probleme_ligne'><div style='font-size:14px;'>Fichiers joints</div></div>
-						{% for fichier in entity_probleme.fichiersJoint %}
-							{% if fichier.alt|slice(0,8) == 'removed_' %}
-								<div class='lien_fichier_download_removed'>{{ fichier.alt }}</div>
-							{% else %}
-								<div class='nouveau_probleme_ligne'><a onclick="window.open(this.href); return false;" href="{{ asset('uploads/problemes/' ~ fichier.url) }}">{{ fichier.alt }}</a></div>
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-				{% endif %}
-				{{ form_widget(form.fichiersJoint) }}
-			</div>
-		
-			<div class='div_boutons_validation'>
-				{% if is_granted('ROLE_RESPONSABLE_PARC') %}
-					<div><img 	onClick="attente(); document.forms['myForm'].submit();return false;" 
-								class="btn_menu" 
-								alt="Créer un ticket"
-								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 
-								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-							/>
-					</div>
-				{% endif %}
-
-				{% if provenance == 'liste' %}
-					<div><img 	onClick="attente(); redirection('retourListeProblemes')";
-								class="btn_menu"
-								alt="Retour à la liste"
-								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}"
-							/>
-					</div>
-				{% elseif provenance == 'accueil' %}
-					<div><img 	onClick="attente(); redirection('retourMenu')";
-								class="btn_menu"
-								alt="Retour au menu"
-								src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-								onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-								onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 			
-							/>
-					</div>
-				{% endif %}
-			</div>	
-		</div>
-	
-		{{ form_rest(form) }}
-	
-		{{ form_end(form) }}
-
-		<form name='myFormDownload' method='post' action={{ path('lci_download_probleme_file') }}>
-			<input type='hidden' name='fileName' id='fileName' />
-			<input type='hidden' name='fileUrl' id='fileUrl' />
-			<input type='hidden' name='fileId' id='fileId' />
-		</form>
-
-		<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
-			<input type='hidden' id='id_probleme' name='id_probleme' />
-			<input type='hidden' id='printed_version' name='printed_version' />
-		</form>
+		{% endif %}
 	</div>
+	<h1 class="main-box__title">{{ titre }}</h1>
+	
+	<div class='main-box__content'>
+		<div class='form__field'>
+			{{ form_widget(form.bloquant) }} {{ form_label(form.bloquant) }}
+		</div>
+		<div class='form__field'>
+			{{ form_label(form.dateSignalement) }}
+			{{ form_widget(form.dateSignalement) }}
+			{{ form_errors(form.dateSignalement) }}
+		</div>
+		<div class='form__field'>
+			{{ form_label(form.module) }}
+			{{ form_widget(form.module) }}
+			{{ form_errors(form.module) }}
+			<div class='module_selectionne'>&nbsp;</div>
+		</div>
+		<div class='form__field'>
+			{{ form_label(form.equipement) }}
+			{{ form_widget(form.equipement) }}
+		</div>
+		<div class='form__field'>
+			{{ form_widget(form.description) }}
+			{{ form_errors(form.description) }}
+		</div>
+		<div class='form__field'>
+			{{ form_label(form.user) }}
+			{{ form_widget(form.user) }}
+		</div>
+		<div class='form__field'>
+			{{ form_widget(form.solution) }}
+			{{ form_errors(form.solution) }}
+		</div>
+		<div class='form__field'>
+			{{ form_widget(form.corrige) }}
+			{{ form_label(form.corrige) }}
+		</div>
+		<div class='form__field'>
+			<div class='register_date_correctif cacher'>
+				{{ form_label(form.dateCorrection) }}
+				{{ form_errors(form.dateCorrection) }}
+			</div>
+			<div class='register_date_correctif cacher'>
+				{{ form_widget(form.dateCorrection) }}
+			</div>
+		</div>
+		<div class='form__field'>
+			{{ form_widget(form.cloture) }}
+			{{ form_label(form.cloture) }}
+		</div>
+		<div class='form__field'>
+			<div class='register_date_cloture cacher'>
+				{{ form_label(form.dateCloture) }}
+				{{ form_errors(form.dateCloture) }}
+			</div>
+			<div class='register_date_cloture cacher'>
+				{{ form_widget(form.dateCloture) }}
+			</div>
+		</div>
+		<div class='div_fichier_joint'>
+			{% if type_probleme == 'update' %}
+				{% if entity_probleme.fichiersJoint is not empty %}
+					<div class='nouveau_probleme_ligne'><div style='font-size:14px;'>Fichiers joints</div></div>
+					{% for fichier in entity_probleme.fichiersJoint %}
+						{% if fichier.alt|slice(0,8) == 'removed_' %}
+							<div class='lien_fichier_download_removed'>{{ fichier.alt }}</div>
+						{% else %}
+							<div class='nouveau_probleme_ligne'><a onclick="window.open(this.href); return false;" href="{{ asset('uploads/problemes/' ~ fichier.url) }}">{{ fichier.alt }}</a></div>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			{% endif %}
+			{{ form_widget(form.fichiersJoint) }}
+		</div>
+	</div>
+
+	<div class='form__btn notToBePrinted'> 
+		<div class='div_boutons_validation main-box__btn'>
+			{% if provenance == 'liste' %}
+				<button onClick="attente(); redirection('retourListeProblemes')"; class="btn_menu btn btn--second">Retour</button>
+			{% elseif provenance == 'accueil' %}
+				<button onClick="attente(); redirection('retourMenu')"; class="btn_menu btn btn--second">Retour</button>
+			{% endif %}
+			{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+				<button onClick="attente(); document.forms['myForm'].submit();return false;" class="btn_menu btn btn--main" >Enregistrer</button>
+			{% endif %}
+		</div>	
+	</div>
+
+	{{ form_rest(form) }}
+
+	{{ form_end(form) }}
+
+	<form name='myFormDownload' method='post' action={{ path('lci_download_probleme_file') }}>
+		<input type='hidden' name='fileName' id='fileName' />
+		<input type='hidden' name='fileUrl' id='fileUrl' />
+		<input type='hidden' name='fileId' id='fileId' />
+	</form>
+
+	<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
+		<input type='hidden' id='id_probleme' name='id_probleme' />
+		<input type='hidden' id='printed_version' name='printed_version' />
+	</form>
 </div>
 
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+	$(window).on('load', function pageActive(){
+		$('.side-nav .parc-tech').addClass('active');
+	})
+	
 	function showPrintedVersion(numeroProbleme){
 		$('#id_probleme').val(numeroProbleme);
         document.forms['form_change'].submit();
@@ -219,19 +170,19 @@
 
 		/* Vérification de l'état initial des checkbox */
 		if ($('#probleme_technique_corrige').is(':checked')){
-            $('.register_date_correctif').removeClass('invisible');
+            $('.register_date_correctif').removeClass('cacher');
         }
 		if ($('#probleme_technique_cloture').is(':checked')){
-            $('.register_date_cloture').removeClass('invisible');
+            $('.register_date_cloture').removeClass('cacher');
         }
 		
 		/* Affichage ou Cache des zone date en fonction de l'état des checkbox */
 		$('#probleme_technique_corrige').change(function(){
 			if ($('#probleme_technique_corrige').is(':checked')){
 				$('#probleme_technique_dateCorrection').val($.format.date(new Date(), 'dd-MM-yyyy'));
-				$('.register_date_correctif').removeClass('invisible');
+				$('.register_date_correctif').removeClass('cacher');
 			} else {
-				$('.register_date_correctif').addClass('invisible');
+				$('.register_date_correctif').addClass('cacher');
 			}
 		});
 		/* Seul le responsable du parc peut cloturer un ticket */
@@ -239,9 +190,9 @@
 			$('#probleme_technique_cloture').change(function(){
 				if ($('#probleme_technique_cloture').is(':checked')){
 					$('#probleme_technique_dateCloture').val($.format.date(new Date(), 'dd-MM-yyyy'));
-					$('.register_date_cloture').removeClass('invisible');
+					$('.register_date_cloture').removeClass('cacher');
 				} else {
-					$('.register_date_cloture').addClass('invisible');
+					$('.register_date_cloture').addClass('cacher');
 				}
 			});
 		{% endif %}

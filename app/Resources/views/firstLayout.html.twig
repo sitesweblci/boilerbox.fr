@@ -6,13 +6,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="L'interface de supervision des chaudières industrielles." />
     <meta name="title" content="BoilerBox - Accueil" />
-	{% block meta_viewport %}
+	{# {% block meta_viewport %}
 		<meta name="viewport" content="width=device-width, initial-scale=0.5, shrink-to-fit=no">
-	{% endblock meta_viewport %}
-
+	{% endblock meta_viewport %} #}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
     {% block liens_css %}
+        <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
 		<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc.css') }}" media='screen' />
         <link rel="stylesheet" type="text/css" href="{{ asset('css/parc_print.css') }}" media='print' />
         <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
@@ -20,14 +21,6 @@
 
 	<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/msgBoxLight.css') }}" />
-	<style>
-		html{
-			background: #242932;
-		}
-		body{
-			padding-left: 65px;
-		}
-	</style>
 
     {#
 	<script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
@@ -36,99 +29,194 @@
     <script type="text/javascript" src="{{ asset('js/jquery-dateFormat.min.js') }}"></script>
 </head>
 
-<body style='padding-left:65px'>
-	<nav class="side-nav">
+<body>
+    <header {# id='bloc_header' #} class='header  notToBePrinted'>
+        <nav>
+            <div class="burger" onclick="showMenuLateral()">
+                <span></span>
+            </div>
+            <a class="watermark" href="{{ path("lci_boilerbox_index")}}">
+                <img class="watermark__logo" src="{{ asset('bundles/lciboilerbox/images/img/logoIBC.svg') }}" alt="Logo IBC">
+                <p class="watermark__baseline">
+                    <span>INDUSTRIAL</span>
+                    <span>BOILER</span>
+                    <span>CONTROL</span>
+                </p>
+            </a>
+            {% block header %}
+                <div class='version'>
+                    <p>{% include "form/version_boilerbox.html.twig" %}
+                        {#<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>#}
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            {# - Bienvenue #}
+                            {% block lien_parc_technique %}
+                                {# {{ app.getuser().getLabel() }} #}
+                            {% endblock lien_parc_technique %}
+                        {% endif %}
+                    </p>
+                </div>
+
+                {# <nav id='menu_boiler' class='notToBePrinted {% block class_menu_boiler %} {% endblock class_menu_boiler %}'>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <a href="{{ path('lci_gestion_admin') }}" title='Administration'>Administration</a>
+                        {% endif %}
+
+                        <div id='menu_boiler_deroulant1' onmouseover="afficheMenu(this)" onmouseout="cacheMenu(this)"style="height:200px;">
+                            <span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
+                        </div>
+                        <a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('fos_user_security_login') }}" id='lienDeconnexion' title='Connexion'>Connexion</a>
+                    {% endif %}
+                </nav> #}
+            {% endblock header %}
+        </nav>
+        <nav>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="header__nav tooltip-wrapper" href='{{ path("lci_gestion_admin") }}'> 
+                    <img src="{{ asset('bundles/lciboilerbox/images/img/nav/parametre.svg') }}" alt="icône Paramètre" class="header__nav__img">
+                    <span class="tooltip">Paramètres</span>
+                </a>
+            {% endif %}
+            <span {# id="btnIdentified"  #}class="header__nav header__nav--account {{ app.user.couleur }}">
+                <span>{{ app.user.label | slice(0,1) }}</span>
+            </span>
+        </nav>
+    </header>
+
+    <div class="logged cacher">
+        <div></div>
+        <div class="logged__infos">
+            <span class="logged__infos__chip {{ app.user.couleur }}">
+                <span class="">{{ app.user.label | slice(0,1) | lower }}</span>
+            </span>
+            <div class="logged__infos__name">
+                <p>{{ app.user.username }}</p>
+                <p>{{ app.user.email }}</p>
+            </div>
+        </div>
+        {% if is_granted('ROLE_TECHNICIEN') %}
+            <div class="logged__mode">
+                <div id="choixPrivePublicPopUpId" class="row-wrap">
+                    <label class="switch switch--small" data-href="">
+                        <input type="checkbox" id="modePrivePublic" onClick="$Refresh_page=true; switchModePrivateTo();" {% if app.user.modePrive %}checked{% endif %}>
+                        <span></span>
+                    </label>
+                    {% if app.user.modePrive == false %}
+                        <p>Mode Public</p>
+                    {% else %}
+                        <p>Mode Privé</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        <ul class="logged__links">
+            <li><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">mon compte</a></li>
+            <li><a href="{{ path('fos_user_security_logout') }}">se déconnecter</a></li>
+        </ul>
+    </div>
+
+	<nav class="side-nav notToBePrinted">
         <div class="side-nav__content scroll">
             <ul>
-                <li><a href="{{ path("lci_boilerbox_index")}}">
-                    <i class="index"></i><span>Accueil</span>
+                <li class="index"><a href="{{ path("lci_boilerbox_index")}}">
+                    <i></i><span>Accueil</span>
                 </a></li>
-                <li><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">
-                    <i class="account"></i><span>Mon compte</span>
+                <li class="account"><a href="{{ path('lci_update_user_own', {'idUtilisateur': app.user.id }) }}">
+                    <i></i><span>Mon compte</span>
                 </a></li>
-                <button>
-                    <i class="parc-tech"></i><span>Gestion parc technique</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    <li><a href="{{ path('lci_register_module', {'provenance':'accueil' }) }}">
-                        <i class="add-module"></i><span>Ajouter module</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_register_problemeTechnique') }}">
-                        <i class="prob-tech"></i><span>Signaler problème tecnique</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_gestion_modules') }}">
-                        <i class="parc-module"></i><span>Parc modules</span>
-                    </a></li>
-                    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
-                        <li><a href="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}">
-                            <i class="add-equip"></i><span>Ajouter équipement</span>
+                {% if is_granted('ROLE_TECHNICIEN') %}
+                    <li class="parc-tech button-wrapper"><a href="{{ path('lci_gestion_parc') }}">
+                        <i></i><span>Gestion parc technique</span></a>
+                        <button><span></span></button>
+                    </li>
+                    <ul class="side-nav__sub-list">
+                        <li class="add-module"><a href="{{ path('lci_register_module', {'provenance':'accueil' }) }}">
+                            <i></i><span>Ajouter module</span>
                         </a></li>
-                        <li><a href="{{ path('lci_affiche_problemes') }}">
-                            <i class="list-prob"></i><span>Liste problèmes techniques</span>
+                        <li class="prob-tech"><a href="{{ path('lci_register_problemeTechnique') }}">
+                            <i></i><span>Signaler problème tecnique</span>
                         </a></li>
-                        <li><a href="{{ path('lci_gestion_equipements') }}">
-                            <i class="parc-equip"></i><span>Parc équipements</span>
+                        <li class="parc-module"><a href="{{ path('lci_gestion_modules') }}">
+                            <i></i><span>Parc modules</span>
                         </a></li>
-                    {% endif %}
-                </ul>
-                <button>
-                    <i class="bons-interv"></i><span>Bons d'interventions</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    {% if is_granted('ROLE_SAISIE_BA') %}
-                        <li><a href="{{ path('lci_bons_saisie') }}"> 
-                            <i class="saisie"></i><span>Saisie</span>
+                        {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+                            <li class="add-equip"><a href="{{ path('lci_register_equipement', {'provenance':'accueil'}) }}">
+                                <i></i><span>Ajouter équipement</span>
+                            </a></li>
+                            <li class="list-prob"><a href="{{ path('lci_affiche_problemes') }}">
+                                <i></i><span>Liste problèmes techniques</span>
+                            </a></li>
+                            <li class="parc-equip"><a href="{{ path('lci_gestion_equipements') }}">
+                                <i></i><span>Parc équipements</span>
+                            </a></li>
+                        {% endif %}
+                    </ul>
+                    <li class="bons-interv button-wrapper"><a href="{{ path('lci_bons_attachements') }}">
+                        <i></i><span>Bons d'interventions</span></a>
+                        <button><span></span></button>
+                    </li>
+                    <ul class="side-nav__sub-list">
+                        {% if is_granted('ROLE_SAISIE_BA') %}
+                            <li class="saisie"><a href="{{ path('lci_bons_saisie') }}"> 
+                                <i></i><span>Saisie</span>
+                            </a></li>
+                        {% endif %}
+                        <li class="visu"><a href="{{ path('lci_bons_visualiser') }}">
+                            <i></i><span>Visualiser</span>
                         </a></li>
-                    {% endif %}
-                    <li><a href="{{ path('lci_bons_visualiser') }}">
-                        <i class="visu"></i><span>Visualiser</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_bons_sitesBA_visualiser') }}">
-                        <i class="visu-site"></i><span>Visu des sites</span>
-                    </a></li>
-                </ul>
+                        <li class="visu-site"><a href="{{ path('lci_bons_sitesBA_visualiser') }}">
+                            <i></i><span>Visu des sites</span>
+                        </a></li>
+                    </ul>
+                {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
-                    <li><a href="{{ path('lci_cgu_show') }}">
-                        <i class="cgu"></i><span>CGU</span>
+                    <li class="cgu"><a href="{{ path('lci_cgu_show') }}">
+                        <i></i><span>CGU</span>
                     </a></li>
                 {% endif %}
                 {% if is_granted('ROLE_TECHNICIEN') %}
-                    <li><a href="{{ path("lci_generation_mdp")}}">
-                        <i class="gene-mdp"></i><span>Générateur mot de passe</span>
+                    <li class="gene-mdp"><a href="{{ path("lci_generation_mdp")}}">
+                        <i></i><span>Générateur mot de passe</span>
                     </a></li>
                 {% endif %}
-                <button>
-                    <i class="parametres"></i><span>Paramètres</span>
-                </button>
-                <ul class="side-nav__sub-list">
-                    <li><a href="{{ path('lci_accueil_register_user') }}">
-                        <i class="gestion-user"></i><span>Gestion utilisateurs</span>
-                    </a></li> 
-                    <li><a href="{{ path('lci_accueil_register_site') }}">
-                        <i class="gestion-site"></i><span>Gestion sites</span>
-                    </a></li>
-                    <li><a href="{{ path('lci_registration_link') }}">
-                        <i class="gestion-lien"></i><span>Gestion liens</span>
-                    </a></li>
-                    {% if is_granted('ROLE_SUPER_ADMIN') %}
-                        <button>
-                            <i class="utilitaires"></i><span>Utilitaires</span>
-                        </button>
-                        <ul class="side-nav__sub-list">
-                            <li><a href="{{ path('lci_utils_afficheDispoSites') }}">
-                                <i class="dispo-site"></i><span>Disponibilités sites</span>
-                            </a></li>
-                            <li><a href="{{ path('lci_register_role') }}">
-                                <i class="gestion-role"></i><span>Gestion rôles</span>
-                            </a></li>
-                            <li><a href="{{ path('lci_affiche_logs_connexion') }}">
-                                <i class="logs"></i><span>Logs connexion</span>
-                            </a></li>
-                        </ul>
-                    {% endif %}
-                </ul>
-                <li><a href="{{ path('fos_user_security_logout') }}">
-                    <i class="disconnect"></i><span>Se déconnecter</span>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="parametres button-wrapper"><a href="{{ path('lci_gestion_admin') }}">
+                        <i></i><span>Paramètres</span></a>
+                        <button><span></span></button>
+                    </li>
+                    <ul class="side-nav__sub-list">
+                        <li class="gestion-user"><a href="{{ path('lci_accueil_register_user') }}">
+                            <i></i><span>Gestion utilisateurs</span>
+                        </a></li> 
+                        <li class="gestion-site"><a href="{{ path('lci_accueil_register_site') }}">
+                            <i></i><span>Gestion sites</span>
+                        </a></li>
+                        <li class="gestion-lien"><a href="{{ path('lci_registration_link') }}">
+                            <i></i><span>Gestion liens</span>
+                        </a></li>
+                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                            <li class="utilitaires button-wrapper"><a href="{{ path('lci_utils_homepage') }}">
+                                <i></i><span>Utilitaires</span></a>
+                                <button><span></span></button>
+                            </li>
+                            <ul class="side-nav__sub-list">
+                                <li class="dispo-site"><a href="{{ path('lci_utils_afficheDispoSites') }}">
+                                    <i></i><span>Disponibilités sites</span>
+                                </a></li>
+                                <li class="gestion-role"><a href="{{ path('lci_register_role') }}">
+                                    <i></i><span>Gestion rôles</span>
+                                </a></li>
+                                <li class="logs"><a href="{{ path('lci_affiche_logs_connexion') }}">
+                                    <i></i><span>Logs connexion</span>
+                                </a></li>
+                            </ul>
+                        {% endif %}
+                    </ul>
+                {% endif %}  
+                <li class="disconnect"><a href="{{ path('fos_user_security_logout') }}">
+                    <i></i><span>Se déconnecter</span>
                 </a></li>
             </ul>
         </div>
@@ -139,67 +227,32 @@
         </div>
     </nav>
 
-
-    <header {# id='bloc_header' #} class='header header--admin notToBePrinted'>
-    	{% block header %}
-    	{# <div class='entete_gauche'> #}
-    	    <div class='version_boilerbox'>
-    	        <p>{% include "form/version_boilerbox.html.twig" %}
-					{#<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>#}
-    	          	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-    	               	- Bienvenue
-    	               	{% block lien_parc_technique %}
-    	               	    {{ app.getuser().getLabel() }}
-    	               	{% endblock lien_parc_technique %}
-					{% endif %}
-    	        </p>
-        	</div>
-		{# </div> #}
-
-		<div id='messagebox' class='message-box cacher'>
-        	<div id='messageboxTexte'>
-           	</div>
-           	<div class='right'><a href='#' style="height:30px;" onClick="validation_messagebox();return false;" ><div class='bouton green'><div class='btn btn--main'>ok</div></div></a>
-			</div>
+    <div id='messagebox' class='message-box cacher'>
+        <div id='messageboxTexte' class="message-box__content"></div>
+        <div class='right'>
+            <a href='#' style="height:30px;" onClick="validation_messagebox();return false;" >
+                <div class='btn btn--main'>ok</div>
+            </a>
         </div>
+    </div>
 
-        <nav id='menu_boiler' class='notToBePrinted {% block class_menu_boiler %} {% endblock class_menu_boiler %}'>
-           	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-           		{% if is_granted("ROLE_ADMIN") %}
-                   	{# <div class='menu_boiler'> #}
-                   		<a href="{{ path('lci_gestion_admin') }}" title='Administration'>Administration</a>
-                	{# </div> #}
-           		{% endif %}
+    <div id='message_flashinfo' class="message-box cacher">
+        <div class="close-cross" onClick="closeMessageBox()"></div>
+        <div class="message-box__content">
+            {% block messages_flash %}
+                {% for message in app.session.flashbag.get('info') %}
+                    <div> - {{ message }}</div>
+                {% endfor %}
+            {% endblock messages_flash %}
+        </div>
+    </div>
 
-				<div {# class='menu_boiler'  #} id='menu_boiler_deroulant1' onmouseover="afficheMenu(this)" onmouseout="cacheMenu(this)"{# style="height:200px;" #}>
-					<span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
-				</div>
-				{# <div class='menu_boiler'> #}
-               		<a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
-           		{# </div> #}
-           	{% else %}
-           		{# <div class='menu_boiler'> #}
-               		<a href="{{ path('fos_user_security_login') }}" id='lienDeconnexion' title='Connexion'>Connexion</a>
-           		{# </div> #}
-           	{% endif %}
-       	</nav>
-
-       	<div id='message_flashinfo'>
-        	{% block messages_flash %}
-           		{% for message in app.session.flashbag.get('info') %}
-              		<div> - {{ message }}</div>
-           		{% endfor %}
-           	{% endblock messages_flash %}
-       	</div>
-
-       	<div id='erreurs_formulaires'>
-        	<div>
-           	    {% block erreurs_formulaires %}
-           	    {% endblock erreurs_formulaires %}
-       	 	</div>
-       	</div>
-    	{% endblock header %}
-    </header>
+    <div id='erreurs_formulaires'>
+        <div>
+            {% block erreurs_formulaires %}
+            {% endblock erreurs_formulaires %}
+        </div>
+    </div>
 
     {% block liens_url %}
 		<input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
@@ -218,22 +271,39 @@
 <script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.msgBox.js') }}"></script>
 <script type="text/javascript">
-	$(".side-nav--admin li:not(.side-nav--admin__title)").on("click", function pageActive(){
-		$(".side-nav--admin li:not(.side-nav--admin__title").removeClass("active");
-		$(this).addClass("active");
-	});
-	$(".side-nav--admin button").on("click", function displaySubNav(){
-		$(this).next(".side-nav--admin__sub-list").toggleClass("displayed");
-	});
+    // On cache la messagebox flash si son contenu est vide
+    $(window).on('load', function(){
+        if($.trim($("#message_flashinfo .message-box__content").html())){
+            $('#message_flashinfo').removeClass('cacher');
+        }
+    });
+    function closeMessageBox(){
+        $('#message_flashinfo').toggleClass('cacher');
+    };
 
-	// Fonction side nav
-	$(".side-nav li").on("click", function pageActive(){
+	// Fonctions barre de navigation latérale
+    function showMenuLateral(){
+        $('.side-nav').toggleClass('side-nav--visible');
+    };
+    // page active
+	$(".side-nav li:not(.button-wrapper)").on("click", function pageActive(){
 	    $(".side-nav li").removeClass("active");
 	    $(this).addClass("active");
 	});
+    // affichage sous-menu
 	$(".side-nav button").on("click", function displaySubNav(){
-	    $(this).next(".side-nav__sub-list").toggleClass("displayed");
+	    $(this).parents("li").next(".side-nav__sub-list").toggleClass("displayed");
 	});
+    $('.side-nav').on('mouseleave', function(){
+        $('.side-nav .side-nav__sub-list').removeClass('displayed');
+    });
+    // Fonction pour afficher la petite popup "mon compte" au survol du bouton mon compte
+    $('.header__nav--account').bind('click mouseenter', function(){
+        $('.logged').toggleClass('cacher');
+    });
+    $('.logged').on('mouseleave', function(){
+        $('.logged').addClass('cacher');
+    });
 </script>
 {% block javascript %}
 {% endblock javascript %}

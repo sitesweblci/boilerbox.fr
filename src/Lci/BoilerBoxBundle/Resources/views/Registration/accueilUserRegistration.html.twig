@@ -14,65 +14,63 @@
 
 #}
 
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+	.form__btn--col{
+		width: initial;
+		max-width: initial;
+	}
+	</style>
+{% endblock %}
+
 {% block fos_user_content %}
 {{ parent() }}
-<div class='listing'>
-<div class='ajout_objet'>
-    <h1>Gestion des utilisateurs</h1>
-    <div class='formulaire'>
+<section class='main-box'>
+    <h1 class="main-box__title">Gestion des utilisateurs</h1>
+    <div class='main-box__content'>
         <form name='myForm' method='post' action="{{ path('lci_accueil_register_user') }}">
             <input type='hidden' name='choixAction' id='choixAction'>
-			<div class='display_flex_row'>
-				<div>
-                    <select name='choix_utilisateur' id='choix_utilisateur'>
-                        {% for user in liste_users %}
-                            {% if user.label != 'Admin' %}
-                                <option value="{{ path('lci_update_user_own', {'idUtilisateur': user.id }) }}">{{ user.label }}</option>	
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-				<div>
-                    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
-						 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier_hover.png') }}"  
-					  	 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
-						 onClick="attente(); validFormulaire('updateUser');" 
-						 class="btn_moyen_picto" 
-						 alt="Modifier l'utilisateur"
-					/>
-                </div>
-				<div>
-					{% if is_granted('ROLE_SUPER_ADMIN') %}
-                	    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
-							 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer_hover.png') }}"	
-							 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
-							 onClick="attente(); validFormulaire('deleteUser');" 
-							 class="btn_moyen_picto" 
-							 alt="Supprimer l'utilisateur"
-						/>
-					{% endif %}
-				</div>
+			<div class='form__field'>
+				<label>Choix de l'utilisateur</label>
+                <select name='choix_utilisateur' id='choix_utilisateur'>
+                    {% for user in liste_users %}
+                        {% if user.label != 'Admin' %}
+                            <option value="{{ path('lci_update_user_own', {'idUtilisateur': user.id }) }}">{{ user.label }}</option>	
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
+			<div class="form__btn form__btn--col">
+				 {# <button class="btn_moyen_picto btn btn--main btn--wide" onClick="attente(); validFormulaire('updateUser');">Modifier</button> #}
+                <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
+					 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier_hover.png') }}"  
+				  	 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
+					 onClick="attente(); validFormulaire('updateUser');" 
+					 class="btn_moyen_picto" 
+					 alt="Modifier l'utilisateur"
+				/>
+				{% if is_granted('ROLE_SUPER_ADMIN') %}
+            	    <button src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
+						 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer_hover.png') }}"	
+						 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
+						 onClick="attente(); validFormulaire('deleteUser');" 
+						 class="btn btn--delete btn--wide" 
+						 alt="Supprimer l'utilisateur"
+					>Supprimer</button>
+				{% endif %}
+			</div>
+			<div class="form__field__choice">
+				<p>OU</p>
+				<hr>
+			</div>
+			<button class="btn btn--main btn--wide" onClick="attente(); validFormulaire('createUser');">Créer un nouvel utilisateur</button>
         </form>
     </div>
-    <div class='validation_formulaire'>
-        <img alt="Créer un utilisateur" 
-			class="btn_menu" 
-			src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur.png') }}" 
-			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur_hover.png') }}" 
-			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_creer_utilisateur.png') }}" 
-			onClick="attente(); validFormulaire('createUser');"
-		/>
-        <img alt="Retour"
-			 class="btn_menu"
-			 src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 			       
-			 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 				 
-			 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 
-			 onClick="attente(); redirection('retourMenu');" 
-		/>
+    <div class='form__btn'>
+        <a href="{{ path('lci_gestion_admin') }}" class="btn_menu btn btn--second">Retour</a>
     </div>
-</div>
-</div>
+</section>
 
 {% endblock fos_user_content %}
 
@@ -80,6 +78,12 @@
 	{{ parent() }}
 
 	<script type='text/javascript'>
+		// Fonction style barre de navigation page active
+		$(window).on('load', function pageActive(){
+			$('.side-nav .parametres').addClass('active');
+		});
+
+
 		function validFormulaire($choixAction) {
         	var $utilisateur = $('#choix_utilisateur option:selected').html();
         	if ($choixAction == 'deleteUser') {

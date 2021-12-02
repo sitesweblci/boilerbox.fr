@@ -254,6 +254,7 @@ tr td:last-child{
 	position: relative;
 	width: 24px;
 	height: 24px;
+	margin-right: 0;
 	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%);
 	border: solid 1px var(--gris-clair-hover);
 	border-radius: 50%;

@@ -4,35 +4,45 @@
 
 {% block fos_user_content %} 
 {{ parent() }}
-<div class='listing'>
-	<div class='ajout_objet'>
-		<h1>Changement d'état</h1>
-		<h2>Equipement : {{ form.type.vars.value }}</h2>
-	    <div class='formulaire'>
-			{{ form_start(form, {'action':path('lci_change_parc_equipements'), 'method':'POST', 'name':'myForm'}) }}
-				{{ form_errors(form) }}
-				<div>{{ form_widget(form.actif) }} {{ form_label(form.actif) }}</div>
-				<div class='cacher'>
+<div class='main-box'>
+	{# <div class='ajout_objet'> #}
+	<h1 class="main-box__title">Changement d'état</h1>
+	<h2 class="main-box__sub-title">Equipement : {{ form.type.vars.value }}</h2>
+    <div class='{# formulaire #}main-box__content'>
+		{{ form_start(form, {'action':path('lci_change_parc_equipements'), 'method':'POST', 'name':'myForm','class':'form'}) }}
+			{{ form_errors(form) }}
+			<div class="form__field">
+				{{ form_widget(form.actif) }}{{ form_label(form.actif) }}
+			</div>
+			<div class='cacher'>
+				<div class="form__field">
 					{{ form_row(form.type) }}
+				</div>
+				<div class="form__field">
 	                {{ form_row(form.id) }}
 	            </div>
-				{{ form_rest(form) }}
-			{{ form_end(form) }}
-	    </div>
-		<div class='validation_formulaire'> 
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" class="btn_menu" alt="Changer l'équipement"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement_hover.png') }}" 
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" 
-				onClick="attente(); document.forms['myForm'].submit();" >
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" class="btn_menu" alt="Retour au parc"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc_hover.png') }}" 	
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" 	  
-				onClick="attente(); redirection('parcEquipements');">
-		</div>
+            </div>
+			{{ form_rest(form) }}
+		{{ form_end(form) }}
+    </div>
+	<div class='{# validation_formulaire #}form__btn'>
+		<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" class="btn_menu btn--second" alt="Retour au parc"
+			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc_hover.png') }}" 	
+			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" 	  
+			onClick="attente(); redirection('parcEquipements');">
+		<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" class="btn_menu" alt="Changer l'équipement"
+			onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement_hover.png') }}" 
+			onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_equipement.png') }}" 
+			onClick="attente(); document.forms['myForm'].submit();" >
 	</div>
+	{# </div> #}
 </div>
 
 <script type='text/javascript'>	
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    })
 	$(document).ready(function(){
 		$('#equipement_actif').click(function() {
 			var $isNotChecked = $('#equipement_actif').is(':checked');

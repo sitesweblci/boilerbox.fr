@@ -7,45 +7,42 @@
    <input type='hidden' id='id_probleme' name='id_probleme' value="{{ id }}" />
 </form>
 
-<div class='listing'>
-	<div class='ajout_objet'>
-		<h1>Nouvel équipement</h1>
-	    <div class='formulaire'>
-			{{ form_start(form, {'action':path('lci_register_equipement', {'provenance':provenance}), 'method':'POST', 'name':'myForm'}) }}
-				{{ form_errors(form) }}
-	     		<div>{{ form_widget(form.type) }}</div>
-				<div>{{ form_widget(form.actif) }}{{ form_label(form.actif) }}</div>
-	        	<div class='cacher'>
-	            	{{ form_row(form.id) }}
-	        	</div>
-			{{ form_end(form) }}
-		</div>
-
-		<div class='validation_formulaire'> 
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_equipement.png') }}" class="btn_menu" alt="Créer un équipement"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_equipement_hover.png') }}" 	
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_equipement.png') }}" 
-				onClick="attente(); document.forms['myForm'].submit();">
+<section class='main-box'>
+	<h1 class="main-box__title">Nouvel équipement</h1>
+	<div class="main-box__content">
+		{{ form_start(form, {'action':path('lci_register_equipement', {'provenance':provenance}), 'method':'POST', 'name':'myForm', 'class':'form'}) }}
+			{{ form_errors(form) }}
+	 		<div class="form__field">
+	 			<label>Type d'équipement</label>
+	 			{{ form_widget(form.type) }}
+	 		</div>
+			<div class="form__field">
+				{{ form_widget(form.actif) }}{{ form_label(form.actif) }}
+			</div>
+	    	<div class='form__field cacher'>
+	        	{{ form_row(form.id) }}
+	    	</div>
+		{{ form_end(form) }}
+		<div class='form__btn'> 
 			{% if provenance == 'ticket' %}
-				<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket.png') }}" class="btn_menu" alt="Retour au ticket"
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket.png') }}" 	
-					onClick="attente(); retourTicket();">
+				<button class="btn_menu btn btn--second" onClick="attente(); retourTicket();">Retour ticket</button>
 			{% else %}
-				<img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" class="btn_menu" alt="Retour au menu"
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 	
-					onClick="attente(); redirection('retourMenu');">
+				<button  class="btn_menu btn btn--second" onClick="attente(); redirection('retourMenu');">Retour</button>
 			{% endif %}
+			<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit();">Créer équipement</button>
 		</div>
 	</div>
-</div>
+</section>
 
 
 <script type='text/javascript'>
     function retourTicket() {
         document.forms['form_retour_ticket'].submit();
     }
+    // Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    })
 </script>
 {% endblock fos_user_content %}
 

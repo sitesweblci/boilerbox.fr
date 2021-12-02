@@ -3,131 +3,149 @@
 
 {% block title %} {{ parent() }}Gestion du parc{% endblock title %}
 
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+	.main-box{
+		position: relative;
+	}
+	.flex-table tr th{
+		padding: 0 3px;
+		font-size: 8pt;
+	}
+	/*.flex-table .flex-table__tbody{
+		height: 66vh;
+	}*/
+	.flex-table tr{
+		cursor: initial;
+	}
+	.flex-table tr td{
+		padding: 3px;
+		font-size: 10pt;
+	}
+	.flex-table .mini{
+		width: calc(20% - 6px);
+	}
+	.flex-table .small{
+		width: calc(25% - 6px);
+	}
+	.flex-table .medium{
+		width: calc(60% - 6px);
+	}
+	.flex-table .wide{
+		width: calc(100% - 6px);
+	}
+	</style>
+{% endblock %}
+
 {% block fos_user_content %}
 {{ parent() }}
 
-<p id='description_du_ticket'></p>
+<p id='description_du_ticket' class="cacher"></p>
 
-<div class='listing notToBePrinted'>
-	<div class='listing2'>
-		<h1 style='position:relative;'>
-			Liste des problèmes techniques 
-			<span style="position:absolute; right:20px; top:10px;">{% if tableau_problemes | length  > 0 %}<img height="25" width="25" src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" onclick="window.print();">{% endif %}</span>
-		</h1>
-		<div class='formulaire_liste'>
-			<table class='tab_liste tableau_listing'>
-				<thead>
-					<tr><th class='zone_texte_mini'>Visu</th>
-						<th class='zone_texte_mini selectionnable' onClick="attente(); trie('id');">Ref</th>
-						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('dateSignalement');">Signalement</th>
-						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('intervenant');">Opérateur</th>
-						<th class='zone_texte_grand selectionnable' onClick="attente(); trie('module');">Module</th>
-						<th class='zone_texte_moyen selectionnable' onClick="attente(); trie('equipement');">Equipement</th>
-						<th class='zone_texte_moyen'>Description</th>
-						<th class='zone_texte_moyen'>Solution</th>
-						<th class='zone_texte_petit'>Fichiers</th>
-						<th class='zone_texte_mini selectionnable' onClick="attente(); trie('bloquant');">Bloque</th>
-						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('corrige');">Corrigé</th>
-						<th class='zone_texte_petit selectionnable' onClick="attente(); trie('cloture');">Clos</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for key, tabErreur in tableau_problemes %}
-					<tr><td class='zone_texte_mini centrer'>
-							<img 	class='selectionnable' 
-									src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}" 
-									name="change_probleme_{{ tabErreur.id }}" 
-									onClick="changeProbleme({{ tabErreur.id }});" 
-									alt="Visualiser le problème" 
-							/>
-						</td>
-						<td class='zone_texte_mini'>{{ tabErreur.id }}</td>
-						<td class='zone_texte_petit'>{{ tabErreur.dateSignalement|date('d-m-Y') }}</td>
-						<td class='zone_texte_petit'>{% if tabErreur.user is not null %}{{ tabErreur.user.username }}{% endif %}</td>
-						<td class='td_liste_pb_module zone_texte_grand'><div>{% for key2, module in tabErreur.module %}{% if tabErreur.module[key2].present == true %}+ {% else %}- {% endif %}{{ tabErreur.module[key2].numero }} ({{ tabErreur.module[key2].nom }})</div><div><span class='regular'>{{ tabErreur.module[key2].dateMouvement|date("d-m-Y") }}</span></div>{% if loop.index != tabErreur.module|length %}<br />{% endif %}{% endfor %}</td>
-						<td class='zone_texte_moyen'>{{ tabErreur.equipement.type }}</td>
-						<td id="td_listePb_description_{{ loop.index }}" class='zone_texte_moyen zone_texte_ellipsis affiche_description' 
-							onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
-							onmouseleave='resetInfos();' style="color:{% if tabErreur.cloture == 1 %}green{% elseif tabErreur.corrige == 1 %}orange{% elseif tabErreur.bloquant == 1 %}red{% else %}white{% endif %}">
-								{{ tabErreur.description }}
-						</td>
-						<td id="td_listePb_solution_{{ loop.index }}"    class='zone_texte_moyen zone_texte_ellipsis affiche_solution'    
-							onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
-							onmouseleave='resetInfos();' style="color:{% if tabErreur.cloture == 1 %}green{% elseif tabErreur.corrige == 1 %}orange{% elseif tabErreur.bloquant == 1 %}red{% else %}white{% endif %}">
-								{{ tabErreur.solution }}
-						</td>
-						<td class='zone_texte_petit'>{% if tabErreur.fichiersJoint|length != 0 %}X{% endif %}</td>
-						<td class='zone_texte_mini centrer'>{% if tabErreur.bloquant == 1 %}X{% endif %}</td>
-						<td class='zone_texte_petit'>{% if tabErreur.corrige == 1 %}{% if tabErreur.dateCorrection != null %}{{ tabErreur.dateCorrection|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
-						<td class='zone_texte_petit'>{% if tabErreur.cloture == 1 %}{% if tabErreur.dateCloture != null %}{{ tabErreur.dateCloture|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-			<form method='post' name='form_tri' action={{ path('lci_tri_recherche_problemes') }}>
-				<input type='hidden' id='champs_tri' name='champs_tri' />
-			</form>
-			<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
-				<input type='hidden' id='id_probleme' name='id_probleme' />
-			</form>
-    	</div>
+<main class='notToBePrinted main-box main-box--table'>
+	<h1 class="main-box__title main-box--table__title">
+		Liste des problèmes techniques 
+	</h1>
+	<div class="main-box__action">
+		<span class="tooltip-wrapper">
+	        <img src="{{ asset('bundles/lciboilerbox/images/actions/affiner.svg') }}" onClick="attente(); redirection('affinerRecherche');" alt="Affiner la recherche"/>
+	        <span class="tooltip">Affiner recherche</span>
+		</span>
+		{% if tableau_problemes | length  > 0 %}
+			<span class="tooltip-wrapper">
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/exporter.svg') }}" onClick="attente(); redirection('export');" alt="Exporter">
+				<span class="tooltip">Exporter</span>
+			</span>
+			<span class="tooltip-wrapper">
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" onclick="window.print();" alt="Imprimer">
+				<span class="tooltip">Imprimer</span>
+			</span>
+		{% endif %}
 	</div>
-    <div class='debut_ligne'>
-		<br />
-        <img 	onClick="attente(); redirection('affinerRecherche');" 
-				class="btn_menu" 
-				alt="Affiner la recherche"
-				src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche_hover.png') }}" 
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_affiner_recherche.png') }}" />
-    </div>
-</div>
-
-<div class='validation_formulaire_end'>
-    {% if tableau_problemes | length  > 0 %}
-        <div>
-			<img 	onClick="attente(); redirection('export');"
-					class="btn_menu"
-					alt="Exporter la liste"
-					src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export.png') }}"
-            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export_hover.png') }}"
-            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_export.png') }}"
-          	/>
-		</div>
-    {% endif %}
-    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
-        <div>
-			<img 	onClick="attente(); redirection('signalerProblemeTechnique');"
-					class="btn_menu"
-					alt="Signaler un problème"
-					src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme.png') }}" 
-            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme_hover.png') }}"
-            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_signaler_probleme.png') }}"
-            	/>
-		</div>
-        <div>
-			<img 	onClick="attente(); myRedirection();" 
-					class="btn_menu"
-					alt="Retour"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 
-            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
-            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
-            />
-		</div>
-    {% else %}
-        <div>
-			<img 	onClick="attente(); redirection('menuGestionParcModules');"
-					class="btn_menu" 
-					alt="Retour"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}" 
-            		onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu_hover.png') }}"
-            		onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_menu.png') }}"
-         	/>
-		</div>
-    {% endif %}
-</div>
-
-
+	<div class='formulaire_liste main-box__content'>
+		<table class='flex-table'>
+			<thead class="flex-table__thead">
+				<tr class="flex-table__row">
+					<th class='small'>Visu</th>
+					<th class='small selectionnable' onClick="attente(); trie('id');">Ref</th>
+					<th class='medium selectionnable' onClick="attente(); trie('dateSignalement');">Signalement</th>
+					<th class='medium selectionnable' onClick="attente(); trie('intervenant');">Opérateur</th>
+					<th class='medium selectionnable' onClick="attente(); trie('module');">Module</th>
+					<th class='medium selectionnable' onClick="attente(); trie('equipement');">Equipement</th>
+					<th class='wide'>Description</th>
+					<th class='medium'>Solution</th>
+					<th class='mini'>Fichiers</th>
+					<th class='mini selectionnable' onClick="attente(); trie('bloquant');">Bloque</th>
+					<th class='mini selectionnable' onClick="attente(); trie('corrige');">Corrigé</th>
+					<th class='mini selectionnable' onClick="attente(); trie('cloture');">Clos</th>
+				</tr>
+			</thead>
+			<tbody class="flex-table__tbody">
+				{% for key, tabErreur in tableau_problemes %}
+				<tr class="flex-table__row">
+					<td class='small'>
+						<img 	class='selectionnable' 
+								src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}" 
+								name="change_probleme_{{ tabErreur.id }}" 
+								onClick="changeProbleme({{ tabErreur.id }});" 
+								alt="Visualiser le problème"
+								style="width:20px;height20px;"
+						/>
+					</td>
+					<td class='small' >{{ tabErreur.id }}</td>
+					<td class='medium'>{{ tabErreur.dateSignalement|date('d-m-Y') }}</td>
+					<td class='medium'>{% if tabErreur.user is not null %}{{ tabErreur.user.username }}{% endif %}</td>
+					<td class='td_liste_pb_module{#  zone_texte_grand #} medium'>
+						{% for key2, module in tabErreur.module %}{% if tabErreur.module[key2].present == true %}+ {% else %}- {% endif %}{{ tabErreur.module[key2].numero }} ({{ tabErreur.module[key2].nom }})</div>
+						<span class='regular'>{{ tabErreur.module[key2].dateMouvement|date("d-m-Y") }}</span>
+						{% if loop.index != tabErreur.module|length %}<br />{% endif %}{% endfor %}
+					</td>
+					<td class='medium'>{{ tabErreur.equipement.type }}</td>
+					<td id="td_listePb_description_{{ loop.index }}" class='wide zone_texte_ellipsis affiche_description' 
+						onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
+						onmouseleave='resetInfos();'
+						style="color:{% if tabErreur.cloture == 1 %}#4CBB17;
+									{% elseif tabErreur.corrige == 1 %}#FF8C00;
+									{% elseif tabErreur.bloquant == 1 %}#FF2400;
+									{% else %}black{% endif %}
+						">
+							{{ tabErreur.description }}
+					</td>
+					<td id="td_listePb_solution_{{ loop.index }}"    class='medium zone_texte_ellipsis affiche_solution'    
+						onmouseenter="afficheInfos('{{ tabErreur.id }}', '{{ tabErreur.cloture }}', '{{ tabErreur.corrige }}', '{{ tabErreur.bloquant }}', this.id );" 
+						onmouseleave='resetInfos();'
+						style="color:{% if tabErreur.cloture == 1 %}#4CBB17;
+									{% elseif tabErreur.corrige == 1 %}#FF8C00;
+									{% elseif tabErreur.bloquant == 1 %}#FF2400;
+									{% else %}black{% endif %}
+					">
+							{{ tabErreur.solution }}
+					</td>
+					<td class='mini'>{% if tabErreur.fichiersJoint|length != 0 %}X{% endif %}</td>
+					<td class='mini centrer'>{% if tabErreur.bloquant == 1 %}X{% endif %}</td>
+					<td class='mini'>{% if tabErreur.corrige == 1 %}{% if tabErreur.dateCorrection != null %}{{ tabErreur.dateCorrection|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+					<td class='mini'>{% if tabErreur.cloture == 1 %}{% if tabErreur.dateCloture != null %}{{ tabErreur.dateCloture|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<form method='post' name='form_tri' action={{ path('lci_tri_recherche_problemes') }}>
+			<input type='hidden' id='champs_tri' name='champs_tri' />
+		</form>
+		<form method='post' name='form_change' action={{ path('lci_register_problemeTechnique') }}>
+			<input type='hidden' id='id_probleme' name='id_probleme' />
+		</form>
+	</div>
+	<div class='main-box__btn main-box--table__btn'>
+	    {% if is_granted('ROLE_RESPONSABLE_PARC') %}
+			<button onClick="attente(); myRedirection();" class="btn_menu btn btn--second">Retour</button>
+			<button onClick="attente(); redirection('signalerProblemeTechnique');" class="btn_menu btn btn--main">Signaler problème</button>
+	    {% else %}
+			<button onClick="attente(); redirection('menuGestionParcModules');" class="btn_menu btn btn--second">Retour</button>
+	    {% endif %}
+	</div>
+</main>
 
 <div class='impression notToBeShown'>
     <div>
@@ -189,6 +207,10 @@
 </div>
 
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    });
 	var $from;
 	$(document).ready(function(){
         $.ajax({
@@ -199,19 +221,28 @@
 			$from = $.parseJSON(valeur);
         });
 	});
-
+    // On affiche, ou non, #description_du_ticket si son contenu n'est pas vide
+    $('.affiche_description').on({
+    	'mouseenter': function(){
+	        if($.trim($("#description_du_ticket").html())){
+	            $('#description_du_ticket').removeClass('cacher');
+	        }
+	    },
+	    'mouseleave':function(){
+	    	$('#description_du_ticket').addClass('cacher');
+	    }
+   	
+    });
 	function trie($champs) {
 		$('#champs_tri').val($champs);
 		document.forms['form_tri'].submit();
 	}
-	
 	function changeProbleme(numeroProbleme) {
 		$('#id_probleme').val(numeroProbleme);
 		document.forms['form_change'].submit();
 	}
-
 	function afficheInfos(reference, cloture, corrige, bloquant, texte) {
-		$('#entete_de_page').addClass('invisible');
+		// $('#entete_de_page').addClass('invisible');
 		var classe = 'probleme taille_texte_grand';
 		if (cloture == 1) {
 			classe = 'ok taille_texte_grand';
@@ -225,12 +256,10 @@
 		$("#description_du_ticket").attr('class', classe);
 		$("#description_du_ticket").html('Ticket : ' + reference + '<br />' + $('#' + texte).text());
 	}
-
 	function resetInfos() {
-		$('#entete_de_page').removeClass('invisible');
+		// $('#entete_de_page').removeClass('invisible');
 		$("#description_du_ticket").html('');
 	}
-
 	function myRedirection() {
 		switch($from){
 			case 'parcDesModules' :
