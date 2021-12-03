@@ -9,74 +9,90 @@
 
 
 {% block fos_user_content %}
-<div id='entete_de_page'><h1>{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'attachements</h1></div>
-<div class='listing'>
-	<div class='ajout_objet'>
-		<h1>Modification de la demande {{ idBon }}</h1>
-		<div class='formulaire taille_texte_moyen' >
-        	{{ form_start(form, {'action':path('lci_bons_modifier_unbon', { 'idBon': idBon }), 'method':'POST', 'name':'myForm'}) }}
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'attachements</h1>
+</header>
+<main class='main-box'>
+	<h1 class="main-box__title">Modification de la demande {{ idBon }}</h1>
+	<div class='main-box__content' >
+    	{{ form_start(form, {'action':path('lci_bons_modifier_unbon', { 'idBon': idBon }), 'method':'POST', 'name':'myForm', 'class':'form'}) }}
+			{% if form.userInitiateur is defined %}
+			
+				<div class="form__field">
+					{{ form_label(form.userInitiateur) }}
+					{{ form_widget(form.userInitiateur) }}
+					{{ form_errors(form.userInitiateur) }}
+				</div>
+				<div class="form__field">
+					{{ form_label(form.dateInitialisation) }}
+					{{ form_widget(form.dateInitialisation) }}
+					{{ form_errors(form.dateInitialisation) }}
+				</div>
+            	<div class="form__field">
+            		{{ form_label(form.user) }}
+            		{{ form_widget(form.user) }}
+            		{{ form_errors(form.user) }}
+            	</div>
+			{% endif %}
 
-				{% if form.userInitiateur is defined %}
-                	<div class='ligne_error'>{{ form_errors(form.userInitiateur) }}</div>
-                	<div class='nouveau_probleme_ligne'><div>{{ form_label(form.userInitiateur) }}</div><div>{{ form_widget(form.userInitiateur) }}</div></div>
-				
-                	<div class='ligne_error'>{{ form_errors(form.dateInitialisation) }}</div>
-                	<div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateInitialisation) }}</div><div>{{ form_widget(form.dateInitialisation) }}</div></div>
+			<div class="form__field">
+				{{ form_label(form.numeroBA) }}
+				{{ form_widget(form.numeroBA) }}
+				{{ form_errors(form.numeroBA) }}
+			</div>
+			{% if form.userInitiateur is defined %}
+				<div class="form__field">
+					{{ form_label(form.site) }}
+					{{ form_widget(form.site) }}
+					{{ form_errors(form.site) }}
+				</div>
+            	<div class="form__field">
+            		{{ form_label(form.numeroAffaire) }}
+            		{{ form_widget(form.numeroAffaire, {'attr' : {'class':'txt--left'} }) }}
+            		{{ form_errors(form.numeroAffaire) }}
+            	</div>
+			{% endif %}
 
-                	<div class='ligne_error'>{{ form_errors(form.user) }}</div>
-                	<div class='nouveau_probleme_ligne'><div>{{ form_label(form.user) }}</div><div>{{ form_widget(form.user) }}</div></div>
-				{% endif %}
-
-                <div class='ligne_error'>{{ form_errors(form.numeroBA) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.numeroBA) }}</div><div>{{ form_widget(form.numeroBA) }}</div></div>
-
-				{% if form.userInitiateur is defined %}
-                	<div class='ligne_error'>{{ form_errors(form.site) }}</div>
-                	<div class='nouveau_probleme_ligne'><div>{{ form_label(form.site) }}</div><div>{{ form_widget(form.site) }}</div></div>
-
-                	<div class='ligne_error'>{{ form_errors(form.numeroAffaire) }}</div>
-                	<div class='nouveau_probleme_ligne'><div>{{ form_label(form.numeroAffaire) }}</div><div>{{ form_widget(form.numeroAffaire) }}</div></div>
-				{% endif %}
-
-                <div class='ligne_error'>{{ form_errors(form.nomDuContact) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.nomDuContact) }}</div><div>{{ form_widget(form.nomDuContact) }}</div></div>
-
-                <div class='ligne_error'>{{ form_errors(form.emailContactClient) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.emailContactClient) }}</div><div>{{ form_widget(form.emailContactClient) }}</div></div>
-
-                <div class='ligne_error'>{{ form_errors(form.dateSignature) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateSignature) }}</div><div>{{ form_widget(form.dateSignature) }}</div></div>
-
-                <div class='ligne_error'>{{ form_errors(form.dateDebutIntervention) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateDebutIntervention) }}</div><div>{{ form_widget(form.dateDebutIntervention) }}</div></div>
-
-                <div class='ligne_error'>{{ form_errors(form.dateFinIntervention) }}</div>
-                <div class='nouveau_probleme_ligne'><div>{{ form_label(form.dateFinIntervention) }}</div><div>{{ form_widget(form.dateFinIntervention) }}</div></div>
-
-			{{ form_rest(form) }}
-			{{ form_end(form) }}
-		</div>
-
-    	<div class='validation_formulaire_centre notToBePrinted'>
-    	    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" class="btn_menu" alt="Valider"
-    	        onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}"
-    	        onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"
-    	        onClick="attente(); document.forms['myForm'].submit(); return false;">
-    	</div>
+			<div class="form__field">
+				{{ form_label(form.nomDuContact) }}
+				{{ form_widget(form.nomDuContact) }}
+				{{ form_errors(form.nomDuContact) }}
+			</div>
+            <div class="form__field">
+            	{{ form_label(form.emailContactClient) }}
+            	{{ form_widget(form.emailContactClient) }}
+            	{{ form_errors(form.emailContactClient) }}
+            </div>
+            <div class="form__field">
+            	{{ form_label(form.dateSignature) }}
+            	{{ form_widget(form.dateSignature) }}
+            	{{ form_errors(form.dateSignature) }}
+            </div>
+            <div class="form__field form__field--double">
+            	<div>
+            		{{ form_label(form.dateDebutIntervention) }}
+            		{{ form_widget(form.dateDebutIntervention) }}
+            		{{ form_errors(form.dateDebutIntervention) }}
+            	</div>
+            	<div>
+            		{{ form_label(form.dateFinIntervention) }}
+            		{{ form_widget(form.dateFinIntervention) }}
+            		{{ form_errors(form.dateFinIntervention) }}
+            	</div>
+            </div>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
 	</div>
-</div>
-<div class='validation_formulaire_end notToBePrinted'>
-    <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" class="btn_menu" alt="Retour"
-         onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}"
-         onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}"
-         onClick="attente(); document.forms['form_affiche_bon'].submit(); return false;">
-</div>
 
+	<div class='form__btn notToBePrinted'>
+        <button class="btn_menu btn btn--second" onClick="attente(); document.forms['form_affiche_bon'].submit(); return false;">Retour</button>
+        <button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Enregistrer</button>
+	</div>
+</main>
 
 <form method='post' name='form_affiche_bon' action={{ path('lci_bons_afficher_unbon') }}>
     <input type='hidden' id='id_bon' name='id_bon' value="{{ idBon }}" />
 </form>
-
 
 {% endblock fos_user_content %}
 
