@@ -2,180 +2,172 @@
 {# extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" #}
 {% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
 
+{% block boilerBoxCSS %}
+	{{parent() }}
+	<style>
+	html{
+		background: #f2f2f2;
+	}
+	.flex-table__tbody{
+		height: 48vh;
+	}
+	.flex-table__thead tr th:first-child, .flex-table__tbody tr td:first-child{
+		width: 36%;
+	}
+	.flex-table__thead tr th:nth-child(0n + 2), .flex-table__tbody tr td:nth-child(0n + 2){
+		width: 40%;
+	}
+	</style>
+{% endblock boilerBoxCSS %}
 
 {% block mainBody %}
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">Paramètres BoilerBox</h1>
+</header>
 
-<div class='listing'>
-<div class='ajout_objet' id="zoneFormulaire">
-	<h1>Gestion des liens</h1>
-
-	<div class='formulaire'>
-		<div>
-			<div id='zoneUser'>
-				<h1>Choix de l'utilisateur</h1>
-				<div class='display_flex_row'>
-					<div>
-						<select name='listeUsers' id='listeUsers'>
-							{% for user in liste_users %}
-								<option  value="{{ user.id }}">{{ user.label }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div>
-						<img 	onClick="attente(); getListeSites();"
-								alt="Associer des sites"
-								class='btn_associer' 
-								src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" 
-								onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites_hover.png') }}" 
-								onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" />
-					</div>
-				</div>
+<main class='main-box' id="zoneFormulaire">
+	<h1 class="main-box__title">Gestion des liens</h1>
+	<div class='formulaire main-box__content'>
+		<form class="form">
+			<div class="form__field">
+				<label>Choix de l'utilisateur</label>
+				<select name='listeUsers' id='listeUsers'>
+					{% for user in liste_users %}
+						<option  value="{{ user.id }}">{{ user.label }}</option>
+					{% endfor %}
+				</select>
 			</div>
-		</div>
-
-		<div id='separateur'>ou</div>
-
-		<div>
-			<div id='zoneSite'>
-				<h1>Choix du site</h1>
-				<div class='display_flex_row'>
-					<div>
-						<select name='listeSites' id='listeSites'>
-							{% for site in liste_sites %}
-								<option value="{{ site.id }}">{{ site.affaire }} - {{ site.intitule }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div>
-						<img 	onClick="attente(); getListeUsers();"
-								alt="Associer des utilisateurs"
-								class='btn_associer' 
-								src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" 
-								onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs_hover.png') }}" 
-								onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" />
-					</div>
-				</div>
+			<img onClick="attente(); getListeSites();"
+				alt="Associer des sites"
+				class='btn_associer' 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" 
+				onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites_hover.png') }}" 
+				onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" />
+			<div class="form__field__choice">
+				<p>OU</p>
+				<hr>
 			</div>
-		</div>
-
-		<div class='validation_formulaire_solo'>
-			<img 	onClick="attente(); redirection('retourAccueil');"
-					class="btn_menu"
-					alt="Annuler"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" />
-		</div>
+			
+			<div id='zoneSite' class="form__field">
+				<label>Choix du site</label>
+				<select name='listeSites' id='listeSites'>
+					{% for site in liste_sites %}
+						<option value="{{ site.id }}">{{ site.affaire }} - {{ site.intitule }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<img onClick="attente(); getListeUsers();"
+				alt="Associer des utilisateurs"
+				class='btn_associer' 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" 
+				onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs_hover.png') }}" 
+				onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" />
+			<div class='form__btn'>
+				<a href="{{ path('lci_gestion_admin') }}" class="btn_menu btn btn--second">Retour</a>
+			</div>
+		</form>
 	</div>
-</div>
+</main>
 
 
 
-<div id='zoneSites' class='cacher'>
+<section id='zoneSites' class='cacher main-box main-box--table'>
 	<form name='MyForm' method='post' action="{{ path('lci_registration_link') }}">
 		<input type='hidden' name='idUtilisateur' id='idUtilisateur'>
-		<div class='listing'>
-			<div class='listing2'>
-				<h1>GESTION DES LIENS</h1>
-				<h2></h2>
-				<div class='formulaire_liste'>
-					<div id='check_sites'>
-						<table class='tab_liste_liens tableau_listing'>
-							<thead>
-								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Select. tous</span></th>
-									<th class='zone_texte_petit'>Code</th>
-									<th class='zone_texte_grand'>Nom</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for site in liste_sites %}
-									<tr><td class='zone_texte_petit'><input type='checkbox' name="{{ site.id }}" id="check_{{ site.id }}" /></td>
-										<td class='zone_texte_petit'>{{ site.affaire }}</td>
-										<td class='zone_texte_grand'>{{ site.intitule }}</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
+		<h1 class="main-box__title main-box--table__title">Gestion des liens</h1>
+		<h2 class="main-box__sub-title main-box--table__sub-title"></h2>
+			<div id='check_sites' class="main-box__content">
+				<table class='flex-table'>
+					<thead class="flex-table__thead">
+						<tr class="flex-table__row">
+							<th><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Select. tous</span></th>
+							<th>Code</th>
+							<th>Nom</th>
+						</tr>
+					</thead>
+					<tbody class="flex-table__tbody">
+						{% for site in liste_sites %}
+							<tr class="flex-table__row">
+								<td><input type='checkbox' name="{{ site.id }}" id="check_{{ site.id }}" /></td>
+								<td>{{ site.affaire }}</td>
+								<td>{{ site.intitule }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
-		</div>
-		<div class='validation_formulaire_end'>
-			<div><img 	onClick="attente(); document.forms['MyForm'].submit();"
-						class="btn_menu"
-						alt="Enregistrer"
-						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
-						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"  />
-			</div>
-			<div><img 	onClick="attente(); reinitFormulaire();"
-						class="btn_menu"
-						alt="Retour"
-						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
-			</div>
+		<div class='main-box__btn main-box--table__btn'>
+			<img 	onClick="attente(); reinitFormulaire();"
+					class="btn_menu btn"
+					alt="Retour"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
+			<img 	onClick="attente(); document.forms['MyForm'].submit();"
+					class="btn_menu"
+					alt="Enregistrer"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"  />
 		</div>
 	</form>
-</div>
+</section>
 
 
 
-<div id='zoneUsers' class='cacher'>
+<section id='zoneUsers' class='cacher main-box main-box--table'>
 	<form name='MyForm2' method='post' action="{{ path('lci_registration_userslink') }}">
 		<input type='hidden' name='idSite' id='idSite'>
-		<div class='listing'>
-			<div class='listing2'>
-				<h1>GESTION DES LIENS</h1>
-				<h2></h2>
-				<div class='formulaire_liste'>	
-					<div id='check_users'>
-						<table class='tab_liste_liens tableau_listing'>
-							<thead>
-								<tr><th class='zone_texte_petit'><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Select. tous (sauf Clients)</span></th>
-									<th class='zone_texte_moyen' onclick="compare('nom')">Nom</th>
-									<th class='zone_texte_grand' onclick="compare('roles')">Rôle</th>
-								</tr>
-							</thead>
-							<tbody id='tableau_utilisateurs'>
-								{% for user in liste_users %}
-									<tr>
-										<td class='zone_texte_petit' data-intitule='id'><input type='checkbox' name="{{ user.id }}" id="checkUser_{{ user.id }}" data-client={% if 'client' in user.myGetRolesHtml %} 1 {% else %} 0 {% endif %}/></td>
-										<td class='zone_texte_moyen' data-intitule='nom'>{{ user.label }}</td>
-										<td class='zone_texte_grand' data-intitule='roles'>( {{ user.myGetRolesHtml | raw }} )</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
+		<h1 class="main-box__title main-box--table__title">Gestion des liens</h1>
+		<h2 class="main-box__sub-title main-box--table__sub-title"></h2>
+			<div id='check_users' class="main-box__content">
+				<table class='flex-table'>
+					<thead class="flex-table__thead">
+						<tr class="flex-table__row">
+							<th><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Select. tous (sauf Clients)</span></th>
+							<th onclick="compare('nom')">Nom</th>
+							<th onclick="compare('roles')">Rôle</th>
+						</tr>
+					</thead>
+					<tbody id='tableau_utilisateurs' class="flex-table__tbody">
+						{% for user in liste_users %}
+							<tr class="flex-table__row">
+								<td data-intitule='id'><input type='checkbox' name="{{ user.id }}" id="checkUser_{{ user.id }}" data-client={% if 'client' in user.myGetRolesHtml %} 1 {% else %} 0 {% endif %}/></td>
+								<td data-intitule='nom'>{{ user.label }}</td>
+								<td data-intitule='roles'>( {{ user.myGetRolesHtml | raw }} )</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
-		</div>
-		<div class='validation_formulaire_end'>
-			<div><img 	onClick="attente(); document.forms['MyForm2'].submit();"
-						class="btn_menu" 
-						alt="Enregistrer"
-						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
-						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" />
-			</div>
-			<div><img 	onClick="attente(); reinit2Formulaire();"
-						class="btn_menu"
-						alt="Retour"
-						src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-						onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-						onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
-			</div>
+		<div class=' main-box__btn main-box--table__btn'>
+			<img 	onClick="attente(); reinit2Formulaire();"
+					class="btn_menu btn"
+					alt="Retour"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
+			<img 	onClick="attente(); document.forms['MyForm2'].submit();"
+					class="btn_menu" 
+					alt="Enregistrer"
+					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
+					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
+					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" />
 		</div>
 	</form>	
-</div>
-</div>
+</section>
+{# </div> #}
 {% endblock mainBody %}
 
 {% block javascript %}
 
 
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+	$(window).on('load', function pageActive(){
+		$('.side-nav .parametres').addClass('active');
+	});
+
     /* Variables :  tableau , direction du tri, champs du tri */
     var tableau = new Array();
     var directionTri = 'asc';
@@ -320,7 +312,7 @@
         /* Création du nouveau tableau */
         $.each(tableau, function(index, value){
             nouveauTableau += "<tr>";
-            nouveauTableau += "<td class='zone_texte_petit' data-intitule='id'> <input type='checkbox' name='" + tableau[index]['id'] + "' id='checkUser_" + tableau[index]['id'] + "' /></td>";
+            // nouveauTableau += "<td class='zone_texte_petit' data-intitule='id'> <input type='checkbox' name='" + tableau[index]['id'] + "' id='checkUser_" + tableau[index]['id'] + "' /></td>";
 			nouveauTableau += "<td class='zone_texte_moyen' data-intitule='nom'>" + tableau[index]['nom'] + "</td>";
 			nouveauTableau += "<td class='zone_texte_grand' data-intitule='roles'>" + tableau[index]['roles'] + "</td>";
             nouveauTableau += "</tr>";

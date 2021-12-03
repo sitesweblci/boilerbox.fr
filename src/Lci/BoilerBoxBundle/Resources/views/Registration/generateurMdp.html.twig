@@ -66,6 +66,12 @@
 
 {% block javascript %}
 	<script>
+	// Fonction style barre de navigation page active
+	$(window).on('load', function pageActive(){
+		$('.side-nav .gene-mdp').addClass('active');
+	})
+
+	
 	$( ':radio' ).removeAttr('checked');
 
 	var inputHeure = document.getElementById("generateur_mdp_duree_0");

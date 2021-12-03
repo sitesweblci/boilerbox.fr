@@ -5,21 +5,30 @@
 {% block fos_user_content %} 
 {{ parent() }}
 
-<div class='listing'>
-	<div class='ajout_objet'>
-		<h1>Changement d'état</h1>
-		<h2>Module : {{ form.numero.vars.value }} ({{ form.nom.vars.value }}) <!--<span id='presence'></span>--></h2>
-	    <div class='formulaire'>
-			{{ form_start(form, {'action':path('lci_change_parc_modules'), 'method':'POST', 'name':'myForm'}) }}
+<main class='main-box'>
+		<h1 class="main-box__title">Changement d'état</h1>
+		<h2 class="main-box__sub-title">Module : {{ form.numero.vars.value }} ({{ form.nom.vars.value }}) <!--<span id='presence'></span>--></h2>
+	    <div class='main-box__content'>
+			{{ form_start(form, {'action':path('lci_change_parc_modules'), 'method':'POST', 'name':'myForm','class':'form'}) }}
 				{{ form_errors(form) }}
-				<div>{{ form_widget(form.present) }} {{ form_label(form.present) }}</div>
-				<div>{{ form_widget(form.actif) }} {{ form_label(form.actif) }}</div>
-	        	<div class='form_zone_date'><div>{{ form_label(form.dateMouvement) }}</div><div>{{ form_widget(form.dateMouvement) }}</div></div>
-				<div>{{ form_label(form.type) }}</div>
-				<div>{{ form_widget(form.type) }}</div>
-	            <div class='site_module'>{{ form_label(form.site) }}</div>
-	            <div class='site_module'>{{ form_widget(form.site) }}</div>
-	            <div class='cacher'>
+				<div class="form__field">
+					{{ form_widget(form.present) }}
+					{{ form_label(form.present) }}
+				</div>
+				<div class="form__field">
+					{{ form_widget(form.actif) }}
+					{{ form_label(form.actif) }}
+				</div>
+	        	<div class='form__field'><div>{{ form_label(form.dateMouvement) }}</div><div>{{ form_widget(form.dateMouvement) }}</div></div>
+				<div class="form__field">
+					{{ form_label(form.type) }}
+					{{ form_widget(form.type) }}
+				</div>
+	            <div class='site_module form__field'>
+	            	{{ form_label(form.site) }}
+	            	{{ form_widget(form.site) }}
+	            </div>
+	            <div class='form__field cacher'>
 	                {{ form_row(form.numero) }}
 	                {{ form_row(form.nom) }}
 	                {{ form_row(form.id) }}
@@ -27,20 +36,17 @@
 				{{ form_rest(form) }}
 			{{ form_end(form) }}
 	    </div>
-		<div class='validation_formulaire'> 
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_module.png') }}" class="btn_menu" alt="Changer le module"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_module_hover.png') }}" 
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_modifier_module.png') }}" 
-				onClick="attente(); document.forms['myForm'].submit();" >
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" class="btn_menu" alt="Retour au parc"
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc_hover.png') }}" 	
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" 	  
-				onClick="attente(); redirection('parcModules');">
+		<div class='form__btn'> 
+			<button  class="btn_menu btn btn--second" onClick="attente(); redirection('parcModules');">Retour</button>
+			<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit();" >Modifier</button>
 		</div>
-	</div>
-</div>
+</main>
 
-<script type='text/javascript'>	
+<script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    })
 	$(document).ready(function(){
 		$("#module_dateMouvement").datepicker();
 

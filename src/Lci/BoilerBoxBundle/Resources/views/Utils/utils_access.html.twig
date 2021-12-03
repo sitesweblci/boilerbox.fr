@@ -1,48 +1,114 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Utils/utils_access.html.twig #}
 {% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
 
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+		main{
+			padding: 0 32px;
+		}
+		.main-box{
+			margin: 16px 0;
+		}
+		.main-box .green::before{background: #4CBB17;}
+		.main-box .orange::before{background: #FF8C00;}
+		.main-box .red::before{background: #FF2400;}
+		.main-box .blue::before{background: #0096FF;}
+		.main-box .grey::before{background: #C4C4C4;}
+		.flex-table th, .flex-table td{
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.flex-table tr th{
+			padding: 0 3px;
+			font-size: 9pt;
+		}
+		.flex-table tr{
+			cursor: initial;
+		}
+		.flex-table__tbody{
+			height: 46vh;
+		}
+		.flex-table tr td{
+			padding: 3px;
+			font-size: 12pt;
+		}
+		.flex-table .mini{
+			width: calc(15% - 6px);
+		}
+		.flex-table .small{
+			width: calc(20% - 6px);
+		}
+		.flex-table .medium{
+			width: calc(50% - 6px);
+		}
+		.flex-table .wide{
+			width: calc(100% - 6px);
+		}
+		#tableau_detail_disponibilite{
+			max-width: 450px;
+		}
+		#informations_disponibilite{
+			max-height: 400px;
+			overflow: auto;
+			padding: 0 48px 48px 48px;
+			text-align: justify;
+		}
+	</style>
+{% endblock liens_css %}
+
 {% block fos_user_content %}
-<div class='listing' style='margin-top:-50px;'>
-	<div class='listing2'>
-		<h1>Disponibilité des Sites</h1>
-		<div class='formulaire_liste'>
-			<form id='form_access' name='form_access' method='post' action="{{ path('lci_utils_validChoice') }}" data-url={{ path('lci_ajax_refreshASiteStatut') }}>
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">Utilitaires</h1>
+</header>
+<main class="flex flex--row flex--wrap">
+	<section class='{# listing #}main-box main-box--table' style="margin-right:24px;">
+		{# <div class='listing2'> #}
+		<h1 class="main-box__title main-box--table__title">Disponibilité des Sites</h1>
+		<h2 class="main-box__sub-title main-box--table__sub-title">Rafraichissement approximatif : Un site (~{{ delais_netcat }}s) - La page (~{{ delais_netcat * entities_sites|length }}s)</h2>
+		<div class='{# formulaire_liste #}main-box__content'>
+			<form id='form_access' class="form" name='form_access' method='post' action="{{ path('lci_utils_validChoice') }}" data-url={{ path('lci_ajax_refreshASiteStatut') }}>
 			<input type='hidden' id='choixUtilitaire' name='choixUtilitaire' value='refreshAccess' />
-				<table class='tab_liste tableau_listing'>
-					<thead>
-						<tr>
-							<th class='zone_texte_petit centrer'>Rafraichir</th>
-							<th class='zone_texte_petit centrer'>Disponibilité</th>
-							<th class='zone_texte_petit'>Code Affaire</th>
-							<th class='zone_texte_moyen'>Site</th>
-							<th class='zone_texte_moyen'>Date du test</th>
+				<table class='{# tab_liste tableau_listing #}flex-table'>
+					<thead class="flex-table__thead">
+						<tr class="flex-table__row">
+							<th class='mini txt--center'>Rafraichir</th>
+							<th class='small txt--center'>Disponibilité</th>
+							<th class='small'>Code Affaire</th>
+							<th class='medium'>Site</th>
+							<th class='medium'>Date du test</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="flex-table__tbody">
 						{% for entity_site in entities_sites %}
 							{% if entity_site.siteConnexion %}
-							{% if not (entity_site.siteConnexion.url|lower matches '/supervision/') %}
-								<tr>	
-									<td class='zone_texte_petit centrer'><input type='radio' name='refreshAccessId' value='{{ entity_site.getId }}' onClick="refreshSiteStatut('{{ entity_site.getId }}', true);" /></td>
-									<td class='zone_texte_petit centrer feuTricolor'>
-										<div data-identifiant={{ entity_site.getId }} id={{ entity_site.getId }} class=
-											{% if entity_site.siteConnexion.disponibilite == '0' %}"ok"
-												{% elseif entity_site.siteConnexion.disponibilite ==  '1' %}"mid"
-												{% elseif entity_site.siteConnexion.disponibilite ==  '2' %}"nok"
-												{% elseif entity_site.siteConnexion.disponibilite ==  '3' %}"ecatcher"
-												{% elseif entity_site.siteConnexion.disponibilite ==  '4' %}"inaccessible"
-											{% endif %}>
-										</div>
-									</td>
-									<td class='zone_texte_petit'>{{ entity_site.getAffaire }}</td>
-									<td class='zone_texte_moyen'><a href='#' onclick="atteindreSite('{{ entity_site.siteConnexion.url }}');return false;">{{ entity_site.getIntitule }}</a></td>
-									<td data-date={{ entity_site.getId }} class='zone_texte_moyen'>
-										{% if not entity_site.getDateAccess is empty %}
-											{{ entity_site.getDateAccess | date("d / M / Y - H:i:s") }}
-										{% endif %}
-									</td>
-								</tr>
-							{% endif %}
+								{% if not (entity_site.siteConnexion.url|lower matches '/supervision/') %}
+									<tr class="flex-table__row">	
+										<td class='mini txt--center'>
+											<input type='radio' name='refreshAccessId' value='{{ entity_site.getId }}' onClick="refreshSiteStatut('{{ entity_site.getId }}', true);" />
+										</td>
+										<td class='small txt--center feuTricolor'>
+											<div data-identifiant={{ entity_site.getId }} id={{ entity_site.getId }} class=
+												{% if entity_site.siteConnexion.disponibilite == '0' %}"ok green"
+													{% elseif entity_site.siteConnexion.disponibilite ==  '1' %}"mid orange"
+													{% elseif entity_site.siteConnexion.disponibilite ==  '2' %}"nok red"
+													{% elseif entity_site.siteConnexion.disponibilite ==  '3' %}"ecatcher blue"
+													{% elseif entity_site.siteConnexion.disponibilite ==  '4' %}"inaccessible grey"
+												{% endif %}>
+											</div>
+										</td>
+										<td class='small'>{{ entity_site.getAffaire }}</td>
+										<td class='medium'>
+											<a href='#' onclick="atteindreSite('{{ entity_site.siteConnexion.url }}');return false;">{{ entity_site.getIntitule }}</a>
+										</td>
+										<td data-date={{ entity_site.getId }} class='medium'>
+											{% if not entity_site.getDateAccess is empty %}
+												{{ entity_site.getDateAccess | date("d / M / Y - H:i:s") }}
+											{% endif %}
+										</td>
+									</tr>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 					</tbody>
@@ -55,59 +121,41 @@
 				<input type="hidden" id="_label" 	  name="_label" 	  value="{{ label }}" />
 			</form>
 		</div>
-	</div>
-	<div style='font-size:13px;'>
-		Rafraichissement approximatif : Un site (~{{ delais_netcat }}s) - La page (~{{ delais_netcat * entities_sites|length }}s) <br/>
-	</div>
-	<div class='display_flex_row'>
-		<div id='tab_legende_disponibilite_site' class='display_flex_column feuTricolor'>
-			<div class='display_flex_row_start'>
-				<div class='ok'></div><div>Connexion ok</div>
-			</div>
-			{#
-				<div class='display_flex_row_start'>
-					<div class='mid'></div><div>En attente de test de connexion</div>
-				</div>
-			#}
-			<div class='display_flex_row_start'>
-				<div class='nok'></div><div>Connexion ko</div>
-			</div>
-			<div class='display_flex_row_start'>
-                <div class='ecatcher'></div><div>Accessible seulement par eCatcher</div>
-            </div>
-            <div class='display_flex_row_start'>
-                <div class='inaccessible'></div><div>Inaccessible depuis boiler-box.fr</div>
-            </div>
+		<p class="main-box--table__legend__desc"></p>
+		<div class="main-box--table__legend">
+			<div class="green">Connexion O.K</div>
+			<div class="red">Connexion K.O</div>
+			<div class="blue">Accessible seulement par eCatcher</div>
+			<div class="grey">Inaccessible depuis boiler-box.fr</div>
 		</div>
-		<div>
+		<div class="main-box__btn main-box--table__btn">
+			<a href="{{ path('lci_utils_homepage') }}" {# onClick="attente(); redirection('utilitaires');"#} class="btn_menu btn btn--second" >Retour</a>
 			<img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir.png') }}" 
 					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir_hover.png') }}" 
 					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_rafraichir.png') }}" 
 					onClick="refreshAllAccess();" 
 					class="img_validation_formulaire btn_menu" 
 					alt="Rafraichir">
-
-			<img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}"     
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_annuler.png') }}" 	  
-					onClick="attente(); redirection('utilitaires');" 		  
-					class="img_validation_formulaire btn_menu" 
-					alt="Annuler">
 		</div>
-	</div>
-	<div id='tableau_detail_disponibilite'>
-		<h1>Détails</h1>
-		<div class='detail'>
+	</section>
+
+
+	<section id='tableau_detail_disponibilite' class="main-box main-box--table">
+		<h1 class="main-box__title main-box--table__title">Détails</h1>
+		<div class='detail main-box__content'>
 			<div id='informations_disponibilite'></div>
 		</div>
-	</div>
-</div>
+	</section>
+</main>
 
 
 
 
 <script type='text/javascript'>
-
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parametres').addClass('active');
+    });
 	function atteindreSite(siteUrl) {
 		var urlForm = siteUrl+'Symfony/web/app.php/login_check';
 		$('#form_getSite').attr('action',urlForm);

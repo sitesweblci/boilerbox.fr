@@ -66,6 +66,10 @@
     {{ parent() }}
 
     <script type='text/javascript'>
+        // Fonction style barre de navigation page active
+        $(window).on('load', function pageActive(){
+            $('.side-nav .cgu').addClass('active');
+        })
         $(document).ready(function() {
             // pas défaut cguCourant est sur oui et on le bloque sur oui
             $('input[type="radio"][name="lci_boilerboxbundle_cgu[cguCourant]"]:not(:checked)').attr('disabled', true);

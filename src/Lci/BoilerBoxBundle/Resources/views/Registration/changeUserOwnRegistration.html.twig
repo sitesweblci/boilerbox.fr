@@ -4,20 +4,6 @@
 {% block boilerBoxCSS %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
-    <style>
-        .form__field select:not(#fos_user_registration_form_langue){
-            padding: 0 !important;
-        }
-        .form__field select option{
-            padding: 6px;
-        }
-        @media screen and (max-width: 460px){
-            .form__field select:not(#fos_user_registration_form_langue){
-                padding: 6px 0 6px 10px !important;
-            }
-        }
-        
-    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
@@ -193,6 +179,11 @@
 
 {% block javascript %}
 <script type='text/javascript'>
+    // Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+        $('.side-nav .account').addClass('active');
+    })
+
 
 	// *********************** Gestion du slider Authentification double facteur ***********************************
 	// On vérifie si la clé double facteur est activée pour l'utilisateur. Si oui on bouge le bonton slider et on modifie pour appeler la fonction de désactivation double facteur en cas de selection du slider

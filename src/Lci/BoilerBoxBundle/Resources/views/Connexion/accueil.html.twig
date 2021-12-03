@@ -20,27 +20,37 @@ window.location.search: "?query=1"
    {{ parent() }}
    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
    <style>
+   	html{
+   		background: url("{{ asset('bundles/lciboilerbox/images/img/fondEcran-Dekstop.jpg') }}") no-repeat center fixed;
+   		-webkit-background-size: cover;
+   		background-size: cover;
+   	}
    	.info-box__header .close-cross{
    		position: absolute;
    		top: 14px;
    		right: 14px;
    	}
+   	@media screen and (max-width: 920px){
+   		html{
+   			background: white;
+   		}
+   	}
    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-		<main {# id="listingEquipement"  #}class="index-box">
+		<main class="index-box">
 			<h1 class="index-box__title">Sites</h1>
-			<div {# id="legendeListeEquipement" #} class="index-box__header">
-				<div {# id="legendeConnexion"  #}class="index-box__header__legende">
+			<div class="index-box__header">
+				<div class="index-box__header__legende">
 					<div>Connecté</div>
 					<div>Pas à jour</div>
 					<div>eCatcher</div>
 					<div>Non connecté</div>
 					<div>Désactivé</div>
 				</div>
-				<div {# id="searchBarEquipement"  #}class="search-bar">
-					<span {# id="imgSearchBar"  #}class="search-bar__img"/></span>
+				<div class="search-bar">
+					<span class="search-bar__img"/></span>
 					<input id='js-search-site' class="search-bar__input" type="text" placeholder="Rechercher">
 				</div>
 			</div>
@@ -256,9 +266,8 @@ window.location.search: "?query=1"
 					</p>
 				{% endif %}
 			{% endif %}
-			<div {# id="ensembleInfoAffaire" #} class="info-box__content">
-				<div {# id="leftInfo" #} class="info-box__content__settings">
-				{# <div id="connexionAffaire"> #}
+			<div class="info-box__content">
+				<div class="info-box__content__settings">
 					<p id="choixModeConnexion">Choisissez votre</br> mode de connexion</p>
 					<h1 class="info-box__content__title">
 						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoConnexion.svg') }}" alt="pictogramme connexion">
@@ -283,93 +292,85 @@ window.location.search: "?query=1"
 							</a>
 						{% endif %}
 					</div>
-				{# </div> #}
-
-				{# <div id="piecesJointesAffaire"> #}
-					<h1 class="info-box__content__title">
-						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
-						Pièces jointes
-					</h1>
-					<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
-					<div class="js-addPieceJointe btn btn--add">
-						<div class="crossAdd"></div>
-						Ajouter pièce jointe
-					</div>
-					<span style='display:none'>
-						<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
-							<input type='file' id='fichier' name='fichierDuSite'>
-							<input type='text' id='fichierIdSite' name='fichierIdSite'>
-						</form>
-					</span>
-				{# </div> #}
-
-				{# <div id="infoSiteAffaire"> #}
-					<div {# id="pictoTitreInformationAffaire" #} class="info-box__content__title info-box__content__title--wrapper">
-						<span>
-							<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">
-							Paramètres de site
+					{% if is_granted('ROLE_TECHNICIEN') %}
+						<h1 class="info-box__content__title">
+							<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
+							Pièces jointes
+						</h1>
+						<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
+						<div class="js-addPieceJointe btn btn--add">
+							<div class="crossAdd"></div>
+							Ajouter pièce jointe
+						</div>
+						<span style='display:none'>
+							<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
+								<input type='file' id='fichier' name='fichierDuSite'>
+								<input type='text' id='fichierIdSite' name='fichierIdSite'>
+							</form>
 						</span>
-						{% if is_granted('ROLE_ADMIN') %}
-							<div id="modifyInfoAffaire" class="tooltip-wrapper" onClick="modifierSite()">
-								<img class="editInfo" src="{{ asset('bundles/lciboilerbox/images/img/edit.svg') }}" alt="icone modification informations de l'affaire">
-								<p id="infoBulleModifyInfo" class="popUp tooltip">Modifier</p>
-							</div>
-						{% endif %}
-					</div>
-					<div id="js-resumeAffaire" class="infos scroll">
-						<label>Nom</label>
-						<span class="infoAffaireIntitule">demo</span>
-						<label>Affaire</label>
-						<span class="infoAffaireAffaire">demo</span>
-						<label>Url</label>
-						<span class="infoAffaireUrl">demo</span>
-						<label>Code Live</label>
-						<span class="infoAffaireCodeLive">demo</span>
-						<label>Connexion 3G / 4G</label>
-						<span class="infoAffaire3G4G">demo</span>
-						<label>Connexion ADSL</label>
-						<span class="infoAffaireADSL">demo</span>
-						<label>Acces Cloud</label>
-						<span class="infoAffaireCloud">demo</span>
-						<label>Access Live</label>
-						<span class="infoAffaireLive">demo</span>
-						<label>Acces Local</label>
-						<span class="infoAffaireLocal">demo</span>
-						<label>Acces Ecatcher</label>
-						<span class="infoAffaireEcatcher">demo</span>
-						<label>Version IPC</label>
-						<span class="infoAffaireVersionIpc">demo</span>
-					</div>
-					<div></div>
-				{# </div> #}
+						<div class="info-box__content__title info-box__content__title--wrapper">
+							<span>
+								<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">
+								Paramètres de site
+							</span>
+							{% if is_granted('ROLE_ADMIN') %}
+								<div id="modifyInfoAffaire" class="tooltip-wrapper" onClick="modifierSite()">
+									<img class="editInfo" src="{{ asset('bundles/lciboilerbox/images/img/edit.svg') }}" alt="icone modification informations de l'affaire">
+									<p id="infoBulleModifyInfo" class="popUp tooltip">Modifier</p>
+								</div>
+							{% endif %}
+						</div>
+						<div id="js-resumeAffaire" class="infos scroll">
+							<label>Nom</label>
+							<span class="infoAffaireIntitule">demo</span>
+							<label>Affaire</label>
+							<span class="infoAffaireAffaire">demo</span>
+							<label>Url</label>
+							<span class="infoAffaireUrl">demo</span>
+							<label>Code Live</label>
+							<span class="infoAffaireCodeLive">demo</span>
+							<label>Connexion 3G / 4G</label>
+							<span class="infoAffaire3G4G">demo</span>
+							<label>Connexion ADSL</label>
+							<span class="infoAffaireADSL">demo</span>
+							<label>Acces Cloud</label>
+							<span class="infoAffaireCloud">demo</span>
+							<label>Access Live</label>
+							<span class="infoAffaireLive">demo</span>
+							<label>Acces Local</label>
+							<span class="infoAffaireLocal">demo</span>
+							<label>Acces Ecatcher</label>
+							<span class="infoAffaireEcatcher">demo</span>
+							<label>Version IPC</label>
+							<span class="infoAffaireVersionIpc">demo</span>
+						</div>
+						<div></div>
+					{% endif %}
 				</div>
-				<div {# id="espaceCommunautaireAffaire"  #}class="info-box__content__social">
+				<div class="info-box__content__social">
 					<h1 class="info-box__content__title">
 						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoActivite.svg') }}" alt="pictogramme information">
 						Activité
 					</h1>
-					{# <div id="ensembleCommentaire"> #}
-						{# <div id="monCommentaire"> #}
-							<div class="mon-comm">
-								<div class="rondCompte {{ app.user.couleur }}">{{ app.user.label | slice (0,1) }}</div>
-								<form {# id="formMonCommentaire" #} class="form">
-									<label for="inputMonCommentaire"></label>
-									<textarea {# class="inputMonCommentaire" #} id="inputMonCommentaire" name="inputMonCommentaire" placeholder="Votre commentaire..." rows="4"maxlength="999"></textarea>
-									<p {# id="validationMonCommentaire"  #}class="btn btn--main" onclick="publicationCommentaire();">Publier</p>
-								</form>
-							</div>
-						{# </div> #}
-
-						<div id="fluxCommentaire" class="flux-comm scroll scroll--gris">
-						</div>
-						<div></div>
-					{# </div> #}
+					<div class="mon-comm">
+						<div class="rondCompte {{ app.user.couleur }}">{{ app.user.label | slice (0,1) }}</div>
+						<form  class="form">
+							<label for="inputMonCommentaire"></label>
+							<textarea  id="inputMonCommentaire" name="inputMonCommentaire" placeholder="Votre commentaire..." rows="4"maxlength="999"></textarea>
+							<p class="btn btn--main" onclick="publicationCommentaire();">Publier</p>
+						</form>
+					</div>
+					<div id="fluxCommentaire" class="flux-comm scroll scroll--gris"></div>
+					<div></div>
 				</div>
 			</div>
 		</section>
 {% endblock mainBody %}
 {% block javascript %}
 	<script type="text/javascript">
+	$(window).on('load', function pageActive(){
+		$('.side-nav .index').addClass('active');
+	})
 
 	function conversionInfosFr($info) {
 		switch($info) {
@@ -718,8 +719,10 @@ window.location.search: "?query=1"
 			$img_live = null;
 			$img_locale = null;
             $('#js-pictoConnexion img:first').off('click');
-            $("#js-pictoConnexion img:eq(1)").off('click');
-            $('#js-pictoConnexion img:last').off('click');
+			{% if is_granted('ROLE_TECHNCIEN') %}
+            	$("#js-pictoConnexion img:eq(1)").off('click');
+            	$('#js-pictoConnexion img:last').off('click');
+			{% endif %}
 			$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);
 		}
 
@@ -849,6 +852,7 @@ window.location.search: "?query=1"
 							$('a.infoMajCloud').addClass('desactive');
 						}
             		}
+					{% if is_granted('ROLE_TECHNICIEN') %}
            			if ($img_live != null) {
                 		$("#js-pictoConnexion img:eq(1)").attr('src', $img_live);
 						// Connexion au Live effective depuis boilerbox
@@ -874,6 +878,7 @@ window.location.search: "?query=1"
 							$('a.infoMajLocal > .tooltip').removeClass('cacher');
 						}
 					}
+					{% endif %}
 					
 
                     $('#infoAffaire').data('id', $entitySite.id);

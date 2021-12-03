@@ -38,14 +38,16 @@
 {% block body %}
      {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
     {% block fos_user_content %}
-		<div id='entete_de_page'><h1>Gestion du Parc Technique</h1></div>
+		<header class="sub-header sub-header--blue">
+            <h1 class="sub-header__title">Gestion du Parc Technique</h1>
+        </header>
     {% endblock fos_user_content %}
 {% endblock  body %}
 
 {% block javascript %}
     <script type='text/javascript'>
         /* Remplacement du menu 'outils' par 'accueil' */
-        $('#lien_menu_boiler_outil').html("<a href={{ path('lci_boilerbox_index') }} title='Retour accueil'>Accueil</a>");
-        $('#sousmenu_boiler_deroulant1').addClass('nopadding');
+        // $('#lien_menu_boiler_outil').html("<a href={{ path('lci_boilerbox_index') }} title='Retour accueil'>Accueil</a>");
+        // $('#sousmenu_boiler_deroulant1').addClass('nopadding');
    </script>
 {% endblock javascript %}

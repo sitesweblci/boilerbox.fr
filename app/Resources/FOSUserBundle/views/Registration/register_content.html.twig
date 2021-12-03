@@ -4,23 +4,13 @@
 {% block boilerBoxCSS %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
-    <style>
-        .form__field select:not(#fos_user_registration_form_langue){
-            padding: 0 !important;
-        }
-        .form__field select option{
-            padding: 6px;
-        }
-    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
     <main id="monCompte" data-is-admin="{{ is_granted('ROLE_ADMIN') }}">
-        <header class="headerInterne">
-            <p id="rondMonCompte"><span>n</span></p>
-            <div id="titrePageMonCompte">
-                <h1>Nouvel utilisateur</h1>
-            </div>
+        <header class="sub-header sub-header--grey">
+            <p class="sub-header__chip"><span>n</span></p>
+            <h1 class="sub-header__title">Nouvel utilisateur</h1>
         </header>
 
 		{{ form_start(form, {'attr': {'class':'formMonCompte form'}}) }}
@@ -35,7 +25,7 @@
                 <div id="monCompteProfil" class="active" data-tab-content>
                     <div class="formMaxHeightMonCompte">
                         <div class="form__field">
-                            <h3>Informations</h3>
+                            <h3 class="form__field__title">Informations</h3>
                             <div class='champsAdmin'>
                                 {{ form_label(form.enabled) }}
                                 {{ form_widget(form.enabled) }}
@@ -79,7 +69,7 @@
                             </div>
                         </div>
                         <div class="form__field">
-                            <h3>Préférences</h3>
+                            <h3 class="form__field__title">Préférences</h3>
                             <label for="">Couleur</label>
                             <div id="containerCouleurUser">
                                 <div id="rondCouleurUserOrange" class="rondCouleurUser rondCouleurUserActif" onClick="definirCouleur('persoInactif')"></div>
@@ -98,7 +88,7 @@
                 <div id="monCompteAuthentification" data-tab-content>
                     <div id="site_siteConnexion_accesDistant" class="formMaxHeightMonCompte">
                         <div class="form__field">
-                            <h3>Définition du mot de passe</h3>
+                            <h3 class="form__field__title">Définition du mot de passe</h3>
     						<div>
     							{{ form_label(form.plainPassword.first, 'Mot de passe') }}
     							{{ form_widget(form.plainPassword.first) }}
@@ -116,7 +106,7 @@
                 <div id="monCompteAutre" data-tab-content>
                     <div class="formMaxHeightMonCompte">
                         <div class="form__field">
-                            <h3>Informations</h3>
+                            <h3 class="form__field__title">Informations</h3>
                     		<div class='champsAdmin'>
                         		{{ form_label(form.informations) }}
                         		{{ form_widget(form.informations) }}
@@ -124,7 +114,7 @@
                     		</div>
                         </div>
                         <div class="form__field">
-                            <h3>Mode de partage privé</h3>
+                            <h3 class="form__field__title">Mode de partage privé</h3>
                             <div>
                                 {{ form_label(form.modePrive) }}
                                 {{ form_widget(form.modePrive) }}
@@ -132,7 +122,7 @@
                             </div>
                         </div>
                         <div class="form__field">
-                            <h3>Langue</h3>
+                            <h3 class="form__field__title">Langue</h3>
                             <div>
                                 {{ form_label(form.langue) }}
                                 {{ form_widget(form.langue) }}
@@ -156,6 +146,11 @@
 
 {% block javascript %}
 <script type='text/javascript'>
+    // Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+        $('.side-nav .parametres').addClass('active');
+    });
+
 	var is_admin = $('#monCompte').data("is-admin");
 	if (is_admin) {
 		$('.champsAdmin').removeClass('cacher');

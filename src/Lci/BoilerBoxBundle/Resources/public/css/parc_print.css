@@ -34,7 +34,9 @@ input {
   border: none;
 }
 
-
+.main-box{
+  display: none !important;
+}
 
 .cacher {
   display: none;

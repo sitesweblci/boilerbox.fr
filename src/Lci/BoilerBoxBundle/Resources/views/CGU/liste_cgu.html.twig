@@ -107,6 +107,10 @@
 
 {% block javascript %}
     <script type='text/javascript'>
+        // Fonction style barre de navigation page active
+        $(window).on('load', function pageActive(){
+            $('.side-nav .cgu').addClass('active');
+        })
 
         /* Variables :  tableau , direction du tri, champs du tri */
         var tableau = [];

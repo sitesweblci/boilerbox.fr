@@ -1,60 +1,62 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Registration/newModule.html.twig #}
 {% extends "LciBoilerBoxBundle::secondParcLayout.html.twig" %}
 
-
 {% block fos_user_content %} 
 {{ parent() }}
 <form method='post' name='form_retour_ticket' action={{ path('lci_register_problemeTechnique') }}>
    <input type='hidden' id='id_probleme' name='id_probleme' value="{{ id }}" />
 </form>
-<div class='listing'>
-	<div class='ajout_objet'>
-	    {% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
-		<h1>Nouveau Module</h1>
-	    <div class='formulaire'>
-			{{ form_start(form, {'action':path('lci_register_module', {'provenance':provenance}), 'method':'POST', 'name':'myForm'}) }}
-			{{ form_errors(form) }}
-			<div>{{ form_errors(form.numero) }}{{ form_widget(form.numero) }}</div>
-	        <div>{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</div>
-	        <div>{{ form_errors(form.type) }}{{ form_widget(form.type) }}</div>
-			<div>{{ form_widget(form.present) }}{{ form_label(form.present) }}</div>
-	        <div>{{ form_widget(form.actif) }}{{ form_label(form.actif) }}</div>
-			<div class='cacher'>
-				{{ form_row(form.id) }}
-				{{ form_row(form.dateMouvement) }}
-			</div>
-			{{ form_end(form) }}
+<section class='main-box'>
+    {% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
+	<h1 class="main-box__title">Nouveau Module</h1>
+	<div class="main-box__content">
+		{{ form_start(form, {'action':path('lci_register_module', {'provenance':provenance}), 'method':'POST', 'name':'myForm', 'class':'form'}) }}
+		{{ form_errors(form) }}
+		<div class="form__field">
+			<label>Numéro de module</label>
+			{{ form_widget(form.numero) }}{{ form_errors(form.numero) }}
+		</div>
+	    <div class="form__field">
+	    	<label>Nom</label>
+	    	{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}
 	    </div>
-		<div class='validation_formulaire'> 
-			<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_module.png') }}" class="btn_menu" alt="Créer un module" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_module_hover.png') }}" 	
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_creer_module.png') }}" 	
-				onClick="attente(); document.forms['myForm'].submit();">
+	    <div class="form__field">
+	    	<label>Type</label>
+	    	{{ form_widget(form.type) }}{{ form_errors(form.type) }}
+	    </div>
+		<div class="form__field">
+			{{ form_widget(form.present) }}{{ form_label(form.present) }}
+	    	{{ form_widget(form.actif) }}{{ form_label(form.actif) }}
+	    </div>
+		<div class='form__field cacher'>
+			{{ form_row(form.id) }}
+			{{ form_row(form.dateMouvement) }}
+		</div>
+		<div class="form__field">
+			{{ form_end(form) }}
+		</div>
+		<div class='form__btn'>
 			{% if provenance == 'accueil' %}
-				<img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" class="btn_menu" alt="Retour au menu" 	 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 		
-					onClick="attente(); redirection('retourMenu');" >
+				<button class="btn_menu btn btn--second" onClick="attente(); redirection('retourMenu');" >Retour</button>
 			{% elseif provenance == 'ticket' %}
-				<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket.png') }}" class="btn_menu" alt="Creer un ticket"
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket_hover.png') }}" 
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_ticket.png') }}" 
-					onClick="attente(); retourTicket();">
+				<button class="btn_menu btn btn--second" onClick="attente(); retourTicket();">Retour ticket</button>
 			{% else %}
-				<img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" class="btn_menu" alt="Retour au parc"
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_retour_parc.png') }}" 	
-					onClick="attente(); redirection('parcModules');">
+				<button class="btn_menu btn btn--second" onClick="attente(); redirection('parcModules');">Retour parc</button>
 			{% endif %}
+			<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit();">Créer module</button>
 		</div>
 	</div>
-</div>
+</section>
 
 
 <script type='text/javascript'>
     function retourTicket() {
         document.forms['form_retour_ticket'].submit();
     }
+    // Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .parc-tech').addClass('active');
+    })
 </script>
 
 {% endblock fos_user_content %}

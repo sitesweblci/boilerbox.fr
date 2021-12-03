@@ -6,59 +6,26 @@
 
 {{ parent() }}
 
-<div class='{# listing #} main-content'>
-    {# <div class='menu_administration'>
-        <div class='menu_ligne1'>
-            <img onClick="attente(); redirection('menuUtilisateur');"
-				class="btn_menu" 
-				alt="Gestion des utilisateurs" 
-				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs.png') }}" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs_hover.png') }}" 
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_utilisateurs.png') }}" />
-
-            <img onClick="attente(); redirection('menuSite');"
-				class="btn_menu" 
-				alt="Gestion des sites" 
-				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites.png') }}" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites_hover.png') }}"        
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_sites.png') }}" /> 
-        </div>
-        <div class='menu_ligne2'>
-            <img onClick="attente(); redirection('gestionLiens');"
-				class="btn_menu" 
-				alt="Gestion des liens" 
-				src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens.png') }}" 
-				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens_hover.png') }}"        
-				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_gestion_liens.png') }}" />
-			{% if is_granted('ROLE_SUPER_ADMIN') %}
-            	<img onClick="attente(); redirection('utilitaires');" 
-					class="btn_menu" 
-					alt="Utilitaires" 
-					src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires.png') }}" 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires_hover.png') }}"                
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/btnMenu_utilitaires.png') }}"  />
-			{% endif %}
-        </div>
-    </div> #}
+<main class='{# listing #} main-content'>
     <div class="card" onClick="attente(); redirection('menuUtilisateur');">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/users.svg') }}" alt="Gestion des utilisateurs" >
     	<div class="card__container">
     		<h4 class="card__container__title">Gestion utilisateurs</h4>
-    		<p class="card__container__desc">Bla bla bla bla</p>
+    		<p class="card__container__desc">Créer, modifier ou supprimer un utilisateur</p>
     	</div>
     </div>
     <div class="card" onClick="attente(); redirection('menuSite');">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/sites.svg') }}" alt="Gestion des sites" >
     	<div class="card__container">
     		<h4 class="card__container__title">Gestion sites</h4>
-    		<p class="card__container__desc">Bla bla bla bla</p>
+    		<p class="card__container__desc">Créer, modifier ou supprimer un site d'exploitation</p>
     	</div>
     </div>
     <div class="card" onClick="attente(); redirection('gestionLiens');">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/links.svg') }}" alt="Gestion des liens">
     	<div class="card__container">
     		<h4 class="card__container__title">Gestion liens</h4>
-    		<p class="card__container__desc">Bla bla bla bla</p>
+    		<p class="card__container__desc">Définir les accès utilisateurs aux sites d'exploitaion</p>
     	</div>
     </div>
     {% if is_granted('ROLE_SUPER_ADMIN') %}
@@ -66,10 +33,17 @@
 	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/utilitaires.svg') }}" alt="Utilitaires">
 	    	<div class="card__container">
 	    		<h4 class="card__container__title">Utilitaires</h4>
-	    		<p class="card__container__desc">Bla bla bla bla</p>
+	    		<p class="card__container__desc">Gérer les rôles utilisateurs, vérifier la disponbilités des sites et les logs de connexion</p>
 	    	</div>
 	    </div>
 	{% endif %}
-</div>
+</main>
+
+<script type='text/javascript'>
+// Fonction style barre de navigation page active
+	$(window).on('load', function pageActive(){
+		$('.side-nav .parametres').addClass('active');
+	})
+</script>
 
 {% endblock fos_user_content %}
