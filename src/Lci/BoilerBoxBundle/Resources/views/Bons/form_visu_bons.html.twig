@@ -13,10 +13,15 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
+
 		.main-box{
 			position: relative;
 			width: calc(100% - 40px);
 			max-width: initial;
+		}
+		.search-bar{
+			width: 250px;
+			margin-right: 16px;
 		}
 		.flex-table{
 			width: 100%;
@@ -49,6 +54,10 @@
 		.flex-table .wide{
 			width: calc(100% - 6px);
 		}
+		.visu-bon-img{
+			width:20px;
+			height:20px;
+		}
 	</style>
 {% endblock liens_css %}
 
@@ -80,13 +89,17 @@
 <main class='{# listing_all_bons #}main-box main-box--table'>
 	<h1 class="main-box__title main-box--table__title">{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
     <div class='{# formulaire_liste #}main-box__action'>
+    	<div class="search-bar">
+			<span class="search-bar__img"/></span>
+			<input id='js-search-bon' class="search-bar__input" type="text" placeholder="Rechercher">
+		</div>
     	<span class="tooltip-wrapper">
     		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" onClick="redirection('affinerRechercheBon'); return false;" />
     		<span class="tooltip">Affiner recherche</span>
     	</span>
     </div>
     <div class="main-box__content">
-        <table class='{# tab_liste #} {# tableau_listing #} flex-table'>
+        <table id="js-liste-bon" class='{# tab_liste #} {# tableau_listing #} flex-table'>
             <thead id='contenu_head_tableau_bons' class="flex-table__thead">
 				<tr class="flex-table__row">
 					<th class="small">Enquête</th>
@@ -198,7 +211,7 @@
 					</td>
 					<td class='small cesure selectionnable centrer txt--center'>
 						{# <div onclick="afficherLeBon({{ ent_bons.id}});"> #}
-							<img src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  onclick="afficherLeBon({{ ent_bons.id}});" style="width:20px;height:20px;">
+							<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  onclick="afficherLeBon({{ ent_bons.id}});">
 						{# </div> #}
                     </td>
 				</tr>
@@ -225,6 +238,40 @@
     $(window).on('load', function pageActive(){
     	$('.side-nav .bons-interv').addClass('active');
     });
+
+    // Search bar
+    // Fonction pour changer la bordure de la barre de recherche en focus
+    $(".search-bar__input").on('focus', function searchFocus(){
+    	if(!$(this).parents(".search-bar").hasClass('search-bar--focus')){
+    		$(this).parents(".search-bar").addClass("search-bar--focus");
+    	}
+    });
+    $(".search-bar__input").on('blur', function searchBlur(){
+    	if($(this).parents(".search-bar").hasClass("search-bar--focus")){
+    		$(this).parents(".search-bar").removeClass("search-bar--focus");
+    	}
+    });
+
+    // Fonction de recherche sur la page : On commence par rendre la fonction contains de jquery case-insensitive puis on declare la fonction de recherche
+    jQuery.expr[':'].contains = function(a, i, m) {
+        return jQuery(a).text().toUpperCase()
+            .indexOf(m[3].toUpperCase()) >= 0;
+    };
+    $(function() {
+        $('#js-search-bon').keyup(function(e) {
+			rechercheOnPage();
+        });
+    });
+
+	function rechercheOnPage() {
+		var $content = $.trim($('#js-search-bon').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
+		$("#js-liste-bon tbody tr").hide().filter(function( index ) {
+			var regex = new RegExp($content, 'i');
+			return regex.test($(this).text());
+		})
+		.show();
+	}
+
 	/* Variables :  tableau , direction du tri, champs du tri */
 	var tableau = new Array();
 	var directionTri = 'asc';
@@ -468,7 +515,7 @@
 
     function compare(quoi) {
 
- 		var $srcImgVisualiser = $('#entete_de_page').data('src');
+ 		var $srcImgVisualiser = $('.visu-bon-img').attr('src');
 
 		litTableauPhp();
 		/* Nouveau tableau des données triées */
@@ -521,7 +568,7 @@
 
 		/* Création du nouveau tableau */
 		$.each(tableau, function(index, value){
-			nouveauTableau += "<tr>";
+			nouveauTableau += "<tr class='flex-table__row'>";
 			nouveauTableau += "<td class='small centrer' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
 			{% if is_granted('ROLE_SECRETERIAT') %}
 				if (tableau[index]['enqueteFaite']) {
@@ -591,9 +638,9 @@
 			nouveauTableau += "</div>";
             nouveauTableau += "</td>";
 	
-			nouveauTableau += "<td class='small cesure selectionnable centrer'>";
+			nouveauTableau += "<td class='small cesure selectionnable txt--center'>";
 			nouveauTableau += "<div onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
-			nouveauTableau += "<img src='" + $srcImgVisualiser + "'>";
+			nouveauTableau += "<img class='visu-bon-img' src='" + $srcImgVisualiser + "'>";
 			nouveauTableau += "</div>";
 			nouveauTableau += "</td>";
 			nouveauTableau += "</tr>";
