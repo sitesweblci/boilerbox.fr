@@ -2091,7 +2091,7 @@ div.champs_validation_bon {
 }
 
 td > div.champs_validation_bon {
-	width: 275px;
+	/*width: 275px;*/
 	margin-left: 2px;
 }
 
@@ -2247,11 +2247,11 @@ input:checked + .slider::before {
 }*/
 
 #info_bulle_fichier.fichier::before {
-	content: 'Ajouter des fichiers';
+	content: 'Afficher les commentaires';
 }
 
 #info_bulle_fichier::before {
-    content: 'Afficher les commentaires';
+    content: 'Ajouter des fichiers';
 }
 
 span.informations_archivage {
@@ -2335,6 +2335,6 @@ span.informations_archivage {
     padding: 5px 5px 20px 5px;
   }
 }
-tbody#table_des_fichiers {
+/*tbody#table_des_fichiers {
 	height: 130px;
-}
+}*/
