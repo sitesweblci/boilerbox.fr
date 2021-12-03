@@ -43,7 +43,7 @@ consoleDir=$boilerDir'/bin/console'
 # Vérification qu'un flag d'importation de fichiers binaires n'existe pas
 if [ -e "$flagAnalyseAccess" ]; then
         # Si le flag existe mais que le process ne fonctionne pas : suppression du flag
-        processActif=`ps -ef | grep 'boilerbox:modulesutils' | grep -v 'grep'`
+        processActif=`ps -ef | grep 'boilerbox:utils' | grep -v 'grep'`
         if [ -z "$processActif" ]; then
             rm "$flagAnalyseAccess"
         else
@@ -54,7 +54,7 @@ else
     # Création du flag
     touch "$flagAnalyseAccess"
     # Appel de la commande qui importe en base la liste des fichiers présents dans le dossier fichiers_binaires
-    retour=`nice -0 $cheminPHP $consoleDir boilerbox:modulesutils`
+    retour=`nice -0 $cheminPHP $consoleDir boilerbox:utils`
     # Libération du flag
     rm "$flagAnalyseAccess"
 fi

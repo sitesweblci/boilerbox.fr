@@ -21,7 +21,6 @@ parameters:
     gestionnaire_parc: BAZELISAL
     gestionnaire_parc_externe: 0_AUTOMATICIENS
     files_path: uploads
-    #socket_unix: /var/run/mysqld/mysqld.sock
     connectbd.class: Lci\BoilerBoxBundle\Services\ServiceConnexion
     configuration.class: Lci\BoilerBoxBundle\Services\ServiceConfiguration
     utilitaires.class: Lci\BoilerBoxBundle\Services\ServiceUtilitaires
@@ -31,3 +30,4 @@ parameters:
     rapport.class: Lci\BoilerBoxBundle\Services\ServiceRapport
     log.class: Lci\BoilerBoxBundle\Services\ServiceLog
     mailer_disable: false
+    synchronisation.class: Lci\BoilerBoxBundle\Services\ServiceSynchronisation
