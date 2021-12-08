@@ -674,6 +674,7 @@
 					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}");
 					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '0')");
 				}
+				afficheArchives();
            	},
            	error: function($requete, $error, $msg) {
            	    alert('Erreur : Archivage non effectué');
