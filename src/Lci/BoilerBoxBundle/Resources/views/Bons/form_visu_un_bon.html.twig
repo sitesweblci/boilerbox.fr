@@ -190,7 +190,7 @@
 				</thead>
 				<tbody id='table_des_fichiers' class="flex-table__tbody">
 					{% for fichier in entity_bon.fichiersPdf %}
-						<tr id="fichier_{{ fichier.id }}" class="flex-table__row" {% if fichier.archive == true %}class="flex-table__row cacher archive"{% endif %}>
+						<tr id="fichier_{{ fichier.id }}" {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
 							{% if is_granted('ROLE_SAISIE_BA') %}
 								<td class='small'>
 									<img id="image_{{ fichier.id }}" 
@@ -422,7 +422,6 @@
 					</div>
 				{{ form_end(form_validation, {'render_rest': false}) }} 
 				<div class="main-box__btn main-box--table__btn">
-			    	{# <button id='img_validation' onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;" class="btn_menu mobile btn btn--main">Enregistrer</button> #}
 				</div>
 			</div>
 		</section>
@@ -680,6 +679,7 @@
 					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}");
 					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '0')");
 				}
+				afficheArchives();
            	},
            	error: function($requete, $error, $msg) {
            	    alert('Erreur : Archivage non effectué');
@@ -705,10 +705,7 @@
         });
 
         // Ajout du prototype a la fin du container
-        //console.log($nouveauPrototype.html());
         $container.prepend($nouveauPrototype);
-
-        //console.log($container.html());
 
         // Incrémentation de l'index des fichiers
         $indexFichier ++;
@@ -741,8 +738,7 @@
             });
 		} else if (!$('#chk_archive').is(':checked')){
 			$('#table_des_fichiers tr').each(function() {
-				if ($(this).attr('class') == "archive") {
-					alert('test2');
+				if ($(this).hasClass('archive')) {
 					$(this).addClass('cacher');
 				}
 			});
