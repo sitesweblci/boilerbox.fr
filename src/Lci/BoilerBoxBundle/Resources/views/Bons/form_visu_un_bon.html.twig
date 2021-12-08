@@ -187,7 +187,7 @@
 				</thead>
 				<tbody id='table_des_fichiers' class="flex-table__tbody">
 					{% for fichier in entity_bon.fichiersPdf %}
-						<tr id="fichier_{{ fichier.id }}" class="flex-table__row" {% if fichier.archive == true %}class="flex-table__row cacher archive"{% endif %}>
+						<tr id="fichier_{{ fichier.id }}" {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
 							{% if is_granted('ROLE_SAISIE_BA') %}
 								<td class='small'>
 									<img id="image_{{ fichier.id }}" 
@@ -699,10 +699,7 @@
         });
 
         // Ajout du prototype a la fin du container
-        //console.log($nouveauPrototype.html());
         $container.prepend($nouveauPrototype);
-
-        //console.log($container.html());
 
         // Incrémentation de l'index des fichiers
         $indexFichier ++;
@@ -734,7 +731,7 @@
             });
 		}else{
 			$('#table_des_fichiers tr').each(function() {
-				if ($(this).attr('class') == "archive") {
+				if ($(this).hasClass('archive')) {
 					$(this).addClass('cacher');
 				}
 			});
