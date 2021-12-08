@@ -109,12 +109,15 @@
     </section>
 
 	<section class='{# inter_bloc_2_2 #} grid__three main-box'>
-		<h1>Liste des fichiers </h1>
-		<span id='spanShowArchive' style='font-size:16px'>
-			<b><u>Afficher les fichiers archivés : 
-				<input type='checkbox' id='chkShowArchive'  name='chkShowArchive' onClick="showArchive(this.name)" />
-			</u></b>
-		</span>
+		<h1 class="main-box__title">Liste des fichiers </h1>
+		<div id='spanShowArchive' class="form__field">
+			<div class="checkbox">
+				<label for="chkShowArchive">
+					<input type='checkbox' id='chkShowArchive'  name='chkShowArchive' onClick="showArchive(this.name)" />
+					Afficher les fichiers archivés
+				</label>
+			</div>
+		</div>
 		<div id='encart_fichiers_joint'>
 		    {% if ent_siteBA_actif.fichiersJoint is not null %}
 		        {% for fichier in ent_siteBA_actif.fichiersJoint %}

@@ -1,21 +1,17 @@
-html{
+/*html{
   background: #f2f2f2;
 }
 h1 {
 	position: relative;
 }
-/* Suppression des flèches sur les input de type integer */
-/* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
 }
-/* Chrome */
 input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button { 
 -webkit-appearance: none;
 margin:0;
 }
-/* Opéra*/
 input::-o-inner-spin-button,
 input::-o-outer-spin-button { 
 -o-appearance: none;
@@ -29,7 +25,7 @@ img {
 input {
   box-sizing: border-box;
   border: none;
-}
+}*/
 .invisible {
   visibility: hidden;
 }
@@ -54,7 +50,6 @@ input {
   height: 150px;
   width: 99%;
 }
-
 #bloc_header_accueil {
   position: fixed;
   display: flex;
@@ -76,12 +71,12 @@ input {
 .version_boilerbox p span:first-child{
   font-size: 20px;
 }
-*/
+
 .userLabel {
   margin-top: 15px;
   font-size: 18px;
 }
-/*#bloc_body {
+#bloc_body {
   position: fixed;
   top: 150px;
   left: 0px;
@@ -101,7 +96,6 @@ input {
   padding: 24px 0;
 }
 */
-/* Utilisé sur la page d'accueil de la partie Administration */
 .menu_administration {
   display: flex;
   width: 400px;
@@ -127,12 +121,9 @@ input {
   width: 550px;
 }
 /* ############################################################ */
-
 /*#entete_de_page {
   margin-top: -50px;
-}
-*/
-/* Utilisé sur la page d'accueil de la partie Parc Technique */
+}*/
 .menu_parc {
   	display: flex;
   	width: 850px;
@@ -147,8 +138,6 @@ input {
   	margin-bottom: 50px;
   	margin-right: -20px;
 }
-
-/* Utilisé sur la page d'accueil de la partie Bons d'attachement */
 .menu_bons {
     display: flex;
 	padding-top:50px;
@@ -159,17 +148,11 @@ input {
     align-items: top;
     margin: auto;
 }
-
-
 /* ############################################################ */
-
-
-
 .module_selectionne {
   font-size: 13px;
   font-style: italic;
 }
-
 .ajout_objet_min {
   position: relative;
   display: flex;
@@ -181,7 +164,6 @@ input {
   border-radius: 5px;
   width: 480px;
 }
-
 .ajout_objet_min h1 {
   margin-top: 30px;
   text-transform: uppercase;
@@ -190,7 +172,6 @@ input {
   letter-spacing: -1px;
   text-align: center;
 }
-
 .ajout_objet_min h2 {
   text-transform: capitalize;
   font-size: 18px;
@@ -198,13 +179,10 @@ input {
   letter-spacing: -1px;
   margin-top: -6px;
 }
-
 .ajout_objet_min input {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
-
 .ajout_objet {
   position: relative;
   display: flex;
@@ -216,7 +194,6 @@ input {
   border-radius: 5px;
   width: 480px;
 }
-
 .ajout_objet h1 {
   margin-top: 30px;
   text-transform: uppercase;
@@ -225,7 +202,6 @@ input {
   letter-spacing: -1px;
   text-align: center;
 }
-
 .ajout_objet h2 {
   text-transform: capitalize;
   font-size: 18px;
@@ -233,40 +209,30 @@ input {
   letter-spacing: -1px;
   margin-top: -6px;
 }
-
 .ajout_objet input {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
 .upper {
   text-transform: uppercase;
 }
-
 .lower {
   text-transform: lowercase;
 }
-
-.ajout_objet_min .label_smalltext {
+/*.ajout_objet_min .label_smalltext {
   position: relative;
   top: -1px;
 }
-
 .ajout_objet .label_smalltext {
   position: relative;
   top: -1px;
 }
-
-
-
 .form_zone_date {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 350px;
 }
-
-
 .validation_formulaire {
   display: flex;
   justify-content: space-between;
@@ -274,7 +240,6 @@ input {
   margin-bottom: 25px;
   width: 350px;
 }
-
 .validation_formulaire_centre {
   display: flex;
   justify-content: center;
@@ -282,11 +247,9 @@ input {
   margin-bottom: 25px;
   width: 350px;
 }
-
 .img_validation_formulaire {
   height: 35px;
 }
-
 .validation_formulaire_end {
   position: fixed;
   flex-direction: column;
@@ -300,9 +263,7 @@ input {
   margin-left: 10px;
   margin-top: 10px;
 }
-
 /*
-
 .validation_formulaire_end {
   display: flex;
 	border:2px solid red;
@@ -315,7 +276,6 @@ input {
 .validation_formulaire_end div{
   margin-left: 10px;
 }
-*/
 .validation_formulaire_solo {
   display: flex;
   justify-content: center;
@@ -323,7 +283,6 @@ input {
   margin-bottom: 15px;
   width: 350px;
 }
-
 .validation_formulaire_ticket {
   display: flex;
   flex-direction: column;
@@ -331,7 +290,6 @@ input {
   margin-top: 10px;
   width: 350px;
 }
-
 .label_bigtext {
   font-size: 24px;
 }
@@ -341,8 +299,6 @@ input {
 .label_date {
   font-size: 13px;
 }
-
-
 .input_txt {
   width: 200px;
   margin-bottom: 10px;
@@ -367,9 +323,6 @@ input {
 .input_checkbox {
   margin: 0;
 }
-
-
-
 .btn_menu {
   width: 170px;
   cursor: pointer;
@@ -389,15 +342,10 @@ input {
 .btn_petit_picto {
   width: 15px;
 }
-
-
-
 .checkbox {
   margin-left: 0;
   margin-right: 5px;
 }
-
-
 /*.listing {
   	position: relative;
   	display: flex;
@@ -408,8 +356,6 @@ input {
     width: 80vw;
     margin: 0 auto;
 }*/
-
-
 .texte_refresh_liste_ba {
 	display: flex;
 	position: absolute;
@@ -418,13 +364,10 @@ input {
 	justify-content: flex-end;
 	cursor: pointer;
 }
-
 .texte_refresh_liste_ba>div:first-of-type {
 	font-size: 12px;
 	
 }
-
-
 .refresh_liste_ba {
     position: relative;
     height: 15px;
@@ -432,8 +375,6 @@ input {
     transform: rotate(45deg);
 	margin-left: 5px;
 }
-
-
 .refresh_liste_ba span.horizontal {
 	position: absolute;
 	top: 44%;
@@ -443,7 +384,6 @@ input {
 	content: "";
 	height: 2px;
 }
-
 .refresh_liste_ba span.vertical {
     position: absolute;
     top: 0;
@@ -453,9 +393,6 @@ input {
     background-color: red;
     content: "";
 }
-
-
-
 .listing_raw {
   	position: relative;
   	display: flex;
@@ -465,8 +402,6 @@ input {
   	margin-top: 0px;
 	height: 600px;
 }
-
-
 .listing3 {
 	position: relative;
 	display: flex;
@@ -474,14 +409,12 @@ input {
 	align-items: center;
 	margin-left: 100px;
 }
-
 .listing3 div.legende {
 	width: 100%;
 	text-align: right;
 	font-size: 12px;
 	margin-top: 5px;
 }
-
 .listing2 {
   display: flex;
   flex-direction: column;
@@ -489,7 +422,6 @@ input {
   border: 2px solid white;
   border-radius: 5px;
 }
-
 /*.listing2 h1 {
   display: flex;
   justify-content: center;
@@ -502,7 +434,6 @@ input {
   height: 50px;
   margin: 0px;
 }
-
 .listing2 h2 {
   display: flex;
   justify-content: center;
@@ -514,8 +445,7 @@ input {
   margin: 0px;
   font-size: 16px;
   text-transform: uppercase;
-}*/
-
+}
 .listing_all_bons {
   display: flex;
   flex-direction: column;
@@ -523,8 +453,7 @@ input {
   border: 2px solid white;
   border-radius: 5px;
 }
-
-/*a:link {
+a:link {
   text-decoration: none;
   color: white;
 }
@@ -543,13 +472,11 @@ a:visited {
 a:active {
   text-decoration: none;
   color: white;
-}*/
- 
+}
 .formulaire {
   position: relative;
   width: 380px;
 }
-
 .formulaire h1 {
   font-size: 14px;
   margin-top: 20px;
@@ -561,11 +488,9 @@ a:active {
   min-height: 25px;
   border-radius: 5px;
 }
-
 .formulaire select.smallselect {
     width: 180px;
 }
-
 .formulaire .smallinput {
 	width: 100px;
     text-align: center;
@@ -574,28 +499,20 @@ a:active {
     width: 80px;
     text-align: center;
 }
-/*.formulaire .biginput {
+.formulaire .biginput {
 	width: 200px;
 }
-*/
 .giantinput {
 	width: 400px;
 }
-
 .formulaire select.input_select {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 10px;
 }
-
-
-
-
-
 .formulaire_liste {
   box-sizing: border-box;
 }
-
 /*.formulaire_bon {
   min-width: 600px;
   min-height: 500px;
@@ -616,23 +533,18 @@ a:active {
   font-size: 28px;
   margin-bottom: 100px;
 }
-
 .formulaire_bon div.afterH1 {
 	margin-top: 20px;
 }
-
-
 .formulaire_bon div span.titre {
   font-weight: bold;
 }
-
 .formulaire_bon div.liste_fichiers_du_bon {
 	border: 2px solid #ededed;
 	height: 220px;
 	overflow: hidden;
 	margin-top: 20px;
 }
-
 .formulaire_bon div.liste_fichiers_du_bon h1 {
 	margin: 0;
 	font-size: 26px;
@@ -642,33 +554,24 @@ a:active {
 	border-color: gray;
 	border-width: 2px 2px 0 2px;
 }
-
 .formulaire_bon div.liste_fichiers_du_bon h2 {
 	position: relative;
     font-size: 20px;
 	background: none;
 	color: white;
 }
-
-
 .formulaire_bon div.liste_fichiers_du_bon h1 span:first-child {
 	position: absolute; 
 	left: 10px;
 }
-
-
 .formulaire_bon div.liste_fichiers_du_bon tbody {
 	display: block;
     max-height: 210px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-*/
-
-
-
 /* CSS commun à tous les tableaux de type listing */
-.formulaire_liste table.tableau_listing {
+/*.formulaire_liste table.tableau_listing {
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -701,25 +604,17 @@ a:active {
 }
 .formulaire_liste table.tableau_listing tbody tr:nth-child(odd) {
   background-color: #240909;
-}
-/* ############################################################# */
-
-
-
+}*/
 /* CSS spécifique au tableau d'affichage du parc des modules */
-.formulaire_liste table.tab_liste .tab_liste_modules th {
+/*.formulaire_liste table.tab_liste .tab_liste_modules th {
   height: 40px;
   background-color: #A1ABE2;
 }
 .formulaire_liste table.tab_liste .tab_liste_modules td {
   height: 30px;
-}
-/* ############################################################# */
-
-
-
+}*/
 /* CSS commun aux tableaux du parc */
-.formulaire_liste table.tab_liste thead {
+/*.formulaire_liste table.tab_liste thead {
   background-color: white;
   color: black;
 }
@@ -735,13 +630,8 @@ a:active {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-/* ############################################################# */
-
-
-
-
-.formulaire_liste .zone_texte_mini {
+}*/
+/*.formulaire_liste .zone_texte_mini {
   	max-width: 70px;
   	min-width: 70px;
 }
@@ -764,46 +654,36 @@ a:active {
   	max-width: 425px;
   	min-width: 425px;
 }
-
-
 .formulaire_liste td.zone_texte_grand {
   font-size: 0.9em;
 }
-
 .selectionnable {
   cursor: pointer;
 }
-
-
+*/
 .debut_ligne {
   margin-bottom: 20px;
 }
 .fin_liste {
   margin-top: 25px;
 }
-
 .export_liste_problemes {
   position: absolute;
   left: 0px;
 }
-
 .regular { 
   font-weight: normal !important;
 }
-
 .centrer {
   text-align: center;
 }
-
 .gauche {
 	text-align: left !important;
 }
-
 .droite_div {
 	position: absolute;
 	right: 5px;
 }
-
 .def {
   color: black;
 }
@@ -822,9 +702,6 @@ a:active {
 .inaccessible {
   color: #BDBDBD;
 }
-
-
-
 .taille_texte_grand {
   font-size: 18px;
 }
@@ -843,7 +720,6 @@ a:active {
 .position_logo_fiche_ticket {
   margin-top: 60px;
 }
-
 #description_du_ticket {
   position: fixed;
   top: 150px;left:50%;
@@ -860,7 +736,6 @@ a:active {
   overflow; auto;
   z-index: 10;
 }
-
 .td_liste_pb_module {
   display: flex;
   flex-flow: column wrap;
@@ -1186,7 +1061,7 @@ a:active {
   text-align: center;
   font-weight: bold;
   line-height: 16px;
-}*/
+}
 .right {
   width: 100%;
   text-align: right;
@@ -2091,7 +1966,7 @@ div.champs_validation_bon {
 }
 
 td > div.champs_validation_bon {
-	width: 275px;
+	/*width: 275px;*/
 	margin-left: 2px;
 }
 
@@ -2172,15 +2047,11 @@ td div.champs_validation_bon > div > div:first-child {
 	margin-top: -32px;
 }
 */
-/*#commentaires_bon {
-	display: flex;
-	flex-direction: column;
-	border: 1px solid #ededed;
-	height: 145px;
-	overflow: auto;
-	padding: 5px;
-	margin-bottom: 10px;
-}*/
+#commentaires_bon {
+	max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
 .bons_commentaires_titre {
 	color: gray;
 	font-size: 13px;
@@ -2247,11 +2118,11 @@ input:checked + .slider::before {
 }*/
 
 #info_bulle_fichier.fichier::before {
-	content: 'Ajouter des fichiers';
+	content: 'Afficher les commentaires';
 }
 
 #info_bulle_fichier::before {
-    content: 'Afficher les commentaires';
+    content: 'Ajouter des fichiers';
 }
 
 span.informations_archivage {
@@ -2335,6 +2206,6 @@ span.informations_archivage {
     padding: 5px 5px 20px 5px;
   }
 }
-tbody#table_des_fichiers {
+/*tbody#table_des_fichiers {
 	height: 130px;
-}
+}*/

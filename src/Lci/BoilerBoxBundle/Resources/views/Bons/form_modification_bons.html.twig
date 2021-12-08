@@ -99,6 +99,10 @@
 
 {% block javascript %}
 <script type='text/javascript'>
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .bons-interv').addClass('active');
+    });
 	$(document).ready(function(){
 		/* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({

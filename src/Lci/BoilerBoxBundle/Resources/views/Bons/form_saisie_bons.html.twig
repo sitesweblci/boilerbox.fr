@@ -10,9 +10,12 @@
 
 {% block boilerBoxCSS %}
     {{ parent() }}
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
+	{# <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' /> #}
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
+	html{
+		background: white;
+	}
 	.sub-header__title{
 		margin-bottom: 18px;
 	}
@@ -23,6 +26,31 @@
 	*::placeholder{
 		color: #646464 !important;
 		font-size: 9pt;
+	}
+	.tab-wrapper__tabs__tab{
+		width: 50%;
+	}
+	.tab-wrapper__content{
+		width: initial;
+		max-width: initial;
+	}
+	.active[data-tab-content]{
+		display: grid;
+	}
+	#ficheContact.active[data-tab-content]{
+		display: block;
+	}
+	.grid{
+	    grid-template-columns: 50% 50%;
+	    grid-template-rows: auto auto;
+		grid-gap: 56px;
+		padding: 16px 24px 16px 32px;
+	}
+	.grid__one{
+		grid-column: 1;
+	}
+	.grid__two{
+		grid-column: 2;
 	}
 	</style>
 {% endblock boilerBoxCSS %}
@@ -40,182 +68,178 @@
 <header class="sub-header sub-header--grey">
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
-<div class="tab-wrapper">
+<div class="tab-wrapper notToBePrinted">
 	<ul class="tab-wrapper__tabs">
-		<li class="tab-wrapper__tabs__tab active" data-tab-target="#nouveauBon">Nouveau Bon</li>
-		<li class="tab-wrapper__tabs__tab" data-tab-target="#nouveauSite">Nouveau Site</li>
-		<li class="tab-wrapper__tabs__tab" data-tab-target="#ficheContact">Fiche Contact</li>
+		<li class="tab-wrapper__tabs__tab active" data-tab-target="#nouveauBon">Saisie Bon</li>
+		{# <li class="tab-wrapper__tabs__tab" data-tab-target="#nouveauSite">Nouveau Site</li> #}
+		<li id="onglet2" class="tab-wrapper__tabs__tab" data-tab-target="#ficheContact">Fiche Contact</li>
 	</ul>
 	<div class="tab-wrapper__content">
-		<section id="nouveauBon" class='active{# inter_bloc_2_1 #}' data-tab-content>
-			<h3 class="form__field__title"></h3>
+		<main id="nouveauBon" class='active grid{# inter_bloc_2_1 #}' data-tab-content>
+			<section class="grid__one notToBePrinted">
+				<h3 id="onglet1" class="form__field__title">Nouveau bon</h3>
 
-        	{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'id':'myForm', 'class':'form' }) }}
-   			{{ form_errors(form) }}
-	   			<div class="form__field">
-					{{ form_label(form.userInitiateur) }}
-					{{ form_widget(form.userInitiateur) }}
-					{{ form_errors(form.userInitiateur) }}
-				</div>
-	   			<div class="form__field">
-		    		{{ form_label(form.dateInitialisation) }}
-		    		{{ form_widget(form.dateInitialisation) }}
-		    		{{ form_errors(form.dateInitialisation) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.user) }}
-					{{ form_widget(form.user) }}
-					{{ form_errors(form.user) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.numeroBA) }}
-					{{ form_widget(form.numeroBA) }}
-					{{ form_errors(form.numeroBA) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.site) }}
-					{{ form_widget(form.site) }}
-					{{ form_errors(form.site) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.numeroAffaire) }}
-					{{ form_widget(form.numeroAffaire) }}
-					{{ form_errors(form.numeroAffaire) }}
-		    	</div>
-		    	<div class="form__field form__field--double">
-		    		<div>
-		    			{{ form_label(form.dateDebutIntervention) }}
-						{{ form_widget(form.dateDebutIntervention) }}
-						{{ form_errors(form.dateDebutIntervention) }}
-		    		</div>
-		    		<div>
-		    			{{ form_label(form.dateFinIntervention) }}
-		    			{{ form_widget(form.dateFinIntervention) }}
-		    			{{ form_errors(form.dateFinIntervention) }}
-		    		</div>
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.nomDuContact) }}
-		    		{{ form_label(form.nomDuContact) }}
-		    		{{ form_widget(form.nomDuContact) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.nomDuContact) }}
-		    		{{ form_label(form.emailContactClient) }}
-		    		{{ form_widget(form.emailContactClient) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.dateSignature) }}
-		    		{{ form_label(form.dateSignature) }}
-					{{ form_widget(form.dateSignature) }}
-		    	</div>
-				<div class='{# nouveau_probleme_ligne #} form__field'>
-					<label class="flex flex--row" style="display:flex!important;">
-						{{ form_label(form.fichiersPdf) }}
-						<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
-					</label>
-					<span id='lien_ajout_fichier'></span>
-					<div id='champ_ajout_fichiers_bon'>
-						{{ form_widget(form.fichiersPdf) }}
-						{{ form_errors(form.fichiersPdf) }}
+	        	{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'id':'myForm', 'class':'form' }) }}
+	   			{{ form_errors(form) }}
+		   			<div class="form__field">
+						{{ form_label(form.userInitiateur) }}
+						{{ form_widget(form.userInitiateur) }}
+						{{ form_errors(form.userInitiateur) }}
 					</div>
+		   			<div class="form__field">
+			    		{{ form_label(form.dateInitialisation) }}
+			    		{{ form_widget(form.dateInitialisation) }}
+			    		{{ form_errors(form.dateInitialisation) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_label(form.user) }}
+						{{ form_widget(form.user) }}
+						{{ form_errors(form.user) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_label(form.numeroBA) }}
+						{{ form_widget(form.numeroBA) }}
+						{{ form_errors(form.numeroBA) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_label(form.site) }}
+						{{ form_widget(form.site) }}
+						{{ form_errors(form.site) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_label(form.numeroAffaire) }}
+						{{ form_widget(form.numeroAffaire) }}
+						{{ form_errors(form.numeroAffaire) }}
+			    	</div>
+			    	<div class="form__field form__field--double">
+			    		<div>
+			    			{{ form_label(form.dateDebutIntervention) }}
+							{{ form_widget(form.dateDebutIntervention) }}
+							{{ form_errors(form.dateDebutIntervention) }}
+			    		</div>
+			    		<div>
+			    			{{ form_label(form.dateFinIntervention) }}
+			    			{{ form_widget(form.dateFinIntervention) }}
+			    			{{ form_errors(form.dateFinIntervention) }}
+			    		</div>
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_errors(form.nomDuContact) }}
+			    		{{ form_label(form.nomDuContact) }}
+			    		{{ form_widget(form.nomDuContact) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_errors(form.nomDuContact) }}
+			    		{{ form_label(form.emailContactClient) }}
+			    		{{ form_widget(form.emailContactClient) }}
+			    	</div>
+			    	<div class="form__field">
+			    		{{ form_errors(form.dateSignature) }}
+			    		{{ form_label(form.dateSignature) }}
+						{{ form_widget(form.dateSignature) }}
+			    	</div>
+					<div class='{# nouveau_probleme_ligne #} form__field'>
+						<label class="flex flex--row" style="display:flex!important;">
+							{{ form_label(form.fichiersPdf) }}
+							<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
+						</label>
+						<span id='lien_ajout_fichier'></span>
+						<div id='champ_ajout_fichiers_bon'>
+							{{ form_widget(form.fichiersPdf) }}
+							{{ form_errors(form.fichiersPdf) }}
+						</div>
+					</div>
+				{{ form_rest(form) }}
+				{{ form_end(form) }}
+	    			
+				<div class='{# validation_formulaire_centre #} notToBePrinted form__btn form__btn--col'>
+	    	   		<button onClick="attente(); document.forms['myForm'].submit(); return false;" class="btn_menu btn btn--main btn--wide" >Valider</button>
+					<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second btn--wide">Retour</a>
+	    		</div>
+	    	</section>
+			<section id="nouveauSite" class="grid__two notToBePrinted">
+				<h3 id='titre_nouveau_siteBA' class="form__field__title">Infos site</h3>
+				
+				<div class="form__field flex flex--row flex--between"{# id='impression_fiche_site' #}>
+					<a href='https://goo.gl/maps/RG2zoSZrbis8vsqj6' target='google' class="link txt--left">{# <span style='color:green; text-decoration:underline'> #}Accès Google Map{# </span> #}</a>
+	            	<div class='{# validation_impression #} tooltip-wrapper notToBePrinted' style="margin:0;">
+	            	    <img onClick="attente(); window.print(); return false;" alt="Valider" src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" style="width:20px;height:20px;cursor:pointer;"/>
+	            	    <span class="tooltip">Imprimer</span>
+	            	</div>
 				</div>
-			{{ form_rest(form) }}
-			{{ form_end(form) }}
-    			
-			<div class='{# validation_formulaire_centre #} notToBePrinted form__btn form__btn--col'>
-    	   		<button onClick="attente(); document.forms['myForm'].submit(); return false;" class="btn_menu btn btn--main btn--wide" >Valider</button>
-				<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second btn--wide">Retour</a>
-    		</div>
-		</section>
-	
-		<section id="nouveauSite" data-tab-content>
-			<h3 id='titre_nouveau_siteBA' class="form__field__title"></h3>
-			
-			<div class="form__field flex flex--row flex--between"{# id='impression_fiche_site' #}>
-				<a href='https://goo.gl/maps/RG2zoSZrbis8vsqj6' target='google' class="link txt--left">{# <span style='color:green; text-decoration:underline'> #}Accès Google Map{# </span> #}</a>
-            	<div class='{# validation_impression #} tooltip-wrapper notToBePrinted' style="margin:0;">
-            	    <img onClick="attente(); window.print(); return false;" alt="Valider" src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" style="width:20px;height:20px;cursor:pointer;"/>
-            	    <span class="tooltip">Imprimer</span>
-            	</div>
-			</div>
 
-			{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
-			{{ form_errors(form_site) }}
-				<input type='hidden' name='id_site_ba' id='id_site_ba' />
+				{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
+				{{ form_errors(form_site) }}
+					<input type='hidden' name='id_site_ba' id='id_site_ba' />
 
 
-				<div class="form__field">
-					{{ form_label(form_site.intitule) }}
-					{{ form_widget(form_site.intitule) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.adresse) }}
-					{{ form_widget(form_site.adresse) }}
-					{{ form_errors(form_site.adresse) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.lienGoogle) }}
-					{{ form_widget(form_site.lienGoogle) }}
-					{{ form_errors(form_site.lienGoogle) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.informationsClient) }}
-					{{ form_widget(form_site.informationsClient) }}
-					{{ form_errors(form_site.informationsClient) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.contacts) }}
-					{{ form_widget(form_site.contacts) }}
-					{{ form_errors(form_site.contacts) }}
-				</div>
-                <div id="ajout_contact" class='{# ajout_contact #} form__field'>
-                	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
-                	<div class='nouveau_probleme_ligne form__field'>
-                		<div>
-                			<span style='font-size:12px'></span>
-                			<div id='contacts_deja_associes' style='font-size:12px; font-style:italic; line-height:1.6; max-height:100px; width:400px; overflow:auto'></div>
-                			<span id='lien_ajout_contact'></span>
-                			<div id='container_new_contact' style='overflow:auto;'></div>
-                				
-                		</div>
-                	</div>
-                	<div class='form__field'>
-                		<div id='champ_ajout_fichiers_siteBA'>
-                			{{ form_widget(form_site.fichiersJoint) }}
-                		</div>
-                	</div>
-                	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
-                		<div class='ligne_error'></div>
-                		<div class='form__field'>
-                			<label class="flex flex--row" style="display:flex!important;">
-                				{{ form_label(form_site.fichiersJoint) }}
-                				<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
-                			</label>
-                			<div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
-                			<span id='lien_ajout_fichier_siteBA'></span>
-                		</div>
-                		<div class='form__field'>
-                			<div id='champ_ajout_fichiers_siteBA'>
-                				{{ form_widget(form_site.fichiersJoint) }}
-                				{{ form_errors(form_site.fichiersJoint) }}</div>
-                		</div>
-                	</div>
-                </div>
-                <div id='encart_fichiers_siteBA'></div>
-            {{ form_rest(form_site) }}
-			{{ form_end(form_site) }}
-
-			<div id="bloc_contact_pour_impression">
-			</div>
-
-   		   	<div class='{# validation_formulaire_centre #}form__btn form__btn--col notToBePrinted'>
-       	   		<button onClick="attente(); document.forms['site_ba'].submit(); return false;"class="btn_menu btn btn--main btn--wide">Valider</button>
-       	   		<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second btn--wide">Retour</a>
-       		</div>
-		</section>
-
-		<section id="ficheContact" class='{# inter_bloc_2_2 #}' data-tab-content>
+					<div class="form__field">
+						{{ form_label(form_site.intitule) }}
+						{{ form_widget(form_site.intitule) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.adresse) }}
+						{{ form_widget(form_site.adresse) }}
+						{{ form_errors(form_site.adresse) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.lienGoogle) }}
+						{{ form_widget(form_site.lienGoogle) }}
+						{{ form_errors(form_site.lienGoogle) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.informationsClient) }}
+						{{ form_widget(form_site.informationsClient) }}
+						{{ form_errors(form_site.informationsClient) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.contacts) }}
+						{{ form_widget(form_site.contacts) }}
+						{{ form_errors(form_site.contacts) }}
+					</div>
+	                <div id="ajout_contact" class='{# ajout_contact #} form__field'>
+	                	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
+	                	<div class='nouveau_probleme_ligne form__field'>
+	                		<div>
+	                			<span style='font-size:12px'></span>
+	                			<div id='contacts_deja_associes' style='font-size:12px; font-style:italic; line-height:1.6; max-height:100px; width:400px; overflow:auto'></div>
+	                			<span id='lien_ajout_contact'></span>
+	                			<div id='container_new_contact' style='overflow:auto;'></div>
+	                				
+	                		</div>
+	                	</div>
+	                	<div class='form__field'>
+	                		<div id='champ_ajout_fichiers_siteBA'>
+	                			{{ form_widget(form_site.fichiersJoint) }}
+	                		</div>
+	                	</div>
+	                	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
+	                		<div class='ligne_error'></div>
+	                		<div class='form__field'>
+	                			<label class="flex flex--row" style="display:flex!important;">
+	                				{{ form_label(form_site.fichiersJoint) }}
+	                				<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
+	                			</label>
+	                			<div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
+	                			<span id='lien_ajout_fichier_siteBA'></span>
+	                		</div>
+	                		<div class='form__field'>
+	                			<div id='champ_ajout_fichiers_siteBA'>
+	                				{{ form_widget(form_site.fichiersJoint) }}
+	                				{{ form_errors(form_site.fichiersJoint) }}</div>
+	                		</div>
+	                	</div>
+	                </div>
+	                <div id='encart_fichiers_siteBA'></div>
+	            {{ form_rest(form_site) }}
+				{{ form_end(form_site) }}
+	   		   	<div class='{# validation_formulaire_centre #}form__btn form__btn--col notToBePrinted'>
+	       	   		<button onClick="attente(); document.forms['site_ba'].submit(); return false;"class="btn_menu btn btn--main btn--wide">Valider</button>
+	       	   		<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second btn--wide">Retour</a>
+	       		</div>
+			</section>
+		</main>
+		<main id="ficheContact" class='{# inter_bloc_2_2 #}' data-tab-content>
 			<input type='hidden' id='indexContact'>
     		<div id='bloc_ajout_contact'>
     		    <h3 class="form__field__title">
@@ -250,9 +274,17 @@
                     <a href="{{ path('lci_bons_attachements') }}" class="btn btn--second btn--wide">Retour</a>
                 </div>
 	    	</div>
+		</main>
+		<section id="bloc_contact_pour_impression" class="main-box print">
+			<div class="form__field">
+				{{ form_label(form_site.informationsClient) }}
+				{{ form_widget(form_site.informationsClient) }}
+				{{ form_errors(form_site.informationsClient) }}
+			</div>
 		</section>
 	</div>
 </div>
+
 {% endblock mainBody %}
 
 {% block javascript %}
@@ -481,7 +513,7 @@
 
 			if ($('#bons_attachement_site').val() != '')
 			{
-				$('#titre_nouveau_siteBA').text('Modification du site');
+				$('#onglet1').text('Modification du site');
 				$('#fichiers_deja_joints').html('');
 				$('#contacts_deja_associes').html('');
             	var $id_site_ba = this.value;
