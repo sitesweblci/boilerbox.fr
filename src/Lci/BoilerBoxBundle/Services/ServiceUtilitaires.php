@@ -468,7 +468,7 @@ class ServiceUtilitaires
     // Fonction qui prend en argument une url de type http://c671.boiler-box.fr/ (ou http://c714.boiler-box.fr:81/) et retourne l'url c671.boiler-box.fr (ou c714.boiler-box.fr)
     private function recuperationSiteUrl($url)
     {
-        if ($this->debug) echo "Recuperation URL :" . $url . "\n";
+        if ($this->debug) echo "\nRecuperation URL :" . $url . "\n";
         $tab_param_url = array();
         $pattern_url = '/^http:\/\/(.+?):?(\d*?)\/?$/';
         if (preg_match($pattern_url, $url, $tab_url)) {
