@@ -292,22 +292,22 @@ window.location.search: "?query=1"
 							</a>
 						{% endif %}
 					</div>
+					<h1 class="info-box__content__title">
+						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
+						Pièces jointes
+					</h1>
+					<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
+					<div class="js-addPieceJointe btn btn--add">
+						<div class="crossAdd"></div>
+						Ajouter pièce jointe
+					</div>
+					<span style='display:none'>
+						<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
+							<input type='file' id='fichier' name='fichierDuSite'>
+							<input type='text' id='fichierIdSite' name='fichierIdSite'>
+						</form>
+					</span>
 					{% if is_granted('ROLE_TECHNICIEN') %}
-						<h1 class="info-box__content__title">
-							<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
-							Pièces jointes
-						</h1>
-						<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
-						<div class="js-addPieceJointe btn btn--add">
-							<div class="crossAdd"></div>
-							Ajouter pièce jointe
-						</div>
-						<span style='display:none'>
-							<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
-								<input type='file' id='fichier' name='fichierDuSite'>
-								<input type='text' id='fichierIdSite' name='fichierIdSite'>
-							</form>
-						</span>
 						<div class="info-box__content__title info-box__content__title--wrapper">
 							<span>
 								<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">
@@ -344,8 +344,8 @@ window.location.search: "?query=1"
 							<label>Version IPC</label>
 							<span class="infoAffaireVersionIpc">demo</span>
 						</div>
-						<div></div>
 					{% endif %}
+					<div></div>
 				</div>
 				<div class="info-box__content__social">
 					<h1 class="info-box__content__title">
