@@ -308,6 +308,6 @@ lci_cgu_accepter:
     defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::accepterCGUAction }
 
 lci_regles_confidentialites:
-    path: /anonym/privacy
-    defaults: { controller: LciBoilerBoxBundle:CGU:privacy }
+    path: /privacy
+    defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::privacy }
 

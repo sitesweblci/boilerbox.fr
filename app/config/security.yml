@@ -53,6 +53,9 @@ security:
             pattern: /resetting
             anonymous: true
             logout_on_user_change: true
+        privacy:
+            pattern: ^/privacy$
+            anonymous: true
         main_login:
             pattern: ^/(login|ajaxLogin)$
             anonymous: true

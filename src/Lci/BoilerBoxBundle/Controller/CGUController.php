@@ -126,7 +126,7 @@ class CGUController extends Controller
     }
 
 
-	public function privacyAction{
+	public function privacy() {
 		return $this->render('@LciBoilerBox/CGU/privacy.html.twig');
 	}
 }
