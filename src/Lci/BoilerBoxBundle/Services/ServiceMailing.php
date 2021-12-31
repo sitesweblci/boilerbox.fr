@@ -3,7 +3,7 @@
 namespace Lci\BoilerBoxBundle\Services;
 
 // Service d'envoi de mails ( par SMTP )
-class ServiceMailing 
+class ServiceMailing
 {
 protected $mailer;
 protected $templating;
@@ -195,6 +195,32 @@ protected $service_configuration;
                     )
         ;
         $this->log->setLog("[MAIL];Mail de rapport des sites envoyé: ", $this->fichier_log);
+        $this->mailer->send($message);
+        return (0);
+    }
+
+    /* fonction d'envoi d'email pour les dev */
+    public function sendMailRegister($destinataire, $sujet, $user)
+    {
+        $message = \Swift_Message::newInstance()->setSubject($sujet)
+                    ->setFrom('Assistance@lci-group.fr')
+                    ->setTo($destinataire);
+		$confirmationUrl = 'http://vps614872.ovh.net/register/confirm/'.$user->getConfirmationToken();
+		
+        $chemin_image = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';
+        $image_link = $message->embed(\Swift_Image::fromPath($chemin_image));
+        $message->setBody($this->templating->render('FOSUserBundle:Registration:email.txt.twig',
+                            [   
+                                'image_link'    => $image_link,
+                                'user'          => $user,
+								'password'		=> $user->getPlainPassword(),
+                                'confirmationUrl' => $confirmationUrl
+                            ]
+                        ),
+                        'text/html'
+                    )
+        ;
+        $this->log->setLog("[MAIL];Mail de dev envoyé: ", $this->fichier_log);
         $this->mailer->send($message);
         return (0);
     }

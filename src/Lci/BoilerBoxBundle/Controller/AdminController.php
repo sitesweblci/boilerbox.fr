@@ -432,4 +432,19 @@ class AdminController extends Controller
 
     }
 
+    // Fonctions d'envoi de mail pour developpeurs
+    public function sendEmailDevAction()
+    {
+        $service_mail = $this->get('lci_boilerbox.mailing');
+        $liste_messages = array();
+        $liste_messages[] = '%T'."Référence";
+        $liste_messages[] = '%T'."Date de signalement";
+        $liste_messages[] = "<br /><br /><br />";
+        $liste_messages[] = "Cordialement.<br />";
+        $liste_messages[] = "Service developpeurs.";
+        $liste_messages[] = "<br /><br /><br />";
+        $service_mail->sendMailDev('debuyck.michael@gmail.com','mail test', $liste_messages);
+        return new Response('message mail envoyé');
+    }
+
 }
