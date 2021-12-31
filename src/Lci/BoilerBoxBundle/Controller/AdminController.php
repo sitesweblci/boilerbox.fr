@@ -212,7 +212,12 @@ class AdminController extends Controller
             $choix_action = $_POST['choixAction'];
             switch ($choix_action) {
                 case 'deleteUser':
-                    $user = $em->getRepository('LciBoilerBoxBundle:User')->find($_POST['choix_utilisateur']);
+					// On receptionne en variable $_POST['choix_utilisateur'] : /lci/user/register/update/user/131  -> Il nous faut récupérer l'id de l'url
+					// Découpage sur les / pour ne récupérer que l'id
+					$url_user_a_supprimer = $_POST['choix_utilisateur'];
+					$tab_url = preg_split("/\//", $_POST['choix_utilisateur']);
+					$id_user_a_supprimer = array_pop($tab_url);
+                    $user = $em->getRepository('LciBoilerBoxBundle:User')->find($id_user_a_supprimer);
                     $em->remove($user);
                     $em->flush();
                     break;
