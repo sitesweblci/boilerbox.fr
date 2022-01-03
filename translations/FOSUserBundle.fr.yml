@@ -66,6 +66,8 @@ registration:
             <a href="%url_boilerbox%" style="font-size:12pt;font-weight:500;color:#0a71b3;text-decoration:none;">%url_boilerbox%</a>
             <br/><br/>
             Votre identifiant de connexion sera : <span style="font-size:14pt;font-weight:600;color:#0a71b3;">%username%</span>
+            <br />
+            Votre mot de passe d'origine est : %mot_de_passe%. Il est conseillé de la modifier depuis votre page profile
             <br/><br/>
             Pour finaliser la création de votre compte, merci de suivre le lien suivant :
             <br/>
