@@ -205,11 +205,11 @@ protected $service_configuration;
         $message = \Swift_Message::newInstance()->setSubject($sujet)
                     ->setFrom('Assistance@lci-group.fr')
                     ->setTo($destinataire);
-		$confirmationUrl = 'http://vps614872.ovh.net/register/confirm/'.$user->getConfirmationToken();
+		$confirmationUrl = 'http://boiler-box.fr/register/confirm/'.$user->getConfirmationToken();
 		
         $chemin_image = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';
         $image_link = $message->embed(\Swift_Image::fromPath($chemin_image));
-        $message->setBody($this->templating->render('FOSUserBundle:Registration:email.txt.twig',
+        $message->setBody($this->templating->render('FOSUserBundle:Registration:email.html.twig',
                             [   
                                 'image_link'    => $image_link,
                                 'user'          => $user,
@@ -224,6 +224,5 @@ protected $service_configuration;
         $this->mailer->send($message);
         return (0);
     }
-
 
 }
