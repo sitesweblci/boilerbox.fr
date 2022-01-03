@@ -202,11 +202,11 @@ protected $url_boilerbox;
     }
 
     /* fonction d'envoi d'email pour les dev */
-    public function sendMailRegister($destinataire, $sujet, $user)
+    public function sendMailRegister($user)
     {
-        $message = \Swift_Message::newInstance()->setSubject($sujet)
+        $message = \Swift_Message::newInstance()->setSubject("Création de votre accès BoilerBox")
                     ->setFrom('Assistance@lci-group.fr')
-                    ->setTo($destinataire);
+                    ->setTo($user->getEmail());
 		$confirmationUrl = $this->url_boilerbox.'register/confirm/'.$user->getConfirmationToken();
 		
         //$chemin_image = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';

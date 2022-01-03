@@ -57,7 +57,7 @@ class EmailConfirmationListener implements EventSubscriberInterface
         }
 
         //$this->mailer->sendConfirmationEmailMessage($user);
-	    $this->mailer->sendMailRegister('j.desurmont@lci-group.fr','mail test 2', $user);
+	    $this->mailer->sendMailRegister($user);
 
 
         $this->session->set('fos_user_send_confirmation_email/email', $user->getEmail());
