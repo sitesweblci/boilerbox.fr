@@ -1,0 +1,125 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{# {% block subject %}
+{%- autoescape false -%}
+{{ 'registration.email.subject'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}
+{%- endautoescape -%}
+{% endblock %}
+ #}
+{% block body_text %}
+{% endblock %}
+
+{% block body_html %}
+	<style>
+	@media only screen and (min-width: 640px) {
+	  .maxW {width: 600px !important;}
+	}
+	</style>
+	<table class="maxW" bgcolor="#f0f0f0" border="0" cellpadding="0" cellspacing="0" width="600" 
+		style="
+		width: 600px;
+		margin:0;
+		padding: 32px 48px;
+		cellspacing:0;
+		cellpadding:0;
+		background: #f0f0f0;
+		font-family: Calibri, Arial, sans-serif;
+	">
+		<tr>
+			<td>
+				<h1 style="
+					width: fit-content;
+					margin: 0 auto 32px auto;
+					padding:0;
+					font-size: 42pt;
+					font-family: Arial;
+					font-weight: bold;
+					font-style: italic;
+					text-align: center;
+					color: #0a71b3;
+					letter-spacing: -2pt;
+					overflow: none;
+				">BoilerBox</h1>
+				<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="504" 
+					style="
+					width:504px !important;
+					margin:0;
+					padding: 48px 48px 32px 48px;
+					border-radius: 0 10px 10px 10px;
+					border: solid 1px #d2d2d2;
+					background: #fff;
+					box-shadow: 0 0 2px 0 rgba(0,0,0,.3);
+				">
+					<tr>
+						<td>
+							<img src="{{ image_link }}" alt="illustration d'analyse possible avec BoilerBox"
+								style="
+								display:block;
+								background:red;
+								width:408px;
+								height:160px;
+								margin-bottom:16px;
+								"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h2 style="
+								margin:0 auto 24px auto;
+								padding:0 0 12px 0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 15pt;
+								color: #0a71b3;
+								border-bottom: solid 1px #b4b4b4;
+							">Création de compte Boiler-box
+							</h2>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p style="
+								margin:0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 11pt;
+								color: #505050;
+							">{{ 'registration.email.message'|trans({'%mot_de_passe%': mot_de_passe,  '%username%': user.username, '%confirmationUrl%': confirmationUrl, '%url_boilerbox%': url_boilerbox}) }}
+							</p>
+						</td>
+					</tr>
+					<tr width="504">
+						<td width="504">
+							<p style="
+								margin:24px 0 0 0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size:8pt;
+								color:#969696;
+							">
+							Ce mail a été envoyé automatiquement, veuillez ne pas y répondre. Vous recevez ce mail car votre adresse mail a été utilisée lors de la création d’un compte sur le site <a href="{{ url_boilerbox }}" style="color:#0a71b3;text-decoration:none;">{{ url_boilerbox }}</a> Vos données sont traitées conformément à la réglementation, spécifiée dans les conditions générales d’utilisation. 
+							</p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+{% endblock %}
+
+
+
+{# ancienne version #}
+{# {% trans_default_domain 'FOSUserBundle' %}
+{% block subject %}
+{%- autoescape false -%}
+{{ 'registration.email.subject'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}
+{%- endautoescape -%}
+{% endblock %}
+
+{% block body_text %}
+{% endblock %}
+
+{% block body_html %}
+    <h1 style='color:red; font-size:22px; margin-bottom:-10px;'>Création de compte Boiler-Box</h1>
+	<p>{{ 'registration.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}</p>
+	<br /><br />
+{% endblock %} #}

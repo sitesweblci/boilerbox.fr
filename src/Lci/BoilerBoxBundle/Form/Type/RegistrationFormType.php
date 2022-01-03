@@ -92,6 +92,7 @@ class RegistrationFormType extends BaseType
                     'first_options'     => array(
                         'label' => 'Nouveau mot de passe',
                         'attr'  => array (
+							'class' => 'gen',
                             'placeholder'   => 'Nouveau mot de passe'
                         )
                     ),

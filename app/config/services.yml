@@ -35,7 +35,7 @@ services:
 
      lci_boilerbox.mailing:
          class: "%mailing.class%"
-         arguments: ["@mailer", "@templating", "%mailer_delivery%", "@lci_boilerbox.log", "@lci_boilerbox.configuration"]
+         arguments: ["@mailer", "@templating", "%mailer_delivery%", "@lci_boilerbox.log", "@lci_boilerbox.configuration", "%url_boilerbox%"]
 
      lci_boilerbox.rapport:
          class: "%rapport.class%"
