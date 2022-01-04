@@ -99,6 +99,9 @@
                                 {{ form_widget(form.plainPassword.second) }}
     							<div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
                             </div>
+							<div>
+								<button class='generate'>Générer</button>
+							</div>
                         </div>
                     </div>
                 </div>
@@ -146,6 +149,16 @@
 
 {% block javascript %}
 <script type='text/javascript'>
+	// Gestion du mot de passe aléatoire 
+	$(document).ready(function() {
+    	/* évènement click sur un element de class "generate" > appelle la fonction generate() */
+    	$(document).on('click','.generate', function(e){
+    	    /* ajout du mot de passe + changement du paramètre type de password vers text (pour lisibilité)  : Indiquer un chiffre pour modifier le nombre de caractère du mot de passe : Par défaut = 8 */
+			$mot_de_passe_aléatoire = generate();
+			console.log(generate() + '  - ' + $mot_de_passe_aléatoire);
+    	    $("form input[type='password']").val($mot_de_passe_aléatoire);
+    	});
+	});
     // Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
         $('.side-nav .parametres').addClass('active');
@@ -181,6 +194,34 @@
 
 	function definirCouleur(couleur) {
 		$('#fos_user_registration_form_couleur').val(couleur);	
+	}
+
+
+
+	function generate(l) 
+	{
+		// Mot de passe de 8 caractères
+	    if (typeof l==='undefined'){var l=8;}
+	    /* c : chaîne de caractères alphanumérique */
+	    var c='abcdefghijknopqrstuvwxyzACDEFGHJKLMNPQRSTUVWXYZ12345679',
+	    n=c.length,
+	    /* p : chaîne de caractères spéciaux */
+	    p='!@#$+-*&_',
+	    o=p.length,
+	    r='',
+	    /* s : determine la position du caractère spécial dans le mdp */
+	    s=Math.floor(Math.random() * (p.length-1));
+	
+	    for(var i=0; i<l; ++i){
+	        if(s == i){
+	            /* on insère à la position donnée un caractère spécial aléatoire */
+	            r += p.charAt(Math.floor(Math.random() * o));
+	        }else{
+	            /* on insère un caractère alphanumérique aléatoire */
+	            r += c.charAt(Math.floor(Math.random() * n));
+	        }
+	    }
+	    return r;
 	}
 </script>
 {% endblock javascript %}

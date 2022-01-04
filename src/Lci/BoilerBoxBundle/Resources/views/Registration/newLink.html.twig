@@ -8,6 +8,12 @@
 	html{
 		background: #f2f2f2;
 	}
+	.main-box{
+		position: relative;
+	}
+	.search-bar{
+		width: 300px;
+	}
 	.flex-table__tbody{
 		height: 48vh;
 	}
@@ -37,12 +43,7 @@
 					{% endfor %}
 				</select>
 			</div>
-			<img onClick="attente(); getListeSites();"
-				alt="Associer des sites"
-				class='btn_associer' 
-				src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" 
-				onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites_hover.png') }}" 
-				onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_sites.png') }}" />
+			<p onClick="attente(); getListeSites();" class='btn_associer btn btn--main btn--wide' >Associer Sites</p>
 			<div class="form__field__choice">
 				<p>OU</p>
 				<hr>
@@ -56,12 +57,7 @@
 					{% endfor %}
 				</select>
 			</div>
-			<img onClick="attente(); getListeUsers();"
-				alt="Associer des utilisateurs"
-				class='btn_associer' 
-				src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" 
-				onmouseover=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs_hover.png') }}" 
-				onmouseout=this.src=src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_associer_utilisateurs.png') }}" />
+			<p onClick="attente(); getListeUsers();" class='btn_associer btn btn--main btn--wide'>Associer utilisateurs</p>
 			<div class='form__btn'>
 				<a href="{{ path('lci_gestion_admin') }}" class="btn_menu btn btn--second">Retour</a>
 			</div>
@@ -72,12 +68,18 @@
 
 
 <section id='zoneSites' class='cacher main-box main-box--table'>
+	<div class="main-box__action">
+		<div class="search-bar">
+			<span class="search-bar__img"></span>
+			<input id="js-search-site" class="search-bar__input" type="text" placeholder="Rechercher">
+		</div>
+	</div>
 	<form name='MyForm' method='post' action="{{ path('lci_registration_link') }}">
 		<input type='hidden' name='idUtilisateur' id='idUtilisateur'>
 		<h1 class="main-box__title main-box--table__title">Gestion des liens</h1>
 		<h2 class="main-box__sub-title main-box--table__sub-title"></h2>
 			<div id='check_sites' class="main-box__content">
-				<table class='flex-table'>
+				<table id="table-site" class='flex-table'>
 					<thead class="flex-table__thead">
 						<tr class="flex-table__row">
 							<th><input type='checkbox' name='checkAllSites' onclick="checkAll('sites')"/><span>Select. tous</span></th>
@@ -97,18 +99,8 @@
 				</table>
 			</div>
 		<div class='main-box__btn main-box--table__btn'>
-			<img 	onClick="attente(); reinitFormulaire();"
-					class="btn_menu btn"
-					alt="Retour"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
-			<img 	onClick="attente(); document.forms['MyForm'].submit();"
-					class="btn_menu"
-					alt="Enregistrer"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}"  />
+			<button type="button" onClick="attente(); reinitFormulaire();" class="btn_menu btn btn--second">Retour</button>
+			<button type="button" onClick="attente(); document.forms['MyForm'].submit();" class="btn_menu btn btn--main">Enregistrer</button>
 		</div>
 	</form>
 </section>
@@ -116,12 +108,18 @@
 
 
 <section id='zoneUsers' class='cacher main-box main-box--table'>
+	<div class="main-box__action">
+		<div class="search-bar">
+			<span class="search-bar__img"></span>
+			<input id="js-search-nom" class="search-bar__input" type="text" placeholder="Rechercher">
+		</div>
+	</div>
 	<form name='MyForm2' method='post' action="{{ path('lci_registration_userslink') }}">
 		<input type='hidden' name='idSite' id='idSite'>
 		<h1 class="main-box__title main-box--table__title">Gestion des liens</h1>
 		<h2 class="main-box__sub-title main-box--table__sub-title"></h2>
 			<div id='check_users' class="main-box__content">
-				<table class='flex-table'>
+				<table id="table-nom" class='flex-table'>
 					<thead class="flex-table__thead">
 						<tr class="flex-table__row">
 							<th><input type='checkbox' name='checkAllUsers' onclick="checkAll('users')"/><span>Select. tous (sauf Clients)</span></th>
@@ -141,18 +139,8 @@
 				</table>
 			</div>
 		<div class=' main-box__btn main-box--table__btn'>
-			<img 	onClick="attente(); reinit2Formulaire();"
-					class="btn_menu btn"
-					alt="Retour"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 	 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 		
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
-			<img 	onClick="attente(); document.forms['MyForm2'].submit();"
-					class="btn_menu" 
-					alt="Enregistrer"
-					src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" 
-					onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer_hover.png') }}" 	
-					onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_enregistrer.png') }}" />
+			<button type="button" onClick="attente(); reinit2Formulaire();" class="btn_menu btn btn--second">Retour</button>
+			<button type="button" onClick="attente(); document.forms['MyForm2'].submit();" class="btn_menu btn btn--main" >Enregistrer</button>
 		</div>
 	</form>	
 </section>
@@ -167,6 +155,47 @@
 	$(window).on('load', function pageActive(){
 		$('.side-nav .parametres').addClass('active');
 	});
+
+	// Fonction de filtrage dans la barre de recherche
+	// pour les sites
+	$(function() {
+	            $('#js-search-site').keyup(function(e) {
+					rechercheOnPageSite();
+	            });
+	        });
+	function rechercheOnPageSite() {
+		var $content = $.trim($('#js-search-site').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
+		$("#table-site tbody tr").hide().filter(function( index ) {
+			var regex = new RegExp($content, 'i');
+			return regex.test($(this).text());
+		})
+		.show();
+	}
+	// pour les noms
+	$(function() {
+        $('#js-search-nom').keyup(function(e) {
+			rechercheOnPageNom();
+        });
+    });
+	function rechercheOnPageNom() {
+		var $content = $.trim($('#js-search-nom').val().replace(/e/g, '[éeèê]').replace(/a/g, '[a,â,à]').replace(/o/g, '[o,ô]'));
+		$("#table-nom tbody tr").hide().filter(function( index ) {
+			var regex = new RegExp($content, 'i');
+			return regex.test($(this).text());
+		})
+		.show();
+	}
+	// Fonction pour changer la bordure de la barre de recherche en focus
+			$(".search-bar__input").on('focus', function searchFocus(){
+				if(!$(this).parents(".search-bar").hasClass('search-bar--focus')){
+					$(this).parents(".search-bar").addClass("search-bar--focus");
+				}
+			});
+			$(".search-bar__input").on('blur', function searchBlur(){
+				if($(this).parents(".search-bar").hasClass("search-bar--focus")){
+					$(this).parents(".search-bar").removeClass("search-bar--focus");
+				}
+			});
 
     /* Variables :  tableau , direction du tri, champs du tri */
     var tableau = new Array();

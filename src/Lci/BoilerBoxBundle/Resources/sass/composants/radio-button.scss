@@ -1,0 +1,46 @@
+.radio-button{
+	label{
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 10px 0 10px 32px;
+		cursor: pointer;
+		font-size: 16px;
+		font-weight: 500;
+		color: black;
+		background: var(--gris-clair);
+		border-radius: 3px;
+		transition: background ease-in-out 0.2s;
+		&::before{
+		    content: '';
+		    display: inline-block;
+		    width: 12px;
+		    height: 12px;
+		    margin-right: 20px;
+		    background: url("../images/img/inputRadio.svg");
+		        background-position-x: 0%;
+		        background-position-y: 0%;
+		        background-repeat: repeat;
+		        background-size: auto;
+		    background-size: 200%;
+		    background-position: 0 0;
+		    background-repeat: no-repeat;
+		}
+		&:hover{
+			background: var(--gris-clair-hover);
+		}
+		[type=radio]{
+			visibility: hidden;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		&--checked{
+			background: #3ce678;
+			&::before{
+				background-position: -12px 0;
+			}
+		}
+	}
+}

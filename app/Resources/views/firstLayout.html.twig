@@ -281,6 +281,15 @@
             $('#message_flashinfo').removeClass('cacher');
         }
     });
+    $(document).ready(function(){
+        // Fonction pour aligner le titre du bandeau bleu avec le menu latéral au survol de celui-ci
+        $('.side-nav').on('mouseenter', function paddingSubHeader(){
+            $('.sub-header--blue').addClass('sub-header--padding');
+        });
+        $('.side-nav').on('mouseleave', function noPaddingSubHeader(){
+            $('.sub-header--blue').removeClass('sub-header--padding');
+        });
+    });
     function closeMessageBox(){
         $('#message_flashinfo').toggleClass('cacher');
     };

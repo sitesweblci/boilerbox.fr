@@ -33,6 +33,9 @@
 	.flex-table .wide{
 		width: calc(100% - 20px);
 	}
+	tbody tr td img{
+		cursor: pointer;
+	}
 	</style>
 {% endblock %}
 
@@ -72,7 +75,7 @@
 							style='color:#4CBB17; {# green #}'
 						{% endif %}
 					>
-						<td class='small centrer selectionnable'>
+						<td class='small centrer'>
 							{% if is_granted('ROLE_RESPONSABLE_PARC') %}
 								<img src="{{ asset('bundles/lciboilerbox/images/actions/modifier.svg') }}" onClick="modifierEquipement({{ entityEquipement.id }});" style="width:20px; height:20px;"/>
 							{% endif %}

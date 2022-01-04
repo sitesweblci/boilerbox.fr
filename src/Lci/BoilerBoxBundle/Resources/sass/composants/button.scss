@@ -1,0 +1,204 @@
+.btn{
+	display: inline-block;
+	width: initial;
+	padding: 8px 32px;
+	border-radius: 0 5px 5px 5px;
+	font-family: Calibri, Arial, sans-serif;
+	font-size: 12pt;
+	font-weight: 600;
+	text-align: center;
+	text-transform: uppercase;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	&--main{
+		background: linear-gradient(to left, #f45400 50%, #ff5a00 100%);
+		box-shadow:
+			inset 1px 1px 1px #ff7300,
+			inset -1px -1px 1px #ff7300,
+			0 1px 3px rgba(50 50 50 / 40%);
+		border: solid 1px #d25000;
+		color: #e6e6e6;
+		&:hover{
+			background: linear-gradient(to top, #ff5a00 45%, #ff6400 55%);
+			color: white;
+		}
+	}
+	&--second{
+		background: linear-gradient(to left, #fdfdfd 50%, #ffffff 100%);
+		box-shadow:
+			inset 1px 1px 1px #ededed,
+			inset -1px -1px 1px #ededed,
+			0 1px 3px rgba(200 200 200 / 50%);
+		border: solid 1px #cccccc;
+		color: #767676;
+		&:hover{
+			background: linear-gradient(to top, #f0f0f0 45%, #f6f6f6 55%);
+			color: #656565;
+		}
+	}
+	&--delete{
+		background: linear-gradient(to left, #f30000 50%, #fc3232 100%);
+		box-shadow:
+			inset 1px 1px 1px #fd5151,
+			inset -1px -1px 1px #fd5151,
+			0 1px 3px rgba(200 200 200 / 50%);
+		border: solid 1px #d20000;
+		color: #e6e6e6;
+		&:hover{
+			background: linear-gradient(to top, #fc3636 45%, #ff3c3c 55%);
+			color: white;
+		}
+	}
+	&--add{
+		display: flex;
+		align-items: center;
+		width: 100%;
+		background: linear-gradient(to left, #e5e5e5 50%, #ececec 100%);
+		box-shadow: 
+			inset 1px 1px 1px #ededed,
+			inset -1px -1px 1px #ededed,
+			0 1px 3px rgba(200 200 200 / 50%);
+		border: solid 1px #cccccc;
+		font-size: 10pt;
+		line-height: 12pt;
+		color: #767676;
+		text-align: left;
+		.crossAdd{
+			display: flex;
+			flex-flow: column nowrap;
+			justify-content: center;
+			align-items: center;
+			margin-right: 12px;
+			&:before, &:after{
+				content: '';
+				display: block;
+				width: 12px;
+				height: 2px;
+				background: var(--gris-profond);
+			}
+			&:before{
+				transform: translateY(1px);
+			}
+			&:after{
+				transform: translateY(-1px) rotate(90deg);
+			}
+		}
+		&:hover{
+			background: linear-gradient(to top, #f0f0f0 45%, #f6f6f6 55%);
+			color: #656565;
+		}
+		&:active{
+			.crossAdd:before, .crossAdd:after{
+				background: white;
+			}
+		}
+	}
+	&--wide{
+		width: 100%;
+	}
+	&:active{
+		background: #511943;
+		border-color: #330c29;
+		box-shadow: 0 1px 1px rgba(50 50 50 / 70%);
+		color: #e6e6e6;
+	}
+	&--disabled{
+		cursor: not-allowed;
+		pointer-events: none;
+		background: #e3e3e3;
+		color: white;
+		box-shadow: none;
+		border: solid 1px #e3e3e3;
+	}
+	&--switch{
+
+	}
+}
+.switch{
+	position: relative;
+	display: inline-block;
+	width: 48px;
+	height: 28px;
+	margin: 0 10px 0 0 !important;
+	[type=checkbox]{
+		opacity: 0;
+		width: 0;
+		height: 0;
+		padding: 0;
+		margin: 0;
+		&:focus{
+			&+span{
+				box-shadow: 0 0 1px var(--couleur-principale);
+			}
+		}
+		&:checked{
+			&+span{
+				background: var(--couleur-principale);
+				&::before{
+					-webkit-transform: translateX(20px);
+					-ms-transform: translateX(20px);
+					transform: translateX(20px);
+				}
+			}
+		}
+	}
+	span{
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border-radius: 34px;
+		background-color: var(--gris-clair-hover);
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+		&::before{
+			position: absolute;
+			content: "";
+			height: 20px;
+			width: 20px;
+			left: 4px;
+			bottom: 4px;
+			border-radius: 50%;
+			background-color: white;
+			-webkit-transition: 0.4s;
+			transition: 0.4s;
+		}
+	}
+	&--small{
+		width: 36px;
+		height: 20px;
+		[type=checkbox]{
+			&:checked{
+				&+span{
+					&::before{
+						-webkit-transform: translateX(16px);
+						-ms-transform: translateX(16px);
+						transform: translateX(16px);
+					}
+				}
+			}
+		}
+		span{
+			&::before{
+				height: 12px;
+				width: 12px;
+			}
+		}
+	}
+}
+@media screen and (max-width: 460px){
+	.btn{
+		font-size: 10pt;
+		&--add{
+			font-size: 9pt;
+		}
+	}
+	.switch{
+		&+p{
+			font-size: 11pt;
+		}
+	}
+}

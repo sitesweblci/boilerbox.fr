@@ -1,0 +1,190 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/changeuserRegistration.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block boilerBoxCSS %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/accueil.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/monCompte.css') }}" />
+{% endblock boilerBoxCSS %}
+
+{% block mainBody %}
+    <main id="monCompte" data-is-admin="{{ is_granted('ROLE_ADMIN') }}">
+        <header class="headerInterne">
+            <p id="rondMonCompte"><span>n</span></p>
+            <div id="titrePageMonCompte">
+                <h1>{{ app.user.prenom }} {{ app.user.nom }}</h1>
+                <h2>{{ app.user.username }}</h2>
+            </div>
+        </header>
+
+		{{ form_start(form, {'attr': {'class':'formMonCompte'}}) }}
+        <div id="contenuMonCompte">
+            <ul class="tabs">
+                <li class="active tab" data-tab-target="#monCompteProfil">Profil</li>
+                <li class="tab" data-tab-target="#monCompteAuthentification">Paramètres</li>
+				<li class="tab" data-tab-target="#monCompteAutre">Autre</li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="monCompteProfil" class="active" data-tab-content>
+                    <div class="formMaxHeightMonCompte">
+
+                        <div class='champsAdmin'>
+                            {{ form_label(form.enabled) }}
+                            {{ form_widget(form.enabled) }}
+                            <div class="ligne_error">{{ form_errors(form.enabled) }}</div>
+                        </div>
+
+						<div class='champsAdmin'>
+                           	{{ form_label(form.username) }}
+                           	{{ form_widget(form.username) }}
+                           	<div class="ligne_error">{{ form_errors(form.username) }}</div>
+						</div>
+
+						<div class='champsAdmin'>
+                           	{{ form_label(form.label) }}
+                           	{{ form_widget(form.label) }}
+                           	<div class="ligne_error">{{ form_errors(form.label) }}</div>
+						</div>
+
+						<div>
+                           	{{ form_label(form.nom) }}
+							{{ form_widget(form.nom) }}
+                           	<div class="ligne_error">{{ form_errors(form.nom) }}</div>
+						</div>
+
+						<div>
+                           	{{ form_label(form.prenom) }}
+							{{ form_widget(form.prenom) }}
+                           	<div class="ligne_error">{{ form_errors(form.prenom) }}</div>
+						</div>
+
+						<div>
+                           	{{ form_label(form.email) }}
+							{{ form_widget(form.email) }}
+							<div class="ligne_error">{{ form_errors(form.email) }}</div>
+						</div>
+
+                        <div class='champsAdmin'>
+                            {{ form_label(form.roles) }}
+                            <div>{{ form_widget(form.roles) }}</div>
+                            <div class="ligne_error">{{ form_errors(form.roles) }}</div>
+                        </div>
+
+                        <h3>Préférences</h3>
+                        <label for="">Couleur</label>
+                        <div id="containerCouleurUser">
+                            <div id="rondCouleurUserOrange" class="rondCouleurUser rondCouleurUserActif" onClick="definirCouleur('persoInactif')"></div>
+                            <div id="rondCouleurUserJaune" class="rondCouleurUser" onClick="definirCouleur('persoJaune')"></div>
+                            <div id="rondCouleurUserBleu" class="rondCouleurUser" onClick="definirCouleur('persoBleu')"></div>
+                            <div id="rondCouleurUserVert" class="rondCouleurUser" onClick="definirCouleur('persoVert')"></div>
+                            <div id="rondCouleurUserRouge" class="rondCouleurUser" onClick="definirCouleur('persoRouge')"></div>
+                            <div id="rondCouleurUserAzur" class="rondCouleurUser" onClick="definirCouleur('persoAzur')"></div>
+                            <div id="rondCouleurUserViolet" class="rondCouleurUser" onClick="definirCouleur('persoViolet')"></div>
+                            <div id="rondCouleurUserMagenta" class="rondCouleurUser" onClick="definirCouleur('persoMagenta')"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="monCompteAuthentification" data-tab-content>
+                    <div id="site_siteConnexion_accesDistant" class="formMaxHeightMonCompte">
+                            <h3>Réinitialisation du mot de passe</h3>
+							<div>
+								{{ form_label(form.plainPassword.first) }}
+								{{ form_widget(form.plainPassword.first) }}
+								<div class="ligne_error">{{ form_errors(form.plainPassword.first) }}</div>
+							</div>
+
+							<div>
+                                {{ form_label(form.plainPassword.second) }}
+                                {{ form_widget(form.plainPassword.second) }}
+								<div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
+                            </div>
+                            <h3>Authentification à deux facteurs</h3>
+                            <div class="flexBoxAuthentificationDoubleFacteur">
+                                <label for="authentificationDoubleFacteur" id="switchAuthentificationDoubleFacteur" data-href="{{ path('lci_boilerbox_auth_activation') }}">
+                                    <input type="checkbox" id="authentificationDoubleFacteur">
+                                    <span class="slider"></span>
+                                </label>
+                                <p>activer l'authentification à double facteur</p>
+                            </div>
+                    </div>
+                </div>
+                <div id="monCompteAutre" data-tab-content>
+                    <div class="formMaxHeightMonCompte">
+                		<div class='champsAdmin'>
+                    		{{ form_label(form.informations) }}
+                    		{{ form_widget(form.informations) }}
+                    		<div class="ligne_error">{{ form_errors(form.informations) }}</div>
+                		</div>
+                    </div>
+                </div>
+            </div>
+            <div id="boutonsForm">
+                <div class="eyeCatcher" onClick="attente(); document.forms['modification_user'].submit();">Enregistrer</div>
+                <div class="eyeCatcher eyecatcherGris" onClick="attente(); redirection('retourAccueil');">Annuler</div>
+            </div>
+        </div>
+		{{ form_end(form) }}
+    </main>
+{% endblock mainBody %}
+
+
+
+{% block javascript %}
+<script type='text/javascript'>
+	var is_admin = $('#monCompte').data("is-admin");
+	if (is_admin) {
+		$('.champsAdmin').removeClass('cacher');
+	}
+
+	$('#switchAuthentificationDoubleFacteur').click(function() {
+		document.location.href = $('#switchAuthentificationDoubleFacteur').data('href');
+	});
+
+    var $index = 0;
+
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+
+	function definirCouleur(couleur) {
+		$('#fos_user_registration_form_couleur').val(couleur);	
+	}
+
+    /*Vérification de la conformité des mots de passe si la checkbox est cochée
+    function checkPasswd() {
+        if ($('input[type="checkbox"][name="newPassword"]').is(':checked') == true) {
+            var passwd1 = $('#motDePasse').val();
+            var passwd2 = $('#verificationMotDePasse').val();
+            if (passwd1 == '') {
+                alert('Le mot de passe ne doit pas être vide');
+            } else if(passwd1 != passwd2) {
+                alert('Les mots de passes ne sont pas identiques');
+            } else {
+                document.forms['myForm'].submit();
+            }
+        } else {
+            document.forms['myForm2'].submit();
+        }
+        fin_attente();
+    }*/
+
+</script>
+{% endblock javascript %}
+
+
+
+

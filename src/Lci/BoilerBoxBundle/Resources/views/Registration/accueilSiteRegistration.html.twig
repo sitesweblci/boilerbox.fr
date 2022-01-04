@@ -34,13 +34,7 @@
 					</select>
 				</div>
 				<div class="form__btn form__btn--col">
-					{# <button class="btn_moyen_picto btn btn--main btn--wide" onClick="attente(); miseAJour();">Modifier</button> #}
-					<img 	onClick="attente(); miseAJour();" 
-							class="btn_moyen_picto" 
-							alt="Modifier le site"
-							src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
-							onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier_hover.png') }}"  
-							onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"/>
+					<p class="btn_moyen_picto btn btn--main btn--wide" onClick="attente(); miseAJour();">Modifier</p>
 					{% if is_granted('ROLE_SUPER_ADMIN') %}
 						<button onClick="attente(); validFormulaire('deleteSite');" class="btn btn--delete">Supprimer</button>
 					{% endif %}

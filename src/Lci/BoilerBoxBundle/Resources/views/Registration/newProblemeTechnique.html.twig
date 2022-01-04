@@ -19,24 +19,18 @@
 
 {% block fos_user_content %}
 {{ parent() }}
-<div class='main-box'>
+<main class='main-box'>
 	{{ form_start(form, {'action':path('lci_register_problemeTechnique'), 'method':'POST', 'name':'myForm', 'class':'form'}) }}	
-	<div class='petit_menu_principal'>
+	<div class='{# petit_menu_principal #} main-box__action'>
 		{% if type_probleme == 'update' %}
-			<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_mail.png') }}"  
-						onClick='attente(); sendAjaxMail(); fin_attente();' 
-						class="btn_petit_picto selectionnable" 
-						title='Envoyer un mail de rappel' 
-						alt="Mail de rappel"i
-					/>
-			</div>
-			<div><img 	src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" 
-						onClick='attente(); showPrintedVersion("{{ form.id.vars.value }}"); fin_attente();' 
-						class="btn_petit_picto selectionnable" 
-						title='Afficher la version imprimable' 
-						alt="Version imprimable"
-					/>
-			</div>
+			<span class="tooltip-wrapper" onClick='attente(); sendAjaxMail(); fin_attente();'>
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/mail.svg') }}" class="btn_petit_picto selectionnable" title='Envoyer un mail de rappel' alt="Mail de rappel"/>
+				<span class="tooltip">Envoyer un mail de rappel</span>
+			</span>
+			<span class="tooltip-wrapper" onClick='attente(); showPrintedVersion("{{ form.id.vars.value }}"); fin_attente();' >
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" class="btn_petit_picto selectionnable" title='Afficher la version imprimable' alt="Version imprimable"/>
+				<span class="tooltip">Version imprimable</span>
+			</span>
 		{% endif %}
 	</div>
 	<h1 class="main-box__title">{{ titre }}</h1>
@@ -142,7 +136,7 @@
 		<input type='hidden' id='id_probleme' name='id_probleme' />
 		<input type='hidden' id='printed_version' name='printed_version' />
 	</form>
-</div>
+</main>
 
 <script type='text/javascript'>
 	// Fonction style barre de navigation page active
@@ -201,7 +195,7 @@
 		var $fichier_container = $('div#probleme_technique_fichiersJoint');
 		//		Ajout du lien pour insertion d'un nouveau fichier
 		//			Création du lien
-		var $addLink = $('<a href="#" id="add_fichier"><img src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre.png') }}" onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre_hover.png') }}" onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btn_joindre.png') }}" class="btn_menu" alt="Joindre un fichier"></a>');
+		var $addLink = $('<a href="#" id="add_fichier">Joindre un fichier</a>');
 		//			Insertion du lien dans la page
 		$fichier_container.append($addLink);
 

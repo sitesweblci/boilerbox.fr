@@ -1,0 +1,88 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/changeUserRegistration.html.twig #}
+{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+
+
+{% block fos_user_content %}
+{{ parent() }}
+
+<div class='listing'>
+	<div class='ajout_objet'>
+		{% block messages_flash %} {{ parent() }}{% endblock messages_flash %}
+		<h1>Modification de l'utilisateur</h1>
+		{{ form_start(form, {'action':path('lci_update_user', {'idUtilisateur':user.id}), 'method':'POST', 'name':'myForm2'}) }}
+			<div>{{ user.label }} ( {{ user.username }} )</div>
+			<div>{{ form_errors(form.label) }}{{ form_widget(form.label) }}</div>
+			<div>{{ form_errors(form.username) }}{{ form_widget(form.username) }}</div>
+			<div>{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</div>
+			<div>{{ form_errors(form.prenom) }}{{ form_widget(form.prenom) }}</div>
+			<div>{{ form_errors(form.enabled) }}{{ form_widget(form.enabled) }}</div>
+			<div>{{ form_errors(form.couleur) }}{{ form_widget(form.couleur) }}</div>
+            <div>{{ form_errors(form.email) }}{{ form_widget(form.email) }}</div>
+			{% if is_granted('ROLE_SUPER_ADMIN') %}
+				<div class='display_flex_row_start'>
+            	    <div>{{ form_label(form.roles) }} </div>
+            	    {{ form_widget(form.roles) }}
+            	</div>
+			{% endif %}
+			<div>{{ form_errors(form.informations) }}{{ form_widget(form.informations) }}</div>
+		{{ form_widget(form._token) }}
+		{{ form_end(form, {'render_rest': false}) }}
+    	<div id='formulaire'>
+			<form method='POST' name='myForm'  action={{ path('lci_accueil_register_user') }} />
+				<input type='hidden' name='idUtilisateur' value="{{ user.id }}" />
+				<input type='hidden' name='choixAction' value='updateUser' />
+				<div>
+					<input type='checkbox' name='newPassword' onClick="newPasswd();" /> Réinitialisation du mot de passe
+				</div>
+				<div id='newPassword' class='cacher'>
+				<div>
+					<input type='password' name='motDePasse' id='motDePasse' />
+				</div>
+				<div>
+					<input type='password' name='verificationMotDePasse' id='verificationMotDePasse' />
+				</div>
+			</form>	
+		</div>
+		<div class='validation_formulaire'>
+			<img onClick="attente(); checkPasswd();" class="btn_menu" alt="Modifier l'utilisateur" 
+				src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_modifier_utilisateur.png') }}"   
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_modifier_utilisateur_hover.png') }}"  
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/administration/boutons/btn_modifier_utilisateur.png') }}" />
+			<img onClick="attente(); redirection('menuUtilisateur');" class="btn_menu" alt="Retour"
+				src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" 			       		
+				onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour_hover.png') }}" 				 		 
+				onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btn_retour.png') }}" />
+		</div>
+	</div>
+</div>
+
+<script type='text/javascript'>
+    $('input[type="checkbox"][name="newPassword"]').attr('checked',false);
+
+    function newPasswd() {
+		if($('input[type="checkbox"][name="newPassword"]').is(':checked') == true) {
+	    	$('#newPassword').show();
+		} else {
+	    	$('#newPassword').hide();
+		}
+    }
+
+    //Vérification de la conformité des mots de passe si la checkbox est cochée
+    function checkPasswd() {
+		if ($('input[type="checkbox"][name="newPassword"]').is(':checked') == true) {
+	    	var passwd1 = $('#motDePasse').val();
+	    	var passwd2 = $('#verificationMotDePasse').val();
+	    	if (passwd1 == '') {
+				alert('Le mot de passe ne doit pas être vide');
+	    	} else if(passwd1 != passwd2) {
+				alert('Les mots de passes ne sont pas identiques');
+   	    	} else {
+				document.forms['myForm'].submit();
+	    	}
+		} else {
+	    	document.forms['myForm2'].submit();
+		} 
+		fin_attente();
+   	}
+</script>
+{% endblock fos_user_content %}

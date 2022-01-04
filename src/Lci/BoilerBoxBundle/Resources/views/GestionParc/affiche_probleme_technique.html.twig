@@ -6,9 +6,14 @@
 
 {% block fos_user_content %}
 {{ parent() }}
-<div class='listing'>
-<div class='ajout_objet'>
-	<div><span class='top_droit notToBePrinted'><img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_print.png') }}" onclick="window.print();"></span></div>
+{# <div class='listing'> #}
+<main class='ajout_objet main-box'>
+	<div class="main-box__action notToBePrinted">
+		<span class="tooltip-wrapper" onclick="window.print();">
+			<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}"/>
+			<span class="tooltip">Imprimer</span>
+		</span>
+	</div>
 	<div class='menu_date'>{% include "form/version_boilerbox.html.twig" %}<span class='top_droit'>{{ date_jour }}<br /></span></div>
 	<h1>Problème technique</h1>
 	<div class='formulaire taille_texte_petit'>
@@ -110,13 +115,12 @@
 		<div class='nouveau_probleme_ligne' style='margin-top:-60px;'>
 			<img class='position_logo_fiche_ticket' src="{{ asset('bundles/lciboilerbox/images/logo_lci.jpg') }}"  width='100%' alt='logo_lci' />
 		</div>
-
-		<div class='nouveau_probleme_ligne notToBePrinted'>
-			<div class='frm_lien_centrer'><a href="{{ path('lci_tri_recherche_problemes') }}" style="height:30px;" onClick="attente();">Retour à la liste</a></div>
-		</div>
 	</div>
-</div>
-</div>
+	<div class='main-box__btn notToBePrinted'>
+		<a href="{{ path('lci_tri_recherche_problemes') }}" class="btn btn--second" onClick="attente();">Retour à la liste</a>
+	</div>
+</main>
+{# </div> #}
 
 
 <script type='text/javascript'>

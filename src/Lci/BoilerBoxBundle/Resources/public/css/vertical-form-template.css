@@ -57,20 +57,6 @@ div.form-group input:not(.texteToLabel).form-control{
 	border: 1px solid var(--couleur-focus) !important;
 }
 /* FORMULAIRE MON COMPTE *******************/
-/*.formMonCompte{
-	display: flex;
-	flex-direction: column;
-	justify-content: left;
-	margin: 0;
-	padding: 0;
-}
-.formMonCompte h3{
-	margin: 16px 0;
-	font-size: 12pt;
-	font-weight: 500;
-	color: var(--couleur-principale);
-	text-transform: none;
-}*/
 .fauxLabel{
 	margin-top: 16px;
     font-family: Calibri, Arial, sans-serif;

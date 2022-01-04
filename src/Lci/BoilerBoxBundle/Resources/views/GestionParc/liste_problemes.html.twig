@@ -48,17 +48,17 @@
 		Liste des problèmes techniques 
 	</h1>
 	<div class="main-box__action">
-		<span class="tooltip-wrapper">
-	        <img src="{{ asset('bundles/lciboilerbox/images/actions/affiner.svg') }}" onClick="attente(); redirection('affinerRecherche');" alt="Affiner la recherche"/>
+		<span class="tooltip-wrapper" onClick="attente(); redirection('affinerRecherche');">
+	        <img src="{{ asset('bundles/lciboilerbox/images/actions/affiner.svg') }}" alt="Affiner la recherche"/>
 	        <span class="tooltip">Affiner recherche</span>
 		</span>
 		{% if tableau_problemes | length  > 0 %}
-			<span class="tooltip-wrapper">
-				<img src="{{ asset('bundles/lciboilerbox/images/actions/exporter.svg') }}" onClick="attente(); redirection('export');" alt="Exporter">
+			<span class="tooltip-wrapper" onClick="attente(); redirection('export');">
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/exporter.svg') }}" alt="Exporter">
 				<span class="tooltip">Exporter</span>
 			</span>
-			<span class="tooltip-wrapper">
-				<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" onclick="window.print();" alt="Imprimer">
+			<span class="tooltip-wrapper" onclick="window.print();">
+				<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}"  alt="Imprimer">
 				<span class="tooltip">Imprimer</span>
 			</span>
 		{% endif %}
@@ -75,10 +75,10 @@
 					<th class='medium selectionnable' onClick="attente(); trie('equipement');">Equipement</th>
 					<th class='wide'>Description</th>
 					<th class='medium'>Solution</th>
-					<th class='mini'>Fichiers</th>
-					<th class='mini selectionnable' onClick="attente(); trie('bloquant');">Bloque</th>
-					<th class='mini selectionnable' onClick="attente(); trie('corrige');">Corrigé</th>
-					<th class='mini selectionnable' onClick="attente(); trie('cloture');">Clos</th>
+					<th class='mini txt--center'>Fichiers</th>
+					<th class='mini selectionnable txt--center' onClick="attente(); trie('bloquant');">Bloque</th>
+					<th class='mini selectionnable txt--center' onClick="attente(); trie('corrige');">Corrigé</th>
+					<th class='mini selectionnable txt--center' onClick="attente(); trie('cloture');">Clos</th>
 				</tr>
 			</thead>
 			<tbody class="flex-table__tbody">
@@ -122,10 +122,10 @@
 					">
 							{{ tabErreur.solution }}
 					</td>
-					<td class='mini'>{% if tabErreur.fichiersJoint|length != 0 %}X{% endif %}</td>
-					<td class='mini centrer'>{% if tabErreur.bloquant == 1 %}X{% endif %}</td>
-					<td class='mini'>{% if tabErreur.corrige == 1 %}{% if tabErreur.dateCorrection != null %}{{ tabErreur.dateCorrection|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
-					<td class='mini'>{% if tabErreur.cloture == 1 %}{% if tabErreur.dateCloture != null %}{{ tabErreur.dateCloture|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+					<td class='mini txt--center'>{% if tabErreur.fichiersJoint|length != 0 %}X{% endif %}</td>
+					<td class='mini txt--center'>{% if tabErreur.bloquant == 1 %}X{% endif %}</td>
+					<td class='mini txt--center'>{% if tabErreur.corrige == 1 %}{% if tabErreur.dateCorrection != null %}{{ tabErreur.dateCorrection|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
+					<td class='mini txt--center'>{% if tabErreur.cloture == 1 %}{% if tabErreur.dateCloture != null %}{{ tabErreur.dateCloture|date('d-m-Y') }}{% else %}X{% endif %}{% endif %}</td>
 				</tr>
 				{% endfor %}
 			</tbody>

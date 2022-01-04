@@ -273,11 +273,19 @@
         $('.logged').on('mouseleave', function(){
             $('.logged').addClass('cacher');
         });
+
     	$(document).ready(function() {
     	    if("{{popup_error}}") {
     	        $('#popUpError').removeClass('cacher')
     	        $('#cartonBlack').removeClass('cacher')
     	    }
+            // Fonction pour aligner le titre du bandeau bleu avec le menu latéral au survol de celui-ci
+            $('.side-nav').on('mouseenter', function paddingSubHeader(){
+                $('.sub-header--blue').addClass('sub-header--padding');
+            });
+            $('.side-nav').on('mouseleave', function noPaddingSubHeader(){
+                $('.sub-header--blue').removeClass('sub-header--padding');
+            });
     	});
 
     	function clotureMessageErreur() {

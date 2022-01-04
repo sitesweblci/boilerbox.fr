@@ -3,48 +3,39 @@ html {
   font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
   /*color: #FFF;*/
 }
-
-
 /* Suppression des flèches sur les input de type integer */
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
 }
-
 /* Chrome */
 input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button { 
 -webkit-appearance: none;
 margin:0;
 }
-
 /* Opéra*/
 input::-o-inner-spin-button,
 input::-o-outer-spin-button { 
 -o-appearance: none;
 margin:0
 }
-
 img {
   cursor: pointer;
 }
-
 input {
   box-sizing: border-box;
   border: none;
 }
-
 .main-box{
   display: none !important;
 }
-
 .cacher {
   display: none;
 }
 .invisible {
   visibility: hidden;
 }
-
 #bloc_header {
   min-height: 50px; 
 }
@@ -71,22 +62,6 @@ input {
   margin-top: 15px;
   font-size: 18px;
 }
-
-
-#bloc_body {
-  /*position: fixed;
-  top: 50px;
-  left: 0px;
-  right: 0px;
-  /*bottom: 0px;*/
-/*
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: nowrap;*/
-}
-
 /* Utilisé sur la page d'accueil de la partie Administration */
 .menu_administration {
   display: flex;
@@ -100,7 +75,6 @@ input {
   margin-bottom: 50px;
   margin-right: -20px;
 }
-
 .menu_administration .menu_ligne1 {
   order: 2;
   display: flex;
@@ -113,10 +87,6 @@ input {
   justify-content: space-between;
   width: 550px;
 }
-/* ############################################################ */
-
-
-
 /* Utilisé sur la page d'accueil de la partie Parc Technique */
 .menu_parc {
   display: flex;
@@ -130,7 +100,6 @@ input {
   margin-bottom: 50px;
   margin-right: -20px;
 }
-
 .menu_parc .menu_ligne1 {
   order: 2;
   display: flex;
@@ -144,9 +113,6 @@ input {
   width: 550px;
 }
 /* ############################################################ */
-
-
-
 .module_selectionne {
   font-size: 13px;
   font-style: italic;
@@ -165,7 +131,6 @@ input {
   margin-left: 150px;
   padding-left: 20px;
 }
-
 .ajout_objet h1 {
   margin-top: 30px;
   text-transform: uppercase;
@@ -174,7 +139,6 @@ input {
   letter-spacing: -1px;
   text-align: center;
 }
-
 .ajout_objet h2 {
   text-transform: capitalize;
   font-size: 18px;
@@ -182,20 +146,16 @@ input {
   letter-spacing: -1px;
   margin-top: -6px;
 }
-
 .ajout_objet input {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
 .form_zone_date {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 350px;
 }
-
-
 .validation_formulaire {
   display: flex;
   justify-content: space-between;
@@ -203,11 +163,9 @@ input {
   margin-bottom: 25px;
   width: 350px;
 }
-
 .img_validation_formulaire {
   height: 35px;
 }
-
 .validation_formulaire_end {
   display: flex;
   flex-direction: row;
@@ -225,7 +183,6 @@ input {
   margin-bottom: 15px;
   width: 350px;
 }
-
 .validation_formulaire_ticket {
   display: flex;
   flex-direction: column;
@@ -233,21 +190,16 @@ input {
   margin-top: 10px;
   width: 350px;
 }
-
 .ajout_objet .label_smalltext {
   position: relative;
   top: -3px;
 }
-
-
 .label_smalltext {
   font-size: 13px;
 }
 .label_date {
   font-size: 13px;
 }
-
-
 .input_txt {
   width: 200px;
   margin-bottom: 10px;
@@ -272,9 +224,6 @@ input {
 .input_checkbox {
   margin: 0;
 }
-
-
-
 .btn_menu {
   width: 170px;
 }
@@ -293,15 +242,10 @@ input {
 .btn_petit_picto {
   width: 15px;
 }
-
-
-
 .checkbox {
   margin-left: 0;
   margin-right: 5px;
 }
-
-
 .listing {
   position: relative;
   display: flex;
@@ -310,7 +254,6 @@ input {
   align-items: flex-end;
   margin-top: -110px;
 }
-
 .listing2 {
   display: flex;
   flex-direction: column;
@@ -318,7 +261,6 @@ input {
   border: 2px solid white;
   border-radius: 5px;
 }
-
 .listing2 h1 {
   display: flex;
   justify-content: center;
@@ -331,7 +273,6 @@ input {
   height: 50px;
   margin: 0px;
 }
-
 .listing2 h2 {
   display: flex;
   justify-content: center;
@@ -344,7 +285,6 @@ input {
   font-size: 16px;
   text-transform: uppercase;
 }
-
 a:link {
   text-decoration: none;
   color: white;
@@ -365,13 +305,11 @@ a:active {
   text-decoration: none;
   color: white;
 }
-  
 
 .formulaire {
   position: relative;
   width: 350px;
 }
-
 .formulaire h1 {
   font-size: 14px;
   margin-top: 20px;
@@ -383,21 +321,14 @@ a:active {
   min-height: 25px;
   border-radius: 5px;
 }
-
 .formulaire select.input_select {
   width: 100%;
   margin-bottom: 10px;
   margin-top: 10px;
 }
-
 .formulaire_liste {
   box-sizing: border-box;
 }
-
-
-
-
-
 /* CSS commun à tous les tableaux de type listing */
 .formulaire_liste table.tableau_listing {
   border-collapse: collapse;
@@ -409,29 +340,23 @@ a:active {
   table-layout: fixed;
   /*background-color: #240909;*/
 }
-
 .formulaire_liste table.tableau_listing thead {
   border:2px solid blue;
   margin-top: 20px;
   padding-top: 50px;
 }
-
 .formulaire_liste table.tableau_listing thead th {
   text-align: left;
   padding-left: 10px;
   padding-right: 10px;
 }
-
 .formulaire_liste table.tableau_listing thead th.titre {
   color: red;
   font-size: 25px;
   text-align: center;
 }
-
 .formulaire_liste table.tableau_listing tbody {
   display: block;
-  /*color: red; /*white;*/
-  /*max-height: 500px;*/
   overflow-y: scroll;
 }
 .formulaire_liste table.tableau_listing tbody td {
@@ -443,19 +368,6 @@ a:active {
   letter-spacing: -1px;
   border: none;
 }
-
-/*
-.formulaire_liste table.tableau_listing tbody tr:nth-child(even) {
-  background-color:#252b33;
-}
-.formulaire_liste table.tableau_listing tbody tr:nth-child(odd) {
-  background-color:#240909;
-}
-*/
-/* ############################################################# */
-
-
-
 /* CSS spécifique au tableau d'affichage du parc des modules */
 .formulaire_liste table.tab_liste .tab_liste_modules th {
   height: 40px;
@@ -464,10 +376,6 @@ a:active {
 .formulaire_liste table.tab_liste .tab_liste_modules td {
   height: 30px;
 }
-/* ############################################################# */
-
-
-
 /* CSS commun aux tableaux du parc */
 .formulaire_liste table.tab_liste thead {
   background-color: white;
@@ -486,11 +394,6 @@ a:active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* ############################################################# */
-
-
-
-
 .formulaire_liste .zone_texte_mini {
   max-width: 50px;
   min-width: 50px;
@@ -514,57 +417,44 @@ a:active {
   max-width: 500px;
   min-width: 500px;
 }
-
-
 .formulaire_liste td.zone_texte_grand {
   font-size:0.9em;
 }
-
-
-
 div.impression {
   font-size: 14px;
   margin-left: 20px;
   counter-reset: numero_page; 
 }
-
 table.impression_problemes thead th.titre {
   height: 100px;
   font-size: 22px;
   width: 500px;
 }
-
 table.impression_problemes thead th.en-tete {
   text-align: left;
   font-weight: normal;
   font-size: 10px;
   padding-top: 10px;
 }
-
 table.impression_problemes span.fin_de_page:after {
   display:inline-block; counter-increment:numero_page; content:"Page " counter(numero_page); width:98%; text-align:right; margin-top:-25px; margin-bottom:30px;
 }
-
 table.impression_problemes_body {
   border: 2px solid black;
   margin-bottom: 10px;
   page-break-inside: avoid;
 }
-
 table.impression_problemes_body th, table.impression_problemes_body td {
   padding-left: 10px;
 }
-
 table.impression_problemes_body th {
   border-right: 2px solid gray;
   height: 20px;
   text-align: left;
 }
-
 table.impression_problemes_body td {
   vertical-align: top;
 }
-
 table.impression_problemes_body .zone_texte_mini {
   max-width: 70px;
   min-width: 70px;
@@ -588,37 +478,25 @@ table.impression_problemes_body .zone_texte_tres_grand {
   max-width: 500px;
   min-width: 500px;
 }
-
-
-
-
-
 .selectionnable {
   cursor: pointer;
 }
-
-
 .debut_ligne {
   margin-bottom: 20px;
 }
 .fin_liste {
   margin-top: 25px;
 }
-
 .export_liste_problemes {
   position: absolute;
   left: 0px;
 }
-
 .regular { 
   font-weight: normal !important;
 }
-
 .centrer {
   text-align: center;
 }
-
-
 .def {
   color: white;
 }
@@ -631,21 +509,15 @@ table.impression_problemes_body .zone_texte_tres_grand {
 .nok {
   color: red;
 }
-
-
-
 .taille_texte_grand {
   font-size: 18px;
 }
-
 .taille_texte_moyen {
   font-size: 16px;
 }
-
 .taille_texte_petit {
   font-size: 12px;
 }
-
 .ajout_espace_top {
   margin-top: 20px;
 }
@@ -653,22 +525,18 @@ table.impression_problemes_body .zone_texte_tres_grand {
   margin-top: 60px;
   margin-left: 40px;
 }
-
 #description_du_ticket {
   position: fixed;
   max-width: 1300px; 
   top: 100px; 
   text-align: center;
 }
-
 .td_liste_pb_module {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
-
-
 .nouveau_probleme_ligne {
   display: flex;
   justify-content: space-between;
@@ -702,8 +570,6 @@ table.impression_problemes_body .zone_texte_tres_grand {
   text-decoration: none;
   color: #0066FF;
 }
-
-
 .frm_texte_box {
   width: 100%;
   height: 80px;
@@ -711,20 +577,16 @@ table.impression_problemes_body .zone_texte_tres_grand {
   margin-bottom: 5px;
   margin-top: 5px;
 }
-
 .validation_formulaire_ticket .div_fichier_joint {
   height: 170px;
   overflow: auto;
 }
-
-
 .validation_formulaire_ticket .div_boutons_validation {
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin-bottom: 20px;
 }
-
 .menu_raccourci {
   position: absolute;
   display: flex;
@@ -761,14 +623,6 @@ table.impression_problemes_body .zone_texte_tres_grand {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
-
-
-
-
-
-
-
 .input_login {
   border: #006ab3 solid 3px;
   border-radius: 3px;
@@ -781,8 +635,6 @@ table.impression_problemes_body .zone_texte_tres_grand {
   width: 204px;
   font-family: Verdana, Geneva, sans-serif;
 }
-
-
 #horaireAction {
   color: black;
   font-size: 10px;

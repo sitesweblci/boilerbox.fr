@@ -72,6 +72,12 @@
 	.flex-table .wide{
 		width: calc(100% - 20px);
 	}
+	#table_des_fichiers tr td.small img{
+		cursor: pointer;
+	}
+	#table_validation tbody tr{
+		height: 33px;
+	}
 	</style>
 {% endblock liens_css %}
 
@@ -81,18 +87,9 @@
 </header>
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
 
-{# ***** ENCART DU BON ***** #}
 <main class="grid">
 	<section class='grid__one'>
 		<section class="main-box">
-			{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-				<div class="main-box__action">
-					<span class="tooltip-wrapper" onClick="updateBon({{ entity_bon.id }});">
-						<img src="{{ asset('bundles/lciboilerbox/images/actions/update.svg') }}" alt="mise à jour" style="width:20px;height:20px;"/>
-						<span class="tooltip">Mise à jour</span>
-					</span>
-				</div>
-			{% endif %}
 			<h1 class="main-box__title">Bon {{ entity_bon.numeroBA }}</h1>
 			<h2 class="main-box__sub-title">Demande {{ entity_bon.id }} (initialisée par {{ entity_bon.userInitiateur.label }})
 			</br>
@@ -147,6 +144,9 @@
 			</div>
 			<div class="main-box__btn">
 				<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu mobile btn btn--second">Retour</button>
+				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+					<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Mettre à jour</button>
+				{% endif %}
 			</div>
 		</section>
 
@@ -155,19 +155,8 @@
 			<h2 class="main-box__sub-title main-box--table__sub-title">
 				{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} 
 			</h2>
-			{# <div class="main-box__action">
-				<div class='fichier cacher'></div>
-				<div id='label_fichier' class='droite_div tooltip-wrapper'>
-					<label class="switch">
-						<input type="checkbox" onClick="toggleFiles();">
-						<span class="slider"></span>
-					</label>
-					<span id='info_bulle_fichier' class="tooltip"></span>
-				</div>
-			</div> #}
 			{% if is_granted('ROLE_SAISIE_BA') %}
 				<div class="main-box__content main-box__content--padding">
-		        	{# <div id='info_bulle_archive' class='fichier cacher'>Montrer / Cacher les fichiers archivés</div> #}
 		        	<div id='label_archive' class="form__field">
 		        		<div class="checkbox">
 			        	    <label>
@@ -216,18 +205,22 @@
 				</tbody>
 			</table>
 		    <div id='formulaire_bons_fichiers' class=''>
-				<div {# id='liste_nouveaux_fichiers' #} class="main-box__content main-box__content--padding">
-			    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
-				{{ form_errors(form_ajout_fichier) }}
-			    	<div class='ligne_error'>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
-					<div class='nouveau_probleme_ligne'><div><span id='lien_ajout_fichier'></span></div></div>
-			    	<div class='nouveau_probleme_ligne'><div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div></div>
-					<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-				{{ form_end(form_ajout_fichier) }}
+				<div class="main-box__content main-box__content--padding" style="margin-top:16px;">
+				    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+					{{ form_errors(form_ajout_fichier) }}
+					<div>
+						<span id='lien_ajout_fichier'></span>
+						<div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
+						<div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
+						<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+					</div>
+					{{ form_end(form_ajout_fichier) }}
 				</div>
 			</div>
 			<div class="main-box__btn main-box--table__btn">
-				<button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
+				<div id="js-btn-file" class="main-box__btn--disabled">
+					<button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
+				</div>
 			</div>
 		</section>
 	</section>
@@ -238,7 +231,7 @@
 			    <h1 class="main-box__title main-box--table__title">Validation</h1>
 				{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
 				{{ form_errors(form_validation) }}
-					<table class='{# table_boiler #} flex-table'>
+					<table id="table_validation"  class='flex-table'>
 					<thead class="flex-table__thead">
 						<tr class="flex-table__row">
 							<th>Facturation</th>
@@ -439,8 +432,10 @@
 		        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 		        	{{ form_end(form_ajout_commentaires) }}
 		    	</div>
-		    	<div class="main-box__btn">
-		    		<button class="btn btn--main" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
+		    	<div id="js-btn-comm" class="main-box__btn">
+		    		<div class="main-box__btn--disabled">
+		    			<button class="btn btn--main btn--disabled" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
+		    		</div>
 		    	</div>
 		    </div>
 		</section>
@@ -478,6 +473,16 @@
             tab.classList.add('active')
             target.classList.add('active')
         })
+    });
+    // Fonction d'activation du bouton 'publier commentaire'
+    $('#bons_attachement_commentaires_commentaires').on('keyup', function enableBtnComm(){
+    	if($('#bons_attachement_commentaires_commentaires').val().length){
+    		$('#js-btn-comm > div').removeClass('main-box__btn--disabled');
+    		$('#js-btn-comm .btn--main').removeClass('btn--disabled');
+    	} else if (!$('#bons_attachement_commentaires_commentaires').val().length){
+    		$('#js-btn-comm > div').addClass('main-box__btn--disabled');
+    		$('#js-btn-comm .btn--main').addClass('btn--disabled');
+    	}
     });
 
 
@@ -537,6 +542,8 @@
         $addLink.click(function(e){
             ajoutChampFichier();
 			$('#bons_attachement_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
+			$('#js-btn-file > div').removeClass('main-box__btn--disabled');
+    		$('#js-btn-file .btn--main').removeClass('btn--disabled');
             e.preventDefault();
             return false;
         });

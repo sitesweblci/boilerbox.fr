@@ -1,0 +1,16 @@
+@mixin flex-row{
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+}
+@mixin flex-col{
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	justify-content: center;
+}
+@mixin title{
+	font-size: 18pt;
+	font-weight: 300;
+}

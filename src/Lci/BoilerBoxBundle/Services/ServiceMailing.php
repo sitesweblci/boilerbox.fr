@@ -3,7 +3,7 @@
 namespace Lci\BoilerBoxBundle\Services;
 
 // Service d'envoi de mails ( par SMTP )
-class ServiceMailing 
+class ServiceMailing
 {
 protected $mailer;
 protected $templating;
@@ -12,14 +12,16 @@ protected $log;
 protected $mail_administrateur;
 protected $logo;
 protected $service_configuration;
+protected $url_boilerbox;
 
-	public function __construct(\Swift_Mailer $mailer, $templating, $mail_administrateur, $loging, $service_configuration) {
-		$this->mailer = $mailer;
-		$this->templating = $templating;
-		$this->mail_administrateur = $mail_administrateur;
-		$this->log = $loging;
-		$this->logo = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';
+	public function __construct(\Swift_Mailer $mailer, $templating, $mail_administrateur, $loging, $service_configuration, $url_boilerbox) {
+		$this->mailer 				 = $mailer;
+		$this->templating 			 = $templating;
+		$this->mail_administrateur 	 = $mail_administrateur;
+		$this->log 					 = $loging;
+		$this->logo 				 = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';
 		$this->service_configuration = $service_configuration;
+		$this->url_boilerbox 		 = $url_boilerbox;
 	}
 
 
@@ -199,5 +201,32 @@ protected $service_configuration;
         return (0);
     }
 
+    /* fonction d'envoi d'email pour les dev */
+    public function sendMailRegister($user)
+    {
+        $message = \Swift_Message::newInstance()->setSubject("Création de votre accès BoilerBox")
+                    ->setFrom('Assistance@lci-group.fr')
+                    ->setTo($user->getEmail());
+		$confirmationUrl = $this->url_boilerbox.'register/confirm/'.$user->getConfirmationToken();
+		
+        //$chemin_image = __DIR__.'/../../../../web/bundles/lciboilerbox/images/logo_lci.jpg';
+		$chemin_image = __DIR__.'/../../../../src/Lci/BoilerBoxBundle/Resources/public/images/mail/graphique.jpg';
+        $image_link = $message->embed(\Swift_Image::fromPath($chemin_image));
+        $message->setBody($this->templating->render('FOSUserBundle:Registration:email.txt.twig',
+                            [   
+                                'image_link'    => $image_link,
+                                'user'          => $user,
+								'mot_de_passe'	=> $user->getPlainPassword(),
+                                'confirmationUrl' => $confirmationUrl,
+								'url_boilerbox'		=> $this->url_boilerbox
+                            ]
+                        ),
+                        'text/html'
+                    )
+        ;
+        $this->log->setLog("[MAIL];Mail de dev envoyé: ", $this->fichier_log);
+        $this->mailer->send($message);
+        return (0);
+    }
 
 }

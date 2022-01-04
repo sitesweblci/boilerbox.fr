@@ -254,8 +254,8 @@ window.location.search: "?query=1"
 				<h1 class='infoAffaireAffaire info-box__header__code'>dev</h1>
 				<h2 class='infoAffaireIntitule info-box__header__nom'>dev</h2>
 			</header>
-			{# On affiche les options de mode privé / mode publique uniquement pour les comptes administrateurs #}
 			{% if is_granted('ROLE_TECHNICIEN') %}
+				{# On affiche les options de mode privé / mode publique uniquement pour les comptes administrateurs #}
 				{% if app.user.modePrive == false %}
 					<p class="info-box__mode info-box__mode--public">Attention, vous êtes en partage public
 						<a class="js-switch-mode" href="#" onClick="mySwitchMode(); return false;">(passer en privé)</a>
@@ -292,22 +292,22 @@ window.location.search: "?query=1"
 							</a>
 						{% endif %}
 					</div>
+					<h1 class="info-box__content__title">
+						<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
+						Pièces jointes
+					</h1>
+					<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
+					<div class="js-addPieceJointe btn btn--add">
+						<div class="crossAdd"></div>
+						Ajouter pièce jointe
+					</div>
+					<span style='display:none'>
+						<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
+							<input type='file' id='fichier' name='fichierDuSite'>
+							<input type='text' id='fichierIdSite' name='fichierIdSite'>
+						</form>
+					</span>
 					{% if is_granted('ROLE_TECHNICIEN') %}
-						<h1 class="info-box__content__title">
-							<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoJoint.svg') }}" alt="pictogramme pièce jointe">
-							Pièces jointes
-						</h1>
-						<div id="js-ensemblePieceJointe" class="attachement__wrapper scroll"></div>
-						<div class="js-addPieceJointe btn btn--add">
-							<div class="crossAdd"></div>
-							Ajouter pièce jointe
-						</div>
-						<span style='display:none'>
-							<form method="post" id="fileinfo" name="fileinfo" enctype="multipart/form-data">
-								<input type='file' id='fichier' name='fichierDuSite'>
-								<input type='text' id='fichierIdSite' name='fichierIdSite'>
-							</form>
-						</span>
 						<div class="info-box__content__title info-box__content__title--wrapper">
 							<span>
 								<img class="info-box__content__title__img" src="{{ asset('bundles/lciboilerbox/images/img/infoInfo.svg') }}" alt="pictogramme information">
@@ -719,10 +719,8 @@ window.location.search: "?query=1"
 			$img_live = null;
 			$img_locale = null;
             $('#js-pictoConnexion img:first').off('click');
-			{% if is_granted('ROLE_TECHNCIEN') %}
-            	$("#js-pictoConnexion img:eq(1)").off('click');
-            	$('#js-pictoConnexion img:last').off('click');
-			{% endif %}
+            $("#js-pictoConnexion img:eq(1)").off('click');
+            $('#js-pictoConnexion img:last').off('click');
 			$refreshPourSite = setInterval("window.location.assign(window.location.href)", 60000);
 		}
 
@@ -852,7 +850,6 @@ window.location.search: "?query=1"
 							$('a.infoMajCloud').addClass('desactive');
 						}
             		}
-					{% if is_granted('ROLE_TECHNICIEN') %}
            			if ($img_live != null) {
                 		$("#js-pictoConnexion img:eq(1)").attr('src', $img_live);
 						// Connexion au Live effective depuis boilerbox
@@ -878,7 +875,6 @@ window.location.search: "?query=1"
 							$('a.infoMajLocal > .tooltip').removeClass('cacher');
 						}
 					}
-					{% endif %}
 					
 
                     $('#infoAffaire').data('id', $entitySite.id);

@@ -42,14 +42,7 @@
                 </select>
             </div>
 			<div class="form__btn form__btn--col">
-				 {# <button class="btn_moyen_picto btn btn--main btn--wide" onClick="attente(); validFormulaire('updateUser');">Modifier</button> #}
-                <img src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
-					 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier_hover.png') }}"  
-				  	 onmouseout=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_modifier.png') }}"  
-					 onClick="attente(); validFormulaire('updateUser');" 
-					 class="btn_moyen_picto" 
-					 alt="Modifier l'utilisateur"
-				/>
+				 <p class="btn_moyen_picto btn btn--main btn--wide" onClick="attente(); validFormulaire('updateUser');">Modifier</p>
 				{% if is_granted('ROLE_SUPER_ADMIN') %}
             	    <button src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer.png') }}" 
 						 onmouseover=this.src="{{ asset('bundles/lciboilerbox/images/commun/boutons/btnPicto_supprimer_hover.png') }}"	
