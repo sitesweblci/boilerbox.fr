@@ -83,6 +83,7 @@
                 $('#choixAction').val($choixAction);
                 document.forms['myForm'].submit();
 			} else if ($choixAction == 'updateUser') {
+				// L'url vers le controller pour la modification se trouve en value des options du select (#choix_utilisateur) des utilisateurs 
 				location.href = $('#choix_utilisateur option:selected').val();
         	} else {
         	    $('#choixAction').val($choixAction);

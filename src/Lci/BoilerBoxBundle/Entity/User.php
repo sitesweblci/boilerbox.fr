@@ -150,7 +150,7 @@ class User extends BaseUser
 
     /**
      * Un utilisateur peux avoir importé plusieurs fichiers
-     * @ORM\OneToMany(targetEntity="FichierV2", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="FichierV2", cascade={"remove"}, mappedBy="user")
     */
     protected $fichiersV2;
 

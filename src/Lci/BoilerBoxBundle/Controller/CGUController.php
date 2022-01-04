@@ -124,4 +124,9 @@ class CGUController extends Controller
 
        return $this->redirectToRoute('lci_boilerbox_accesSite');
     }
+
+
+	public function privacy() {
+		return $this->render('@LciBoilerBox/CGU/privacy.html.twig');
+	}
 }

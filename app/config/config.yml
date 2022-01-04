@@ -47,14 +47,7 @@ twig:
     globals:
         #prefix_image: "/BoilerBox"
         prefix_image: "" 
-        # URL de dev :
-        #url_cloud: 'http://vps614872.ovh.net:8082/'
-        # URL du cloud LTS
-        #url_cloud: 'http://cloud.boiler-box-lts.fr/'
-        # URL du cloud LCI
-        #url_cloud: 'http://cloud.boiler-box.fr/'
-        # URL du cloud LCI PREPROD
-        url_cloud: 'http://preprodcloud.boiler-box.fr/'
+        url_cloud: "%url_cloud%"
 
 
 # Doctrine Configuration
@@ -121,13 +114,13 @@ fos_user:
                 # Expediteur
                 address: 'Assistance_IBC@lci-group.fr'
                 # Nom de l'expediteur
-                sender_name: 'Boiler-Box'
+                sender_name: 'Administrateur BoilerBox'
             template: '@FOSUser/Registration/email.txt.twig'
     resetting:
         email: 
             from_email:
                 # Expediteur
-                address: 'admin_ipc@cargo-france.fr'
+                address: 'Assistance_IBC@lci-group.fr'
                 # Nom de l'expediteur
                 sender_name: 'Administrateur BoilerBox'
             template: '@FOSUser/Resetting/email.txt.twig'

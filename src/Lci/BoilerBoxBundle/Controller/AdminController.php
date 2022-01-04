@@ -212,11 +212,11 @@ class AdminController extends Controller
             $choix_action = $_POST['choixAction'];
             switch ($choix_action) {
                 case 'deleteUser':
-                    // On receptionne en variable $_POST['choix_utilisateur'] : /lci/user/register/update/user/131  -> Il nous faut récupérer l'id de l'url
-                    // Découpage sur les / pour ne récupérer que l'id
-                    $url_user_a_supprimer = $_POST['choix_utilisateur'];
-                    $tab_url = preg_split("/\//", $_POST['choix_utilisateur']);
-                    $id_user_a_supprimer = array_pop($tab_url);
+					// On receptionne en variable $_POST['choix_utilisateur'] : /lci/user/register/update/user/131  -> Il nous faut récupérer l'id de l'url
+					// Découpage sur les / pour ne récupérer que l'id
+					$url_user_a_supprimer = $_POST['choix_utilisateur'];
+					$tab_url = preg_split("/\//", $_POST['choix_utilisateur']);
+					$id_user_a_supprimer = array_pop($tab_url);
                     $user = $em->getRepository('LciBoilerBoxBundle:User')->find($id_user_a_supprimer);
                     $em->remove($user);
                     $em->flush();
@@ -432,6 +432,7 @@ class AdminController extends Controller
 
     }
 
+<<<<<<< HEAD
 
 
 
@@ -449,5 +450,21 @@ class AdminController extends Controller
 		$service_mail->sendMailDev('debuyck.michael@gmail.com','mail test', $liste_messages);
 		return new Response('message mail envoyé');
 	}
+=======
+    // Fonctions d'envoi de mail pour developpeurs
+    public function sendEmailDevAction()
+    {
+        $service_mail = $this->get('lci_boilerbox.mailing');
+        $liste_messages = array();
+        $liste_messages[] = '%T'."Référence";
+        $liste_messages[] = '%T'."Date de signalement";
+        $liste_messages[] = "<br /><br /><br />";
+        $liste_messages[] = "Cordialement.<br />";
+        $liste_messages[] = "Service developpeurs.";
+        $liste_messages[] = "<br /><br /><br />";
+        $service_mail->sendMailDev('debuyck.michael@gmail.com','mail test', $liste_messages);
+        return new Response('message mail envoyé');
+    }
+>>>>>>> ead8f98648edfe4d12d1cf33b7e6405a16d4f895
 
 }
