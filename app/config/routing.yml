@@ -308,9 +308,6 @@ lci_cgu_accepter:
     defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::accepterCGUAction }
 
 # **************************** ROUTE POUR DEVELOPPEMENTS LCI *********************************** #
-envoi_mail_de_dev:
-    path: /lci/envoi/mail/dev
-    defaults: { _controller: LciBoilerBoxBundle:Admin:sendEmailDev }
 lci_regles_confidentialites:
     path: /privacy
     defaults: { _controller: Lci\BoilerBoxBundle\Controller\CGUController::privacy }

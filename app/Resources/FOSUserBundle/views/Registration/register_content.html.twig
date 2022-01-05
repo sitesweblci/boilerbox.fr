@@ -4,6 +4,14 @@
 {% block boilerBoxCSS %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+    <style>
+        .generate{
+            width: initial;
+            margin-inline: auto;
+            padding: 8px 54px;
+            margin-top: 24px;
+        }
+    </style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
@@ -99,8 +107,8 @@
                                 {{ form_widget(form.plainPassword.second) }}
     							<div class="ligne_error">{{ form_errors(form.plainPassword.second) }}</div>
                             </div>
-							<div>
-								<button class='generate'>Générer</button>
+                            <div>
+								<button class='generate btn btn--add'>Générer</button>
 							</div>
                         </div>
                     </div>

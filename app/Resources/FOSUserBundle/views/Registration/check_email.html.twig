@@ -2,10 +2,12 @@
 
 {% block fos_user_content %}
 {{ parent() }}
-	<div class='listing'>
-		<div class='ajout_objet'>
-			<h1>Utilisateur créé</h1>
-		    <p>{{ 'registration.check_email'|trans({'%email%': user.email}, 'FOSUserBundle') }}</p>
+	<main class='main-box'>
+		<h1 class="main-box__title">Utilisateur créé</h1>
+		<div class="main-box__content">
+		    <p>
+		    	{{ 'registration.check_email'|trans({'%email%': user.email}, 'FOSUserBundle') }}
+		    </p>
 		</div>
-	</div>
+	</main>
 {% endblock fos_user_content %}

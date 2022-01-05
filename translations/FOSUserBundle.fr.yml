@@ -67,7 +67,9 @@ registration:
             <br/><br/>
             Votre identifiant de connexion sera : <span style="font-size:14pt;font-weight:600;color:#0a71b3;">%username%</span>
             <br />
-            Votre mot de passe d'origine est : <span style="font-size:10;color:#0a71b3;">%mot_de_passe%</span> Il est conseillé de la modifier depuis votre page profil
+            Votre mot de passe d'origine est : <span style="font-size:14pt;font-weight:600;color:#0a71b3;">%mot_de_passe%</span>
+            <br/>
+            Il est conseillé de le modifier depuis votre page profil
             <br/><br/>
             Pour finaliser la création de votre compte, merci de suivre le lien suivant :
             <br/>
