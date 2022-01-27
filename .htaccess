@@ -1,0 +1,28 @@
+#/var/www/html/BoilerBox/
+
+Options +FollowSymlinks -Indexes
+
+# Test de prise en compte du fichier .htaccess par une redirection d'url
+#Redirect /fr/boilerbox/listing/index https://example.com
+
+# Suppression de l'extension gzip dans l'Etag pour la bonne vérification de celui-ci
+RequestHeader edit "If-None-Match" '^"((.*)-(gzip|br))"$' '"$1", "$2"'
+
+
+# BEGIN Cache-Control Headers
+
+<IfModule mod_headers.c>
+    <FilesMatch "\\.(gif|jp?g|png|svg|css|js)$">
+        # On retire l'Etag pour les fichiers statiques. Cela evite au cpu de retraiter le fichier si la date de modification n'a pas changée
+        Header unset ETag
+        Header set Cache-control "private, no-cache, max-age=86400"
+    </FilesMatch>
+    <FilesMatch "\\.(html|php)$">
+        # La vérification de l'horodatage du fichier n'est pas prise en compte si l'Etag est différent.
+        # La vérification de l'Etag permet de renvoyer une page html donc la date de modification ne change pas mais dont le contenu cahnge suite aux requetes jquery
+        Header set Cache-Control "private, no-cache, max-age=86400"
+    </FilesMatch>
+</ifModule>
+FileETag All
+
+# END Cache-Control Headers
