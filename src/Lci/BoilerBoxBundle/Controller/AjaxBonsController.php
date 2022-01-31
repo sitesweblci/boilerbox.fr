@@ -44,23 +44,18 @@ class AjaxBonsController extends Controller
             switch ($type) {
                 case 'technique':
 					$entity_validation = $entity_bon->getValidationTechnique();
-                    //$this->devalidation($entity_bon->getValidationTechnique(), $user);
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
                     break;
                 case 'sav':
 					$entity_validation = $entity_bon->getValidationSAV();
-                    //$this->devalidation($entity_bon->getValidationSAV(), $user);
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_SAV');
-					
                     break;
                 case 'pieces':
 					$entity_validation = $entity_bon->getValidationHoraire();
-                    //$this->devalidation($entity_bon->getValidationHoraire(), $user);
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_PIECES');
                     break;
                 case 'facturation':
 					$entity_validation = $entity_bon->getValidationFacturation();
-                    //$this->devalidation($entity_bon->getValidationFacturation(), $user);
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_FACTURATION');
                     break;
                 default:
