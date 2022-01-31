@@ -83,12 +83,19 @@
                     <span class="tooltip">Paramètres</span>
                 </a>
             {% endif %}
-            <span {# id="btnIdentified"  #}class="header__nav header__nav--account {{ app.user.couleur }}">
-                <span>{{ app.user.label | slice(0,1) }}</span>
-            </span>
+			{% if app.user %}
+            	<span {# id="btnIdentified"  #}class="header__nav header__nav--account {{ app.user.couleur }}">
+            	    <span>{{ app.user.label | slice(0,1) }}</span>
+            	</span>
+			{% else %}
+				<span {# id="btnIdentified"  #}class="header__nav header__nav--account>
+					<span>Unlogged</span>
+				</span>
+			{% endif %}
         </nav>
     </header>
 
+	{% if app.user %}
     <div class="logged cacher">
         <div></div>
         <div class="logged__infos">
@@ -230,6 +237,7 @@
             </a>
         </div>
     </nav>
+	{% endif %}
 
     <div id='messagebox' class='message-box cacher'>
         <div id='messageboxTexte' class="message-box__content"></div>
