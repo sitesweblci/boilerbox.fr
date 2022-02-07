@@ -26,8 +26,8 @@ class ServiceSynchronisation {
 		*/
 	}
 
-	// Fonction qui redemmare tous les slaves : Permet de géré l'arrêt sans erreur des synchronisations
-	// type est soit all pour relancé toutes les synchronisations
+	// Fonction qui redemmare tous les slaves : Permet de gérer l'arrêt sans erreur des synchronisations
+	// type est soit all pour relancer toutes les synchronisations
 	//          soit une affaire pour relancer uniquement la synchro sur cette affaire
 	public function relanceSynchro($arg1 = null)
 	{
@@ -66,6 +66,49 @@ class ServiceSynchronisation {
 			}
 		}
 	}
+
+    // Fonction qui arrête la synchronisation sql de tous les slaves : Permet de laisser le temps de la sauvegarde du Cloud
+	// Doit être lancée vers 00h00; suivi de relanceSynchro() vers 03h00
+    // type est soit all pour arrêter toutes les synchronisations
+    //          soit une affaire pour arrêter uniquement la synchro sur cette affaire
+    public function arretSynchro($arg1 = null)
+    {
+        $erreur = null;
+        if (is_null($arg1))
+        {
+            shell_exec("mysql -u 'cargo' -p'adm5667' -Bse 'STOP all slaves'");
+            return "Commande d'arrêt des synchronisations effectuée";
+        } else {
+            $code_type_affaire = substr(strtolower($arg1), 0, 1);
+            $code_affaire = substr($arg1, 1);
+            //    1xxx pour les sites LCI : Cxxx
+            //    2xxx pour les sites LTS : Mxxx
+            //    3xxx pour les sites LCI : Dxxx
+            switch ($code_type_affaire)
+            {
+                case 'c':
+                    $master = 'master1'.$code_affaire;
+                break;
+                case 'm':
+                    $master = 'master2'.$code_affaire;
+                break;
+                case 'd':
+                    $master = 'master3'.$code_affaire;
+                    break;
+                default:
+                    $erreur = 'Argument incorrect : Veuillez indiquer un site parmis la liste suivante : Cxxx - Dxxx - Mxxx';
+                    break;
+            }
+            if ($erreur)
+            {
+                return $erreur;
+            } else {
+                shell_exec("mysql -u 'cargo' -p'adm5667' -Bse 'STOP slave \"$master\"'");
+                return "Commande d'arrêt de la synchronisation pour l'affaire $arg1 effectuée";
+            }
+        }
+    }
+
 
 
 }
