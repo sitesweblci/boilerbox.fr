@@ -205,7 +205,7 @@ protected $url_boilerbox;
     public function sendMailRegister($user)
     {
         $message = \Swift_Message::newInstance()->setSubject("Création de votre accès BoilerBox")
-                    ->setFrom('Assistance@lci-group.fr')
+                    ->setFrom('Assistance_IBC@lci-group.fr')
                     ->setTo($user->getEmail());
 		$confirmationUrl = $this->url_boilerbox.'register/confirm/'.$user->getConfirmationToken();
 		
