@@ -161,7 +161,14 @@ class BonsController extends Controller
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un formulaire de site qui est envoyé
                 if ($formulaire->isSubmitted()) {
-                    // Le formulaire de nouveau bon est donc soumis mais n'est pas valide
+					// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
+					$obj_erreurs = $formulaire->getErrors(true, false);
+					$message_erreur = '';
+					foreach($obj_erreurs as $obj => $error)
+					{
+						$message_erreur .= $error.' - ';
+					}
+                    $request->getSession()->getFlashBag()->add('info', $message_erreur);
                 } else {
                     // Le formulaire de nouveau site ou de modification de site est passé
                     // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
