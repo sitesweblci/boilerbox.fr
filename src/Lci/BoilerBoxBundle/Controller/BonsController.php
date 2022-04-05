@@ -131,7 +131,7 @@ class BonsController extends Controller
                 } catch (\Exception $e) {
                     $pattern_error_files = "#Column 'url' cannot be null#";
                     if (preg_match($pattern_error_files, $e->getMessage())) {
-                        $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getId() . " non enregistré. Vous n'avez pas sélectionné de fichier.");
+                        $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getNumeroBA() . " non enregistré. Vous n'avez pas sélectionné de fichier.");
                         return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
                             'form' => $formulaire->createView(),
                             'form_site' => $formulaire_site->createView(),
@@ -144,7 +144,7 @@ class BonsController extends Controller
                     }
                 }
                 // On renvoye à la page d'ajout d'un nouveau bon d'attachement avec envoi du message de confirmation d'enregsitrement du bon
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getId() . ' enregistré.');
+                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getNumeroBA() . ' enregistré.');
 
                 // Création d'un nouveau formulaire de création de bon d'attachement
                 $ent_bons_attachement = new BonsAttachement();
@@ -161,7 +161,14 @@ class BonsController extends Controller
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un formulaire de site qui est envoyé
                 if ($formulaire->isSubmitted()) {
-                    // Le formulaire de nouveau bon est donc soumis mais n'est pas valide
+					// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
+					$obj_erreurs = $formulaire->getErrors(true, false);
+					$message_erreur = '';
+					foreach($obj_erreurs as $obj => $error)
+					{
+						$message_erreur .= $error.' - ';
+					}
+                    $request->getSession()->getFlashBag()->add('info', $message_erreur);
                 } else {
                     // Le formulaire de nouveau site ou de modification de site est passé
                     // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité

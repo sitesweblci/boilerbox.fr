@@ -34,32 +34,40 @@ class AjaxBonsController extends Controller
 
         $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+		$entity_validation 				= null;
+		$entity_user_emetteur_du_bon	= null;
+		$entities_users_validation 		= null;
 
         // Si le sens est false c'est que la checkbox est décochée : On définit le champs valide à 0 pour signifier que l'entité Validation est une Dé-Validation
         // Ajout du 02/12/2019 : Lors d'une dévalidation on informe l'ensemble des valideurs par mail.
         if ($sens == 'false') {
             switch ($type) {
                 case 'technique':
-                    $this->devalidation($entity_bon->getValidationTechnique(), $user);
+					$entity_validation = $entity_bon->getValidationTechnique();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
                     break;
                 case 'sav':
-                    $this->devalidation($entity_bon->getValidationSAV(), $user);
+					$entity_validation = $entity_bon->getValidationSAV();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_SAV');
                     break;
                 case 'pieces':
-                    $this->devalidation($entity_bon->getValidationHoraire(), $user);
+					$entity_validation = $entity_bon->getValidationHoraire();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_PIECES');
                     break;
                 case 'facturation':
-                    $this->devalidation($entity_bon->getValidationFacturation(), $user);
+					$entity_validation = $entity_bon->getValidationFacturation();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_FACTURATION');
                     break;
                 default:
                     break;
             }
-            // Envoi du mail à l'ensemble du groupe de dévalidation
-            $this->sendMailDevalidation($type, $entity_bon, $entities_users_validation, $user);
+			if ($entity_validation != null)
+			{
+				$entity_user_emetteur_du_bon = $entity_validation->getUser();
+				$this->devalidation($entity_validation, $user);
+				// Envoi du mail à l'ensemble du groupe de dévalidation
+            	$this->sendMailDevalidation($type, $entity_bon, $entities_users_validation, $user, $entity_user_emetteur_du_bon);
+			}
         } else {
             // Une Validation sur un bon d'intervention est effectuée
             $entity_validation = new Validation();
@@ -204,15 +212,22 @@ class AjaxBonsController extends Controller
     }
 
 
-    private function sendMailDevalidation($type, $entity_bon, $entities_users, $entity_devalideur)
+    private function sendMailDevalidation($type, $entity_bon, $entities_users, $entity_devalideur, $entity_user_emetteur)
     {
         $sujet = 'Dévalidation ' . $type;
         $titre = 'Dévalidation ' . $type . " pour l'affaire " . $entity_bon->getNumeroAffaire();
 
         $tab_destinataires = [];
-        foreach ($entities_users as $entity_user) {
-            $tab_destinataires[] = $entity_user->getEmail();
+        foreach ($entities_users as $entity_user) 
+		{
+			// On ne met pas le devalideur dans la liste des utilisateurs qui doivent recevoir le mail de dévalidation
+			if ($entity_user->getId() != $entity_devalideur->getId())
+			{
+            	$tab_destinataires[] = $entity_user->getEmail();
+			}
         }
+		// Ajout de l'emetteur de la demande de validation au mail de dévalidation
+		$tab_destinataires[] = $entity_user_emetteur->getEmail();
 
         $service_mail = $this->get('lci_boilerbox.mailing');
 

@@ -35,8 +35,13 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 			'choice_label'    => 'label',
 			'placeholder'   => 'Tout intervenant',
 			'query_builder'   => function(EntityRepository $er){
-				return $er->createQueryBuilder('u')->orderBy('u.label', 'ASC');
-			}
+                return $er->createQueryBuilder('u')
+                    ->where('u.roles LIKE :role')
+                    ->andWhere('u.enabled = :enabled')
+                    ->setParameter('role', '%ROLE_INTERVENANT_BA%')
+                    ->setParameter('enabled', true)
+                    ->orderBy('u.label', 'ASC');
+            },
         ))
         ->add('userInitiateur', EntityType::class, array(
             'class'           => User::class,
@@ -47,9 +52,14 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             ),
             'choice_label'    => 'label',
             'placeholder'     => 'Tout initiateur',
-            'query_builder'   => function(EntityRepository $er){
-                return $er->createQueryBuilder('u')->orderBy('u.label', 'ASC');
-            }
+			'query_builder'   => function(EntityRepository $er){
+                    return $er->createQueryBuilder('u')
+                        ->where('u.roles LIKE :role')
+                        ->andWhere('u.enabled = :enabled')
+                        ->setParameter('role', '%ROLE_SAISIE_BA%')
+                        ->setParameter('enabled', true)
+                        ->orderBy('u.label', 'ASC');
+            },
         ))
 		->add('numeroAffaire', TextType::class, array(
             'label' 	 => 'Numéro d\'affaire',

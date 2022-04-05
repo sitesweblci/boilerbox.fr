@@ -16,22 +16,14 @@
     {% block liens_css %}
         <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
 		<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc.css') }}" media='screen' />
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/parc_print.css') }}" media='print' />
-        <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/parc_print.css') }}" media='print' />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
     {% endblock liens_css %}
 
-	<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"/>
-	<link rel="stylesheet" type="text/css" href="{{ asset('css/msgBoxLight.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/jquery-ui-1.12.1.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/msgBoxLight.css') }}" />
 
-    {#
-	<script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
-	#}
-
-	<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-
-	{# Retirée le 08/12/2021
-    <script type="text/javascript" src="{{ asset('js/jquery-dateFormat.min.js') }}"></script>
-	#}
+	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-1.11.1-min.js') }}"></script>
 </head>
 
 
@@ -263,9 +255,9 @@
 {% include "boilerbox/boilerbox.js" %}
 
 
-<script type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>
-{# Retiré le 08/12/2021 <script type="text/javascript" src="{{ asset('js/jquery.msgBox.js') }}"></script>#} 
+<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>
+
 <script type="text/javascript">
     // On cache la messagebox flash si son contenu est vide
     $(window).on('load', function(){

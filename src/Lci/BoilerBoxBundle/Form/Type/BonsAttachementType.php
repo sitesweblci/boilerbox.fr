@@ -30,7 +30,12 @@ class BonsAttachementType extends AbstractType {
             'label_attr'      => array ('class' => 'label_smalltext'),
             'choice_label'    => 'label',
             'query_builder'   => function(EntityRepository $er){
-                return $er->createQueryBuilder('u')->orderBy('u.label', 'ASC');
+					return $er->createQueryBuilder('u')
+						->where('u.roles LIKE :role')
+						->andWhere('u.enabled = :enabled')
+						->setParameter('role', '%ROLE_SAISIE_BA%')
+						->setParameter('enabled', true)
+			   			->orderBy('u.label', 'ASC');
             },
         ))
         ->add('user', EntityType::class, array (

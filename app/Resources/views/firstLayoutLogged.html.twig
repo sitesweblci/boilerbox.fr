@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/style.css') }}" />
         <link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/bbCloud.css') }}" />
     {% endblock boilerBoxCSS %}
-	<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" type="text/css"  href="{{ asset('bundles/lciboilerbox/css/jquery-ui-1.12.1.css') }}" />
 
 	<title> {% block title %}Boiler-Box Cloud{% endblock title %}</title>
 </head>
@@ -235,9 +235,9 @@
 {% block mainBody %}
 {% endblock mainBody%}
 
-    <script src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/jquery.ui.datepicker-fr.js') }}"></script>	
+	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>	
 
 	<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 	<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
