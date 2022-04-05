@@ -42,7 +42,7 @@ change_password:
 
 # Registration
 registration:
-    check_email: Un e-mail a été envoyé à l'adresse %email%. Il contient un lien d'activation sur lequel il faudra cliquer afin d'activer le compte.
+    check_email: Un e-mail a été envoyé à l'adresse %email%.<br/>Il contient un lien d'activation sur lequel il faudra cliquer afin d'activer le compte.
     confirme d: Bonjour %username%, votre compte sur boilerbox.fr est maintenant activé.
     back: Retour à la page d'origine.
     submit: Enregistrer
@@ -75,8 +75,6 @@ registration:
             <br/>
             <a style="font-size:10pt;font-weight:500;color:#0a71b3;text-transform:lowercase;text-decoration:none;">%confirmationUrl%</a>
             <br/><br/><br/>
-            Cordialement,
-            <br/><br/>
             Assistance BoilerBox
 
 

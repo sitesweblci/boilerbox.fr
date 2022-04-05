@@ -11,20 +11,6 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
-	.grid{
-		grid-template-columns: 33% 33% 33%;
-		grid-gap: 16px;
-		padding-bottom: 16px;
-	}
-	.grid__one{
-		grid-column: 1;
-	}
-	.grid__two{
-		grid-column: 2;
-	}
-	.grid__three{
-		grid-column: 3;
-	}
 	.main-box{
     	position: relative;
     	display: flex;
@@ -68,10 +54,10 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 
-<main id="grid-ba" class="grid">
+<main id="grid-ba" class="grid" dir="ltr">
 	<section id="ba-bon" class='grid__one main-box notToBePrinted'>
+		<h1 class="main-box__title">Nouveau Bon</h1>
 		<div>
-			<h1 class="main-box__title">Nouveau Bon</h1>
 	    	{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'id':'myForm', 'class':'form' }) }}
 	   		{{ form_errors(form) }}
 	   			<div class="form__field">
@@ -152,8 +138,8 @@
 	</section>
 
 	<section id="ba-site" class='grid__two main-box'>
+		<h1 id='titre_nouveau_siteBA' class="main-box__title">Nouveau site</h1>
 		<div>
-			<h1 id='titre_nouveau_siteBA' class="main-box__title">Nouveau site</h1>
 			<div class="main-box__action notToBePrinted">
 				<span class="tooltip-wrapper" onClick="attente(); window.print(); return false;">
 					<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" alt="imprimer"/>
@@ -233,7 +219,7 @@
 	            	</div>
 	            </div>
 				<div id='encart_fichiers_siteBA'></div>
-	        {{ form_rest(form_site) }}
+	        {{ form_rest(form_site, {attr: {'class':'btn' }}) }}
 			{{ form_end(form_site) }}
 
 			<div id="bloc_contact_pour_impression" class="print">
@@ -247,13 +233,13 @@
 
 	<section id="ba-contact" class='main-box grid__three'>
 		<input type='hidden' id='indexContact'>
+		<h1 class="main-box__title">
+		    Fiche Contact
+		    <h2 class="main-box__sub-title">
+	    		(mise à jour le <input type='text' name='dateMajContact' id='dateMajContact' style="width:initial;"> )
+	    	</h2>
+		</h1>
 		<div id='bloc_ajout_contact'>
-			<h1 class="main-box__title">
-		    	<span class='titre'>Fiche Contact </span>
-		    	<h2 class="main-box__sub-title">
-		    		(mise à jour le <input type='text' name='dateMajContact' id='dateMajContact'> )
-		    	</h2>
-		    </h1>
 		    <div class="form__field">
 		    	<label>Nom</label>
 		    	<input type='text' name='nomContact' id='nomContact'>
@@ -278,10 +264,15 @@
         	    <button onClick="attente(); modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
         	    <button onClick="attente(); supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
             </div>
+            <div id='map'></div>
     	</div>
-		<div id='map'></div>
 	</section>
 </main>
+
+<div class="navigation-mobile">
+	<div class=""></div>
+	<div class=""></div>
+</div>
 {% endblock mainBody %}
 
 

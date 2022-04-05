@@ -4,6 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="description" content="L'Interface de supervision des Chaudières Industrielles">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a71b3">
 	
     {% block boilerBoxCSS %}
         <link rel="icon" type="image/png" href="{{ asset('bundles/lciboilerbox/images/img/favicon.png') }}" />
@@ -28,6 +29,7 @@
                     <span>INDUSTRIAL</span>
                     <span>BOILER</span>
                     <span>CONTROL</span>
+                    <span class="version">{% include "form/version_boilerbox.html.twig" %}</span>
                 </p>
             </a>
         </nav>
@@ -224,6 +226,7 @@
 
     <div id="cartonBlack" class='cacher'></div>
     <div id="fonduBlack" class='cacher'></div>
+    <section class="blackout cacher"></section>
 
     {% block liens_url %}
         <input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
@@ -253,6 +256,8 @@
         // Fonctions barre de navigation latérale
         function showMenuLateral(){
             $('.side-nav').toggleClass('side-nav--visible');
+            $('.blackout').toggleClass('cacher');
+            $('html').toggleClass('no-scroll');
         };
         // page active
         $(".side-nav li:not(.js-button-wrapper)").on("click", function pageActive(){

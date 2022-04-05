@@ -11,7 +11,7 @@
 }
 /* CARTON NOIR *****************************************************/
 #cartonBlack, #fonduBlack{
-    z-index: 2;
+    z-index: 2000;
     position: fixed;
     top: 0;
     left: 0;
@@ -20,7 +20,7 @@
     background: rgba(0, 0, 0, 0.7);
 }
 #fonduBlack{
-    z-index: 5;
+    z-index: 5000;
     position: absolute;
 }
 /* HORODATAGE ****************************************************/
@@ -78,7 +78,7 @@
 	-webkit-margin-before: 33px;
     margin-left: -65px;
     -webkit-margin-start: -80px;
-    background: var(--gris-profond);
+    background: var(--dark-grey);
     z-index: 3;
 }
 #session .popUp{
@@ -100,88 +100,6 @@
     padding: 8px 14px;
     background-color: #e7e7e7;
 }
-/* POP UP HORODATAGE ****************************************************/
-#popUpDate{
-	display: none;
-	position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);/* décalage de 50% de sa propre taille */
-    z-index: 4;
-    align-items: center;
-    flex-direction: column;
-    width: 60%;
-    max-width: 300px;
-    min-width: 150px;
-    padding: 70px 40px 30px 40px;
-    background: white;
-    border-radius: 0 20px 20px 20px;
-    box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.3);
-}
-#popUpDate h1{
-	font-size: 1.6em;
-	color: var(--couleur-principale);
-	text-transform: uppercase;
-	text-align: center;
-	font-weight: normal;
-	margin-bottom: 4vh;
-}
-#popUpDate label{
-	font-size: 0.9em;
-	color: #636363;
-	align-self: start;
-	text-transform: uppercase;
-	margin-bottom: 0.5vh;
-}
-#popUpDate input[type="date"], #popUpDate input[type="time"]{
-	width: 100%;
-	height: 26px;
-	margin-bottom: 2vh;
-	border: 1px solid var(--couleur-principale);
-	font-family: Calibri, Arial, sans-serif;
-	font-size: 0.95em;
-	color: #636363;
-	text-align: center;
-}
-#popUpDate input[type="time"]{
-	width: 30%;
-	align-self: start;
-}
-.missDate{
-    margin-top: 1vh;
-    font-size: 0.7em;
-    text-transform: uppercase;
-    text-align: center;
-    color: red;
-}
-/* SCROLL BAR ********************************************************/
-.styleScrollBar{
-    scrollbar-width: thin;
-    scrollbar-color: var(--couleur-principale) var(--gris-clair);
-}
-.styleScrollBarGris{
-    scrollbar-width: thin;
-    scrollbar-color: var(--couleur-principale) var(--gris-clair-hover);
-}
-.styleScrollBar::-webkit-scrollbar {
-    width: 14px;
-    height: 14px;
-    background: none transparent;
-}
-.styleScrollBar::-webkit-scrollbar-track-piece{
-    background: transparent none;
-    border: solid 4px transparent;
-    border-right-width: 8px;
-    margin: 4px;
-    -webkit-box-shadow: inset 1px 0 0 0 var(--couleur-principale);
-}
-.styleScrollBar::-webkit-scrollbar-thumb{ 
-    border: solid 0 transparent;
-    border-right-width: 4px;
-    -webkit-border-radius: 5px;
-    -webkit-border-top-right-radius: 9px 5px;
-    -webkit-border-bottom-right-radius: 9px 5px;
-    -webkit-box-shadow: inset 0 0 0 6px var(--couleur-principale);
-}
 /* POP UP PRINCIPALE *************************************************/
 .popUpPrincipale{
     position: absolute;
@@ -189,7 +107,7 @@
     left: 50%;
     transform: translate(-50%, -80%);
     margin: 0 auto;
-    z-index: 6;
+    z-index: 6000;
 }
 .headerPopUpPrincipale{
     position: relative;
@@ -221,129 +139,6 @@
     text-align: center;
 }
 /* GENERATEUR MDP ****************************************************/
-#titrePageGenerateur{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#titrePageGenerateur h1{
-    margin-bottom: 20px;
-}
-#titrePageGenerateur span{
-    color: var(--disconnect);
-    font-weight: 500;
-}
-#formGenerationMdp{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-}
-#formGenerationMdp > p{
-    margin: 4vh 0 4vh 0;
-    text-align: center;
-    font-weight: 500;
-    font-size: 1.1em;
-}
-#contenuFormGenerateur{
-    margin: 0 40px;
-}
-#contenuFormGenerateur > form{
-    display: flex;
-    flex-direction: column;
-}
-#contenuFormGenerateur > .flexRow > .flexColumn{
-    width: 100%;
-}
-#contenuFormGenerateur > .flexRow > .flexColumn:nth-child(0n + 2){
-    margin-left: 24px;
-}
-#generateur_mdp_duree{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-#alerteV2{
-    display: inline-block;
-    width: 100%;
-    text-align: center;
-    color: var(--disconnect);
-    font-weight: 600;
-    margin: 0 auto 24px auto;
-}
-#generateur_mdp_duree > .radio{
-    width: 100%;
-    cursor: pointer;
-}
-#generateur_mdp_duree > .radio:nth-child(0n + 2){
-    margin-left: 24px;
-}
-#choixJournee{
-    margin-bottom: 16px;
-}
-#generateur_mdp_duree > .radio > label{
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 0 10px 32px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    color: black;
-    background: var(--gris-clair);
-    border-radius: 2px;
-    transition: background ease-in-out 0.2s;
-}
-#generateur_mdp_duree > .radio > label:hover{
-    background: var(--gris-clair-hover);
-}
-#generateur_mdp_duree > .radio > label:before{
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 20px;
-    background: url("../images/img/inputRadio.svg");
-    background-size: 200%;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-}
-#generateur_mdp_duree > .radio > label.generateurChecked{
-    background: #3ce678;
-}
-#generateur_mdp_duree > .radio > label.generateurChecked:before{
-    background-position: -12px 0;
-}
-.wrapperSubmit{
-    cursor: not-allowed;
-}
-#boutonGenerer.pointerNone{
-    background: #e3e3e3;
-    color: #636363;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-#generateur_mdp_duree > .radio > label > [type="radio"]{
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-#identifiantGenere{
-    font-size: 1.6em;
-    font-weight: 400;
-    color: black;
-    text-transform: uppercase;
-}
-#mdpGenere{
-    font-size: 2em;
-    font-weight: 600;
-    color: var(--disconnect);
-    text-transform: uppercase;
-}
 /* RESPONSIVE SMALL ECRAN ******************************************************************************************************/
 @media screen  and (max-width: 1280px){
     /* BANDEAU BLEU **********************************************/
@@ -446,7 +241,7 @@
     #setPeriode h1{
         font-size: 1.2em;
         font-weight: normal;
-        color: var(--couleur-principale);
+        color: var(--main-col);
         text-transform: uppercase;
     }
     #periodeBlock{
@@ -457,11 +252,11 @@
     }
     #periodeBlock p{
         font-size: 0.9em;
-        color: var(--gris-profond);
+        color: var(--dark-grey);
     }
     #periodeBlock .heureDate{
         font-size: 1.2em;
-        color: var(--couleur-principale);
+        color: var(--main-col);
     }
 }
 /* RESPONSIVE 580 ***************************************************************************************************************/
@@ -488,11 +283,11 @@
     }
     /* SCROLLBAR ************************************************/
     .styleScrollBar::-webkit-scrollbar{
-        background: var(--gris-clair);
+        background: var(--light-grey);
         width: 6px;
     }
     .styleScrollBar::-webkit-scrollbar-thumb{
-        background-color: var(--couleur-principale);
+        background-color: var(--main-col);
     }
     .styleScrollBar::-webkit-scrollbar-track-piece{
         background: transparent none;
@@ -620,6 +415,14 @@
         width: 100%;
         padding: 10px 0;
         font-weight: normal;
+    }
+    /* BONS D'INTERVENTION **************************************/
+    #site_ba_reset{
+        float: right;
+        margin-bottom: 24px;
+    }
+    #dateMajContact{
+        width: 120px !important;
     }
     /* GENERATEUR MDP *******************************************/
     #formGenerationMdp{

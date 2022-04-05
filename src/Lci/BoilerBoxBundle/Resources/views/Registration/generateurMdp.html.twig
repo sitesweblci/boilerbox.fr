@@ -4,6 +4,11 @@
 {% block boilerBoxCSS %}
 	{{ parent() }}
 	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+	<style>
+		.radio label{
+			width: 100%;
+	}
+	</style>
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
@@ -43,23 +48,25 @@
 	    	<a href="{{ path("lci_boilerbox_index")}}" class="btn btn--second">Retour</a>
 	    </div>
 
-	    <div id="popUpMdpGenere" class="popUpPrincipale cacher">
-	    	<div class="headerPopUpPrincipale">
-	    		<h1>Mot de passe généré !</h1>
-	    		<div class="close-cross" onclick="closePopUpPrincipale()"></div>
-	    	</div>
-	    	<div class="contenuPopUpPrincipale">
-	    		<h2>Pensez à noter vos identifiants.</br>
-	    			Ceux-ci seront valables <span id="texteDureeValide"></span>.
-	    		</h2>
-	    		<ul>
-	    			<li class="fauxLabel">Votre login</li>
-	    			<li id="identifiantGenere">BLABLA-H1</li>
-	    			<li class="fauxLabel">Votre mot de passe</li>
-	    			<li id="mdpGenere">{% if mot_de_passe is not null %}{{ mot_de_passe }}{% endif %}</li>
-	    		</ul>
-	    	</div>
-	    </div>
+	    <section id="popUpMdpGenere" class="popup{# popUpPrincipale #} cacher">
+	    	<div class="popup__wrapper">
+		    	<div class="popup__header{# headerPopUpPrincipale #}">
+		    		<h1 class="popup__title">Mot de passe généré !</h1>
+		    		<div class="close-cross" onclick="closePopUpPrincipale()"></div>
+		    	</div>
+		    	<div class="popup__content{# contenuPopUpPrincipale #}">
+		    		<p>Pensez à noter vos identifiants.</br>
+		    			Ceux-ci seront valables <span id="texteDureeValide"></span>.
+		    		</p>
+		    		<ul>
+		    			<li class="fauxLabel">Votre login</li>
+		    			<li id="identifiantGenere"></li>
+		    			<li class="fauxLabel">Votre mot de passe</li>
+		    			<li id="mdpGenere">{% if mot_de_passe is not null %}{{ mot_de_passe }}{% endif %}</li>
+		    		</ul>
+		    	</div>
+		    </div>
+	    </section>
 	</main>
 {{ form_end(form) }}
 {% endblock mainBody %}
@@ -105,10 +112,8 @@
 	function closePopUpPrincipale(){
 		if ($('#popUpMdpGenere').hasClass('cacher')){
 			$('#popUpMdpGenere').removeClass('cacher');
-			$('#fonduBlack').removeClass('cacher');
 		} else {
 			$('#popUpMdpGenere').addClass('cacher');
-			$('#fonduBlack').addClass('cacher');
 		}
 	};
 
@@ -131,10 +136,8 @@
             }
 			$('#identifiantGenere').text(login);
 			$('#popUpMdpGenere').removeClass('cacher');
-			$('#fonduBlack').removeClass('cacher');
 		} else if (mot_de_passe == null){
 			$('#popUpMdpGenere').addClass('cacher');
-			$('#fonduBlack').addClass('cacher');
 		}
 		/* Limitation de la date à + 7 jours */
         var max_date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);

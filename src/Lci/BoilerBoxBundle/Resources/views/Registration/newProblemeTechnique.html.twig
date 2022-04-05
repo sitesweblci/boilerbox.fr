@@ -110,16 +110,14 @@
 	</div>
 
 	<div class='form__btn notToBePrinted'> 
-		<div class='div_boutons_validation main-box__btn'>
-			{% if provenance == 'liste' %}
-				<button onClick="attente(); redirection('retourListeProblemes')"; class="btn_menu btn btn--second">Retour</button>
-			{% elseif provenance == 'accueil' %}
-				<button onClick="attente(); redirection('retourMenu')"; class="btn_menu btn btn--second">Retour</button>
-			{% endif %}
-			{% if is_granted('ROLE_RESPONSABLE_PARC') %}
-				<button onClick="attente(); document.forms['myForm'].submit();return false;" class="btn_menu btn btn--main" >Enregistrer</button>
-			{% endif %}
-		</div>	
+		{% if provenance == 'liste' %}
+			<button onClick="attente(); redirection('retourListeProblemes')"; class="btn_menu btn btn--second">Retour</button>
+		{% elseif provenance == 'accueil' %}
+			<button onClick="attente(); redirection('retourMenu')"; class="btn_menu btn btn--second">Retour</button>
+		{% endif %}
+		{% if is_granted('ROLE_RESPONSABLE_PARC') %}
+			<button onClick="attente(); document.forms['myForm'].submit();return false;" class="btn_menu btn btn--main" >Enregistrer</button>
+		{% endif %}
 	</div>
 
 	{{ form_rest(form) }}

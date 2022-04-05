@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="L'interface de supervision des chaudières industrielles." />
     <meta name="title" content="BoilerBox - Accueil" />
+    <meta name="theme-color" content="#0a71b3">
 	{# {% block meta_viewport %}
 		<meta name="viewport" content="width=device-width, initial-scale=0.5, shrink-to-fit=no">
 	{% endblock meta_viewport %} #}
@@ -33,8 +34,9 @@
 	#}
 </head>
 
+
 <body>
-    <header {# id='bloc_header' #} class='header  notToBePrinted'>
+    <header class='header  notToBePrinted'>
         <nav>
             <div class="burger" onclick="showMenuLateral()">
                 <span></span>
@@ -45,10 +47,11 @@
                     <span>INDUSTRIAL</span>
                     <span>BOILER</span>
                     <span>CONTROL</span>
+                    <span class="version">{% include "form/version_boilerbox.html.twig" %}</span>
                 </p>
             </a>
             {% block header %}
-                <div class='version'>
+                <!--<div class='version'>
                     <p>{% include "form/version_boilerbox.html.twig" %}
                         {#<span style='text-decoration:underline;'><i><a href='http://demo.boiler-box.fr'>BoilerBox la démo</a></i></span>#}
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
@@ -58,22 +61,7 @@
                             {% endblock lien_parc_technique %}
                         {% endif %}
                     </p>
-                </div>
-
-                {# <nav id='menu_boiler' class='notToBePrinted {% block class_menu_boiler %} {% endblock class_menu_boiler %}'>
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        {% if is_granted("ROLE_ADMIN") %}
-                            <a href="{{ path('lci_gestion_admin') }}" title='Administration'>Administration</a>
-                        {% endif %}
-
-                        <div id='menu_boiler_deroulant1' onmouseover="afficheMenu(this)" onmouseout="cacheMenu(this)"style="height:200px;">
-                            <span id='lien_menu_boiler_outil'><a href="#" onClick="return false;">Outils</a></span>
-                        </div>
-                        <a href="{{ path('fos_user_security_logout') }}" id='lienDeconnexion' title='Déconnexion'>Déconnexion</a>
-                    {% else %}
-                        <a href="{{ path('fos_user_security_login') }}" id='lienDeconnexion' title='Connexion'>Connexion</a>
-                    {% endif %}
-                </nav> #}
+                </div>-->
             {% endblock header %}
         </nav>
         <nav>
@@ -83,7 +71,7 @@
                     <span class="tooltip">Paramètres</span>
                 </a>
             {% endif %}
-            <span {# id="btnIdentified"  #}class="header__nav header__nav--account {{ app.user.couleur }}">
+            <span class="header__nav header__nav--account {{ app.user.couleur }}">
                 <span>{{ app.user.label | slice(0,1) }}</span>
             </span>
         </nav>
@@ -231,6 +219,10 @@
         </div>
     </nav>
 
+
+    <section class="blackout cacher"></section>
+
+
     <div id='messagebox' class='message-box cacher'>
         <div id='messageboxTexte' class="message-box__content"></div>
         <div class='right'>
@@ -297,6 +289,8 @@
 	// Fonctions barre de navigation latérale
     function showMenuLateral(){
         $('.side-nav').toggleClass('side-nav--visible');
+        $('.blackout').toggleClass('cacher');
+        $('html').toggleClass('no-scroll');
     };
     // page active
 	$(".side-nav li:not(.button-wrapper)").on("click", function pageActive(){

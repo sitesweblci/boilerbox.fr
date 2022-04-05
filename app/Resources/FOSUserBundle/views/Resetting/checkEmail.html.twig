@@ -2,12 +2,12 @@
 
 {% block fos_user_content %}
 {{ parent() }}
-	<div class='listing'>
-		<div class='ajout_objet'>
-		    <h1>Réinitialisation du mot de passe</h1>
+	<main class='main-box'>
+		<h1 class="main-box__title">Réinitialisation du mot de passe</h1>
+		<div class='main-box__content'> 
 			<p>
 				{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}
 			</p>
 		</div>
-	</div>
+	</main>
 {% endblock fos_user_content %}

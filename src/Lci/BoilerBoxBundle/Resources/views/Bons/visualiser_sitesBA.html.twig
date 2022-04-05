@@ -20,22 +20,6 @@
     html{
     	background: #f2f2f2;
     }
-    .grid{
-    	grid-template-columns: repeat(2, 1fr);
-    	grid-template-rows: 150px 1fr;
-    }
-    .grid__one{
-    	grid-row: 1;
-    	grid-column: 1;
-    }
-    .grid__two{
-    	grid-row: 1 / fr;
-    	grid-column:  2;
-    }
-    .grid__three{
-    	grid-row: 2 / fr;
-    	grid-column: 1;
-    }
     .main-box{
 		width: initial;
 		min-width: initial;
@@ -53,7 +37,7 @@
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Bons d'intervention</h1>
 </header>
-<main {# id='bloc_1'  #}class="grid">
+<main {# id='bloc_1'  #}id="grid-visuSite" class="grid">
 	<section class='{# inter_bloc_2_1 #} grid__one main-box'>
 		<div class="form__field">
 			<label>Site</label>

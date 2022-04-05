@@ -13,20 +13,6 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-	html{
-		background: #f2f2f2;
-	}
-	.grid{
-	    grid-template-columns: 50% 50%;
-	    grid-template-rows: auto auto;
-		grid-gap: 16px;
-		padding: 16px 24px 16px 32px;
-	}
-	.grid__one{
-		position: relative;
-    	grid-row: 1;
-    	grid-column: 1;
-    }
     .main-box{
     	position: relative;
 		width: initial;
@@ -87,7 +73,7 @@
 </header>
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
 
-<main class="grid">
+<main id="grid-visuUnBon" class="grid">
 	<section class='grid__one'>
 		<section class="main-box">
 			<h1 class="main-box__title">Bon {{ entity_bon.numeroBA }}</h1>
@@ -143,7 +129,7 @@
 				</div>
 			</div>
 			<div class="main-box__btn">
-				<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu mobile btn btn--second">Retour</button>
+				<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
 				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
 					<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Mettre à jour</button>
 				{% endif %}

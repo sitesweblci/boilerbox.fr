@@ -13,13 +13,6 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-
-		.main-box{
-			position: relative;
-			width: calc(100% - 58px);
-			max-width: initial;
-			margin-top: 16px;
-		}
 		.search-bar{
 			width: 250px;
 			margin-right: 16px;
@@ -87,9 +80,9 @@
 		</div>
 	</div>
 {% endif %}
-<main class='{# listing_all_bons #}main-box main-box--table'>
+<main class='main-box main-box--table main-box--visuBons'>
 	<h1 class="main-box__title main-box--table__title">{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
-    <div class='{# formulaire_liste #}main-box__action'>
+    <div class='main-box__action main-box__action--wide'>
     	<div class="search-bar">
 			<span class="search-bar__img"/></span>
 			<input id='js-search-bon' class="search-bar__input" type="text" placeholder="Rechercher">
@@ -100,7 +93,7 @@
     	</span>
     </div>
     <div class="main-box__content">
-        <table id="js-liste-bon" class='{# tab_liste #} {# tableau_listing #} flex-table'>
+        <table id="js-liste-bon" class='flex-table'>
             <thead id='contenu_head_tableau_bons' class="flex-table__thead">
 				<tr class="flex-table__row">
 					<th class="small">Enquête</th>
@@ -211,9 +204,7 @@
 						</div>
 					</td>
 					<td class='small cesure selectionnable centrer txt--center'>
-						{# <div onclick="afficherLeBon({{ ent_bons.id}});"> #}
-							<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  onclick="afficherLeBon({{ ent_bons.id}});">
-						{# </div> #}
+						<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  onclick="afficherLeBon({{ ent_bons.id}});">
                     </td>
 				</tr>
 				{% endfor %}

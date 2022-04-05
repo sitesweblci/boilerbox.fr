@@ -23,6 +23,12 @@
 	.flex-table__thead tr th:nth-child(0n + 2), .flex-table__tbody tr td:nth-child(0n + 2){
 		width: 40%;
 	}
+	.flex-table__tbody tr{
+		cursor: pointer;
+	}
+	input[type=checkbox]{
+		cursor: pointer;
+	}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -155,6 +161,18 @@
 	$(window).on('load', function pageActive(){
 		$('.side-nav .parametres').addClass('active');
 	});
+
+	$(".flex-table__row").on('click', function(){
+		if (!$(this).find('input').is(':checked')){
+			$(this).find('input').prop('checked', true);
+		}
+		else if ($(this).find('input').is(':checked')){
+			$(this).find('input').prop('checked', false);
+		}
+	});
+	$('.flex-table__row input').on('click', function(event){
+		event.stopPropagation();
+	})
 
 	// Fonction de filtrage dans la barre de recherche
 	// pour les sites

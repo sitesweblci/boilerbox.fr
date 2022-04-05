@@ -39,10 +39,10 @@
 #tableAffaire tr th{
 	font-size: 0.8em;
 	font-weight: normal;
-	color: var(--gris-profond);
+	color: var(--dark-grey);
 }
 .CXXXHead, .etatConnecHead, .nomAffaireHead, .connexionOnHead{
-	border-bottom: solid 1px var(--gris-profond);
+	border-bottom: solid 1px var(--dark-grey);
 }
 .CXXXHead{
 	width: 20%;
@@ -75,12 +75,12 @@ tr th:last-child{
 	position: relative;
 	width: 20px;
 	height: 20px;
-	border: 1px solid var(--gris-profond);
+	border: 1px solid var(--dark-grey);
 	border-radius: 50%;
 	background-color: white;
 	background: rgb(255,255,255);
 	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%); 
-	color: var(--couleur-principale);
+	color: var(--main-col);
 	cursor: pointer;
 }
 #legendeInfoConnexion #stay p{
@@ -97,7 +97,7 @@ tr th:last-child{
 	right: 40px;
 	padding: 6px 10px;
 	background-color: white;
-	border: 1px solid var(--gris-profond);
+	border: 1px solid var(--dark-grey);
 	border-radius: 3px;
 	z-index: 2;
 }
@@ -109,7 +109,7 @@ tr th:last-child{
 .explicationInfoConnexion p{
 	font-size: 0.85em;
 	font-weight: normal;
-	color: var(--gris-profond);
+	color: var(--dark-grey);
 }
 #legendeInfoConnexion:hover > .explicationInfoConnexion{
 	display: block;
@@ -141,7 +141,7 @@ tr th:last-child{
 .CXXX, .etatConnec{
 	width: 20%;
 	min-width: 40px;
-	border: solid 1px var(--gris-clair);
+	border: solid 1px var(--light-grey);
 	border-radius: 0 0 0 5px;
 	border-right: none;
 }
@@ -155,7 +155,7 @@ tr th:last-child{
 }
 .nomAffaire{
 	min-width: 180px;
-	border: solid 1px var(--gris-clair);
+	border: solid 1px var(--light-grey);
 	border-radius: 0 5px 5px 0;
 	border-left: none;
 }
@@ -172,7 +172,7 @@ tr th:last-child{
     font-size: 13px;
     line-height: 15px;
     color: white;
-    background: var(--gris-profond);
+    background: var(--dark-grey);
     border-radius: 3px;
 	height: 42px;
  	padding: 5px 20px;
@@ -190,14 +190,14 @@ tr th:last-child{
 	width: 0.5vw;
 	min-width: 8px;
 	border: none;
-	border-bottom: solid 1px var(--gris-profond); 
+	border-bottom: solid 1px var(--dark-grey); 
 }
 .iconeConnec{
 	width: 40px;
 	height: 40px;
 }
 .ligneAffaire:hover > td.CXXX, .ligneAffaire:hover > td.etatConnec, .ligneAffaire:hover > td.nomAffaire{
-	background-color: var(--gris-clair);
+	background-color: var(--light-grey);
 }
 tr td:last-child{
 	padding-right: 12px;
@@ -240,7 +240,7 @@ tr td:last-child{
 }
 #pictoConnexion p{
 	font-size: 0.8em;
-	color: var(--gris-profond);
+	color: var(--dark-grey);
 }
 #ensembleInfoAffaire{
 	display: flex;
@@ -256,12 +256,12 @@ tr td:last-child{
 	height: 24px;
 	margin-right: 0;
 	background: linear-gradient(120deg, rgba(255,255,255,1) 30%, rgba(226,226,226,1) 70%, rgba(226,226,226,1) 100%);
-	border: solid 1px var(--gris-clair-hover);
+	border: solid 1px var(--grey);
 	border-radius: 50%;
 	cursor: pointer;
 }
 #modifyInfoAffaire:hover{
-	background-color: var(--gris-clair);
+	background-color: var(--light-grey);
 }
 .editInfo{
 	width: 12px;
@@ -285,15 +285,15 @@ tr td:last-child{
 	font-size: 0.9em;
 	color: white;
 	text-align: center;
-	background-color: var(--couleur-principale);
+	background-color: var(--main-col);
 }
 .lienModePartage{
-	color: var(--couleur-focus);
+	color: var(--focus);
 	font-style: italic;
 }
 #switchToPrivate{
 	font-size: 0.9em;
-	color: var(--couleur-focus);
+	color: var(--focus);
 	font-style: italic;
 }
 /* RESPONSIVE 900px ***********************************************************************************************************************************/
@@ -378,7 +378,7 @@ tr td:last-child{
 		top: 0; right: 0; bottom: 0;
 	}
 	#mainMenu{
-		border-bottom: 1px solid var(--gris-clair-hover);
+		border-bottom: 1px solid var(--grey);
 	}*/
 	#blockDemo{
 		display: none;

@@ -1,18 +1,16 @@
-{% extends "LciBoilerBoxBundle::secondBoilerLayout.html.twig" %}
+{% extends "FOSUserBundle::secondLayoutUser.html.twig" %}
 
 {% block fos_user_content %}
 {{ parent() }}
-    <div class='listing'>
-        <div class='ajout_objet'>
-            <h1>Réinitialisation du mot de passe</h1>
-            <p>
-				<form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" method="POST" class="fos_user_resetting_reset">
-    				{{ form_widget(form) }}
-    				<div>
-        				<input type="submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" />
-    				</div>
+    <main class='main-box'>
+        <h1 class="main-box__title">Réinitialisation du mot de passe</h1>
+        <div class='main-box__content'>
+			<form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" method="POST" class="fos_user_resetting_reset">
+				{{ form_widget(form) }}
+				<div class="form__field">
+    				<input type="submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" />
+				</div>
 			</form>
-            </p>
         </div>
-    </div>
+    </main>
 {% endblock fos_user_content %}
