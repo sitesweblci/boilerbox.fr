@@ -39,7 +39,18 @@
     					<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
                         {{ form_row(form.version) }}
                         <div class="ligne_error">{{ form_errors(form.version) }}</div>
-    					{{ form_row(form.configurations) }}
+                    	<div>
+                        	{% for siteConfigurationField in form.siteConfigurations %}
+                        	    {% if siteConfigurationField.vars.value.type == 'infos' %}
+                        	        <br />
+                        	        <div class="ligne_error"></div>
+                        	        <hr />
+                        	        {{ form_widget(siteConfigurationField.configuration) }}
+                        	        {{ form_widget(siteConfigurationField.valeur) }}
+                        	        {{ form_widget(siteConfigurationField.type) }}
+                        	    {% endif %}
+                        	{% endfor %}
+                    	</div>
     				</div>
     				<div class="newParametre addParametreInfos cacher">
     					<p id='pParametreInfos'>Nouveau Paramètre</p>
@@ -67,8 +78,16 @@
                         </div>
                         <div class="ligne_error"></div>
                         {{ form_row(form.siteConnexion.codeLive) }}
-                        <div class="ligne_error"></div>
-                        {{ form_widget(form.siteConnexion.configurations) }}
+                        {% for siteConfigurationField in form.siteConfigurations %}
+							{% if siteConfigurationField.vars.value.type == 'connexion' %}
+                                <br />
+                                <div class="ligne_error"></div>
+                                <hr />
+                                {{ form_widget(siteConfigurationField.configuration) }}
+                                {{ form_widget(siteConfigurationField.valeur) }}
+                                {{ form_widget(siteConfigurationField.type) }}
+							{% endif %}
+                        {% endfor %}
                     </div>
                     <div class="newParametre addParametreConnexion cacher">
                         <p id='pParametreConnexion'>Nouveau Paramètre</p>
@@ -81,7 +100,16 @@
 
                 <div id="autre" class="form__field" data-tab-content>
                     <div>
-                        {{ form_widget(form.siteAutres.configurations) }}
+                        {% for siteConfigurationField in form.siteConfigurations %}
+                            {% if siteConfigurationField.vars.value.type == 'autre' %}
+                                <br />
+                                <div class="ligne_error"></div>
+                                <hr />
+                                {{ form_widget(siteConfigurationField.configuration) }}
+                                {{ form_widget(siteConfigurationField.valeur) }}
+                                {{ form_widget(siteConfigurationField.type) }}
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     <div class="newParametre addParametreAutre cacher">
                         <p id='pParametreAutres'>Nouveau Paramètre</p>
@@ -100,6 +128,9 @@
 	</main>
 	{{ form_end(form) }}
 
+	<div id='divDeSuppression' style='width:500px; padding: 5px; border:2px solid red; margin-left:auto; margin-right:auto;'>
+		{{ form(form_pour_suppression) }}
+	</div>
 {% endblock mainBody %}
 
 {% block javascript %}
@@ -129,17 +160,23 @@
         })
     });
 
+	// Fonction qui cache le champs de suppression des parametres si aucun parametres supplementaire n'exist
+	(function() {
+		if ($('#site_configuration_pour_suppression_siteConfiguration option').length == 0)
+		{
+			$('#divDeSuppression').addClass('cacher');
+		}
+	})();
+
 
     (function() {
         // On récupére le container en javascript
-        var $container = $('div#site_configurations');
-        var $container_connexion = $('div#site_siteConnexion_configurations');
-        var $container_autres = $('div#site_siteAutres_configurations');
+        var $container = $('div#site_siteConfigurations');
+        var $container_connexion = $('div#site_siteConfigurations');
+        var $container_autres = $('div#site_siteConfigurations');
 
         // On compte le nombre de champs existants ( Un champs = 2 input)
-        $index = $container.find(':input').length / 2;
-        $index_connexion = $container_connexion.find(':input').length / 2;
-        $index_autres = $container_autres.find(':input').length / 2;
+        $index = $container.find(':submit').length;
 
         // On place un listener de click sur le lien 'ajouter un paramètre de site'
         $('#addParametreInfos').click(function(e) {
@@ -162,28 +199,6 @@
 			$nb_new_param_autre ++;
             e.preventDefault();
         });
-
-
-        // S'il existe déjà des catégories, on ajoute un lien de suppression pour chacune d'entre elles
-        $container.children('div').each(function() {
-            ajoutLienSuppression($(this));
-			$(this).children('div').children('div').first().children('input').addClass('texteToLabel');
-			$(this).addClass('texteToLabel');
-        });
-        $container_connexion.children('div').each(function() {
-            ajoutLienSuppression($(this));
-			$(this).children('div').children('div').first().children('input').addClass('texteToLabel');
-            $(this).addClass('texteToLabel');
-        });
-        $container_autres.children('div').each(function() {
-            ajoutLienSuppression($(this));
-			$(this).children('div').children('div').first().children('input').addClass('texteToLabel');
-            $(this).addClass('texteToLabel');
-        });
-
-        // On supprime l'indication du label de group (Chiffre 0, 1 etc. des paramètres de conf)
-        $('div.crossCloseContainer + label.control-label').addClass('cacher');
-
     })();
 
     function ajouterParametre($container, $lientAjout, $encart) {
