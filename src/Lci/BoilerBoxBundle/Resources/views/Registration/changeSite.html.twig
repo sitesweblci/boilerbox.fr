@@ -209,6 +209,10 @@
         ajoutLienSuppression($DOMTemplate, $encart);
         // Ajout du template sur le DOM
         $lientAjout.after($DOMTemplate);
+		// Modification du select type en fonction du menu d'appel : Infos / Connexion ou Autre
+		$('#site_siteConfigurations_' + $index + '_type option[value="' + $encart + '"]').prop('selected', true);
+		// Cache du select 
+		$('#site_siteConfigurations_' + $index + '_type').addClass('cacher');
         // Incrémentation du compteur de paramètres supplémentaires
         $index ++;
     }

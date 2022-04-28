@@ -26,7 +26,11 @@ class SiteConfigurationType extends AbstractType
 			->add('configuration', EntityType::class, array (
             	'class'           => 'LciBoilerBoxBundle:Configuration',
             	'label'           => 'Parametre',
-            	'choice_label'    => 'parametre'
+            	'choice_label'    => 'parametre',
+				'query_builder' => function (EntityRepository $er) {
+        			return $er->createQueryBuilder('c')
+            			->orderBy('c.parametre', 'ASC');
+    			},
             ))
 			->add('valeur',  TextType::class, array(
                     'label'         => 'Valeur',
@@ -39,9 +43,9 @@ class SiteConfigurationType extends AbstractType
 			->add('type', ChoiceType::class, array(
 					'label' => 'Type du paramètre',
 					'choices' => [
+						'Infos'     => 'infos',
 						'Connexion' => 'connexion',
-						'Autre'		=> 'autre',
-						'Infos'		=> 'infos'
+						'Autre'		=> 'autre'
 					],
                     'required'      => true,
             ))

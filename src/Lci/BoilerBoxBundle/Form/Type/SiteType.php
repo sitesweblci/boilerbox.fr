@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-use Lci\BoilerBoxBundle\Form\Type\ConfigurationType;
 use Lci\BoilerBoxBundle\Form\Type\SiteConnexionType;
 use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationType;
 

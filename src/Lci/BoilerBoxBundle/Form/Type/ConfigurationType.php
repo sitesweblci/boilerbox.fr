@@ -5,8 +5,9 @@ namespace Lci\BoilerBoxBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class ConfigurationType extends AbstractType
 {
@@ -16,7 +17,7 @@ class ConfigurationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('parametre', TextType::class, array(
-                    'label'         => false,
+                    'label'         => 'Paramètre',
                     'attr'          => array (
                         'placeholder'   => 'Nom du paramètre',
                     ),
@@ -24,13 +25,14 @@ class ConfigurationType extends AbstractType
                     'trim'          => true
                 ))
 				->add('valeur', TextType::class, array(
-                    'label'         => false,
+                    'label'         => 'Valeur',
                     'attr'          => array (
                         'placeholder'   => 'Valeur',
                     ),
-                    'required'      => true,
+                    'required'      => false,
                     'trim'          => true
-                ));
+                ))
+				->add('submit', SubmitType::class,  ['label' => 'Enregistrer']);
     }
 	
 	/**

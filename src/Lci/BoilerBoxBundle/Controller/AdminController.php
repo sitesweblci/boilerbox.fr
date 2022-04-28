@@ -17,9 +17,11 @@ use Lci\BoilerBoxBundle\Form\Type\ModificationUserType;
 use Lci\BoilerBoxBundle\Form\Type\RoleType;
 use Lci\BoilerBoxBundle\Entity\Site;
 use Lci\BoilerBoxBundle\Entity\SiteConnexion;
+use Lci\BoilerBoxBundle\Entity\Configuration;
 use Lci\BoilerBoxBundle\Entity\User;
 use Lci\BoilerBoxBundle\Entity\Role;
 use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationPourSuppressionType;
+use Lci\BoilerBoxBundle\Form\Type\ConfigurationType;
 
 
 
@@ -53,6 +55,9 @@ class AdminController extends Controller
                 case 'createSite':
                     return $this->redirect($this->generateUrl('lci_register_site'));
                     break;
+				case 'createSiteParametre':
+					return $this->redirect($this->generateUrl('lci_register_parametre_site'));
+                    break;
             }
         }
         $liste_sites = $em->getRepository('LciBoilerBoxBundle:Site')->findBy(array(), array('affaire' => 'ASC'));
@@ -60,6 +65,7 @@ class AdminController extends Controller
             'liste_sites' => $liste_sites
         ));
     }
+
 
     public function modificationSiteAction($idSite = null, Request $request)
     {
@@ -164,6 +170,28 @@ class AdminController extends Controller
             'form' => $form_site->createView()
         ));
     }
+
+
+
+	public function siteParametreRegistrationAction(Request $request)
+	{
+		$ent_configuration = new Configuration();
+		$form = $this->createForm(ConfigurationType::class, $ent_configuration);
+		$form->handleRequest($request);
+		if ($form->isSubmitted())
+		{
+			if ($form->isValid())
+			{
+				$em = $this->getDoctrine()->getManager();
+				$em->persist($ent_configuration);
+				$em->flush();
+				$request->getSession()->getFlashBag()->add('info', 'Nouveau paramétre enregistré : '.$ent_configuration->getParametre());
+			}
+		}
+		return  $this->render('LciBoilerBoxBundle:Registration:newSiteParametre.html.twig', array(
+            'form' => $form->createView()
+        ));
+	}
 
 
     public function accueilUserRegistrationAction(Request $request)
