@@ -114,6 +114,7 @@ class AdminController extends Controller
 						// On recréé les formulaires
 						$form = $this->createForm(SiteType::class, $ent_site, array('site_id' => $ent_site->getId()));
 						$request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié (Paramètre ' . $nom_parametre_supprime . ' supprimé)' );
+						return $this->redirectToRoute('lci_boilerbox_accesSite', ['id_site' => $idSite]);
 					}
 				} else {
                 	$em->flush();
