@@ -113,8 +113,9 @@ class AdminController extends Controller
                 	    $em->flush();
 						// On recréé les formulaires
 						$form = $this->createForm(SiteType::class, $ent_site, array('site_id' => $ent_site->getId()));
-						$request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié (Paramètre ' . $nom_parametre_supprime . ' supprimé)' );
-						return $this->redirectToRoute('lci_boilerbox_accesSite', ['id_site' => $idSite]);
+						$request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié (Paramètre [' . $nom_parametre_supprime . '] supprimé)' );
+						$url = $this->generateUrl('lci_site_update').'/'.$idSite;
+						return $this->redirect($url);
 					}
 				} else {
                 	$em->flush();
@@ -218,7 +219,7 @@ class AdminController extends Controller
             	{
 					$request->getSession()->getFlashBag()->add('info', 'Nouveau paramétre enregistré : '.$ent_configuration->getParametre());
 				} else {
-					$request->getSession()->getFlashBag()->add('info', 'Paramétre modifié : '.$ent_configuration->getParametre());
+					$request->getSession()->getFlashBag()->add('info', 'Paramétre modifié ['.$ent_configuration->getParametre().']');
 				}
 				return $this->redirectToRoute('lci_register_parametres');
 			} else if ($form_delete->isValid())
@@ -237,7 +238,7 @@ class AdminController extends Controller
 
                         // On recréé les formulaires
 						$form_delete = $this->createForm(SuppressionConfigurationType::class, $ent_configuration);
-						$request->getSession()->getFlashBag()->add('info', 'Paramétre supprimé : '.$nom_parametre_supprime);
+						$request->getSession()->getFlashBag()->add('info', 'Paramétre supprimé  ['.$nom_parametre_supprime.']');
 						return $this->redirectToRoute('lci_register_parametres');
                     }
                 }

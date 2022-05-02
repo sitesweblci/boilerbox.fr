@@ -939,10 +939,10 @@ window.location.search: "?query=1"
                     $('.infoAffaireLocal').text($infoAffaireLocal);
                     $('.infoAffaireEcatcher').text($infoAffaireEcatcher);
 
-					// Ajout des nouveaux paramètre de site
+					// Ajout des nouveaux paramètres de site
 					$html = '';
 					for($key in $entitySite.siteConfigurations) {
-						$html = '<label>' + $entitySite.siteConfigurations[$key].configuration.parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteConfigurations[$key].configuration.valeur + '</span>' + $html;
+						$html = '<label>' + $entitySite.siteConfigurations[$key].configuration.parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteConfigurations[$key].valeur + '</span>' + $html;
 					}
 					$('#js-resumeAffaire').append($html);
 						
