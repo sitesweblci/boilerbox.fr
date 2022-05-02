@@ -1,0 +1,7 @@
+Options +Indexes
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule phpInfo phpInfo.php
+    RewriteRule apc apc.php
+    RewriteRule phpinfo phpInfo.php
+</IfModule>

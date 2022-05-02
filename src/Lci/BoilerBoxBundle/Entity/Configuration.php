@@ -48,6 +48,15 @@ class Configuration {
     protected $siteConfigurations;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"groupSite"})
+    */
+    protected $type;    // Type de configuration : Valeur acceptée :  Site, SiteConnexion, SiteAutre
+
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -148,4 +157,29 @@ class Configuration {
     {
         return $this->siteConfigurations;
     }
+
+    /**
+     * Set type.
+     *
+     * @param string $type
+     *
+     * @return Configuration
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
 }

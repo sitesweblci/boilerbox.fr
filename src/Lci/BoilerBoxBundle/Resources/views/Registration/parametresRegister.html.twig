@@ -1,0 +1,82 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Registration/newSite.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+
+{% block boilerBoxCSS %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('bundles/lciboilerbox/css/vertical-form-template.css') }}" />
+    <style>
+        .btn--add{
+            margin-top: 24px;
+        }
+		.btn--main, .btn--second, .btn--delete {
+			margin-top: 24px;
+		}
+    </style>
+{% endblock boilerBoxCSS %}
+
+
+{% block mainBody %}
+	<main>
+        <header class="sub-header sub-header--grey">
+		  <h1 class="sub-header__title">Gestion des paramètres</h1>
+        </header>
+        <div class="tab-wrapper">
+            <ul class="tab-wrapper__tabs">
+                <li id='first_li' class="tab-wrapper__tabs__tab" data-tab-target="#creation">Nouveau</li>
+				<li class="tab-wrapper__tabs__tab choix1" data-tab-target="#modification">Modification</li>
+                <li class="tab-wrapper__tabs__tab choix1" data-tab-target="#suppression">Suppression</li>
+            </ul>
+            <div class="tab-wrapper__content">
+				<div id="creation" class="active form__field" data-tab-content>
+					<div>
+						{{ form(form_register) }}
+					</div>
+				</div>
+                <div id="modification" class="form__field choix1" data-tab-content>
+                    <div>
+                       	{{ form(form_change) }}
+                    </div>
+                </div>
+                <div id="suppression" class="form__field choix1" data-tab-content>
+                    <div>
+                        {{ form(form_delete) }}
+                    </div>
+                </div>
+				<div class="form_btn">
+					<a href="{{ path('lci_utils_homepage') }}" class="btn btn--second btn--wide">Retour</a>
+				</div>
+            </div>
+        </div>
+	</main>
+{% endblock mainBody %}
+
+{% block javascript %}
+<script>
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+	$('#first_li').click();
+
+	// Si la page concerne la modification d'un paramètre, l'id est défini.
+	// On cache alors tout ce qui concerne la suppression et le choix du paramètre à modifier
+	if($('#lci_boilerboxbundle_configuration_id').val() != '')
+	{
+		$('.choix1').addClass('cacher');
+		$('#first_li').text("Modification d'un paramètre");
+		$('#first_li').css('width', '50%');
+	}
+</script>
+{% endblock javascript %}

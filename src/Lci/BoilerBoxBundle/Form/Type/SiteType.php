@@ -10,6 +10,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\ORM\EntityRepository;
+
+
 
 use Lci\BoilerBoxBundle\Form\Type\SiteConnexionType;
 use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationType;
@@ -67,6 +71,21 @@ class SiteType extends AbstractType
         			'allow_add'    	=> true,
         			'allow_delete' 	=> true
       			))
+				->add('siteConfigurationPourSuppression', EntityType::class, array (
+                    'class'             => 'LciBoilerBoxBundle:SiteConfiguration',
+                    'label'             => 'Paramètre à supprimer',
+                    'query_builder'     => function(EntityRepository $er) use ($options)
+                    {
+                        return $er->createQueryBuilder('sc')
+                                ->join('sc.configuration', 'c')
+                                ->where('sc.site = :site')
+                                ->setParameter('site', $options['site_id'])
+                                ->orderBy('c.parametre', 'ASC');
+                    },
+					'choice_label'      => 'Configuration.parametre',
+                    'required'          => false,
+                    'mapped'            => false
+                ))
 				->add('submit', SubmitType::class,  ['label' => 'Save', 'attr' => ['class' => 'cacher']]);
     }
 
@@ -75,15 +94,16 @@ class SiteType extends AbstractType
     */
     public function configureOptions(OptionsResolver $resolver){
         $resolver->setDefaults(array(
-            'data_class' => 'Lci\BoilerBoxBundle\Entity\Site'
+            'data_class' => 'Lci\BoilerBoxBundle\Entity\Site',
+			'site_id' => null,
         ));
     }
 
 
-    /**
+    /*
      * @return string
-     */
-    public function getName(){
+    */
+    public function getName() {
         return 'lci_boilerboxbundle_site';
     }
 }

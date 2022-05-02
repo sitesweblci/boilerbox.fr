@@ -23,14 +23,58 @@ class SiteConfigurationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-			->add('configuration', EntityType::class, array (
-            	'class'           => 'LciBoilerBoxBundle:Configuration',
-            	'label'           => 'Parametre',
-            	'choice_label'    => 'parametre',
-				'query_builder' => function (EntityRepository $er) {
+			->add('configuration_infos', EntityType::class, array (
+            	'class'           	=> 'LciBoilerBoxBundle:Configuration',
+            	'label'           	=> "Parametre d'info",
+            	'choice_label'    	=> 'parametre',
+				'placeholder' 		=> 'Choix du nouveau paramètre',
+				'required'      	=> false,
+				'query_builder' 	=> function (EntityRepository $er) {
         			return $er->createQueryBuilder('c')
+						->where('c.type = :type')
+						->setParameter('type', 'infos')
             			->orderBy('c.parametre', 'ASC');
     			},
+				'mapped'			=> false
+            ))
+			->add('configuration_connexion', EntityType::class, array (
+                'class'           	=> 'LciBoilerBoxBundle:Configuration',
+                'label'           	=> 'Parametre de connexion',
+                'choice_label'  	=> 'parametre',
+                'placeholder'       => 'Choix du nouveau paramètre',
+				'required'          => false,
+                'query_builder' 	=> function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.type = :type')
+                        ->setParameter('type', 'connexion')
+                        ->orderBy('c.parametre', 'ASC');
+                },
+				'mapped'			=> false
+            ))
+			->add('configuration_autre', EntityType::class, array (
+                'class'           	=> 'LciBoilerBoxBundle:Configuration',
+                'label'           	=> 'Parametre autres',
+                'choice_label'    	=> 'parametre',
+                'placeholder'       => 'Choix du nouveau paramètre',
+				'required'          => false,
+                'query_builder' 	=> function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.type = :type')
+                        ->setParameter('type', 'autre')
+                        ->orderBy('c.parametre', 'ASC');
+                },
+				'mapped'			=> false
+            ))
+			->add('configuration', EntityType::class, array (
+                'class'           => 'LciBoilerBoxBundle:Configuration',
+                'label'           => 'Parametre',
+                'choice_label'    => 'parametre',
+                'placeholder'       => 'Choix du nouveau paramètre',
+				'required'          => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.parametre', 'ASC');
+                },
             ))
 			->add('valeur',  TextType::class, array(
                     'label'         => 'Valeur',
@@ -40,15 +84,6 @@ class SiteConfigurationType extends AbstractType
                     'required'      => true,
                     'trim'          => true
 			))
-			->add('type', ChoiceType::class, array(
-					'label' => 'Type du paramètre',
-					'choices' => [
-						'Infos'     => 'infos',
-						'Connexion' => 'connexion',
-						'Autre'		=> 'autre'
-					],
-                    'required'      => true,
-            ))
           ->add('submit', SubmitType::class,  ['label' => 'Save', 'attr' => ['class' => 'cacher']]);
     }
 

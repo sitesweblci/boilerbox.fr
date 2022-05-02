@@ -40,16 +40,15 @@
                         {{ form_row(form.version) }}
                         <div class="ligne_error">{{ form_errors(form.version) }}</div>
                     	<div>
-                        	{% for siteConfigurationField in form.siteConfigurations %}
-                        	    {% if siteConfigurationField.vars.value.type == 'infos' %}
-                        	        <br />
-                        	        <div class="ligne_error"></div>
-                        	        <hr />
-                        	        {{ form_widget(siteConfigurationField.configuration) }}
-                        	        {{ form_widget(siteConfigurationField.valeur) }}
-                        	        {{ form_widget(siteConfigurationField.type) }}
-                        	    {% endif %}
-                        	{% endfor %}
+							{% for entity_siteConfiguration in entity_site.siteConfigurations %}
+								{% if entity_siteConfiguration.configuration.type == 'infos' %}
+									<div>
+										<br />
+										<label class='control-label'>{{ entity_siteConfiguration.configuration.parametre }}</label>
+										<input type='text' class='form-control' value="{{ entity_siteConfiguration.valeur }}" readonly />
+									</div>
+								{% endif %}
+							{% endfor %} 
                     	</div>
     				</div>
     				<div class="newParametre addParametreInfos cacher">
@@ -59,6 +58,17 @@
     					<div class="crossAdd"></div>
                             Ajouter un autre paramètre d'information
                     </div>
+					
+					{# Encart de suppression d'un paramètres complémentaires si il en existe au moins 1 #}
+					{% if entity_site.siteConfigurations | length != 0 %}
+						<div id="deleteParametre" class="btn btn--add">
+                    	    <div class="crossAdd"></div>
+                    	        Supprimer un des paramètres complémentaires
+                    	</div>
+						<div id='divDeSuppression' class="deleteParametre cacher">
+							{{ form_row(form.siteConfigurationPourSuppression) }}
+    					</div>
+					{% endif %}
     			</div>
 
                 <div id="connexion" class="form__field" data-tab-content>
@@ -78,16 +88,17 @@
                         </div>
                         <div class="ligne_error"></div>
                         {{ form_row(form.siteConnexion.codeLive) }}
-                        {% for siteConfigurationField in form.siteConfigurations %}
-							{% if siteConfigurationField.vars.value.type == 'connexion' %}
-                                <br />
-                                <div class="ligne_error"></div>
-                                <hr />
-                                {{ form_widget(siteConfigurationField.configuration) }}
-                                {{ form_widget(siteConfigurationField.valeur) }}
-                                {{ form_widget(siteConfigurationField.type) }}
-							{% endif %}
+						<div>
+						{% for entity_siteConfiguration in entity_site.siteConfigurations %}
+                            {% if entity_siteConfiguration.configuration.type == 'connexion' %}
+								<div>
+                            	    <br />
+                            	    <label class='control-label'>{{ entity_siteConfiguration.configuration.parametre }}</label>
+                            	    <input type='text' class='form-control' value="{{ entity_siteConfiguration.valeur }}" readonly />
+								</div>
+                            {% endif %}
                         {% endfor %}
+						</div>
                     </div>
                     <div class="newParametre addParametreConnexion cacher">
                         <p id='pParametreConnexion'>Nouveau Paramètre</p>
@@ -100,14 +111,13 @@
 
                 <div id="autre" class="form__field" data-tab-content>
                     <div>
-                        {% for siteConfigurationField in form.siteConfigurations %}
-                            {% if siteConfigurationField.vars.value.type == 'autre' %}
-                                <br />
-                                <div class="ligne_error"></div>
-                                <hr />
-                                {{ form_widget(siteConfigurationField.configuration) }}
-                                {{ form_widget(siteConfigurationField.valeur) }}
-                                {{ form_widget(siteConfigurationField.type) }}
+						{% for entity_siteConfiguration in entity_site.siteConfigurations %}
+                            {% if entity_siteConfiguration.configuration.type == 'autre' %}
+								<div>
+                                	<br />
+                                	<label class='control-label'>{{ entity_siteConfiguration.configuration.parametre }}</label>
+                                	<input type='text' class='form-control' value="{{ entity_siteConfiguration.valeur }}" readonly />
+								</div>
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -126,11 +136,10 @@
             </div>
         </div>
 	</main>
-	{{ form_end(form) }}
-
-	<div id='divDeSuppression' style='width:500px; padding: 5px; border:2px solid red; margin-left:auto; margin-right:auto;'>
-		{{ form(form_pour_suppression) }}
+	<div class='cacher'>
+		{{ form_rest(form) }}
 	</div>
+	{{ form_end(form) }}
 {% endblock mainBody %}
 
 {% block javascript %}
@@ -159,15 +168,6 @@
             target.classList.add('active')
         })
     });
-
-	// Fonction qui cache le champs de suppression des parametres si aucun parametres supplementaire n'exist
-	(function() {
-		if ($('#site_configuration_pour_suppression_siteConfiguration option').length == 0)
-		{
-			$('#divDeSuppression').addClass('cacher');
-		}
-	})();
-
 
     (function() {
         // On récupére le container en javascript
@@ -199,20 +199,45 @@
 			$nb_new_param_autre ++;
             e.preventDefault();
         });
+
+		$('#deleteParametre').click(function(e) {
+            $('.deleteParametre').removeClass('cacher');
+        });
+
     })();
 
     function ajouterParametre($container, $lientAjout, $encart) {
         var $template = $container.data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $index);
+
         // Création d'une objet jquery contenant le template
         $DOMTemplate = $($template);
+
         // Ajout du lien de suppression
         ajoutLienSuppression($DOMTemplate, $encart);
+
         // Ajout du template sur le DOM
         $lientAjout.after($DOMTemplate);
-		// Modification du select type en fonction du menu d'appel : Infos / Connexion ou Autre
-		$('#site_siteConfigurations_' + $index + '_type option[value="' + $encart + '"]').prop('selected', true);
-		// Cache du select 
-		$('#site_siteConfigurations_' + $index + '_type').addClass('cacher');
+
+		// Cache des select autres que celui de l'onglet actif
+		$('#site_siteConfigurations_' + $index + '_configuration').addClass('cacher');
+		$('#site_siteConfigurations_' + $index + '_configuration_infos').addClass('cacher');
+		$('#site_siteConfigurations_' + $index + '_configuration_connexion').addClass('cacher');
+		$('#site_siteConfigurations_' + $index + '_configuration_autre').addClass('cacher');
+
+		// Affichage du select de l'onglet actif
+		$('#site_siteConfigurations_' + $index + '_configuration_' + $encart).removeClass('cacher');
+
+		// On ajoute l'identifiant (index) qui identifie le select
+		$('#site_siteConfigurations_' + $index + '_configuration_' + $encart).data('num_index', $index);
+
+		// On place un listener de change pour modifier le select mappé lors de la modification du select actif
+		$('#site_siteConfigurations_' + $index + '_configuration_' + $encart).change(function(e) 
+		{
+			var $num_index = $(this).data('num_index');
+			$('#site_siteConfigurations_' + $num_index + '_configuration').val($(this).val());
+		});
+
+
         // Incrémentation du compteur de paramètres supplémentaires
         $index ++;
     }
