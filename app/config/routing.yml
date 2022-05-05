@@ -169,16 +169,16 @@ lci_ajax_get_siteUsers:
     path: /lci/admin/ajax/getSiteUsers
     defaults: { _controller: LciBoilerBoxBundle:Ajax:getSiteUsers }
 lci_ajax_set_site_commentaire:
-    path: /lci/boilerbox2/ajax/set/site/commentaire
+    path: /lci/boilerbox/ajax/set/site/commentaire
     defaults: { _controller: LciBoilerBoxBundle:Ajax:setCommentairesSite }
 lci_ajax_set_site_fichier:
-    path: /lci/boilerbox2/ajax/set/site/fichier
+    path: /lci/boilerbox/ajax/set/site/fichier
     defaults: { _controller: LciBoilerBoxBundle:Ajax:setSiteFichier }
 lci_ajax_remove_fichier:
-    path: /lci/boilerbox2/ajax/remove/fichier
+    path: /lci/boilerbox/ajax/remove/fichier
     defaults: { _controller: LciBoilerBoxBundle:Ajax:removeFichier }
 lci_ajax_get_commentaires_site:
-    path: /lci/boilerbox2/ajax/get/commentaires/site
+    path: /lci/boilerbox/ajax/get/commentaires/site
     defaults: { _controller: LciBoilerBoxBundle:Ajax:getCommentairesSite }
 lci_ajax_refreshASiteStatut:
     path: /lci/admin/ajax/refreshASiteStatut
@@ -233,10 +233,10 @@ lci_ajax_bons_get_siteBA:
     path: /lci/bons/sitesBA/get
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
 lci_ajax_desactivation_auth:
-    path: /lci/boilerbox2/ajax/desactivation/auth
+    path: /lci/boilerbox/ajax/desactivation/auth
     defaults: { _controller: LciBoilerBoxBundle:Ajax:desactivationAuth }
 lci_ajax_get_site:
-    path: /lci/boilerbox2/ajax/get/site
+    path: /lci/boilerbox/ajax/get/site
     defaults: { _controller: LciBoilerBoxBundle:Ajax:getSite }
 lci_ajax_bon_contact_supp:
     path: /lci/bons/ajax/contact/supp
