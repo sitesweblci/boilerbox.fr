@@ -3,6 +3,7 @@ namespace Lci\BoilerBoxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 
@@ -12,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ORM\Entity
  * @ORM\Table(name="configuration")
+ * @UniqueEntity("parametre")
  * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Entity\ConfigurationRepository")
 */
 class Configuration {
@@ -34,36 +36,39 @@ class Configuration {
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
 	 * @Groups({"groupSite"})
     */
     protected $valeur;
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\Site", inversedBy="configurations")
+     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\SiteConfiguration", mappedBy="configuration")
     */
-    protected $site;
+    protected $siteConfigurations;
 
     /**
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteConnexion", inversedBy="configurations")
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"groupSite"})
     */
-    protected $siteConnexion;
-
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteAutres", inversedBy="configurations")
-    */
-    protected $siteAutres;
-
-
+    protected $type;    // Type de configuration : Valeur acceptée :  Site, SiteConnexion, SiteAutre
 
 
     /**
-     * Get id
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->siteConfigurations = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->type = 'global';
+    }
+
+    /**
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -71,9 +76,10 @@ class Configuration {
     }
 
     /**
-     * Set parametre
+     * Set parametre.
      *
      * @param string $parametre
+     *
      * @return Configuration
      */
     public function setParametre($parametre)
@@ -84,9 +90,9 @@ class Configuration {
     }
 
     /**
-     * Get parametre
+     * Get parametre.
      *
-     * @return string 
+     * @return string
      */
     public function getParametre()
     {
@@ -94,9 +100,10 @@ class Configuration {
     }
 
     /**
-     * Set valeur
+     * Set valeur.
      *
      * @param string $valeur
+     *
      * @return Configuration
      */
     public function setValeur($valeur)
@@ -107,85 +114,73 @@ class Configuration {
     }
 
     /**
-     * Get valeur
+     * Get valeur.
      *
-     * @return string 
+     * @return string
      */
     public function getValeur()
     {
         return $this->valeur;
     }
 
-
     /**
-     * Set site
+     * Add siteConfiguration.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\Site $site
+     * @param \Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration
+     *
      * @return Configuration
      */
-    public function setSite(\Lci\BoilerBoxBundle\Entity\Site $site = null)
+    public function addSiteConfiguration(\Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration)
     {
-        $this->site = $site;
+        $this->siteConfigurations[] = $siteConfiguration;
 
         return $this;
     }
 
     /**
-     * Get site
+     * Remove siteConfiguration.
      *
-     * @return \Lci\BoilerBoxBundle\Entity\Site
+     * @param \Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function getSite()
+    public function removeSiteConfiguration(\Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration)
     {
-        return $this->site;
+        return $this->siteConfigurations->removeElement($siteConfiguration);
     }
 
+    /**
+     * Get siteConfigurations.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSiteConfigurations()
+    {
+        return $this->siteConfigurations;
+    }
 
     /**
-     * Set siteConnexion.
+     * Set type.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\SiteConnexion|null $siteConnexion
+     * @param string $type
      *
      * @return Configuration
      */
-    public function setSiteConnexion(\Lci\BoilerBoxBundle\Entity\SiteConnexion $siteConnexion = null)
+    public function setType($type)
     {
-        $this->siteConnexion = $siteConnexion;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get siteConnexion.
+     * Get type.
      *
-     * @return \Lci\BoilerBoxBundle\Entity\SiteConnexion|null
+     * @return string
      */
-    public function getSiteConnexion()
+    public function getType()
     {
-        return $this->siteConnexion;
+        return $this->type;
     }
 
-    /**
-     * Set siteAutres.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\SiteAutres|null $siteAutres
-     *
-     * @return Configuration
-     */
-    public function setSiteAutres(\Lci\BoilerBoxBundle\Entity\SiteAutres $siteAutres = null)
-    {
-        $this->siteAutres = $siteAutres;
-
-        return $this;
-    }
-
-    /**
-     * Get siteAutres.
-     *
-     * @return \Lci\BoilerBoxBundle\Entity\SiteAutres|null
-     */
-    public function getSiteAutres()
-    {
-        return $this->siteAutres;
-    }
 }

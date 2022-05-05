@@ -116,33 +116,25 @@ class Site
 
     /**
      *
-     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Configuration", mappedBy="site", cascade={"persist", "remove"})
-	 * @Groups({"groupSite"})
-     *
-    */
-    protected $configurations;
-
-    /**
-     *
-     * @ORM\OneToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteConnexion", inversedBy="site", cascade={"persist", "remove"})
-	 * @Groups({"groupSite"})
-    */
-    protected $siteConnexion;
-
-    /**
-     *
-     * @ORM\OneToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteAutres", inversedBy="site", cascade={"persist", "remove"})
-	 * @Groups({"groupSite"})
-    */
-    protected $siteAutres;
-
-    /**
-     *
      * @ORM\OneToOne(targetEntity="Lci\BoilerBoxBundle\Entity\Replication", mappedBy="site", cascade={"persist", "remove"})
      * @Groups({"groupSite"})
     */
     protected $replication;
 
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\SiteConfiguration", mappedBy="site", cascade={"persist", "remove"})
+     * @Groups({"groupSite"})
+    */
+    protected $siteConfigurations;
+
+    /**
+     *
+     * @ORM\OneToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteConnexion", inversedBy="site", cascade={"persist", "remove"})
+     * @Groups({"groupSite"})
+    */
+    protected $siteConnexion;
 
 
 
@@ -169,45 +161,34 @@ class Site
     protected $erreur_script;
 
 
-
-
-
-
-
-
-
-
-   
     /**
      * Constructor
      */
     public function __construct()
     {
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->module = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->users = new ArrayCollection();
-  		$this->commentaires = new ArrayCollection();
-  		$this->fichiers = new ArrayCollection();
-  		$this->configurations = new ArrayCollection();
+        $this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->fichiers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->siteConfigurations = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->mailSended = "non";
     }
 
-
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-
     /**
-     * Set intitule
+     * Set intitule.
      *
      * @param string $intitule
+     *
      * @return Site
      */
     public function setIntitule($intitule)
@@ -218,9 +199,9 @@ class Site
     }
 
     /**
-     * Get intitule
+     * Get intitule.
      *
-     * @return string 
+     * @return string
      */
     public function getIntitule()
     {
@@ -228,22 +209,23 @@ class Site
     }
 
     /**
-     * Set affaire
+     * Set affaire.
      *
      * @param string $affaire
+     *
      * @return Site
      */
     public function setAffaire($affaire)
     {
-        $this->affaire = strtoupper($affaire);
+        $this->affaire = $affaire;
 
         return $this;
     }
 
     /**
-     * Get affaire
+     * Get affaire.
      *
-     * @return string 
+     * @return string
      */
     public function getAffaire()
     {
@@ -251,9 +233,10 @@ class Site
     }
 
     /**
-     * Set version
+     * Set version.
      *
      * @param string $version
+     *
      * @return Site
      */
     public function setVersion($version)
@@ -264,7 +247,7 @@ class Site
     }
 
     /**
-     * Get version
+     * Get version.
      *
      * @return string
      */
@@ -273,14 +256,38 @@ class Site
         return $this->version;
     }
 
-
     /**
-     * Set dateAccess
+     * Set nbDbDonnees.
      *
-     * @param \DateTime $dateAccess
+     * @param string|null $nbDbDonnees
+     *
      * @return Site
      */
-    public function setDateAccess($dateAccess)
+    public function setNbDbDonnees($nbDbDonnees = null)
+    {
+        $this->nbDbDonnees = $nbDbDonnees;
+
+        return $this;
+    }
+
+    /**
+     * Get nbDbDonnees.
+     *
+     * @return string|null
+     */
+    public function getNbDbDonnees()
+    {
+        return $this->nbDbDonnees;
+    }
+
+    /**
+     * Set dateAccess.
+     *
+     * @param \DateTime|null $dateAccess
+     *
+     * @return Site
+     */
+    public function setDateAccess($dateAccess = null)
     {
         $this->dateAccess = $dateAccess;
 
@@ -288,9 +295,9 @@ class Site
     }
 
     /**
-     * Get dateAccess
+     * Get dateAccess.
      *
-     * @return \DateTime 
+     * @return \DateTime|null
      */
     public function getDateAccess()
     {
@@ -298,39 +305,13 @@ class Site
     }
 
     /**
-     * Set dateMailSended
+     * Set dateAccessSucceded.
      *
-     * @param \DateTime $dateMailSended
+     * @param \DateTime|null $dateAccessSucceded
+     *
      * @return Site
      */
-    public function setDateMailSended($dateMailSended)
-    {
-        $this->dateMailSended = $dateMailSended;
-
-        return $this;
-    }
-
-    /**
-     * Get dateMailSended
-     *
-     * @return \DateTime
-     */
-    public function getDateMailSended()
-    {
-        return $this->dateMailSended;
-    }
-
-
-
-
-
-    /**
-     * Set dateAccessSucceded
-     *
-     * @param \DateTime $dateAccessSucceded
-     * @return Site
-     */
-    public function setDateAccessSucceded($dateAccessSucceded)
+    public function setDateAccessSucceded($dateAccessSucceded = null)
     {
         $this->dateAccessSucceded = $dateAccessSucceded;
 
@@ -338,20 +319,152 @@ class Site
     }
 
     /**
-     * Get dateAccessSucceded
+     * Get dateAccessSucceded.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDateAccessSucceded()
     {
         return $this->dateAccessSucceded;
     }
 
+    /**
+     * Set typeAccessSucceeded.
+     *
+     * @param string|null $typeAccessSucceeded
+     *
+     * @return Site
+     */
+    public function setTypeAccessSucceeded($typeAccessSucceeded = null)
+    {
+        $this->typeAccessSucceeded = $typeAccessSucceeded;
+
+        return $this;
+    }
 
     /**
-     * Add module
+     * Get typeAccessSucceeded.
+     *
+     * @return string|null
+     */
+    public function getTypeAccessSucceeded()
+    {
+        return $this->typeAccessSucceeded;
+    }
+
+    /**
+     * Set mailSended.
+     *
+     * @param string $mailSended
+     *
+     * @return Site
+     */
+    public function setMailSended($mailSended)
+    {
+        $this->mailSended = $mailSended;
+
+        return $this;
+    }
+
+    /**
+     * Get mailSended.
+     *
+     * @return string
+     */
+    public function getMailSended()
+    {
+        return $this->mailSended;
+    }
+
+    /**
+     * Set dateMailSended.
+     *
+     * @param \DateTime|null $dateMailSended
+     *
+     * @return Site
+     */
+    public function setDateMailSended($dateMailSended = null)
+    {
+        $this->dateMailSended = $dateMailSended;
+
+        return $this;
+    }
+
+    /**
+     * Get dateMailSended.
+     *
+     * @return \DateTime|null
+     */
+    public function getDateMailSended()
+    {
+        return $this->dateMailSended;
+    }
+
+    /**
+     * Set erreurScript.
+     *
+     * @param int|null $erreurScript
+     *
+     * @return Site
+     */
+    public function setErreurScript($erreurScript = null)
+    {
+        $this->erreur_script = $erreurScript;
+
+        return $this;
+    }
+
+    /**
+     * Get erreurScript.
+     *
+     * @return int|null
+     */
+    public function getErreurScript()
+    {
+        return $this->erreur_script;
+    }
+
+    /**
+     * Add user.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\User $user
+     *
+     * @return Site
+     */
+    public function addUser(\Lci\BoilerBoxBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\User $user
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeUser(\Lci\BoilerBoxBundle\Entity\User $user)
+    {
+        return $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add module.
      *
      * @param \Lci\BoilerBoxBundle\Entity\Module $module
+     *
      * @return Site
      */
     public function addModule(\Lci\BoilerBoxBundle\Entity\Module $module)
@@ -362,25 +475,26 @@ class Site
     }
 
     /**
-     * Remove module
+     * Remove module.
      *
      * @param \Lci\BoilerBoxBundle\Entity\Module $module
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
     public function removeModule(\Lci\BoilerBoxBundle\Entity\Module $module)
     {
-        $this->module->removeElement($module);
+        return $this->module->removeElement($module);
     }
 
     /**
-     * Get module
+     * Get module.
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getModule()
     {
         return $this->module;
     }
-
 
     /**
      * Add commentaire.
@@ -428,8 +542,10 @@ class Site
     public function addFichier(\Lci\BoilerBoxBundle\Entity\FichierV2 $fichier)
     {
         $this->fichiers[] = $fichier;
-		// On effectue la liaison inverse depuis le site. 
-		$fichier->setSite($this);
+
+		// On effectue la liaison inverse depuis le site.
+        $fichier->setSite($this);
+
         return $this;
     }
 
@@ -456,103 +572,67 @@ class Site
     }
 
     /**
-     * Add configuration
+     * Set replication.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\Configuration $configuration
+     * @param \Lci\BoilerBoxBundle\Entity\Replication|null $replication
      *
      * @return Site
      */
-    public function addConfiguration(\Lci\BoilerBoxBundle\Entity\Configuration $configuration)
+    public function setReplication(\Lci\BoilerBoxBundle\Entity\Replication $replication = null)
     {
-        $this->configurations[] = $configuration;
-        // On effectue la liaison inverse depuis le site.
-        $configuration->setSite($this);
+        $this->replication = $replication;
+
         return $this;
     }
 
     /**
-     * Remove configuration
+     * Get replication.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\Configuration $configuration
+     * @return \Lci\BoilerBoxBundle\Entity\Replication|null
+     */
+    public function getReplication()
+    {
+        return $this->replication;
+    }
+
+    /**
+     * Add siteConfiguration.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration
+     *
+     * @return Site
+     */
+    public function addSiteConfiguration(\Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration)
+    {
+        $this->siteConfigurations[] = $siteConfiguration;
+
+		// On effectue la liaison inverse depuis le site.
+        $siteConfiguration->setSite($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove siteConfiguration.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration
      *
      * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeConfiguration(\Lci\BoilerBoxBundle\Entity\Configuration $configuration)
+    public function removeSiteConfiguration(\Lci\BoilerBoxBundle\Entity\SiteConfiguration $siteConfiguration)
     {
-        return $this->configurations->removeElement($configuration);
+        return $this->siteConfigurations->removeElement($siteConfiguration);
     }
 
     /**
-     * Get configurations.
+     * Get siteConfigurations.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getConfigurations()
+    public function getSiteConfigurations()
     {
-        return $this->configurations;
+        return $this->siteConfigurations;
     }
-
-
-    /**
-     * Set nbDbDonnees.
-     *
-     * @param string $nbDbDonnees
-     *
-     * @return Site
-     */
-    public function setNbDbDonnees($nbDbDonnees)
-    {
-        $this->nbDbDonnees = $nbDbDonnees;
-
-        return $this;
-    }
-
-    /**
-     * Get nbDbDonnees.
-     *
-     * @return string
-     */
-    public function getNbDbDonnees()
-    {
-        return $this->nbDbDonnees;
-    }
-
-    /**
-     * Add user.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\User $user
-     *
-     * @return Site
-     */
-    public function addUser(\Lci\BoilerBoxBundle\Entity\User $user)
-    {
-        $this->users[] = $user;
-
-        return $this;
-    }
-
-    /**
-     * Remove user.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\User $user
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeUser(\Lci\BoilerBoxBundle\Entity\User $user)
-    {
-        return $this->users->removeElement($user);
-    }
-
-    /**
-     * Get users.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-
 
     /**
      * Set siteConnexion.
@@ -576,115 +656,5 @@ class Site
     public function getSiteConnexion()
     {
         return $this->siteConnexion;
-    }
-
-    /**
-     * Set siteAutres.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\SiteAutres|null $siteAutres
-     *
-     * @return Site
-     */
-    public function setSiteAutres(\Lci\BoilerBoxBundle\Entity\SiteAutres $siteAutres = null)
-    {
-        $this->siteAutres = $siteAutres;
-
-        return $this;
-    }
-
-    /**
-     * Get siteAutres.
-     *
-     * @return \Lci\BoilerBoxBundle\Entity\SiteAutres|null
-     */
-    public function getSiteAutres()
-    {
-        return $this->siteAutres;
-    }
-
-    /**
-     * Set mailSended.
-     *
-     * @param string $mailSended
-     *
-     * @return Site
-     */
-    public function setMailSended($mailSended)
-    {
-        $this->mailSended = $mailSended;
-
-        return $this;
-    }
-
-    /**
-     * Get mailSended.
-     *
-     * @return string
-     */
-    public function getMailSended()
-    {
-        return $this->mailSended;
-    }
-
-
-    /**
-     * Set typeAccessSucceeded.
-     *
-     * @param string|null $typeAccessSucceeded
-     *
-     * @return Site
-     */
-    public function setTypeAccessSucceeded($typeAccessSucceeded = null)
-    {
-        $this->typeAccessSucceeded = $typeAccessSucceeded;
-
-        return $this;
-    }
-
-    /**
-     * Get typeAccessSucceeded.
-     *
-     * @return string|null
-     */
-    public function getTypeAccessSucceeded()
-    {
-        return $this->typeAccessSucceeded;
-    }
-
-    public function getReplication(): ?Replication
-    {
-        return $this->replication;
-    }
-
-    public function setReplication(?Replication $replication): self
-    {
-        $this->replication = $replication;
-
-        return $this;
-    }
-
-
-    /**
-     * Set erreurScript.
-     *
-     * @param int|null $erreurScript
-     *
-     * @return Site
-     */
-    public function setErreurScript($erreurScript = null)
-    {
-        $this->erreur_script = $erreurScript;
-
-        return $this;
-    }
-
-    /**
-     * Get erreurScript.
-     *
-     * @return int|null
-     */
-    public function getErreurScript()
-    {
-        return $this->erreur_script;
     }
 }

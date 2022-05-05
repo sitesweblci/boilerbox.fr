@@ -5,25 +5,30 @@ namespace Lci\BoilerBoxBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-use Lci\BoilerBoxBundle\Form\Type\SiteType;
-
-use Lci\BoilerBoxBundle\Form\Type\ModificationUserType;
-use Lci\BoilerBoxBundle\Form\Type\RoleType;
-
-use Lci\BoilerBoxBundle\Entity\Site;
-use Lci\BoilerBoxBundle\Entity\SiteConnexion;
-use Lci\BoilerBoxBundle\Entity\SiteAutres;
-
-use Lci\BoilerBoxBundle\Entity\User;
-use Lci\BoilerBoxBundle\Entity\Role;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Lci\BoilerBoxBundle\Form\Type\SiteType;
+use Lci\BoilerBoxBundle\Form\Type\ModificationUserType;
+use Lci\BoilerBoxBundle\Form\Type\RoleType;
+use Lci\BoilerBoxBundle\Entity\Site;
+use Lci\BoilerBoxBundle\Entity\SiteConnexion;
+use Lci\BoilerBoxBundle\Entity\Configuration;
+use Lci\BoilerBoxBundle\Entity\User;
+use Lci\BoilerBoxBundle\Entity\Role;
+use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationPourSuppressionType;
+use Lci\BoilerBoxBundle\Form\Type\ConfigurationType;
+use Lci\BoilerBoxBundle\Form\Type\SuppressionConfigurationType;
 
-use Symfony\Component\HttpFoundation\Response;
+use Lci\BoilerBoxBundle\Entity\SiteConfiguration;
+use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationModificationConfigurationType;
+
+
+
 
 
 class AdminController extends Controller
@@ -55,6 +60,9 @@ class AdminController extends Controller
                 case 'createSite':
                     return $this->redirect($this->generateUrl('lci_register_site'));
                     break;
+				case 'createSiteParametre':
+					return $this->redirect($this->generateUrl('lci_register_parametre_site'));
+                    break;
             }
         }
         $liste_sites = $em->getRepository('LciBoilerBoxBundle:Site')->findBy(array(), array('affaire' => 'ASC'));
@@ -63,99 +71,63 @@ class AdminController extends Controller
         ));
     }
 
+
     public function modificationSiteAction($idSite = null, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
         if ($idSite == null) {
             $idSite = $_POST['idSite'];
         }
+
         $ent_site = $em->getRepository('LciBoilerBoxBundle:Site')->find($idSite);
-        // Pour vérifier si un paramètre est supprimé, on enregistre leur id dans un tableau avant de faire la correspondance avec le formulaire
-        $tab_parametres_a_supprimer = array();
-        $tab_parametres_connexion_a_supprimer = array();
-        $tab_parametres_autres_a_supprimer = array();
 
-        foreach ($ent_site->getConfigurations() as $ent_configuration) {
-            array_push($tab_parametres_a_supprimer, $ent_configuration->getId());
-        }
-        if ($ent_site->getSiteConnexion()) {
-            foreach ($ent_site->getSiteConnexion()->getConfigurations() as $ent_configuration) {
-                array_push($tab_parametres_connexion_a_supprimer, $ent_configuration->getId());
-            }
-        }
+		// Création du formulaire depuis l'entité site
+        $form = $this->createForm(SiteType::class, $ent_site, array('site_id' => $ent_site->getId()));
 
-        if ($ent_site->getSiteAutres()) {
-            foreach ($ent_site->getSiteAutres()->getConfigurations() as $ent_configuration) {
-                array_push($tab_parametres_autres_a_supprimer, $ent_configuration->getId());
-            }
-        }
-
-        $form = $this->createForm(SiteType::class, $ent_site);
+		// Hydratation de l'entité site avec les données du formulaires renvoyées dans la requête
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                // Il faut vérifier si un nouveau paramètre de configuration existe et si un paramètre a été supprimé
-                foreach ($ent_site->getConfigurations() as $ent_configuration) {
-                    if ($ent_configuration->getId() == null) {
-                        $ent_configuration->setSite($ent_site);
-                    } else {
-                        // Si l'id est dans le tableau des id des parametres on le retire du tableau pour indiquer que le paramètre existe toujours
-                        if ($key = array_search($ent_configuration->getId(), $tab_parametres_a_supprimer) !== false) {
-                            array_splice($tab_parametres_a_supprimer, array_search($ent_configuration->getId(), $tab_parametres_a_supprimer), 1);
-                        }
-                    }
-                }
-                // Pour chaque élément restant du tableau, on supprimer le paramètre de conf correspondant de la base de données
-                foreach ($tab_parametres_a_supprimer as $id_parametre) {
-                    $em->remove($em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_parametre));
-                }
 
-                // IDEM pour les configuration de type connexion
-                if ($ent_site->getSiteConnexion()) {
-                    foreach ($ent_site->getSiteConnexion()->getConfigurations() as $ent_configuration) {
-                        if ($ent_configuration->getId() == null) {
-                            $ent_configuration->setSiteConnexion($ent_site->getSiteConnexion());
-                        } else {
-                            // Si l'id est dans le tableau des id des parametres on le retire du tableau pour indiquer que le paramètre existe toujours
-                            if ($key = array_search($ent_configuration->getId(), $tab_parametres_connexion_a_supprimer) !== false) {
-                                array_splice($tab_parametres_connexion_a_supprimer, array_search($ent_configuration->getId(), $tab_parametres_connexion_a_supprimer), 1);
-                            }
-                        }
-                    }
-                    // Pour chaque élément restant du tableau, on supprimer le paramètre de conf correspondant de la base de données
-                    foreach ($tab_parametres_connexion_a_supprimer as $id_parametre) {
-                        $em->remove($em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_parametre));
-                    }
-                }
-
-                // IDEM pour les configuration de type autres
-                if ($ent_site->getSiteAutres()) {
-                    foreach ($ent_site->getSiteAutres()->getConfigurations() as $ent_configuration) {
-                        if ($ent_configuration->getId() == null) {
-                            $ent_configuration->setSiteAutres($ent_site->getSiteAutres());
-                        } else {
-                            // Si l'id est dans le tableau des id des parametres on le retire du tableau pour indiquer que le paramètre existe toujours
-                            if ($key = array_search($ent_configuration->getId(), $tab_parametres_autres_a_supprimer) !== false) {
-                                array_splice($tab_parametres_autres_a_supprimer, array_search($ent_configuration->getId(), $tab_parametres_autres_a_supprimer), 1);
-                            }
-                        }
-                    }
-                    // Pour chaque élément restant du tableau, on supprimer le paramètre de conf correspondant de la base de données
-                    foreach ($tab_parametres_autres_a_supprimer as $id_parametre) {
-                        $em->remove($em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_parametre));
-                    }
-                }
-
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié');
-                return $this->redirectToRoute('lci_boilerbox_accesSite', ['id_site' => $idSite]);
+        if ($form->isSubmitted()) 
+		{
+            if ($form->isValid()) 
+			{
+				// Si un parametre de configuration n'a pas encore d'id c'est que c'est un ajout de paramètre : On défini son lien avec le site
+				foreach ($ent_site->getSiteConfigurations() as $ent_configuration) 
+				{
+					if ($ent_configuration->getId() == null) 
+					{
+                	    $ent_configuration->setSite($ent_site);
+                	} 
+				}
+				$id_site_configuration_a_supprimer = $request->request->get('site')['siteConfigurationPourSuppression'];
+				if ($id_site_configuration_a_supprimer != null)
+				{
+					// Si la suppression d'un paramètres complémentaires est demandé : On retourne sur la page du site
+					$ent_siteconfiguration = $em->getRepository('LciBoilerBoxBundle:SiteConfiguration')->find($id_site_configuration_a_supprimer);
+					// If qui permet la gestion du rafraichissement de la page apres suppression du dernier parametre de configuration supplémentaire
+                	if ($ent_siteconfiguration != null)
+                	{
+						$nom_parametre_supprime = $ent_siteconfiguration->getConfiguration()->getParametre();
+					    $em->remove($ent_siteconfiguration);
+                	    $em->flush();
+						// On recréé les formulaires
+						$form = $this->createForm(SiteType::class, $ent_site, array('site_id' => $ent_site->getId()));
+						$request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié (Paramètre [' . $nom_parametre_supprime . '] supprimé)' );
+						$url = $this->generateUrl('lci_site_update').'/'.$idSite;
+						return $this->redirect($url);
+					}
+				} else {
+                	$em->flush();
+                	$request->getSession()->getFlashBag()->add('info', 'Site ' . $ent_site->getIntitule() . ' ( ' . $ent_site->getAffaire() . ' ) modifié');
+                	return $this->redirectToRoute('lci_boilerbox_accesSite', ['id_site' => $idSite]);
+				}
             }
-        }
+        } 
         return $this->render('LciBoilerBoxBundle:Registration:changeSite.html.twig', array(
-            'form' => $form->createView(),
-            'entity_site' => $ent_site
+            'form' 					=> $form->createView(),
+            'entity_site' 			=> $ent_site
         ));
-
     }
 
 
@@ -163,9 +135,7 @@ class AdminController extends Controller
     {
         $ent_site = new Site();
         $ent_site_connexion = new SiteConnexion();
-        $ent_site_autres = new SiteAutres();
         $ent_site->setSiteConnexion($ent_site_connexion);
-        $ent_site->setSiteAutres($ent_site_autres);
         $ent_site_connexion->setDisponibilite(2);
         $form_site = $this->createForm(SiteType::class, $ent_site);
         if ($request->getMethod() == 'POST') {
@@ -203,6 +173,91 @@ class AdminController extends Controller
             'form' => $form_site->createView()
         ));
     }
+
+
+
+	public function parametresRegistrationAction(Request $request)
+	{
+		$em 					= $this->getDoctrine()->getManager();
+
+		if (isset($request->request->get('lci_boilerboxbundle_configuration')['id']))
+		{
+			$id_configuration = $request->request->get('lci_boilerboxbundle_configuration')['id'];
+			if ($id_configuration != null)
+			{
+				// Entité pour la Sauvegarde du paramètre modifié
+				$ent_configuration      = $em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_configuration);
+			} else {
+				// Entité pour la création d'un nouveau paramètre
+				$ent_configuration      = new Configuration();
+			}
+		} else {
+			// Entité pour la réception du formulaire de choix de configuration à modifier 
+			$ent_configuration 		= new Configuration();
+		}
+
+		// Création d'un nouveau paramètre
+		$form_register 			= $this->createForm(ConfigurationType::class, $ent_configuration);
+		$form_register->handleRequest($request);
+
+		$form_delete 			= $this->createForm(SuppressionConfigurationType::class, $ent_configuration);
+        $form_delete->handleRequest($request);
+
+		// Affichage de la liste des paramètres  pour selection de celui à modifier
+		$ent_site_configuration = new siteConfiguration();
+		$form_change 			= $this->createForm(SiteConfigurationModificationConfigurationType::class, $ent_site_configuration);
+        $form_change->handleRequest($request);
+
+
+		if ($form_register->isSubmitted() || $form_delete->isSubmitted() || $form_change->isSubmitted())
+		{
+			if ($form_register->isValid())
+			{
+				$em->persist($ent_configuration);
+				$em->flush();
+				if ($id_configuration == null)
+            	{
+					$request->getSession()->getFlashBag()->add('info', 'Nouveau paramétre enregistré : '.$ent_configuration->getParametre());
+				} else {
+					$request->getSession()->getFlashBag()->add('info', 'Paramétre modifié ['.$ent_configuration->getParametre().']');
+				}
+				return $this->redirectToRoute('lci_register_parametres');
+			} else if ($form_delete->isValid())
+            {
+				$id_configuration_a_supprimer = $request->request->get('lci_boilerboxbundle_configuration')['configuration'];
+				if ($id_configuration_a_supprimer != null)
+                {
+                    // Si la suppression d'un paramètres complémentaires est demandé : On retourne sur la page du site
+                    $ent_configuration_a_supprimer = $em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_configuration_a_supprimer);
+                    // If qui permet la gestion du rafraichissement de la page apres suppression du dernier parametre de configuration supplémentaire
+                    if ($ent_configuration_a_supprimer != null)
+                    {
+                        $nom_parametre_supprime = $ent_configuration_a_supprimer->getParametre();
+                        $em->remove($ent_configuration_a_supprimer);
+                        $em->flush();
+
+                        // On recréé les formulaires
+						$form_delete = $this->createForm(SuppressionConfigurationType::class, $ent_configuration);
+						$request->getSession()->getFlashBag()->add('info', 'Paramétre supprimé  ['.$nom_parametre_supprime.']');
+						return $this->redirectToRoute('lci_register_parametres');
+                    }
+                }
+            } else if ($form_change->isValid())
+			{
+				// Récupération de l'identifiaction du paramètre à modifier 
+				$id_configuration 				= $ent_site_configuration->getConfiguration()->getId();
+
+				// Création du formulaire de la configuration à modifier
+               	$ent_configuration_a_modifier 	= $em->getRepository('LciBoilerBoxBundle:Configuration')->find($id_configuration);
+				$form_register 					= $this->createForm(ConfigurationType::class, $ent_configuration_a_modifier);
+			}
+        }
+		return  $this->render('LciBoilerBoxBundle:Registration:parametresRegister.html.twig', array(
+            'form_register' => $form_register->createView(),
+			'form_delete'	=> $form_delete->createView(),
+			'form_change'	=> $form_change->createView(),
+        ));
+	}
 
 
     public function accueilUserRegistrationAction(Request $request)

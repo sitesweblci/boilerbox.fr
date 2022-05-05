@@ -49,9 +49,10 @@ class UtilsController extends Controller
 
             case 'getionRoles':
                 return $this->redirectToRoute('lci_register_role');
-
             case 'afficheLogs':
                 return $this->redirectToRoute('lci_affiche_logs_connexion');
+			case 'gestionParametres':
+				return $this->redirectToRoute('lci_register_parametres');
 
         }
         return new Response();

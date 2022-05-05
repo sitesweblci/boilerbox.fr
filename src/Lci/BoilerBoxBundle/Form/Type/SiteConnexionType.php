@@ -5,13 +5,19 @@ namespace Lci\BoilerBoxBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Lci\BoilerBoxBundle\Form\Type\ConfigurationType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+
+use Lci\BoilerBoxBundle\Form\Type\SiteConfigurationType;
+
 
 
 
@@ -68,12 +74,6 @@ class SiteConnexionType extends AbstractType
                         'Adsl'          => 'adsl'
                     ),
                     'attr'          => array('class' => 'radio_smalltext')
-                ))
-                ->add('configurations', CollectionType::class, array(
-                    'entry_type'    => ConfigurationType::class,
-                    'label'         => false,
-                    'allow_add'     => true,
-                    'allow_delete'  => true
                 ))
                 ->add('submit', SubmitType::class,  ['label' => 'Save', 'attr' => ['class' => 'cacher']]);
 

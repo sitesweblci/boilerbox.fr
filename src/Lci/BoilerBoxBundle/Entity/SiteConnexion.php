@@ -136,29 +136,21 @@ class SiteConnexion
     */
     protected $surveillance;
 
-
-
-
-
-
     /**
      * Constructor
      */
     public function __construct()
     {
-		$this->disponibilite = 2;
-        $this->configurations = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->surveillance = false;
-		$this->nbEchecConnexionJournalierBB = 0;
-		$this->nbEchecConnexionJournalier = 0;
-	}
-
-
+        $this->disponibilite = 2;
+        $this->surveillance = false;
+        $this->nbEchecConnexionJournalierBB = 0;
+        $this->nbEchecConnexionJournalier = 0;
+    }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -166,10 +158,11 @@ class SiteConnexion
     }
 
     /**
-     * Set url
+     * Set url.
      *
      * @param string $url
-     * @return Site
+     *
+     * @return SiteConnexion
      */
     public function setUrl($url)
     {
@@ -179,125 +172,13 @@ class SiteConnexion
     }
 
     /**
-     * Get url
+     * Get url.
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
         return $this->url;
-    }
-
-
-    /**
-     * Set disponibilite
-     *
-     * @param integer $disponibilite
-     * @return Site
-     */
-    public function setDisponibilite($disponibilite)
-    {
-        $this->disponibilite = $disponibilite;
-
-        return $this;
-    }
-
-    /**
-     * Get disponibilite
-     *
-     * @return integer 
-     */
-    public function getDisponibilite()
-    {
-        return $this->disponibilite;
-    }
-
-
-
-    /**
-     * Set accesDistant
-     *
-     * @param string $accesDistant
-     * @return Site
-     */
-    public function setAccesDistant($accesDistant)
-    {
-        $this->accesDistant = $accesDistant;
-
-        return $this;
-    }
-
-    /**
-     * Get accesDistant
-     *
-     * @return boolean 
-     */
-    public function getAccesDistant()
-    {
-        return $this->accesDistant;
-    }
-
-
-    /**
-     * Add configuration
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\Configuration $configuration
-     *
-     * @return Site
-     */
-    public function addConfiguration(\Lci\BoilerBoxBundle\Entity\Configuration $configuration)
-    {
-        $this->configurations[] = $configuration;
-        // On effectue la liaison inverse depuis le site.
-        $configuration->setSite($this);
-        return $this;
-    }
-
-    /**
-     * Remove configuration
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\Configuration $configuration
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeConfiguration(\Lci\BoilerBoxBundle\Entity\Configuration $configuration)
-    {
-        return $this->configurations->removeElement($configuration);
-    }
-
-    /**
-     * Get configurations.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getConfigurations()
-    {
-        return $this->configurations;
-    }
-
-
-    /**
-     * Set nbDbDonnees.
-     *
-     * @param string $nbDbDonnees
-     *
-     * @return Site
-     */
-    public function setNbDbDonnees($nbDbDonnees)
-    {
-        $this->nbDbDonnees = $nbDbDonnees;
-
-        return $this;
-    }
-
-    /**
-     * Get nbDbDonnees.
-     *
-     * @return string
-     */
-    public function getNbDbDonnees()
-    {
-        return $this->nbDbDonnees;
     }
 
     /**
@@ -305,7 +186,7 @@ class SiteConnexion
      *
      * @param string|null $codeLive
      *
-     * @return Site
+     * @return SiteConnexion
      */
     public function setCodeLive($codeLive = null)
     {
@@ -325,39 +206,51 @@ class SiteConnexion
     }
 
     /**
-     * Add user.
+     * Set disponibilite.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\User $user
+     * @param int $disponibilite
      *
-     * @return Site
+     * @return SiteConnexion
      */
-    public function addUser(\Lci\BoilerBoxBundle\Entity\User $user)
+    public function setDisponibilite($disponibilite)
     {
-        $this->users[] = $user;
+        $this->disponibilite = $disponibilite;
 
         return $this;
     }
 
     /**
-     * Remove user.
+     * Get disponibilite.
      *
-     * @param \Lci\BoilerBoxBundle\Entity\User $user
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     * @return int
      */
-    public function removeUser(\Lci\BoilerBoxBundle\Entity\User $user)
+    public function getDisponibilite()
     {
-        return $this->users->removeElement($user);
+        return $this->disponibilite;
     }
 
     /**
-     * Get users.
+     * Set accesDistant.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @param array $accesDistant
+     *
+     * @return SiteConnexion
      */
-    public function getUsers()
+    public function setAccesDistant($accesDistant)
     {
-        return $this->users;
+        $this->accesDistant = $accesDistant;
+
+        return $this;
+    }
+
+    /**
+     * Get accesDistant.
+     *
+     * @return array
+     */
+    public function getAccesDistant()
+    {
+        return $this->accesDistant;
     }
 
     /**
@@ -365,7 +258,7 @@ class SiteConnexion
      *
      * @param array $typeConnexion
      *
-     * @return Site
+     * @return SiteConnexion
      */
     public function setTypeConnexion($typeConnexion)
     {
@@ -385,61 +278,13 @@ class SiteConnexion
     }
 
     /**
-     * Set site.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\Site|null $site
-     *
-     * @return SiteConnexion
-     */
-    public function setSite(\Lci\BoilerBoxBundle\Entity\Site $site = null)
-    {
-        $this->site = $site;
-
-        return $this;
-    }
-
-    /**
-     * Get site.
-     *
-     * @return \Lci\BoilerBoxBundle\Entity\Site|null
-     */
-    public function getSite()
-    {
-        return $this->site;
-    }
-
-    /**
-     * Set surveillance.
-     *
-     * @param bool $surveillance
-     *
-     * @return SiteConnexion
-     */
-    public function setSurveillance($surveillance)
-    {
-        $this->surveillance = $surveillance;
-
-        return $this;
-    }
-
-    /**
-     * Get surveillance.
-     *
-     * @return bool
-     */
-    public function getSurveillance()
-    {
-        return $this->surveillance;
-    }
-
-    /**
      * Set dateEchecConnexion.
      *
-     * @param \DateTime $dateEchecConnexion
+     * @param \DateTime|null $dateEchecConnexion
      *
      * @return SiteConnexion
      */
-    public function setDateEchecConnexion($dateEchecConnexion)
+    public function setDateEchecConnexion($dateEchecConnexion = null)
     {
         $this->dateEchecConnexion = $dateEchecConnexion;
 
@@ -449,7 +294,7 @@ class SiteConnexion
     /**
      * Get dateEchecConnexion.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDateEchecConnexion()
     {
@@ -459,11 +304,11 @@ class SiteConnexion
     /**
      * Set dureeEchecConnexionJournalier.
      *
-     * @param \DateTime $dureeEchecConnexionJournalier
+     * @param \DateTime|null $dureeEchecConnexionJournalier
      *
      * @return SiteConnexion
      */
-    public function setDureeEchecConnexionJournalier($dureeEchecConnexionJournalier)
+    public function setDureeEchecConnexionJournalier($dureeEchecConnexionJournalier = null)
     {
         $this->dureeEchecConnexionJournalier = $dureeEchecConnexionJournalier;
 
@@ -473,7 +318,7 @@ class SiteConnexion
     /**
      * Get dureeEchecConnexionJournalier.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDureeEchecConnexionJournalier()
     {
@@ -507,11 +352,11 @@ class SiteConnexion
     /**
      * Set dateEchecConnexionBB.
      *
-     * @param \DateTime $dateEchecConnexionBB
+     * @param \DateTime|null $dateEchecConnexionBB
      *
      * @return SiteConnexion
      */
-    public function setDateEchecConnexionBB($dateEchecConnexionBB)
+    public function setDateEchecConnexionBB($dateEchecConnexionBB = null)
     {
         $this->dateEchecConnexionBB = $dateEchecConnexionBB;
 
@@ -521,7 +366,7 @@ class SiteConnexion
     /**
      * Get dateEchecConnexionBB.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDateEchecConnexionBB()
     {
@@ -531,11 +376,11 @@ class SiteConnexion
     /**
      * Set dureeEchecConnexionJournalierBB.
      *
-     * @param \DateTime $dureeEchecConnexionJournalierBB
+     * @param \DateTime|null $dureeEchecConnexionJournalierBB
      *
      * @return SiteConnexion
      */
-    public function setDureeEchecConnexionJournalierBB($dureeEchecConnexionJournalierBB)
+    public function setDureeEchecConnexionJournalierBB($dureeEchecConnexionJournalierBB = null)
     {
         $this->dureeEchecConnexionJournalierBB = $dureeEchecConnexionJournalierBB;
 
@@ -545,7 +390,7 @@ class SiteConnexion
     /**
      * Get dureeEchecConnexionJournalierBB.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDureeEchecConnexionJournalierBB()
     {
@@ -575,4 +420,53 @@ class SiteConnexion
     {
         return $this->nbEchecConnexionJournalierBB;
     }
+
+    /**
+     * Set surveillance.
+     *
+     * @param bool $surveillance
+     *
+     * @return SiteConnexion
+     */
+    public function setSurveillance($surveillance)
+    {
+        $this->surveillance = $surveillance;
+
+        return $this;
+    }
+
+    /**
+     * Get surveillance.
+     *
+     * @return bool
+     */
+    public function getSurveillance()
+    {
+        return $this->surveillance;
+    }
+
+    /**
+     * Set site.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\Site|null $site
+     *
+     * @return SiteConnexion
+     */
+    public function setSite(\Lci\BoilerBoxBundle\Entity\Site $site = null)
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * Get site.
+     *
+     * @return \Lci\BoilerBoxBundle\Entity\Site|null
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
 }

@@ -939,32 +939,13 @@ window.location.search: "?query=1"
                     $('.infoAffaireLocal').text($infoAffaireLocal);
                     $('.infoAffaireEcatcher').text($infoAffaireEcatcher);
 
-					// Ajout des nouveaux paramètre de site
+					// Ajout des nouveaux paramètres de site
 					$html = '';
-					for($key in $entitySite.configurations) {
-						$html = '<label>' + $entitySite.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.configurations[$key].valeur + '</span>' + $html;
+					for($key in $entitySite.siteConfigurations) {
+						$html = '<label>' + $entitySite.siteConfigurations[$key].configuration.parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteConfigurations[$key].valeur + '</span>' + $html;
 					}
 					$('#js-resumeAffaire').append($html);
 						
-					// Ajout des nouveaux paramètre de connexion
-					if($entitySite.siteConnexion) 
-					{
-                    	$html = '';
-                    	for($key in $entitySite.siteConnexion.configurations) {
-                        	$html = '<label>' + $entitySite.siteConnexion.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteConnexion.configurations[$key].valeur + '</span>' + $html;
-						}
-						$('#js-resumeAffaire').append($html);
-					}
-	
-					// Ajout des nouveaux paramètre de type autre
-                    if($entitySite.siteAutres)
-                    {
-                        $html = '';
-                        for($key in $entitySite.siteAutres.configurations) {
-                        	$html = '<label>' + $entitySite.siteAutres.configurations[$key].parametre + '</label><span class="infoAffaireConfiguration">' + $entitySite.siteAutres.configurations[$key].valeur + '</span>' + $html;
-						}
-						$('#js-resumeAffaire').append($html);
-					}
 
 					// Affichage des anciens commentaires
 					for($key in $entitySite.commentaires) {
