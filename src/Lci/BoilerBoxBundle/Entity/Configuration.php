@@ -62,6 +62,7 @@ class Configuration {
     public function __construct()
     {
         $this->siteConfigurations = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->type = 'global';
     }
 
     /**
