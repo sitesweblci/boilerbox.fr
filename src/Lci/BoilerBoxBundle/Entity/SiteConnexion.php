@@ -117,14 +117,6 @@ class SiteConnexion
 
     /**
      *
-     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Configuration", mappedBy="siteConnexion", cascade={"persist", "remove"})
-	 * @Groups({"groupSite"})
-     *
-    */
-    protected $configurations;
-
-    /**
-     *
      * @ORM\OneToOne(targetEntity="Lci\BoilerBoxBundle\Entity\Site", mappedBy="siteConnexion", cascade={"persist"})
     */
     protected $site;
