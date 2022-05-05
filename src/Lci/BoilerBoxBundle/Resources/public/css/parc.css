@@ -1314,10 +1314,10 @@ th div.champs_validation_bon > div > div:first-child {
  	border-left: 1px dashed black;
 }
 td div.champs_validation_bon > div > div {
-    border-right: 1px dashed #ededed;
+    border-right: 1px dashed #c9c9c9;
 }
 td div.champs_validation_bon > div > div:first-child {
-    border-left: 1px dashed #ededed;
+    border-left: 1px dashed #c9c9c9;
 }
 #legende_sites {
     display: flex;

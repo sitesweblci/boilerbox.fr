@@ -107,12 +107,6 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		<div class="main-box--table__legend">
-			<div class="green">Module présent et fonctionnel</div>
-		    <div class="orange">Module présent avec problème(s) non bloquant(s)</div>
-		    <div class="red">Module présent avec problème(s) bloquant(s)</div>
-		    <div class="blue">Module non présent</div>
-		</div>
 		<form name='form_tri' method='post' action={{ path('lci_tri_parc_modules') }} />
 			<input type='hidden' name='champs_tri' id='champs_tri' />
 		</form>
@@ -122,6 +116,12 @@
 		<form name='form_modulePbs' method='post' action={{ path('lci_affiche_module_problemes') }} />
 			<input type='hidden' name='module_id' id='module_id' />
 		</form>
+	</div>
+	<div class="main-box--table__legend">
+		<div class="green">Module présent et fonctionnel</div>
+	    <div class="orange">Module présent avec problème(s) non bloquant(s)</div>
+	    <div class="red">Module présent avec problème(s) bloquant(s)</div>
+	    <div class="blue">Module non présent</div>
 	</div>
 	<div class='main-box__btn main-box--table__btn'>
 		<button onClick="attente(); redirection('retourMenu'); return false;" class="btn_menu btn btn--second">Retour</button>

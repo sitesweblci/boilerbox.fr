@@ -115,9 +115,6 @@ class SiteConnexion
     protected $nbEchecConnexionJournalierBB;
 
 
-
-
-
     /**
      *
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Configuration", mappedBy="siteConnexion", cascade={"persist", "remove"})
