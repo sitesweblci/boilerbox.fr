@@ -5,6 +5,8 @@ namespace Lci\BoilerBoxBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Entity
+ * @ORM\Table(name="equipementBA")
  * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Repository\EquipementBATicketRepository")
  */
 class EquipementBATicket
