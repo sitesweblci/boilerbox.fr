@@ -47,7 +47,7 @@ class UtilsController extends Controller
                     'label' => $this->label
                 ));
 
-            case 'getionRoles':
+            case 'gestionRoles':
                 return $this->redirectToRoute('lci_register_role');
             case 'afficheLogs':
                 return $this->redirectToRoute('lci_affiche_logs_connexion');

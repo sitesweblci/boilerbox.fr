@@ -1,3 +1,6 @@
 lci_rapport_disponibilite:
     path: /rapport/disponibilite
     defaults: { _controller: LciBoilerBoxBundle:Rapport:rapportDisponibilite }
+lci_ajax_bons_select_service:
+    path: /aj/bons/choix/service
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:choixService }

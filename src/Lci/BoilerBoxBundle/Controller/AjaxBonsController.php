@@ -5,6 +5,8 @@ namespace Lci\BoilerBoxBundle\Controller;
 use Lci\BoilerBoxBundle\Entity\Validation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+
 
 class AjaxBonsController extends Controller
 {
@@ -299,5 +301,31 @@ class AjaxBonsController extends Controller
             $em->flush();
         }
         return new Response();
+    }
+
+
+
+
+    public function choixServiceAction(Request $request)
+    {
+        $em             = $this->getDoctrine()->getManager();
+        if (!($_POST['service'])) {
+            return new Response();
+        } else {
+            $role_service   = strtoupper('role_service_'.$_POST['service']);
+        }
+        $ents_user      = $em->getRepository('LciBoilerBoxBundle:User')->findAll();
+        $tab_des_membres_du_service = array();
+        foreach($ents_user as $e_user)
+        {
+            if ($role_service != null)
+            {
+                if ($e_user->hasRole($role_service))
+                {
+                    array_push($tab_des_membres_du_service, $e_user->getId());
+                }
+            }
+        }
+        return new Response(json_encode($tab_des_membres_du_service));
     }
 }

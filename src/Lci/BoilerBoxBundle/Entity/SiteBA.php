@@ -79,6 +79,21 @@ class SiteBA
      */
     private $contacts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\EquipementBATicket", mappedBy="siteBA")
+     */
+    private $equipementBATickets;
+
+
+    // Entre bon attachement et ticket
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+    */
+    protected $cheminDossierPhotos;
+
+
 
 
 
@@ -90,6 +105,7 @@ class SiteBA
         $this->bonsAttachement = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->fichiersJoint = new \Doctrine\Common\Collections\ArrayCollection();
   		$this->contacts = new ArrayCollection();
+    $this->equipementBATickets = new ArrayCollection();
     }
 
     /**
@@ -295,8 +311,8 @@ class SiteBA
 
 
 	public function setFichiersJointToEmpty() {
-                     		$this->fichiersJoint = array();
-                     	}
+                                    		$this->fichiersJoint = array();
+                                    	}
 
 
 
@@ -343,4 +359,60 @@ class SiteBA
 
         return $this;
     }
+
+    /**
+     * @return Collection|EquipementBATicket[]
+     */
+    public function getEquipementBATickets(): Collection
+    {
+        return $this->equipementBATickets;
+    }
+
+    public function addEquipementBATicket(EquipementBATicket $equipementBATicket): self
+    {
+        if (!$this->equipementBATickets->contains($equipementBATicket)) {
+            $this->equipementBATickets[] = $equipementBATicket;
+            $equipementBATicket->setSiteBA($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipementBATicket(EquipementBATicket $equipementBATicket): self
+    {
+        if ($this->equipementBATickets->contains($equipementBATicket)) {
+            $this->equipementBATickets->removeElement($equipementBATicket);
+            // set the owning side to null (unless already changed)
+            if ($equipementBATicket->getSiteBA() === $this) {
+                $equipementBATicket->setSiteBA(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set cheminDossierPhoto.
+     *
+     * @param string $cheminDossierPhotos
+     *
+     * @return BonsAttachement
+     */
+    public function setCheminDossierPhotos($cheminDossierPhotos)
+    {
+        $this->cheminDossierPhotos = $cheminDossierPhotos;
+
+        return $this;
+    }
+
+    /**
+     * Get cheminDossierPhotos.
+     *
+     * @return string
+     */
+    public function getCheminDossierPhotos()
+    {
+        return $this->cheminDossierPhotos;
+    }
+
 }

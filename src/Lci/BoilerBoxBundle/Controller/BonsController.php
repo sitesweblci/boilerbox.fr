@@ -35,6 +35,7 @@ use Lci\BoilerBoxBundle\Entity\Configuration;
 
 use Symfony\Component\Form\FormError;
 
+
 class BonsController extends Controller
 {
     /**
@@ -54,6 +55,7 @@ class BonsController extends Controller
         }
     }
 
+
     public function indexAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
@@ -72,9 +74,10 @@ class BonsController extends Controller
 
         $entities_sitesBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
 
+		$ent_user_courant = $this->get('security.token_storage')->getToken()->getUser();
+
         // Création d'un formulaire de bon d'attachement +  Récupération de l'utilisateur courant pour définir l'initiateur d'un nouveau bon
         $ent_bons_attachement = new BonsAttachement();
-        $ent_user_courant = $this->get('security.token_storage')->getToken()->getUser();
         $ent_bons_attachement->setUserInitiateur($ent_user_courant);
         $formulaire = $this->createForm(BonsAttachementType::class, $ent_bons_attachement);
 
@@ -89,7 +92,9 @@ class BonsController extends Controller
         // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
         if ($request->getMethod() == 'POST') {
             // Si le formulaire de création de bon a été soumis (retour de type POST)
-            if ($formulaire->handleRequest($request)->isValid()) {
+			$formulaire->handleRequest($request);
+            if ($formulaire->isValid()) 
+			{
                 // On persist l'entité "Bon d'attachement" et par cascade l'entité" "Fichier"
                 // On enregistre le tout en base
                 try {
@@ -160,7 +165,8 @@ class BonsController extends Controller
                 ));
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un formulaire de site qui est envoyé
-                if ($formulaire->isSubmitted()) {
+                if ($formulaire->isSubmitted()) 
+				{
 					// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
 					$obj_erreurs = $formulaire->getErrors(true, false);
 					$message_erreur = '';
@@ -169,11 +175,22 @@ class BonsController extends Controller
 						$message_erreur .= $error.' - ';
 					}
                     $request->getSession()->getFlashBag()->add('info', $message_erreur);
+					// On recrée le formulaire avec les données récues
+					$formulaire = $this->createForm(BonsAttachementType::class, $ent_bons_attachement);
+					// On récupère l'id du site pour le réafficher
+					if ($ent_bons_attachement->getSite())
+					{
+						if ($ent_bons_attachement->getSite()->getId())
+						{
+							$id_last_site = $ent_bons_attachement->getSite()->getId();
+						}
+					}
                 } else {
                     // Le formulaire de nouveau site ou de modification de site est passé
                     // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
                     // Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
-                    if (isset($_POST['id_site_ba'])) {
+                    if (isset($_POST['id_site_ba'])) 
+					{
                         if ($_POST['id_site_ba'] != "") {
                             $entity_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
                             $entity_siteBA_update = new SiteBA();
@@ -244,24 +261,24 @@ class BonsController extends Controller
                         $request->getSession()->getFlashBag()->add('info', $retourTest);
                     }
                 }
-                // Par défaut on renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
+                // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' => $formulaire->createView(),
-                    'form_site' => $formulaire_site->createView(),
-                    'max_upload_size' => $max_upload_size,
-                    'ents_sitesBA' => $entities_sitesBA,
-                    'apiKey' => $apiKey,
-                    'id_last_site' => $id_last_site
+                    'form' 				=> $formulaire->createView(),
+                    'form_site' 		=> $formulaire_site->createView(),
+                    'max_upload_size' 	=> $max_upload_size,
+                    'ents_sitesBA' 		=> $entities_sitesBA,
+                    'apiKey' 			=> $apiKey,
+                    'id_last_site' 		=> $id_last_site
                 ));
             }
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                'form' => $formulaire->createView(),
-                'form_site' => $formulaire_site->createView(),
-                'max_upload_size' => $max_upload_size,
-                'ents_sitesBA' => $entities_sitesBA,
-                'apiKey' => $apiKey
+                'form' 				=> $formulaire->createView(),
+                'form_site' 		=> $formulaire_site->createView(),
+                'max_upload_size' 	=> $max_upload_size,
+                'ents_sitesBA' 		=> $entities_sitesBA,
+                'apiKey' 			=> $apiKey
             ));
         }
     }

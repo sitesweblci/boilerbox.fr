@@ -337,9 +337,9 @@ class AdminController extends Controller
      */
     public function registerRoleAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity_role = new Role();
-        $form = $this->createForm(RoleType::class, $entity_role);
+        $em 			= $this->getDoctrine()->getManager();
+        $entity_role 	= new Role();
+        $form 			= $this->createForm(RoleType::class, $entity_role);
         $form->handleRequest($request);
         // Par défaut on affiche les utilisateurs ayant le role user
         $role = 'ROLE_USER';
@@ -352,19 +352,20 @@ class AdminController extends Controller
             }
             // Si on récupére un rôle on recherche la liste des utilisateurs appartenant au groupe définie par le role
             if (isset($_POST['role'])) {
-                $role = $_POST['role'];
+                $t_role = $_POST['role'];
+				$role = strtoupper('role_'.$t_role['role']);
             }
         }
 
         $entities_users_hasrole = $em->getRepository('LciBoilerBoxBundle:User')->myFindByRole($role);
-        $entities_role = $em->getRepository('LciBoilerBoxBundle:Role')->findAll();
+        $entities_role 			= $em->getRepository('LciBoilerBoxBundle:Role')->findAll();
 
         return $this->render('LciBoilerBoxBundle:Registration:creerRole.html.twig', array(
             'tableau_des_roles' => $this->container->getParameter('security.role_hierarchy.roles'),
-            'entities_role' => $entities_role,
-            'entities_user' => $entities_users_hasrole,
-            'role' => $role,
-            'form' => $form->createView()
+            'entities_role' 	=> $entities_role,
+            'entities_user' 	=> $entities_users_hasrole,
+            'role' 				=> $role,
+            'form'	 			=> $form->createView()
         ));
     }
 

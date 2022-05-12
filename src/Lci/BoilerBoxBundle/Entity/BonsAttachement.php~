@@ -232,14 +232,24 @@ class BonsAttachement {
     protected $type;
 
 
+    // Entre bon attachement et ticket
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="chemin_dossier_photos")
+    */
+    protected $cheminDossierPhoto;
+
+
+
 
 
 	public function __construct() {
-       	$this->dateInitialisation = new \Datetime();
-       	$this->enqueteNecessaire = false;
-       	$this->enqueteFaite = false;
-    	$this->fichiersPdf = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+                     		$this->dateInitialisation = new \Datetime();
+                     		$this->enqueteNecessaire = false;
+                     		$this->enqueteFaite = false;
+                     		$this->fichiersPdf = new \Doctrine\Common\Collections\ArrayCollection();
+                     	}
 
 
     /**
@@ -733,101 +743,4 @@ class BonsAttachement {
     {
         $this->fichiersPdf->removeElement($fichiersPdf);
     }
-
-    /**
-     * Set telephoneContactClient.
-     *
-     * @param string|null $telephoneContactClient
-     *
-     * @return BonsAttachement
-     */
-    public function setTelephoneContactClient($telephoneContactClient = null)
-    {
-        $this->telephoneContactClient = $telephoneContactClient;
-
-        return $this;
-    }
-
-    /**
-     * Get telephoneContactClient.
-     *
-     * @return string|null
-     */
-    public function getTelephoneContactClient()
-    {
-        return $this->telephoneContactClient;
-    }
-
-    /**
-     * Set service.
-     *
-     * @param string $service
-     *
-     * @return BonsAttachement
-     */
-    public function setService($service)
-    {
-        $this->service = $service;
-
-        return $this;
-    }
-
-    /**
-     * Get service.
-     *
-     * @return string
-     */
-    public function getService()
-    {
-        return $this->service;
-    }
-
-    /**
-     * Set typeIntervention.
-     *
-     * @param string $typeIntervention
-     *
-     * @return BonsAttachement
-     */
-    public function setTypeIntervention($typeIntervention)
-    {
-        $this->typeIntervention = $typeIntervention;
-
-        return $this;
-    }
-
-    /**
-     * Get typeIntervention.
-     *
-     * @return string
-     */
-    public function getTypeIntervention()
-    {
-        return $this->typeIntervention;
-    }
-
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return BonsAttachement
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
 }

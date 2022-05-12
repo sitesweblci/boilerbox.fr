@@ -70,6 +70,11 @@
 		    		{{ form_widget(form.dateInitialisation) }}
 		    		{{ form_errors(form.dateInitialisation) }}
 		    	</div>
+                <div class="form__field">
+                    {{ form_errors(form.service) }}
+                    {{ form_label(form.service) }}
+                    {{ form_widget(form.service) }}
+                </div>
 		    	<div class="form__field">
 		    		{{ form_label(form.user) }}
 					{{ form_widget(form.user) }}
@@ -108,15 +113,27 @@
 		    		{{ form_widget(form.nomDuContact) }}
 		    	</div>
 		    	<div class="form__field">
-		    		{{ form_errors(form.nomDuContact) }}
+		    		{{ form_errors(form.emailContactClient) }}
 		    		{{ form_label(form.emailContactClient) }}
 		    		{{ form_widget(form.emailContactClient) }}
 		    	</div>
+                <div class="form__field">
+                    {{ form_errors(form.telephoneContactClient) }}
+                    {{ form_label(form.telephoneContactClient) }}
+                    {{ form_widget(form.telephoneContactClient) }}
+                </div>
 		    	<div class="form__field">
 		    		{{ form_errors(form.dateSignature) }}
 		    		{{ form_label(form.dateSignature) }}
 					{{ form_widget(form.dateSignature) }}
 		    	</div>
+
+                <div class="form__field">
+                    {{ form_errors(form.typeIntervention) }}
+                    {{ form_label(form.typeIntervention) }}
+                    {{ form_widget(form.typeIntervention) }}
+                </div>
+
 				<div class='form__field'>
 					<label class="flex flex--row" style="display:flex!important;">
 						{{ form_label(form.fichiersPdf) }}
@@ -128,6 +145,7 @@
 						{{ form_errors(form.fichiersPdf) }}
 					</div>
 				</div>
+				
 			{{ form_rest(form) }}
 			{{ form_end(form) }}
 		</div>
@@ -185,6 +203,11 @@
 					{{ form_widget(form_site.contacts) }}
 					{{ form_errors(form_site.contacts) }}
 				</div>
+                <div class="form__field">
+                    {{ form_label(form_site.cheminDossierPhotos) }}
+                    {{ form_widget(form_site.cheminDossierPhotos) }}
+                    {{ form_errors(form_site.cheminDossierPhotos) }}
+                </div>
 	            <div id="ajout_contact" class='form__field'>
 	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
 	            	<div class='nouveau_probleme_ligne form__field'>
@@ -279,6 +302,11 @@
 {% block javascript %}
 	{# Script d'autocompletion de l'adresse #}
     <script type='text/javascript'>
+
+	function testOuvertureLocal() {
+		alert('test');
+		window.open ("file://C:/Users/wins/Desktop/exclusiveWordpress.html","mywindow");
+	}
 
     // Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
@@ -481,6 +509,7 @@
             $('#telephoneContact').val('');
             $('#fonctionContact').val('');
             $('#bons_attachement_nomDuContact').val('');
+			$('#bons_attachement_telephoneContactClient').val('');
             $('#bons_attachement_emailContactClient').val('');
 
 			if ($('#bons_attachement_site').val() != '')
@@ -544,14 +573,24 @@
 			resetInfosContact();
 		});
 
-		/* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
+		/* Permet de selectionner le dernier site - permet de réafficher le site après la création d'un nouveau contact */
         {% if id_last_site is defined %}
             var id_last_site = "{{ id_last_site }}";
+			// Sauvegarde des infomration du contact 
+			save_nom_contact  = $('#bons_attachement_nomDuContact').val();
+			save_tel_contact  = $('#bons_attachement_telephoneContactClient').val();
+			save_mail_contact = $('#bons_attachement_emailContactClient').val();
+ 
+			// On rédéfini le select précédemment selectionné dans le select
             $('#bons_attachement_site').val(id_last_site);
+			// On active le listener de changement de site courant
             $('#bons_attachement_site').trigger('change');
-        {% endif %}
+			// On redéfini les informations du contact précédemment selectionné
+			$('#bons_attachement_nomDuContact').val(save_nom_contact);
+			$('#bons_attachement_telephoneContactClient').val(save_tel_contact);
+			$('#bons_attachement_emailContactClient').val(save_mail_contact);
 
-		//$('#bons_attachement_site').trigger('change');
+        {% endif %}
 	});
 
 	// Fonction qui ajoute un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
@@ -677,7 +716,9 @@
         $('#fonctionContact').val($tab_contact[$index_tab_contact]['fonction']);
 		$('#dateMajContact').val($tab_contact[$index_tab_contact]['maj']);
 		$('#bons_attachement_nomDuContact').val($tab_contact[$index_tab_contact]['nom']);
+		$('#bons_attachement_telephoneContactClient').val($tab_contact[$index_tab_contact]['telephone']);
 		$('#bons_attachement_emailContactClient').val($tab_contact[$index_tab_contact]['email']);
+		$('#bons_attachement_telephoneContactClient').val($tab_contact[$index_tab_contact]['telephone']);
 		$('#indexContact').val($index_tab_contact);
 	}
 
@@ -721,6 +762,7 @@
         $('#fonctionContact').val('');
 		$('#dateMajContact').val('');
         $('#bons_attachement_nomDuContact').val('');
+		$('#bons_attachement_telephoneContactClient').val('');
         $('#bons_attachement_emailContactClient').val('');
 		var $container = $($("#bloc_contact_pour_impression"));
 		var $html = '';
@@ -770,7 +812,6 @@
 				$('#bons_attachement_site').trigger('change');
 				$refreshContact = setInterval(function() 
 				{
-					console.log('test');
 					if (changeEnCours == false)
 					{
 						afficheContact($index);
@@ -780,6 +821,42 @@
 			}
 		});	
 	}
+
+	var sauvegarde_select_user = $('#bons_attachement_user').html();
+
+	// Envoi du service selectionné
+	// Récupération des ids des membres du service
+	// Cache les non membre du service du select html
+	$('#bons_attachement_service').change(function() {
+		// Lors d'un changement de choix : On redéfini le select d'origin pour supprimer toutes les class cacher
+		$('#bons_attachement_user').html(sauvegarde_select_user);
+
+		$.ajax("{{ path('lci_ajax_bons_select_service') }}",
+		{
+			async: false,
+			method: "POST",
+			data: {service:$('#bons_attachement_service option:selected').text() },
+			success: function(data, textStatus, jqXHR) {
+				// Lors du retour de la demande Ajax, soit on récupère un tableau avec les id des membres du service soit on recoit une chaine de caractère vide
+				// Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
+				if (data != '') {
+					var t_data = JSON.parse(data);
+					$('#bons_attachement_user option').each(function(){
+						if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
+						{
+							$(this).addClass('cacher');
+						}
+					});
+					// Selection de l'option (Choix de l'intervenant)
+					$('#bons_attachement_user option[value=""]').prop('selected', true);
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.log('error');
+			}, 
+			complete: function() { console.log('complete');}	
+		});
+	});
 
 </script>
 

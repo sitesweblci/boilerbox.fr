@@ -62,14 +62,24 @@ class FichierSiteBA {
 
     protected $tempFilename;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $userInitiateur;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateImportation;
+
 
 
     /**
      * Constructor
      */
 	public function __construct() {
-		$this->archive = false;
-	}	
+                  		$this->archive = false;
+                  	}	
 
     /**
      * Get id
@@ -299,5 +309,29 @@ class FichierSiteBA {
     public function getArchive()
     {
         return $this->archive;
+    }
+
+    public function getUserInitiateur(): ?string
+    {
+        return $this->userInitiateur;
+    }
+
+    public function setUserInitiateur(string $userInitiateur): self
+    {
+        $this->userInitiateur = $userInitiateur;
+
+        return $this;
+    }
+
+    public function getDateImportation(): ?\DateTimeInterface
+    {
+        return $this->dateImportation;
+    }
+
+    public function setDateImportation(\DateTimeInterface $dateImportation): self
+    {
+        $this->dateImportation = $dateImportation;
+
+        return $this;
     }
 }

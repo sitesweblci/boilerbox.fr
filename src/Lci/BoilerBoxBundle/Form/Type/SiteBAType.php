@@ -96,7 +96,18 @@ class SiteBAType extends AbstractType
 					'required'      => true,
 					'mapped'		=> false
                 ))
-				
+				->add('cheminDossierPhotos', TextType::class, array(
+                    'label'         => 'Chemin local vers le repertoires des photos',
+                    'label_attr'    => array(
+                        'class'         => 'label_smalltext'
+                    ),
+                    'attr'          => array(
+                        'class'         => 'biginput centrer',
+                        'placeholder'   => "Chemin vers le repertoire local des photos",
+                        'style'         => 'width:100%;'
+                    ),
+                    'required'      => false
+                ))
 				->add('reset', ResetType::class);
     }
 

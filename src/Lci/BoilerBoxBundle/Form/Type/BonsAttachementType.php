@@ -10,7 +10,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 
 
@@ -52,6 +55,7 @@ class BonsAttachementType extends AbstractType {
 					->setParameter('enabled', true)
 					->orderBy('u.label', 'ASC');
 			},
+			'placeholder'		=> "Choix de l'intervenant"
         ))
         ->add('dateInitialisation', DateType::class, array(
             'label'         => 'Date d\'initialisation',
@@ -151,6 +155,15 @@ class BonsAttachementType extends AbstractType {
 				'placeholder' 	=> "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
 			)
 		))
+		->add('telephoneContactClient', TelType::class, array(
+            'label'         => 'Téléphone du contact',
+            'label_attr'    => array ('class' => 'label_smalltext'),
+            'required'      => true,
+            'trim'          => true,
+            'attr'          => array (
+                'placeholder'   => "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
+            )
+        ))
 		->add('fichiersPdf', CollectionType::class, array(
 			'entry_type'    => FichierType::class,
 			/* Option à ajouter pour résoudre l'erreur -> Warning: spl_object_hash() expects parameter 1 to be object, array given */
@@ -160,7 +173,25 @@ class BonsAttachementType extends AbstractType {
 			'allow_add'		=> true,
 			'allow_delete'	=> true,
 			'required' 		=> true
-		));
+		))
+		->add('service', ChoiceType::class, array(
+			'label'         => 'Service',
+			'choices'		=> [
+				'Bosch'		=> 'bosch',
+				'Certus'	=> 'certus',
+				'Export'	=> 'export'
+			],
+			'preferred_choices' => ['certus', 'bosch'],
+			'required' => false
+		))
+		->add('typeIntervention', ChoiceType::class, array(
+			'label'			=> "Type d'intervention",
+            'choices'       => [
+                'Mise en service'   => 'mes',
+                'SAV'    			=> 'sav',
+                'Rapport mensuel'   => 'rptmensuel'
+            ]
+        ));
 	}
 
 
