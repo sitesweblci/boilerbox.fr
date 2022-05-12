@@ -102,10 +102,10 @@ class SiteBA
      */
     public function __construct()
     {
-        $this->bonsAttachement = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->fichiersJoint = new \Doctrine\Common\Collections\ArrayCollection();
-  		$this->contacts = new ArrayCollection();
-    $this->equipementBATickets = new ArrayCollection();
+        $this->bonsAttachement 		= new \Doctrine\Common\Collections\ArrayCollection();
+		$this->fichiersJoint 		= new \Doctrine\Common\Collections\ArrayCollection();
+  		$this->contacts 			= new ArrayCollection();
+    	$this->equipementBATickets 	= new ArrayCollection();
     }
 
     /**

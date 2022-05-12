@@ -225,6 +225,7 @@ class BonsController extends Controller
                         $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA_update->getLienGoogle()));
                         $e_siteBA->setInformationsClient($e_siteBA_update->getInformationsClient());
                         foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) {
+							$ent_fichier->setUserInitiateur($this->getUser()->getLabel());
                             $e_siteBA->addFichiersJoint($ent_fichier);
                         }
                         foreach ($e_siteBA_update->getContacts() as $ent_contact) {

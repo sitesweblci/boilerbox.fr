@@ -78,8 +78,9 @@ class FichierSiteBA {
      * Constructor
      */
 	public function __construct() {
-                  		$this->archive = false;
-                  	}	
+    	$this->archive = false;
+		$this->dateImportation = new \Datetime();
+    }	
 
     /**
      * Get id
@@ -206,6 +207,55 @@ class FichierSiteBA {
     }
 
 
+    /**
+     * Set archive.
+     *
+     * @param bool $archive
+     *
+     * @return FichierSiteBA
+     */
+    public function setArchive($archive)
+    {
+        $this->archive = $archive;
+
+        return $this;
+    }
+
+    /**
+     * Get archive.
+     *
+     * @return bool
+     */
+    public function getArchive()
+    {
+        return $this->archive;
+    }
+
+    public function getUserInitiateur(): ?string
+    {
+        return $this->userInitiateur;
+    }
+
+    public function setUserInitiateur(string $userInitiateur): self
+    {
+        $this->userInitiateur = $userInitiateur;
+
+        return $this;
+    }
+
+    public function getDateImportation(): ?\DateTimeInterface
+    {
+        return $this->dateImportation;
+    }
+
+    public function setDateImportation(\DateTimeInterface $dateImportation): self
+    {
+        $this->dateImportation = $dateImportation;
+
+        return $this;
+    }
+
+
 
 
 
@@ -274,64 +324,4 @@ class FichierSiteBA {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Set archive.
-     *
-     * @param bool $archive
-     *
-     * @return FichierSiteBA
-     */
-    public function setArchive($archive)
-    {
-        $this->archive = $archive;
-
-        return $this;
-    }
-
-    /**
-     * Get archive.
-     *
-     * @return bool
-     */
-    public function getArchive()
-    {
-        return $this->archive;
-    }
-
-    public function getUserInitiateur(): ?string
-    {
-        return $this->userInitiateur;
-    }
-
-    public function setUserInitiateur(string $userInitiateur): self
-    {
-        $this->userInitiateur = $userInitiateur;
-
-        return $this;
-    }
-
-    public function getDateImportation(): ?\DateTimeInterface
-    {
-        return $this->dateImportation;
-    }
-
-    public function setDateImportation(\DateTimeInterface $dateImportation): self
-    {
-        $this->dateImportation = $dateImportation;
-
-        return $this;
-    }
 }
