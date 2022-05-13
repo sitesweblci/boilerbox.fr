@@ -26,7 +26,7 @@
                 <li class="tab-wrapper__tabs__tab" data-tab-target="#autre">Autre</li>
             </ul>
             <div class="tab-wrapper__content">
-    			{{ form_start(form, {'attr':{'class':'formModifEquipement form'}, 'action':path('lci_register_site'), 'method':'POST', 'name':'myForm'}) }}
+    			{{ form_start(form, {'action':path('lci_register_site'), 'method':'POST', 'name':'myForm'}) }}
                 	<div id="infos" class="active form__field" data-tab-content>
                 	    <div>
     						{{ form_row(form.intitule) }}
@@ -35,16 +35,25 @@
     						<div class="ligne_error">{{ form_errors(form.affaire) }}</div>
                             {{ form_row(form.version) }}
                             <div class="ligne_error">{{ form_errors(form.version) }}</div>
+							<div class='cacher'>
+								{{ form_widget(form.siteConfigurations) }}
+							</div>
     					</div>
     					<div class="newParametre addParametreInfos cacher">
-    						<p>Nouveau Paramètre</p>
-    						{{ form_widget(form.configurations) }}
+    						<p id='pParametreInfos'>Nouveau Paramètre</p>
     					</div>
     					<div id="addParametreInfos" class="btn btn--add">
                             <div class="crossAdd"></div>
-                            Ajouter un autre paramètre
+                            Ajouter un autre paramètre d'information
                         </div>
-                    </div>
+					
+						{# On n'affiche pas le lien de suppression de paramètre lors de la création d'un nouveau site #}
+                    	<div id='divDeSuppression' class="cacher">
+                    	    {{ form_row(form.siteConfigurationPourSuppression) }}
+                    	</div>
+					</div>
+
+
 
                     <div id="connexion" class="form__field" data-tab-content>
                         <div id="site_siteConnexion_accesDistant">
@@ -66,20 +75,17 @@
                             <div class="ligne_error"></div>
                         </div>
                         <div class="newParametre addParametreConnexion cacher">
-                            <p>Nouveau Paramètre</p>
-                            {{ form_widget(form.configurations) }}
+                            <p id='pParametreConnexion'>Nouveau Paramètre</p>
                         </div>
                         <div id="addParametreConnexion" class="btn btn--add">
                             <div class="crossAdd"></div>
-                            Ajouter un autre paramètre
+                            Ajouter un autre paramètre de connexion
                         </div>
                     </div>
 
                     <div id="autre" class="form__field" data-tab-content>
-                        <div></div>
                         <div class="newParametre addParametreAutre cacher">
-                            <p>Nouveau Paramètre</p>
-                            {{ form_widget(form.configurations) }}
+                            <p id='pParametreAutres'>Nouveau Paramètre</p>
                         </div>
                         <div id="addParametreAutre" class="btn btn--add">
                             <div class="crossAdd"></div>
@@ -124,48 +130,76 @@
         })
     });
 
-
     (function() {
         // On récupére le container en javascript
-        var $container = $('div#site_configurations');
-        var $container_connexion = $('div#site_siteConnexion_configurations');
-        var $container_autres = $('div#site_siteAutres_configurations');
+		var $container =  $('div#site_siteConfigurations');
 
-        // On place un listener de click sur le lien 'ajouter un paramètre'
+        // On compte le nombre de champs existants ( Un champs = 2 input)
+        $index = $container.find(':submit').length;
+
+        // On place un listener de click sur le lien 'ajouter un paramètre de site'
         $('#addParametreInfos').click(function(e) {
-			$('.addParametreInfos').removeClass('cacher');
-            ajouterParametre($container, $container, 'infos');
-			$nb_new_param_infos ++;
+            $('.addParametreInfos').removeClass('cacher');
+            ajouterParametre($container, $($('#pParametreInfos')), 'infos');
+            $nb_new_param_infos ++;
             e.preventDefault();
         });
         // On place un listener de click sur le lien 'ajouter un paramètre de connexion'
         $('#addParametreConnexion').click(function(e) {
-			$('.addParametreConnexion').removeClass('cacher');
-            ajouterParametre($container_connexion, $container_connexion, 'connexion');
-			$nb_new_param_connexion ++;
+            $('.addParametreConnexion').removeClass('cacher');
+            ajouterParametre($container, $($('#pParametreConnexion')), 'connexion');
+            $nb_new_param_connexion ++;
             e.preventDefault();
         });
         // On place un listener de click sur le lien 'ajouter un paramètre de type autres'
         $('#addParametreAutre').click(function(e) {
-			$('.addParametreAutre').removeClass('cacher');
-            ajouterParametre($container_autres, $container_autres, 'autre');
-			$nb_new_param_autre ++;
+            $('.addParametreAutre').removeClass('cacher');
+            ajouterParametre($container, $($('#pParametreAutres')), 'autre');
+            $nb_new_param_autre ++;
             e.preventDefault();
+        });
+
+        $('#deleteParametre').click(function(e) {
+            $('.deleteParametre').removeClass('cacher');
         });
 
     })();
 
     function ajouterParametre($container, $lientAjout, $encart) {
         var $template = $container.data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $index);
+
         // Création d'une objet jquery contenant le template
         $DOMTemplate = $($template);
+
         // Ajout du lien de suppression
         ajoutLienSuppression($DOMTemplate, $encart);
+
         // Ajout du template sur le DOM
-		$lientAjout.after($DOMTemplate);
+        $lientAjout.after($DOMTemplate);
+
+        // Cache des select autres que celui de l'onglet actif
+        $('#site_siteConfigurations_' + $index + '_configuration').addClass('cacher');
+        $('#site_siteConfigurations_' + $index + '_configuration_infos').addClass('cacher');
+        $('#site_siteConfigurations_' + $index + '_configuration_connexion').addClass('cacher');
+        $('#site_siteConfigurations_' + $index + '_configuration_autre').addClass('cacher');
+
+        // Affichage du select de l'onglet actif
+        $('#site_siteConfigurations_' + $index + '_configuration_' + $encart).removeClass('cacher');
+
+        // On ajoute l'identifiant (index) qui identifie le select
+        $('#site_siteConfigurations_' + $index + '_configuration_' + $encart).data('num_index', $index);
+
+        // On place un listener de change pour modifier le select mappé lors de la modification du select actif
+        $('#site_siteConfigurations_' + $index + '_configuration_' + $encart).change(function(e)
+        {
+            var $num_index = $(this).data('num_index');
+            $('#site_siteConfigurations_' + $num_index + '_configuration').val($(this).val());
+        });
+
         // Incrémentation du compteur de paramètres supplémentaires
         $index ++;
     }
+
 
     // Ajout d'un lien de suppression à l'objet DOM == => Object { 0: div.form-group, length: 1 }
     function ajoutLienSuppression($DOMTemplate, $encart) {

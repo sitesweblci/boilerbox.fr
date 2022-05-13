@@ -133,34 +133,27 @@ class AdminController extends Controller
 
     public function siteRegistrationAction(Request $request)
     {
-        $ent_site = new Site();
+        $ent_site 			= new Site();
         $ent_site_connexion = new SiteConnexion();
         $ent_site->setSiteConnexion($ent_site_connexion);
         $ent_site_connexion->setDisponibilite(2);
         $form_site = $this->createForm(SiteType::class, $ent_site);
-        if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') 
+		{
             // On hydrate l'objet
             $form_site->handleRequest($request);
             // On test la validité des données
-            if ($form_site->isValid()) {
+            if ($form_site->isValid()) 
+			{
                 $em = $this->getDoctrine()->getManager();
                 // On crée les liens entre le site et ses paramètres de configuration personnels
-                if ($ent_site->getConfigurations()) {
-                    foreach ($ent_site->getConfigurations() as $ent_configuration) {
+                if ($ent_site->getSiteConfigurations()) 
+				{
+                    foreach ($ent_site->getSiteConfigurations() as $ent_configuration) 
+					{
                         $ent_configuration->setSite($ent_site);
                     }
                 }
-                if ($ent_site->getSiteConnexion()->getConfigurations()) {
-                    foreach ($ent_site->getSiteConnexion()->getConfigurations() as $ent_configuration) {
-                        $ent_configuration->setSiteConnexion($ent_site->getSiteConnexion());
-                    }
-                }
-                if ($ent_site->getSiteAutres()->getConfigurations()) {
-                    foreach ($ent_site->getSiteAutres()->getConfigurations() as $ent_configuration) {
-                        $ent_configuration->setSiteAutres($ent_site->getSiteAutres());
-                    }
-                }
-
 
                 // Avec l'effet cascade, les entités configurations sont également persistées
                 $em->persist($ent_site);
@@ -178,7 +171,7 @@ class AdminController extends Controller
 
 	public function parametresRegistrationAction(Request $request)
 	{
-		$em 					= $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
 
 		if (isset($request->request->get('lci_boilerboxbundle_configuration')['id']))
 		{
@@ -193,19 +186,19 @@ class AdminController extends Controller
 			}
 		} else {
 			// Entité pour la réception du formulaire de choix de configuration à modifier 
-			$ent_configuration 		= new Configuration();
+			$ent_configuration = new Configuration();
 		}
 
 		// Création d'un nouveau paramètre
-		$form_register 			= $this->createForm(ConfigurationType::class, $ent_configuration);
+		$form_register = $this->createForm(ConfigurationType::class, $ent_configuration);
 		$form_register->handleRequest($request);
 
-		$form_delete 			= $this->createForm(SuppressionConfigurationType::class, $ent_configuration);
+		$form_delete = $this->createForm(SuppressionConfigurationType::class, $ent_configuration);
         $form_delete->handleRequest($request);
 
 		// Affichage de la liste des paramètres  pour selection de celui à modifier
 		$ent_site_configuration = new siteConfiguration();
-		$form_change 			= $this->createForm(SiteConfigurationModificationConfigurationType::class, $ent_site_configuration);
+		$form_change = $this->createForm(SiteConfigurationModificationConfigurationType::class, $ent_site_configuration);
         $form_change->handleRequest($request);
 
 
@@ -337,9 +330,9 @@ class AdminController extends Controller
      */
     public function registerRoleAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity_role = new Role();
-        $form = $this->createForm(RoleType::class, $entity_role);
+        $em 			= $this->getDoctrine()->getManager();
+        $entity_role 	= new Role();
+        $form 			= $this->createForm(RoleType::class, $entity_role);
         $form->handleRequest($request);
         // Par défaut on affiche les utilisateurs ayant le role user
         $role = 'ROLE_USER';
@@ -352,19 +345,20 @@ class AdminController extends Controller
             }
             // Si on récupére un rôle on recherche la liste des utilisateurs appartenant au groupe définie par le role
             if (isset($_POST['role'])) {
-                $role = $_POST['role'];
+                $t_role = $_POST['role'];
+				$role = strtoupper('role_'.$t_role['role']);
             }
         }
 
         $entities_users_hasrole = $em->getRepository('LciBoilerBoxBundle:User')->myFindByRole($role);
-        $entities_role = $em->getRepository('LciBoilerBoxBundle:Role')->findAll();
+        $entities_role 			= $em->getRepository('LciBoilerBoxBundle:Role')->findAll();
 
         return $this->render('LciBoilerBoxBundle:Registration:creerRole.html.twig', array(
             'tableau_des_roles' => $this->container->getParameter('security.role_hierarchy.roles'),
-            'entities_role' => $entities_role,
-            'entities_user' => $entities_users_hasrole,
-            'role' => $role,
-            'form' => $form->createView()
+            'entities_role' 	=> $entities_role,
+            'entities_user' 	=> $entities_users_hasrole,
+            'role' 				=> $role,
+            'form'	 			=> $form->createView()
         ));
     }
 
