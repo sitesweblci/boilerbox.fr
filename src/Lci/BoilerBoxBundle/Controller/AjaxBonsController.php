@@ -134,10 +134,11 @@ class AjaxBonsController extends Controller
         return new Response();
     }
 
-
+	// Recherches des informations du site selectionné dans le formulaire de création d'un BA
     public function getSiteBAEntityAction()
     {
         $tab_fichier = null;
+		$tab_id_fichier = null;
         if (isset($_POST['id_site_ba'])) {
             $id_site_ba = $_POST['id_site_ba'];
         } else {
@@ -164,14 +165,21 @@ class AjaxBonsController extends Controller
             $tab_contacts[] = $tab_contact;
         }
         $tab_siteba[] = $tab_contacts;
+		// Recherche des noms des fichiers liés au site
         foreach ($entity_siteba->getFichiersJoint() as $ent_fichier) {
             $tab_fichier[] = $ent_fichier->getAlt();
         }
-
-        if ($tab_fichier != null) {
-            $tab_siteba[] = $tab_fichier;
+		
+		if ($tab_fichier != null) {
+			// Création du tableau des id des fichiers liés au site pour leur suppression ou affichage
+			foreach ($entity_siteba->getFichiersJoint() as $ent_fichier) {
+        	    $tab_id_fichier[] = $ent_fichier->getId();
+        	}
+			$tab_siteba[] = $tab_fichier;
+			$tab_siteba[] = $tab_id_fichier;
         } else {
             $tab_siteba[] = null;
+			$tab_siteba[] = null;
         }
 
 

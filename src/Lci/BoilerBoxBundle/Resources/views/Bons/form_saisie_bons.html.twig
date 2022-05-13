@@ -196,8 +196,9 @@
 			<h2 class="fieldset__title">Fichier(s)</h2>
 			<div class="form__field rel">
 				<span id="add-fichierBon">Ajouter fichier PDF (2Mo max)</span>
-				<input type="file" multiple="multiple" name="fichierBon" id="fichierBon"  class=" btn btn--main add"/>
-				<label for="fichierBon" class="btn btn--main add"></label>
+				{#<input type="file" multiple="multiple" name="fichierBon" id="fichierBon"  onclick="ajoutNouveauFichier()" class=" btn btn--main add"/>#}
+				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter un fichier</span></button>
+				{#<label for="fichierBon" class="btn btn--main add"></label>#}
 			</div>
 			<div id='fichiers_deja_joints2' class="add-list">
 				<div class="add-list__added">Test<div class="close-cross"></div></div>
@@ -590,8 +591,6 @@
 					{
 						var $tab_siteBA = $.parseJSON(msg);
 
-						console.log($tab_siteBA);
-
 						$('#id_site_ba').val($tab_siteBA[0]);
 						$('#site_ba_intitule').val($tab_siteBA[1]);
 						{# $('#site_ba_intitule').attr('readonly', true); // On autorise le changement du nom du site #}
@@ -625,12 +624,11 @@
             				}
 						{% endif %}
 
-
+						// Ajout des noms des fichiers précédemment joints au site
 						if ($tab_siteBA[6]) {
 							$.each($tab_siteBA[6], function(index, value) {
-								console.log('ajout fichier joint ' + value);
 								$('#fichiers_deja_joints').append(value + '<br />');
-								$('#fichiers_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross'></div></div>");
+								$('#fichiers_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross' onClick='supprimeFile(" + $tab_siteBA[7][index] + ");'></div></div>");
 							});
 						}
 						$('#site_ba_lienGoogle').trigger('change');
@@ -1005,6 +1003,32 @@
 		$('#add_contact').trigger('click');
 	}
 
+
+    function gestionDesFichiers()
+    {
+        // Si la selection du select de site n'est pas vide
+        if ($('#bons_attachement_site option:selected').val() === '')
+        {
+			$('#bons_attachement_site').css('border', '2px solid yellow');
+        } else {
+			ajoutNouveauFichier();
+		}
+    }
+    function ajoutNouveauFichier() {
+        // On cache les informations liés à la modification d'un site
+        $('#site_ba > fieldset').addClass('cacher');
+        //$('#ajout_fichier_siteBA_mobile_portrait').addClass('cacher');
+        $('#titre_nouveau_siteBA').text('Nouveau(x) contact(s)');
+        $('#contacts_deja_associes').addClass('cacher');
+
+        // Ouverture de la popup Modification du site
+        $('#bntBonsSite').trigger('click');
+
+        // Activation du lien vers nouveau fichier
+        $('#add_fichier_site').trigger('click');
+    }
+
+
 	// Click sur le bouton RETOUR de la popup nouveau site
 	function retourPopupSite()
 	{
@@ -1087,6 +1111,13 @@
 			attente(); 
 			document.forms['myForm'].submit(); 
 		}
+	}
+
+
+
+	function supprimeFile(idFile)
+	{
+		console.log("demande de suppression du fichier d'id : " + idFile);
 	}
 </script>
 
