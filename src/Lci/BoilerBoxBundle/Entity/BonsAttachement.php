@@ -209,7 +209,7 @@ class BonsAttachement {
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="service")
+     * @ORM\Column(type="string", name="service", nullable=true)
     */
     protected $service;
 

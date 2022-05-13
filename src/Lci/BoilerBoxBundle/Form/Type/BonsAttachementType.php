@@ -16,9 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 
-
-
-
 class BonsAttachementType extends AbstractType {
 	/**
      * @param FormBuilderInterface $builder
@@ -69,6 +66,7 @@ class BonsAttachementType extends AbstractType {
                 'maxlength'     => 10
             )
         ))
+/*
 		->add('numeroBA', TextType::class, array(
 			'label' 		=> 'Numéro du bon',
 			'label_attr'    => array ('class' => 'label_smalltext'),
@@ -79,6 +77,7 @@ class BonsAttachementType extends AbstractType {
 				'maxlength'     => 6
 			)
 		))
+*/
 		->add('numeroAffaire', TextType::class, array(
             'label' 		=> 'Numéro d\'affaire',
 			'label_attr'    => array ('class' => 'label_smalltext'),
@@ -191,6 +190,15 @@ class BonsAttachementType extends AbstractType {
                 'SAV'    			=> 'sav',
                 'Rapport mensuel'   => 'rptmensuel'
             ]
+        ))
+		->add('type', TextType::class, array(
+            'label'         => false,
+            'required'      => true,
+            'trim'          => true,
+            'attr'          => array (
+                'placeholder'   => "Type du formulaire (bon ou ticket)",
+				'class'			=> 'cacher'
+            )
         ));
 	}
 

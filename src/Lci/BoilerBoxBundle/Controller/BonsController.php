@@ -114,14 +114,14 @@ class BonsController extends Controller
                     $em->persist($e_bons_attachement);
                     $em->flush();
                     // Envoi d'un mail à l'intervenant
-                    $service_mailling = $this->get('lci_boilerbox.mailing');
-                    $emetteur = $e_bons_attachement->getUserInitiateur()->getEmail();
-                    $destinataire = $e_bons_attachement->getUser()->getEmail();
-                    $sujet = "Affectation d'un nouveau bon d'attachement";
-                    $tab_message = array();
-                    $tab_message['titre'] = "Une nouvelle intervention vous est affectée";
-                    $tab_message['site'] = $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
-                    $messages_contact = "";
+                    $service_mailling 		= $this->get('lci_boilerbox.mailing');
+                    $emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
+                    $destinataire 			= $e_bons_attachement->getUser()->getEmail();
+                    $sujet 					= "Affectation d'un nouveau bon d'attachement";
+                    $tab_message 			= array();
+                    $tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
+                    $tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
+                    $messages_contact 		= "";
                     if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
                         if ($e_bons_attachement->getNomDuContact() != null) {
                             $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
@@ -146,6 +146,8 @@ class BonsController extends Controller
                     }
                     $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
                 } catch (\Exception $e) {
+					echo $e->getMessage();
+					return new Response();
                     $pattern_error_files = "#Column 'url' cannot be null#";
                     if (preg_match($pattern_error_files, $e->getMessage())) {
                         $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . " non enregistré. Vous n'avez pas sélectionné de fichier.");

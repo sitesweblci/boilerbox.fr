@@ -147,12 +147,7 @@
 			<div class="form__field rel">
 				<label>Nom</label>
 				<select id='select_contact'>
-					<option></option>
-					<option>Contact 1</option>
-					<option>Contact 2</option>
-					<option>Contact 3</option>
 				</select>
-				{#<button type="button" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouveauContact)"><span class="tooltip">Créer contact</span></button>#}
 				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesContacts();"><span class="tooltip">Créer contact</span></button>
 			</div>
 			<div class="form__field form__field--double">
@@ -211,7 +206,7 @@
 		</fieldset>
 		<div class="main-content__btn">
 			<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
-			<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Créer</button>
+			<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer</button>
 		</div>
 	</section>
 	{{ form_rest(form) }}
@@ -485,6 +480,11 @@
 
 	$(document).ready(function() 
 	{
+
+		// On défini le type du formulaire à "bon" car nous somme sur le formulaire de création de bon
+		$('#bons_attachement_type').val('bon');
+
+
 		/* A SUPPRIMER
 		$('#bons_attachement_nomDuContact').prop('readonly', true);
 		$('#bons_attachement_emailContactClient').prop('readonly', true);
@@ -616,6 +616,15 @@
 						/* NOUVEAU */
 						$('#select_contact').html(html_option);	
 						/**********/
+            			
+						// On reselectionne le contact précédemment selectionné
+						{% if id_last_site is defined %}
+            				if($('#bons_attachement_nomDuContact').val() != '')
+            				{
+                				$('#select_contact option:contains("' + $('#bons_attachement_nomDuContact').val() + '")').prop('selected', true);
+            				}
+						{% endif %}
+
 
 						if ($tab_siteBA[6]) {
 							$.each($tab_siteBA[6], function(index, value) {
@@ -672,8 +681,6 @@
             $('#bons_attachement_telephoneContactClient').val(save_tel_contact);
             $('#bons_attachement_emailContactClient').val(save_mail_contact);
         {% endif %}
-
-		//$('#bons_attachement_site').trigger('change');
 	});
 
 	// Fonction qui ajoute un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
@@ -897,7 +904,6 @@
 				$('#bons_attachement_site').trigger('change');
 				$refreshContact = setInterval(function() 
 				{
-					console.log('test');
 					if (changeEnCours == false)
 					{
 						afficheContact($index);
@@ -975,7 +981,7 @@
 
 	function gestionDesContacts() 
 	{
-		// Si la selection du select contact est vide : Création d'un nouveau contact pour le site selectionné
+		// Si la selection du select contact est vide : Création d'un nouveau contact pour le site selectionné lors du clic sur +
 		if ($('#select_contact option:selected').val() === '')
 		{
 			ajoutNouveauContact();
@@ -1050,10 +1056,38 @@
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('error');
-            },
-            complete: function() { console.log('complete');}
+            }
         });
     });
+
+	function checkValidationBeforeSend()
+	{
+		var send = true;
+		// On vérifie qu'un intervenant est selectionné
+		if ($('#bons_attachement_user option:selected').val() === '')
+		{ 
+			$('#bons_attachement_user').css('border', '2px solid red');	
+			send = false;
+		} 
+		if ($('#select_contact option:selected').val() === '')
+		{
+			$('#select_contact').css('border', '2px solid red');
+			send = false;
+		}
+
+		if (($('#bons_attachement_emailContactClient').val() === '') && ($('#bons_attachement_telephoneContactClient').val() === ''))
+		{
+			$('#bons_attachement_emailContactClient').css('border', '2px solid red');
+			$('#bons_attachement_telephoneContactClient').css('border', '2px solid red');
+            send = false;
+		}
+
+		if (send)
+		{
+			attente(); 
+			document.forms['myForm'].submit(); 
+		}
+	}
 </script>
 
 
