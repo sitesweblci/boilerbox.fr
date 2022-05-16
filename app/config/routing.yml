@@ -247,6 +247,9 @@ lci_ajax_bon_contact_modif:
 lci_ajax_archivage_fichier_siteBA:
     path: /lci/bons/ajax/archivage/fichier/siteBA
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archivageFichierSiteBA }
+lci_ajax_bons_del_file:
+    path: /lci/bons/ajax/del/file
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileAction }
 
 lci_bons_admin_site_index:
     path: /lci/bons/admin/site/index

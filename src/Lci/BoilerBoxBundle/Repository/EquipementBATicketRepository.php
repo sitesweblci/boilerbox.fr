@@ -5,6 +5,7 @@ namespace Lci\BoilerBoxBundle\Repository;
 use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * @method EquipementBATicket|null find($id, $lockMode = null, $lockVersion = null)

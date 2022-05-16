@@ -73,6 +73,9 @@ class BonsController extends Controller
         $em = $this->getDoctrine()->getManager();
         $max_upload_size = ini_get('upload_max_filesize');
 
+		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
+		$echec_creation_equipement = false;
+
         $apiKey = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
 
         $es_sitesBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
@@ -100,6 +103,9 @@ class BonsController extends Controller
         ));
 
 
+		// Recherche de l'ensemble des équipements
+		$es_equipements = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findAll();		
+
         // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
         if ($request->getMethod() == 'POST') 
 		{
@@ -110,7 +116,20 @@ class BonsController extends Controller
                 // On persist l'entité "Bon d'attachement" et par cascade l'entité" "Fichier"
                 // On enregistre le tout en base
                 try {
-                    // Sauvegarde du site
+                    // Sauvegarde du bon
+					// Gestion des équipements
+                	foreach($_POST as $key => $variable_post)
+                	{
+                	    $pattern_equipement = '/equipement_/';
+                	    if (preg_match($pattern_equipement, $key))
+                	    {
+                	        // ICI Récupérer l'equipement, l'affecter au bon et au site du bon
+                	        $e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                	        $e_equipement->setSiteBA($e_bons_attachement->getSite());
+							$e_bons_attachement->addEquipementBATicket($e_equipement);
+                	    }
+                	}
+
                     $em->persist($e_bons_attachement);
                     $em->flush();
                     // Envoi d'un mail à l'intervenant
@@ -152,18 +171,22 @@ class BonsController extends Controller
                     if (preg_match($pattern_error_files, $e->getMessage())) {
                         $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . " non enregistré. Vous n'avez pas sélectionné de fichier.");
                         return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                            'form' 				=> $f_bons_attachement->createView(),
-                            'form_site' 		=> $f_site->createView(),
-                            'max_upload_size' 	=> $max_upload_size,
-                            'ents_sitesBA' 		=> $es_sitesBA,
-                            'apiKey' 			=> $apiKey
+                            'form' 						=> $f_bons_attachement->createView(),
+							'form_equipement'   		=> $f_equipement->createView(),
+                            'form_site' 				=> $f_site->createView(),
+                            'max_upload_size' 			=> $max_upload_size,
+                            //'ents_sitesBA' 			=> $es_sitesBA,
+                            'apiKey' 					=> $apiKey,
+                			'es_equipements'    		=> $es_equipements,
+							'echec_creation_equipement' => $echec_creation_equipement
                         ));
                     } else {
                         throw new \Exception();
                     }
                 }
+
                 // On renvoye à la page d'ajout d'un nouveau bon d'attachement avec envoi du message de confirmation d'enregsitrement du bon
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . ' enregistré.');
+                $request->getSession()->getFlashBag()->add('info', 'Bon enregistré.');
 
                 // Création d'un nouveau formulaire de création de bon d'attachement
                 $e_bons_attachement = new BonsAttachement();
@@ -171,11 +194,14 @@ class BonsController extends Controller
                 $f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
 
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' 				=> $f_bons_attachement->createView(),
-                    'form_site' 		=> $f_site->createView(),
-                    'max_upload_size' 	=> $max_upload_size,
-                    'ents_sitesBA' 		=> $es_sitesBA,
-                    'apiKey' 			=> $apiKey
+                    'form' 						=> $f_bons_attachement->createView(),
+					'form_equipement'   		=> $f_equipement->createView(),
+                    'form_site' 				=> $f_site->createView(),
+                    'max_upload_size' 			=> $max_upload_size,
+                    //'ents_sitesBA' 			=> $es_sitesBA,
+                    'apiKey' 					=> $apiKey,
+                	'es_equipements'    		=> $es_equipements,
+                    'echec_creation_equipement' => $echec_creation_equipement
                 ));
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé
@@ -200,6 +226,23 @@ class BonsController extends Controller
 						}
 					}
                 } else {
+		            // Si le formulaire de création d'équipement est soumis
+		            $f_equipement->handleRequest($request);
+		            if ($f_equipement->isSubmitted())
+		            {
+		                if ($f_equipement->isValid())
+		                {
+		                    $em->persist($e_equipement);
+		                    $em->flush();
+		                } else {
+							//	$request->getSession()->getFlashBag()->add('info', "Echec de création de l'équipement");
+							$echec_creation_equipement = true;
+						}
+		            } else {
+
+
+
+
                     // Le formulaire de nouveau site ou de modification de site est passé
                     // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
                     // Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
@@ -275,26 +318,36 @@ class BonsController extends Controller
                     } else {
                         $request->getSession()->getFlashBag()->add('info', $retourTest);
                     }
+
+
+
+
+					}
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' 				=> $f_bons_attachement->createView(),
-                    'form_site' 		=> $f_site->createView(),
-                    'max_upload_size' 	=> $max_upload_size,
-                    'ents_sitesBA' 		=> $es_sitesBA,
-                    'apiKey' 			=> $apiKey,
-                    'id_last_site' 		=> $id_last_site
+                    'form' 						=> $f_bons_attachement->createView(),
+					'form_equipement'   		=> $f_equipement->createView(),
+                    'form_site' 				=> $f_site->createView(),
+                    'max_upload_size' 			=> $max_upload_size,
+                    //'ents_sitesBA' 			=> $es_sitesBA,
+                    'apiKey' 					=> $apiKey,
+                    'id_last_site' 				=> $id_last_site,
+                	'es_equipements'    		=> $es_equipements,
+                    'echec_creation_equipement' => $echec_creation_equipement
                 ));
             }
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                'form' 				=> $f_bons_attachement->createView(),
-				'form_equipement'   => $f_equipement->createView(),
-                'form_site' 		=> $f_site->createView(),
-                'max_upload_size' 	=> $max_upload_size,
-                'ents_sitesBA' 		=> $es_sitesBA,
-                'apiKey' 			=> $apiKey
+                'form' 						=> $f_bons_attachement->createView(),
+				'form_equipement'   		=> $f_equipement->createView(),
+                'form_site' 				=> $f_site->createView(),
+                'max_upload_size' 			=> $max_upload_size,
+                //'ents_sitesBA' 			=> $es_sitesBA,
+                'apiKey' 					=> $apiKey,
+				'es_equipements'			=> $es_equipements,
+				'echec_creation_equipement' => $echec_creation_equipement
             ));
         }
     }

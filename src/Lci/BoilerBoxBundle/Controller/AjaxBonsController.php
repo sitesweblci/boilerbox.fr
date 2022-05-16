@@ -137,23 +137,26 @@ class AjaxBonsController extends Controller
 	// Recherches des informations du site selectionné dans le formulaire de création d'un BA
     public function getSiteBAEntityAction()
     {
-        $tab_fichier = null;
-		$tab_id_fichier = null;
+        $tab_fichier 		= null;
+		$tab_id_fichier 	= null;
+		$tab_equipement 	= null;
+		$tab_id_equipement 	= null;
+
         if (isset($_POST['id_site_ba'])) {
             $id_site_ba = $_POST['id_site_ba'];
         } else {
             $id_site_ba = 1;
         }
         $em = $this->getDoctrine()->getManager();
-        $entity_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
+        $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
 
-        $tab_siteba[] = $entity_siteba->getId();
-        $tab_siteba[] = $entity_siteba->getIntitule();
-        $tab_siteba[] = $entity_siteba->getAdresse();
-        $tab_siteba[] = $this->putZoomApi($this->putApiKey($this->transformeUrlReverse($entity_siteba->getLienGoogle())));
-        $tab_siteba[] = $entity_siteba->getInformationsClient();
+        $tab_siteba[] = $e_siteba->getId();
+        $tab_siteba[] = $e_siteba->getIntitule();
+        $tab_siteba[] = $e_siteba->getAdresse();
+        $tab_siteba[] = $this->putZoomApi($this->putApiKey($this->transformeUrlReverse($e_siteba->getLienGoogle())));
+        $tab_siteba[] = $e_siteba->getInformationsClient();
         $tab_contacts = array();
-        foreach ($entity_siteba->getContacts() as $ent_contact) {
+        foreach ($e_siteba->getContacts() as $ent_contact) {
             $tab_contact = array();
             $tab_contact['id'] = $ent_contact->getId();
             $tab_contact['nom'] = $ent_contact->getNom();
@@ -165,16 +168,14 @@ class AjaxBonsController extends Controller
             $tab_contacts[] = $tab_contact;
         }
         $tab_siteba[] = $tab_contacts;
+
 		// Recherche des noms des fichiers liés au site
-        foreach ($entity_siteba->getFichiersJoint() as $ent_fichier) {
-            $tab_fichier[] = $ent_fichier->getAlt();
+        foreach ($e_siteba->getFichiersJoint() as $e_fichier) {
+            $tab_fichier[] 		= $e_fichier->getAlt();
+			$tab_id_fichier[] 	= $e_fichier->getId();
         }
 		
 		if ($tab_fichier != null) {
-			// Création du tableau des id des fichiers liés au site pour leur suppression ou affichage
-			foreach ($entity_siteba->getFichiersJoint() as $ent_fichier) {
-        	    $tab_id_fichier[] = $ent_fichier->getId();
-        	}
 			$tab_siteba[] = $tab_fichier;
 			$tab_siteba[] = $tab_id_fichier;
         } else {
@@ -182,6 +183,19 @@ class AjaxBonsController extends Controller
 			$tab_siteba[] = null;
         }
 
+
+		// Recherche des équipements
+		foreach ($e_siteba->getEquipementBATickets() as $e_equipement) {
+            $tab_equipement[] 		= $e_equipement->getDenomination();
+			$tab_id_equipement[] 	= $e_equipement->getId();
+        }
+		if ($tab_equipement != null) {
+			$tab_siteba[] = $tab_equipement;
+			$tab_siteba[] = $tab_id_equipement;
+		} else {
+			$tab_siteba[] = null;
+            $tab_siteba[] = null;
+		}
 
         echo json_encode($tab_siteba);
         return new Response;
@@ -336,4 +350,12 @@ class AjaxBonsController extends Controller
         }
         return new Response(json_encode($tab_des_membres_du_service));
     }
+
+
+	// Fonction qui supprime un fichier d'un bon (appelé sur la page de saisie des bons
+	public function delFileAction(Request $request)
+	{
+		echo "suppression de ".$_POST('id_file');
+		return new Response();
+	}
 }

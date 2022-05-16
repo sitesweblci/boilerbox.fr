@@ -199,6 +199,15 @@ class BonsAttachementType extends AbstractType {
                 'placeholder'   => "Type du formulaire (bon ou ticket)",
 				'class'			=> 'cacher'
             )
+        ))
+        ->add('equipementBATicket', CollectionType::class, array(
+            'entry_type'    => EquipementBATicketType::class,
+            'entry_options' => array('data_class' => 'Lci\BoilerBoxBundle\Entity\EquipementBATicket'),
+            'label'         => 'Equipements',
+            'label_attr'    => array ('class' => 'label_smalltext'),
+            'allow_add'     => true,
+            'allow_delete'  => true,
+            'required'      => true
         ));
 	}
 

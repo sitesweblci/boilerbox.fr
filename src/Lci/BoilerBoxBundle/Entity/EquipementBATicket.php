@@ -3,11 +3,18 @@
 namespace Lci\BoilerBoxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="equipementBA")
  * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Repository\EquipementBATicketRepository")
+ * @UniqueEntity(
+ *    fields={"numeroDeSerie", "denomination"},
+ *    errorPath="numeroDeSerie",
+ *    message="Cet équipement existe déjà"
+ * )
  */
 class EquipementBATicket
 {
@@ -29,7 +36,7 @@ class EquipementBATicket
     private $denomination;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $autreDenomination;
 
@@ -39,9 +46,15 @@ class EquipementBATicket
     private $anneeDeConstruction;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteBA", inversedBy="equipementBATickets")
+     * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteBA", cascade={"persist"}, inversedBy="equipementBATickets")
+     * @ORM\JoinColumn(name="siteBA_id", referencedColumnName="id", nullable=false)
      */
     private $siteBA;
+
+	/**
+     * @ORM\ManyToMany(targetEntity="Lci\BoilerBoxBundle\Entity\BonsAttachement", mappedBy="equipementBATicket")
+     */
+    private $bonsAttachement;
 
     public function getId(): ?int
     {
@@ -106,5 +119,48 @@ class EquipementBATicket
         $this->siteBA = $siteBA;
 
         return $this;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->bonsAttachement = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add bonsAttachement.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\BonsAttachement $bonsAttachement
+     *
+     * @return EquipementBATicket
+     */
+    public function addBonsAttachement(\Lci\BoilerBoxBundle\Entity\BonsAttachement $bonsAttachement)
+    {
+        $this->bonsAttachement[] = $bonsAttachement;
+
+        return $this;
+    }
+
+    /**
+     * Remove bonsAttachement.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\BonsAttachement $bonsAttachement
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeBonsAttachement(\Lci\BoilerBoxBundle\Entity\BonsAttachement $bonsAttachement)
+    {
+        return $this->bonsAttachement->removeElement($bonsAttachement);
+    }
+
+    /**
+     * Get bonsAttachement.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBonsAttachement()
+    {
+        return $this->bonsAttachement;
     }
 }

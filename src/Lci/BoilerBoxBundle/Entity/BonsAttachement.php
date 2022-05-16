@@ -65,6 +65,16 @@ class BonsAttachement {
     protected $userInitiateur;
 
 
+	/**
+     * Plusieurs bons d'attachements peuvent avoir plusieurs équipements 
+     *
+     * @ORM\ManyToMany(targetEntity="EquipementBATicket", cascade={"persist"}, inversedBy="bonsAttachement")
+     * @ORM\OrderBy({"denomination" = "ASC"})
+    */
+    protected $equipementBATicket;
+
+
+
     /**
      * @var date
      *
@@ -830,4 +840,41 @@ class BonsAttachement {
         return $this->type;
     }
 
+
+    /**
+     * Add equipementBATicket.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket
+     *
+     * @return BonsAttachement
+     */
+    public function addEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
+    {
+        $this->equipementBATicket[] = $equipementBATicket;
+		$equipementBATicket->addBonsAttachement($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove equipementBaTicket.
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
+    {
+        return $this->equipementBATicket->removeElement($equipementBATicket);
+    }
+
+    /**
+     * Get equipementBATicket.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEquipementBATicket()
+    {
+        return $this->equipementBATicket;
+    }
 }

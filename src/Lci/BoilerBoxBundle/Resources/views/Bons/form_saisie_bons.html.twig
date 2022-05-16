@@ -63,11 +63,11 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 
+{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
+{{ form_errors(form) }}
 <main id="grid-ba-2" class="main-content grid">
 	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
 	<section class="grid__two">
-	{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
-	{{ form_errors(form) }}
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Informations</h2>
 		<div class="form__field rel">
@@ -76,6 +76,14 @@
 			{{ form_errors(form.site) }}
 			<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
 		</div>
+        <div class="form__field form__field--double">
+			<div>
+            	{{ form_label(form.numeroAffaire) }}
+            	{{ form_widget(form.numeroAffaire) }}
+            	{{ form_errors(form.numeroAffaire) }}
+			</div>
+        </div>
+		{# Gestion du nom du contact en javascript car on le gère depuis le select html #}
         <div class="form__field cacher">
             {{ form_errors(form.nomDuContact) }}
             {{ form_label(form.nomDuContact) }}
@@ -167,9 +175,38 @@
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field rel">
 				<span id="add-equipBon">Ajouter équipement</span>
-				<button type="button" id="equipBon" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouvelEquipement)"><span class="tooltip">Ajouter équipement</span></button>
+
+                <div style='border:2px solid gray; overflow:auto;' >
+					<div style='height:30px; border:1px solid black;'>Sélectionner des équipements</div>
+					<div id="liste_des_equipements_selectionnes" style='border-bottom: 1px dashed black;'>
+						<h3>Equipements sélectionnés</h3>
+					</div>
+					<div id="liste_des_equipements">	
+						<h3>Liste des équipements</h3>
+                		{% for e_equipement in es_equipements %}
+							<div id='div_equipement_{{ e_equipement.id }}'>
+                		    	<span><input	type='checkbox' 
+												id='equipement_{{ e_equipement.id }}' 
+												name='equipement_{{ e_equipement.id }}' 
+												value='{{ e_equipement.id }}' 
+												style='display:inline-block; width:50px; border:2px solid gray;'
+												onClick="ajoutEquipement('div_equipement_{{ e_equipement.id }}', 'equipement_{{ e_equipement.id }}')"
+										/>
+								</span>
+                		    	<label style='display: inline-block;' for='equipement_{{ e_equipement.id }}'>
+									<span style='display: inline-block; width:100px;'>{{ e_equipement.numeroDeSerie }}</span>
+									<span> {{ e_equipement.denomination }}</span>
+								</label>
+							</div>
+                		{% endfor %}
+                	</div>
+				</div>
+
+
+				<button type="button" id="btn_ajout_equipement2" class="" onclick="gestionDesEquipements2();"><span class="tooltip">Créer un équipement</span></button>
+				<button type="button" id="btn_ajout_equipement" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements();"><span class="tooltip">Créer un équipement</span></button>
 			</div>
-			<div class="add-list">
+			<div id='equipements_deja_joints2' class="add-list">
 				<div class="add-list__added">
 					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
 					<span class="designation2">Blablabla bla</span>
@@ -196,9 +233,7 @@
 			<h2 class="fieldset__title">Fichier(s)</h2>
 			<div class="form__field rel">
 				<span id="add-fichierBon">Ajouter fichier PDF (2Mo max)</span>
-				{#<input type="file" multiple="multiple" name="fichierBon" id="fichierBon"  onclick="ajoutNouveauFichier()" class=" btn btn--main add"/>#}
 				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter un fichier</span></button>
-				{#<label for="fichierBon" class="btn btn--main add"></label>#}
 			</div>
 			<div id='fichiers_deja_joints2' class="add-list">
 				<div class="add-list__added">Test<div class="close-cross"></div></div>
@@ -210,9 +245,107 @@
 			<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer</button>
 		</div>
 	</section>
-	{{ form_rest(form) }}
-	{{ form_end(form) }}
 </main>
+<!-- popup Equipement -->
+<section id="popupEquipement" class="popup cacher">
+	<div class="popup__wrapper" style="width:500px;">
+		<header class="popup__header">
+        	<h1 id='titre_nouvel_equipement' class="popup__title">Nouvel Equipement</h1>
+        	<div class="close-cross" onclick="retourPopupEquipement();"></div>
+        </header>
+        
+		<div class="popup__content">
+        	<div id="ajout_equipement" class='ajout_equipement'>
+        		<div class='ligne_error'></div>
+        		<div class='form__field'>
+        			<label class="flex flex--row" style="display:flex!important;">{{ form_label(form.equipementBATicket) }}</label>
+        			<div id='equipements_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'>
+						Equipements Existants
+					</div>
+        			<span id='lien_ajout_equipement'></span>
+        		</div>
+        		<div class='form__field'>
+        			<div id='champ_ajout_fichiers_siteBA'>
+        				{{ form_widget(form.equipementBATicket) }}
+        				{{ form_errors(form.equipementBATicket) }}
+        			</div>
+        		</div>
+        	</div>
+        	<div class='main-box__btn notToBePrinted'>
+        		<button class="btn btn--second" onclick="retourPopupEquipement();">Retour</button>
+        		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Valider</button>
+        	</div>
+		</div>
+	</div>
+</section>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+
+
+{{ form_start(form_equipement, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'formEquipement' }) }}
+{{ form_errors(form_equipement) }}
+<!-- popup Equipement 2 -->
+<section id="popupEquipement2" class="popup cacher">
+    <div class="popup__wrapper" style="width:500px;">
+        <header class="popup__header">
+            <h1 id='titre_nouvel_equipement2' class="popup__title">Nouvel Equipement</h1>
+            <div class="close-cross" onclick="retourPopupEquipement2();"></div>
+        </header>
+
+        <div class="popup__content">
+            <div id="ajout_equipement2" class='ajout_equipement'>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+		            <div>
+		                {{ form_label(form_equipement.numeroDeSerie) }}
+		                {{ form_widget(form_equipement.numeroDeSerie) }}
+		                {{ form_errors(form_equipement.numeroDeSerie) }}
+            		</div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_equipement.denomination) }}
+                        {{ form_widget(form_equipement.denomination) }}
+                        {{ form_errors(form_equipement.denomination) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_equipement.autreDenomination) }}
+                        {{ form_widget(form_equipement.autreDenomination) }}
+                        {{ form_errors(form_equipement.autreDenomination) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_equipement.anneeDeConstruction) }}
+                        {{ form_widget(form_equipement.anneeDeConstruction) }}
+                        {{ form_errors(form_equipement.anneeDeConstruction) }}
+                    </div>
+                </div>
+                <div class='form__field' id='site_equipement'>
+                    <div>
+                        {{ form_label(form_equipement.siteBA) }}
+                        {{ form_widget(form_equipement.siteBA) }}
+                        {{ form_errors(form_equipement.siteBA) }}
+                    </div>
+                </div>
+            </div>
+            <div class='main-box__btn notToBePrinted'>
+                <button class="btn btn--second" onclick="retourPopupEquipement2();">Retour</button>
+                <button class="btn_menu btn btn--main" onClick="attente(); document.forms['formEquipement'].submit(); return false;">Valider</button>
+            </div>
+        </div>
+    </div>
+</section>
+{{ form_end(form_equipement) }}
+
+
+
 
 <!-- popup Site -->
 <section id="bonsSite" class="popup cacher">
@@ -251,7 +384,7 @@
 						{{ form_errors(form_site.contacts) }}
 					</div>
 				</fieldset>
-	            <div id="ajout_contact" class='form__field'>
+	            <div id="ajout_contact" class='form__field' style='border:2px solid red'>
 	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
 	            	<div class='nouveau_probleme_ligne form__field'>
 	            		<div>
@@ -266,6 +399,7 @@
 	            			{{ form_widget(form_site.fichiersJoint) }}
 	            		</div>
 	            	</div>
+
 	            	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
 	            		<div class='ligne_error'></div>
 	            		<div class='form__field'>
@@ -295,6 +429,7 @@
 		</div>
 	</div>
 </section>
+
 
 <!-- popup Nouveau Contact -->
 <section id="bonsNouveauContact" class="popup cacher">
@@ -328,18 +463,6 @@
                 <button onClick="attente(); modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
                 <button onClick="attente(); supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
             </div>
-		</div>
-	</div>
-</section>
-
-<!-- popup Nouvel équipement -->
-<section id="bonsNouvelEquipement" class="popup cacher">
-	<div class="popup__wrapper">
-		<header class="popup__header">
-			<h1 class="popup__title">Nouvel Équipement</h1>
-			<div class="close-cross" onclick="togglePopUp(bonsNouvelEquipement)"></div>
-		</header>
-		<div class="popup__content">
 		</div>
 	</div>
 </section>
@@ -481,7 +604,6 @@
 
 	$(document).ready(function() 
 	{
-
 		// On défini le type du formulaire à "bon" car nous somme sur le formulaire de création de bon
 		$('#bons_attachement_type').val('bon');
 
@@ -507,6 +629,64 @@
         });
 
 		setDatePicker();
+		
+		/* ************************************************************************************************** 	*/ 
+
+		/*										Gestion des Equipements 										*/
+
+        /* **************************************************************************************************   */
+		// Déclaration du compteur d'équipement (Définit à 1 et incrémenté après chaque ajout d'équipement)
+		$indexEquipement = 1;
+
+		// Récupération du container des équipements
+		$container_equipement = $('#bons_attachement_equipementBATicket');
+
+		// Création d'un lien pour l'ajout d'équipement
+		$addLinkEquipement = $('<a href="#" id="add_equipement" class="small_link">Ajouter un équipement</a>');
+
+		// Ajout d'un lien dans l'onglet des équipements
+		$("#lien_ajout_equipement").html($addLinkEquipement);
+
+		// Création du Listener de création d'équipement
+		$addLinkEquipement.click(function(e) {
+			$('#popupEquipement').removeClass('cacher');
+			ajoutChampEquipement();
+			e.preventDefault();	
+		});
+
+    	// Fonction d'ajout d'un champs 'Equipement'
+    	function ajoutChampEquipement()
+    	{
+    	    // L'identifiant du nouveau champ sera : site_ba_contacts_$indexContactSiteBA_date_maj
+			// On récupère le container du formulaire des équipements et on lui modifie ses variables __name__ et __name__label
+			// __name__label remplacé par ""
+			// __name__ remplacé par le compteur des équipements
+    	    var $f_equipementPrototype = $($('#bons_attachement_equipementBATicket').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexEquipement));
+	
+        	// Création d'un lien de suppression d'équipement
+        	$deleteLinkEquipement = $('<a href="#" class="mini_link">Supprimer</a>');
+			// Ajout du lien en fin de formulaire
+	        $f_equipementPrototype.append($deleteLinkEquipement);
+        	// Création d'un listener de suppression d'équipement sur click du nouveau lien de suppression
+        	$deleteLinkEquipement.click(function(e)
+        	{
+        	    $f_equipementPrototype.remove();
+        	    e.preventDefault();
+        	    return false;
+        	});
+
+        	// Ajout du prototype de formulaire d'équipement sur la page HTML
+        	$container_equipement.prepend($f_equipementPrototype);
+
+        	// Incrémentation du compteur d'équipement pour l'éventuel prochain équipement
+        	$indexEquipement ++;
+
+			// On relance la fonction d'ajout du date picker pour le nouveau formulaire
+			setDatePicker();
+    	}
+		/*												*****												*/
+
+
 		
 
 		/* Récupération du container contenant l'attribut data-prototype */
@@ -579,6 +759,9 @@
 				$('#titre_nouveau_siteBA').text('Modification du site');
 				$('#fichiers_deja_joints').html('');
 				$('#fichiers_deja_joints2').html('');
+				$('#equipements_deja_joints').html('');
+                $('#equipements_deja_joints2').html('');
+
 
 				$('#contacts_deja_associes').html('');
             	var $id_site_ba = this.value;
@@ -631,6 +814,15 @@
 								$('#fichiers_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross' onClick='supprimeFile(" + $tab_siteBA[7][index] + ");'></div></div>");
 							});
 						}
+		
+						// Ajout des équipement précédemment joints au site
+						if ($tab_siteBA[8]) {
+                            $.each($tab_siteBA[8], function(index, value) {
+                                $('#equipements_deja_joints').append(value + '<br />');
+                                $('#equipements_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross' onClick='supprimeEquipement(" + $tab_siteBA[9][index] + ");'></div></div>");
+                            });
+                        }
+
 						$('#site_ba_lienGoogle').trigger('change');
 						/* Placement du marqueur sur la page */
 						ajoutMarqueur($('#site_ba_lienGoogle').val());
@@ -679,7 +871,83 @@
             $('#bons_attachement_telephoneContactClient').val(save_tel_contact);
             $('#bons_attachement_emailContactClient').val(save_mail_contact);
         {% endif %}
+
+
+        // Si la création d'un équipement est en erreur : affichage du formulaire
+        {% if echec_creation_equipement == true %}
+            $('#btn_ajout_equipement2').trigger('click');
+        {% endif %}
+
 	});
+
+    /* **************************************************************************************************   */
+
+    /*                                      Fonctions Gestion des Equipements                               */
+
+    /* **************************************************************************************************   */
+
+    // Click sur le bouton RETOUR de la popup nouvel équipement
+	function gestionDesEquipements() 
+	{
+        // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
+        if ($('#bons_attachement_site option:selected').val() === '')
+        {
+            $('#bons_attachement_site').css('border', '2px solid red');
+        } else {
+			$('#add_equipement').trigger('click');
+		}
+	}
+    function retourPopupEquipement()
+    {
+        togglePopUp(popupEquipement);
+		// Simulation click sur le premier lien supprimer pour l'équipement en cours de création
+        $('#popupEquipement a.mini_link').trigger('click');
+    }
+
+
+
+    // Click sur le bouton RETOUR de la popup nouvel équipement
+    function gestionDesEquipements2()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
+        if ($('#bons_attachement_site option:selected').val() != '')
+		{
+            // Si la selection du select de site n'est pas vide on affiche le formulaire et on cache l'encart site en lui définissant le même site que celui selectionné
+            $("#site_equipement option[value='" + $('#bons_attachement_site option:selected').val() + "']").prop('selected', true);
+            $("#site_equipement").addClass('cacher');
+        } 
+		togglePopUp(popupEquipement2);
+    }
+    function retourPopupEquipement2()
+    {
+        togglePopUp(popupEquipement2);
+    }
+
+	function ajoutEquipement(id_div, id_checkbox)
+	{
+		var div_tmp = $("#" + id_div);
+
+		if ($('#' + id_checkbox).is(':checked'))
+		{
+			// Selection d'un équipement
+
+        	// On retire l'element du div principal
+        	div_tmp.remove();
+
+        	// On ajoute l'élément au div de selection
+        	$('#liste_des_equipements_selectionnes').append(div_tmp);
+		} else {
+			// Dé selection d'un équipement
+
+			// On retire l'element du div de selection
+            div_tmp.remove();
+			
+			// On ajoute l'élément au div principal
+			$('#liste_des_equipements').append(div_tmp);
+		}
+	}
+    /*                                              *****                                               */
+
 
 	// Fonction qui ajoute un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
 	function ajoutChampFichier() {
@@ -1009,7 +1277,7 @@
         // Si la selection du select de site n'est pas vide
         if ($('#bons_attachement_site option:selected').val() === '')
         {
-			$('#bons_attachement_site').css('border', '2px solid yellow');
+			$('#bons_attachement_site').css('border', '2px solid red');
         } else {
 			ajoutNouveauFichier();
 		}
@@ -1118,7 +1386,19 @@
 	function supprimeFile(idFile)
 	{
 		console.log("demande de suppression du fichier d'id : " + idFile);
+		$.ajax({
+			url: "{{ path('lci_ajax_bons_del_file') }}",
+			data: {'id_file':idFile },
+			success: function(msg)
+			{
+				console.log('fichier supprimé - A Supprimer aussi du HTML : ' + msg);
+			},
+            error: function(status, msg, tri) {
+                alert('error ' + msg + tri);
+            }
+		});
 	}
+
 </script>
 
 
