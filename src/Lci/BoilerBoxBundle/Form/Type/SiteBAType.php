@@ -108,7 +108,11 @@ class SiteBAType extends AbstractType
                     ),
                     'required'      => false
                 ))
-				->add('reset', ResetType::class);
+				->add('reset', ResetType::class, array(
+					'attr'          => array(
+                        'class'         => 'cacher',
+                    ),
+				));
     }
 
     /*

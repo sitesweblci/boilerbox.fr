@@ -47,6 +47,9 @@
 	#container_new_contact input, #encart_fichiers_siteBA{
 		margin-bottom: 16px;
 	}
+	.erreur_formulaire {
+		border: 2px solid red !important;
+	}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -155,8 +158,9 @@
 			<div class="form__field rel">
 				<label>Nom</label>
 				<select id='select_contact'>
+					<option></option>
 				</select>
-				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesContacts();"><span class="tooltip">Créer contact</span></button>
+				<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts();"><span class="tooltip">Créer contact</span></button>
 			</div>
 			<div class="form__field form__field--double">
 				<div>
@@ -184,19 +188,21 @@
 					<div id="liste_des_equipements">	
 						<h3>Liste des équipements</h3>
                 		{% for e_equipement in es_equipements %}
+							<div id='parent_div_equipement_{{ e_equipement.id }}'>
 							<div id='div_equipement_{{ e_equipement.id }}'>
                 		    	<span><input	type='checkbox' 
 												id='equipement_{{ e_equipement.id }}' 
 												name='equipement_{{ e_equipement.id }}' 
 												value='{{ e_equipement.id }}' 
 												style='display:inline-block; width:50px; border:2px solid gray;'
-												onClick="ajoutEquipement('div_equipement_{{ e_equipement.id }}', 'equipement_{{ e_equipement.id }}')"
+												onClick="deplaceEquipement('{{ e_equipement.id }}')"
 										/>
 								</span>
                 		    	<label style='display: inline-block;' for='equipement_{{ e_equipement.id }}'>
 									<span style='display: inline-block; width:100px;'>{{ e_equipement.numeroDeSerie }}</span>
 									<span> {{ e_equipement.denomination }}</span>
 								</label>
+							</div>
 							</div>
                 		{% endfor %}
                 	</div>
@@ -384,7 +390,7 @@
 						{{ form_errors(form_site.contacts) }}
 					</div>
 				</fieldset>
-	            <div id="ajout_contact" class='form__field' style='border:2px solid red'>
+	            <div id="ajout_contact" class='form__field'>
 	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
 	            	<div class='nouveau_probleme_ligne form__field'>
 	            		<div>
@@ -435,7 +441,7 @@
 <section id="bonsNouveauContact" class="popup cacher">
 	<div class="popup__wrapper">
 		<header class="popup__header">
-			<h1 class="popup__title">Nouveau Contact</h1>
+			<h1 id='titre_nouveau_contact' class="popup__title">Nouveau Contact</h1>
 			<div class="close-cross" onclick="togglePopUp(bonsNouveauContact)"></div>
 		</header>
 		<div class="popup__content">
@@ -491,7 +497,7 @@
     });
 
 	var maCarte;
-	var changeEnCours;
+	var $changeEnCours;
 
     function initAutocomplete(){
 		var monMarqueur;
@@ -738,32 +744,48 @@
         });
 
 
+
+		// Gestion du select intervenant
+        $('#bons_attachement_user').change(function() 
+		{
+			if ($('#bons_attachement_user').val() !=  null)
+			{
+				$('#bons_attachement_user').removeClass('erreur_formulaire');
+			}
+        });
+
+		// Gestion du select site
 		/* Affichage des informations du site selectionné dans l'encart SiteBA */
 		$('#bons_attachement_site').change(function()
 		{
-			changeEnCours = true;
-			resetInfosContact();
-			/* On réinitialise les valeurs de la fiche client et du contact associé au bon */
-            $('#idContact').val('');
-            $('#nomContact').val('');
-            $('#prenomContact').val('');
-            $('#emailContact').val('');
-            $('#telephoneContact').val('');
-            $('#fonctionContact').val('');
-            $('#bons_attachement_nomDuContact').val('');
-            $('#bons_attachement_emailContactClient').val('');
-			$('#bons_attachement_telephoneContactClient').val('');
+			$changeEnCours = true;
 
+			// Réinitialisation des informations concernant les sites
+			$('#site_ba_reset').trigger('click');
+			resetInfosSite();
+
+			/* On réinitialise les valeurs de la fiche client et du contact associé au bon */
+			resetInfosContact();
+
+			/* On réinitalise le select contact */
+			$('#select_contact').html("<option></option>");
+
+			// Si un site est selectionné : Appel ajax pour obtenir les informations liées au site
+			// + Affichage du bouton de création/modification de contact
 			if ($('#bons_attachement_site').val() != '')
 			{
+				// On retire l'encart rouge indiquant qu'un site est necessaire pour l'envoi du formulaire
+				$('#bons_attachement_site').removeClass('erreur_formulaire');
+
+				$('#btn_contact').removeClass('cacher');
+
 				$('#titre_nouveau_siteBA').text('Modification du site');
 				$('#fichiers_deja_joints').html('');
 				$('#fichiers_deja_joints2').html('');
 				$('#equipements_deja_joints').html('');
                 $('#equipements_deja_joints2').html('');
-
-
 				$('#contacts_deja_associes').html('');
+
             	var $id_site_ba = this.value;
             	var $url = "{{ path('lci_ajax_bons_get_siteBA') }}";
             	$.ajax({
@@ -792,7 +814,7 @@
 							$html = $html + $tabContact['nom'] + '</p>';
                 	        $('#contacts_deja_associes').append($html);
 							/* NOUVEAU */
-							html_option += "<option value='" + $index + "' onClick=afficheContact('" + $index + "')>" + $tabContact['nom'] + "</option>";
+							html_option += "<option value='" + $index + "'>" + $tabContact['nom'] + "</option>";
 							/**********/
                 	    });
 						/* NOUVEAU */
@@ -826,7 +848,7 @@
 						$('#site_ba_lienGoogle').trigger('change');
 						/* Placement du marqueur sur la page */
 						ajoutMarqueur($('#site_ba_lienGoogle').val());
-						changeEnCours = false;
+						$changeEnCours = false;
                 	    return true;
                 	},
 					error: function(status, msg, tri) {
@@ -834,22 +856,24 @@
 					}
             	});
 			} else {
+				// Si aucun site n'est selectionné : On réinitialise les informations de la popup site
+				// + désactivation du bouton de création / modification de contact
 				$('#site_ba_reset').trigger('click');
+				$('#btn_contact').addClass('cacher');
 			}
         });
 		
 		/* Lors du clic sur reset on réautorise l'écriture du nom du site et on supprime la valeur de l'identifiant du site  pour éviter une mise à jour */
 		$('#site_ba_reset').click(function()
 		{
-			$('#site_ba_intitule').attr('readonly', false);
-			$('#site_ba_lienGoogle').attr('readonly', false);
-			$('#id_site_ba').val('');
-			$('#fichiers_deja_joints').html('');
-			$('#fichiers_deja_joints2').html('');
-			$('#contacts_deja_associes').html('');
-			$('#titre_nouveau_siteBA').text('Nouveau site');
+			/* On réinitialise les informations de la popup site
+			resetInfosSite();
 
-			resetInfosContact();
+            /* On réinitialise les valeurs de la fiche client et du contact associé au bon */
+            resetInfosContact();
+
+            /* On réinitalise le select contact */
+            $('#select_contact').html("<option></option>");
 		});
 
 		/* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
@@ -878,6 +902,59 @@
             $('#btn_ajout_equipement2').trigger('click');
         {% endif %}
 
+
+	    // Gestion du select contact
+	    $('#select_contact').change(function()
+	    {
+			console.log('change');
+			// Réinitialisation des informations liées au contact
+			resetInfosContact();
+
+	        // Gestion du texte du bouton d'ajout/modification du contact
+			// + Gestion du titre de la popup Contact
+	        if ($('#select_contact').val() === '')
+	        {
+	            $('#select_contact + button > span').text('Créer un contact');
+				$('#titre_nouveau_contact').text('Nouveau contact');
+	        } else {
+	            $('#select_contact + button > span').text('Modifier le contact');
+				$('#titre_nouveau_contact').text('Modifier le contact');
+	        }
+
+	        // Affichage des informations concernant le contact sélectionné
+        	var $index_tab_contact = $('#select_contact').val();
+			console.log('index');
+			console.log($index_tab_contact);
+        	if ($('#select_contact').val() != '')
+        	{
+				console.log('ici');
+        	    $('#idContact').val($tab_contact[$index_tab_contact]['id']);
+        	    $('#nomContact').val($tab_contact[$index_tab_contact]['nom']);
+        	    $('#prenomContact').val($tab_contact[$index_tab_contact]['prenom']);
+        	    $('#emailContact').val($tab_contact[$index_tab_contact]['email']);
+        	    $('#telephoneContact').val($tab_contact[$index_tab_contact]['telephone']);
+        	    $('#fonctionContact').val($tab_contact[$index_tab_contact]['fonction']);
+        	    $('#dateMajContact').val($tab_contact[$index_tab_contact]['maj']);
+        	    $('#bons_attachement_nomDuContact').val($tab_contact[$index_tab_contact]['nom']);
+        	    $('#bons_attachement_emailContactClient').val($tab_contact[$index_tab_contact]['email']);
+        	    $('#bons_attachement_telephoneContactClient').val($tab_contact[$index_tab_contact]['telephone']);
+        	} 
+
+			// On retire l'encart rouge qui indique que les champs sont necessaires pour l'envoi du formulaire
+			if ($('#select_contact').val() != '')
+            {
+				$('#select_contact').removeClass('erreur_formulaire');
+			}
+			if ($('#bons_attachement_emailContactClient').val() != '')
+            {
+        		$('#bons_attachement_emailContactClient').removeClass('erreur_formulaire');
+			}
+			if ($('#bons_attachement_telephoneContactClient').val() != '')
+            {
+        		$('#bons_attachement_telephoneContactClient').removeClass('erreur_formulaire');
+			}
+    	});
+
 	});
 
     /* **************************************************************************************************   */
@@ -890,7 +967,7 @@
 	function gestionDesEquipements() 
 	{
         // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
-        if ($('#bons_attachement_site option:selected').val() === '')
+        if ($('#bons_attachement_site').val() === '')
         {
             $('#bons_attachement_site').css('border', '2px solid red');
         } else {
@@ -910,10 +987,10 @@
     function gestionDesEquipements2()
     {
         // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
-        if ($('#bons_attachement_site option:selected').val() != '')
+        if ($('#bons_attachement_site').val() != '')
 		{
             // Si la selection du select de site n'est pas vide on affiche le formulaire et on cache l'encart site en lui définissant le même site que celui selectionné
-            $("#site_equipement option[value='" + $('#bons_attachement_site option:selected').val() + "']").prop('selected', true);
+            $("#site_equipement option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
             $("#site_equipement").addClass('cacher');
         } 
 		togglePopUp(popupEquipement2);
@@ -923,11 +1000,13 @@
         togglePopUp(popupEquipement2);
     }
 
-	function ajoutEquipement(id_div, id_checkbox)
+	function deplaceEquipement(id_checkbox)
 	{
+		var id_div = "div_equipement_" + id_checkbox;
+		console.log('id div : ' + id_div);
 		var div_tmp = $("#" + id_div);
 
-		if ($('#' + id_checkbox).is(':checked'))
+		if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
 		{
 			// Selection d'un équipement
 
@@ -942,8 +1021,8 @@
 			// On retire l'element du div de selection
             div_tmp.remove();
 			
-			// On ajoute l'élément au div principal
-			$('#liste_des_equipements').append(div_tmp);
+			// On ajoute l'élément au div principal dans son conteneur parent
+			$('#parent_' + id_div).append(div_tmp);
 		}
 	}
     /*                                              *****                                               */
@@ -1060,23 +1139,6 @@
     }
 
 
-	/* fonction qui affiche les informations du contact dans l'encart Fiche Contact */
-	function afficheContact($index_tab_contact) 
-	{
-		$('#idContact').val($tab_contact[$index_tab_contact]['id']);
-
-        $('#nomContact').val($tab_contact[$index_tab_contact]['nom']);
-        $('#prenomContact').val($tab_contact[$index_tab_contact]['prenom']);
-        $('#emailContact').val($tab_contact[$index_tab_contact]['email']);
-        $('#telephoneContact').val($tab_contact[$index_tab_contact]['telephone']);
-        $('#fonctionContact').val($tab_contact[$index_tab_contact]['fonction']);
-		$('#dateMajContact').val($tab_contact[$index_tab_contact]['maj']);
-		$('#bons_attachement_nomDuContact').val($tab_contact[$index_tab_contact]['nom']);
-		$('#bons_attachement_emailContactClient').val($tab_contact[$index_tab_contact]['email']);
-		$('#bons_attachement_telephoneContactClient').val($tab_contact[$index_tab_contact]['telephone']);	
-		$('#indexContact').val($index_tab_contact);
-	}
-
 
 	function ficheContactPourImpression($index_tab_contact)
 	{
@@ -1119,13 +1181,25 @@
         $('#bons_attachement_nomDuContact').val('');
         $('#bons_attachement_emailContactClient').val('');
 		$('#bons_attachement_telephoneContactClient').val('');
-		var $container = $($("#bloc_contact_pour_impression"));
-		var $html = '';
-		$container.html($html);
-		/* NOUVEAU */
-		$('#select_contact').html("<option></option>");
-		/****************/
+
+		$($("#bloc_contact_pour_impression")).html('');
 	}
+
+
+	function resetInfosSite()
+	{
+        $('#site_ba_intitule').attr('readonly', false);
+        $('#site_ba_lienGoogle').attr('readonly', false);
+        $('#id_site_ba').val('');
+        $('#fichiers_deja_joints').html('');
+        $('#fichiers_deja_joints2').html('');
+        $('#contacts_deja_associes').html('');
+        $('#titre_nouveau_siteBA').text('Nouveau site');
+
+		$('#equipements_deja_joints').html('');
+		$('#equipements_deja_joints2').html('');
+	}
+
 
 
 	function supprimerContact() 
@@ -1139,7 +1213,7 @@
             success: function(msg)
             {
 				/*
-				$id_site_selected = $('#bons_attachement_site option:selected').val();
+				$id_site_selected = $('#bons_attachement_site').val();
 				$('#bons_attachement_site option[value=""]').prop('selected', true);
 				$('#bons_attachement_site').trigger('change');
 				$('#bons_attachement_site option[value="' + $id_site_selected + '"]').prop('selected', true);
@@ -1152,32 +1226,42 @@
 
 	function modifierContact()
 	{
-		var $refreshContact;
-		$url_modif 			= "{{ path('lci_ajax_bon_contact_modif') }}";
-		$id_contact_modif 	= $('#idContact').val();
-		$nom 				= $('#nomContact').val();
-		$prenom 			= $('#prenomContact').val();
-        $email 				= $('#emailContact').val();
-		$tel 				= $('#telephoneContact').val();
-		$fonction 			= $('#fonctionContact').val();
-		$index 				= $('#indexContact').val();
-		$.ajax({
-			url: $url_modif,
-			method: "post",
-			data: {'id_contact_modif':$id_contact_modif, 'nomContact':$nom, 'prenomContact':$prenom, 'telephoneContact':$tel, 'emailContact':$email, 'fonctionContact':$fonction},
-			success: function(msg)
-			{
-				$('#bons_attachement_site').trigger('change');
-				$refreshContact = setInterval(function() 
+		if (checkValidationContactBeforeSend() === true)
+		{
+			// Fermeture de la popup contact 
+			togglePopUp(bonsNouveauContact);
+
+			var $refreshContact;
+			$url_modif 			= "{{ path('lci_ajax_bon_contact_modif') }}";
+			$id_contact_modif 	= $('#idContact').val();
+			$nom 				= $('#nomContact').val();
+			$prenom 			= $('#prenomContact').val();
+        	$email 				= $('#emailContact').val();
+			$tel 				= $('#telephoneContact').val();
+			$fonction 			= $('#fonctionContact').val();
+
+			// On sauvegarde la valeur de l'option du contact selectionné pour le reselectionner après modification
+			$opt_select_contact_val = $('#select_contact').val();
+			$.ajax({
+				url: $url_modif,
+				method: "post",
+				data: {'id_contact_modif':$id_contact_modif, 'nomContact':$nom, 'prenomContact':$prenom, 'telephoneContact':$tel, 'emailContact':$email, 'fonctionContact':$fonction},
+				success: function(msg)
 				{
-					if (changeEnCours == false)
+					// Après la modification d'un contact on réaffiche le site
+					$('#bons_attachement_site').trigger('change');
+					$refreshContact = setInterval(function() 
 					{
-						afficheContact($index);
-						clearInterval($refreshContact);
-					}
-				}, 2);
-			}
-		});	
+						if ($changeEnCours == false)
+						{
+							$('#select_contact').val($opt_select_contact_val);
+							$('#select_contact').trigger('change');
+							clearInterval($refreshContact);
+						}
+					}, 2);
+				}
+			});	
+		}
 	}
 
 	// Fonction d'ajout fichier
@@ -1245,37 +1329,43 @@
 		// $('.files-text').val(myJSON);
 	});
 
+
+	//  Fonction appelée sur le clic du bouton contact
+	// Affiche la popup de création ou de modification de contact 
 	function gestionDesContacts() 
 	{
+		// On retire les encart rouges qui indiquent les champs necessaire pour l'envoi du formulaire de contact
+		resetCheckContact();
+
 		// Si la selection du select contact est vide : Création d'un nouveau contact pour le site selectionné lors du clic sur +
-		if ($('#select_contact option:selected').val() === '')
+		if ($('#select_contact').val() === '')
 		{
-			ajoutNouveauContact();
+			// Ajout d'un nouveau contact : Affichage de la popup de site en cachant les informations qui ne sont pas liées aux contacts
+
+	        // On cache les informations liées à la modification d'un site
+	        $('#site_ba > fieldset').addClass('cacher');
+	        $('#ajout_fichier_siteBA_mobile_portrait').addClass('cacher');
+	        $('#titre_nouveau_siteBA').text('Nouveau(x) contact(s)');
+
+			// On cache les informations liées aux contacts déjà crééer pour ce site
+	        $('#contacts_deja_associes').addClass('cacher');
+
+	        // Ouverture de la popup site
+	        $('#bntBonsSite').trigger('click');
+
+	        // Activation du lien de création d'un nouveau contact 
+	        $('#add_contact').trigger('click');
 		} else { 
 			// Si un contact est selectionné : Ouverture de la popup de modification de contact
 			togglePopUp(bonsNouveauContact)
 		}
 	}
 
-	function ajoutNouveauContact() {
-		// On cache les informations liés à la modification d'un site
-        $('#site_ba > fieldset').addClass('cacher');
-        $('#ajout_fichier_siteBA_mobile_portrait').addClass('cacher');
-        $('#titre_nouveau_siteBA').text('Nouveau(x) contact(s)');
-		$('#contacts_deja_associes').addClass('cacher');
-
-		// Ouverture de la popup Modification du site
-		$('#bntBonsSite').trigger('click');
-
-		// Activation du lien vers nouveau contact
-		$('#add_contact').trigger('click');
-	}
-
 
     function gestionDesFichiers()
     {
         // Si la selection du select de site n'est pas vide
-        if ($('#bons_attachement_site option:selected').val() === '')
+        if ($('#bons_attachement_site').val() === '')
         {
 			$('#bons_attachement_site').css('border', '2px solid red');
         } else {
@@ -1309,7 +1399,7 @@
 		$('#contacts_deja_associes').removeClass('cacher');
 
 		//$('#titre_nouveau_siteBA').text('Nouveau Site');
-		if ($('#bons_attachement_site option:selected').val() === '')
+		if ($('#bons_attachement_site').val() === '')
 		{
 			$('#titre_nouveau_siteBA').text('Nouveau site');
 		} else {
@@ -1323,7 +1413,7 @@
     // Récupération des ids des membres du service
     // Cache les non membre du service du select html
     $('#bons_attachement_service').change(function() {
-        // Lors d'un changement de choix : On redéfini le select d'origin pour supprimer toutes les class cacher
+        // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
         $('#bons_attachement_user').html(sauvegarde_select_user);
 
         $.ajax("{{ path('lci_ajax_bons_select_service') }}",
@@ -1342,7 +1432,7 @@
                             $(this).addClass('cacher');
                         }
                     });
-                    // Selection de l'option (Choix de l'intervenant)
+                    // Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
                     $('#bons_attachement_user option[value=""]').prop('selected', true);
                 }
             },
@@ -1354,23 +1444,34 @@
 
 	function checkValidationBeforeSend()
 	{
+		console.log('check');
 		var send = true;
+
+		// On vérifie la selection d'un site
+		if ($('#bons_attachement_site').val() === '')
+		{
+			$('#bons_attachement_site').addClass('erreur_formulaire');
+		}
+
 		// On vérifie qu'un intervenant est selectionné
-		if ($('#bons_attachement_user option:selected').val() === '')
+		if ($('#bons_attachement_user').val() === '')
 		{ 
-			$('#bons_attachement_user').css('border', '2px solid red');	
+			$('#bons_attachement_user').addClass('erreur_formulaire');
 			send = false;
 		} 
-		if ($('#select_contact option:selected').val() === '')
+
+		// On vérifie la selection d'un contact
+		if ($('#select_contact').val() === '')
 		{
-			$('#select_contact').css('border', '2px solid red');
+			$('#select_contact').addClass('erreur_formulaire');
 			send = false;
 		}
 
+		// On vérifie que pour le contact selectionné, il y a soit un email soit un téléphone
 		if (($('#bons_attachement_emailContactClient').val() === '') && ($('#bons_attachement_telephoneContactClient').val() === ''))
 		{
-			$('#bons_attachement_emailContactClient').css('border', '2px solid red');
-			$('#bons_attachement_telephoneContactClient').css('border', '2px solid red');
+			$('#bons_attachement_emailContactClient').addClass('erreur_formulaire');
+			$('#bons_attachement_telephoneContactClient').addClass('erreur_formulaire');
             send = false;
 		}
 
@@ -1381,6 +1482,49 @@
 		}
 	}
 
+
+    function checkValidationContactBeforeSend()
+    {
+        var send = true;
+
+        if ($('#nomContact').val() === '')
+        {
+            $('#nomContact').addClass('erreur_formulaire');
+			send = false;
+        }
+        if ($('#prenomContact').val() === '')
+        {
+            $('#prenomContact').addClass('erreur_formulaire');
+            send = false;
+        }
+        if (($('#emailContact').val() === '') && ($('#telephoneContact').val() === ''))
+        {
+            $('#emailContact').addClass('erreur_formulaire');
+			$('#telephoneContact').addClass('erreur_formulaire');
+            send = false;
+        }
+		if ($('#fonctionContact').val() === '')
+        {
+            $('#fonctionContact').addClass('erreur_formulaire');
+            send = false;
+        }
+
+        if (send)
+        {
+			return true;
+        } else {
+			return false;
+		}
+    }
+
+	function resetCheckContact()
+	{
+		$('#nomContact').removeClass('erreur_formulaire');
+		$('#prenomContact').removeClass('erreur_formulaire');
+		$('#emailContact').removeClass('erreur_formulaire');
+		$('#telephoneContact').removeClass('erreur_formulaire');
+		$('#fonctionContact').removeClass('erreur_formulaire');
+	}
 
 
 	function supprimeFile(idFile)

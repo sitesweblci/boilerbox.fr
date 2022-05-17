@@ -290,9 +290,9 @@ class AjaxBonsController extends Controller
     public function modifierContactAction()
     {
         if (isset($_POST['id_contact_modif'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_contact = $_POST['id_contact_modif'];
-            $ent_contact = $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
+            $em 			= $this->getDoctrine()->getManager();
+            $id_contact 	= $_POST['id_contact_modif'];
+            $ent_contact 	= $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
             $ent_contact->setNom($_POST['nomContact']);
             $ent_contact->setPrenom($_POST['prenomContact']);
             $ent_contact->setTelephone($_POST['telephoneContact']);
@@ -300,6 +300,7 @@ class AjaxBonsController extends Controller
             $ent_contact->setFonction($_POST['fonctionContact']);
             $ent_contact->setDateMaj(new \Datetime());
             $em->flush();
+			echo 'Contact '.$_POST['nomContact'].' modifié';
             return new Response();
         }
     }
