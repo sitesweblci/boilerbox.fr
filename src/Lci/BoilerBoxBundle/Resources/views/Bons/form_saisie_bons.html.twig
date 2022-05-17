@@ -906,7 +906,6 @@
 	    // Gestion du select contact
 	    $('#select_contact').change(function()
 	    {
-			console.log('change');
 			// Réinitialisation des informations liées au contact
 			resetInfosContact();
 
@@ -923,11 +922,8 @@
 
 	        // Affichage des informations concernant le contact sélectionné
         	var $index_tab_contact = $('#select_contact').val();
-			console.log('index');
-			console.log($index_tab_contact);
         	if ($('#select_contact').val() != '')
         	{
-				console.log('ici');
         	    $('#idContact').val($tab_contact[$index_tab_contact]['id']);
         	    $('#nomContact').val($tab_contact[$index_tab_contact]['nom']);
         	    $('#prenomContact').val($tab_contact[$index_tab_contact]['prenom']);
@@ -1003,7 +999,6 @@
 	function deplaceEquipement(id_checkbox)
 	{
 		var id_div = "div_equipement_" + id_checkbox;
-		console.log('id div : ' + id_div);
 		var div_tmp = $("#" + id_div);
 
 		if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
@@ -1043,9 +1038,7 @@
 		});
 
 		// Ajout du prototype a la fin du container
-		//console.log($nouveauPrototype.html());
 		$container.prepend($nouveauPrototype);
-		//console.log($container.html());
 		// Incrémentation de l'index des fichiers
 		$indexFichier ++;
 	}
@@ -1067,10 +1060,8 @@
             return false;
         });
 
-		//console.log($nouveauPrototype);
         // Ajout du prototype a la fin du container
         $container_site.prepend($nouveauPrototype);
-		//console.log($container_site.html());
         // Incrémentation de l'index des fichiers
         $indexFichierSiteBA ++;
     }
@@ -1444,7 +1435,6 @@
 
 	function checkValidationBeforeSend()
 	{
-		console.log('check');
 		var send = true;
 
 		// On vérifie la selection d'un site

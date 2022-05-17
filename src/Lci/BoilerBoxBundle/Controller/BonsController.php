@@ -123,7 +123,6 @@ class BonsController extends Controller
                 	    $pattern_equipement = '/equipement_/';
                 	    if (preg_match($pattern_equipement, $key))
                 	    {
-                	        // ICI Récupérer l'equipement, l'affecter au bon et au site du bon
                 	        $e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
                 	        $e_equipement->setSiteBA($e_bons_attachement->getSite());
 							$e_bons_attachement->addEquipementBATicket($e_equipement);
@@ -235,93 +234,91 @@ class BonsController extends Controller
 		                    $em->persist($e_equipement);
 		                    $em->flush();
 		                } else {
-							//	$request->getSession()->getFlashBag()->add('info', "Echec de création de l'équipement");
 							$echec_creation_equipement = true;
 						}
 		            } else {
+                    	// Le formulaire de nouveau site ou de modification de site est passé
+                    	// Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
+                    	// Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
+						
+                    	if (isset($_POST['id_site_ba'])) 
+						{
+                    	    if ($_POST['id_site_ba'] != "") {
+                    	        //$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
+                    	        $e_siteBA_update = new SiteBA();
+                    	        $f_site = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
+                    	            'action' => $this->generateUrl('lci_bons_saisie'),
+                    	            'method' => 'POST'
+                    	        ));
+								// Enregistrement de l'id du site modifié pour le ré selectionner dans la page HTML après modification
+                    	        $id_last_site = $_POST['id_site_ba'];
+                    	    }
+                    	}
 
+                    	// J'instancie l'entité $e_siteBA_update avec les valeurs du formulaire de site reçues
+                    	// Retourne une erreur (non bloquante car pas de test de validation effectué : data.intitule 	Cette valeur est déjà utilisée.
+                    	$f_site->handleRequest($request);
 
-
-
-                    // Le formulaire de nouveau site ou de modification de site est passé
-                    // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
-                    // Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
-                    if (isset($_POST['id_site_ba'])) 
-					{
-                        if ($_POST['id_site_ba'] != "") {
-                            // ICI DEV $e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
-                            $e_siteBA_update = new SiteBA();
-                            $f_site = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
-                                'action' => $this->generateUrl('lci_bons_saisie'),
-                                'method' => 'POST'
-                            ));
-                            $id_last_site = $_POST['id_site_ba'];
-                        }
-                    }
-                    // J'instancie l'entité $e_siteBA_update avec les valeurs du formulaire de site reçues
-                    // Retourne une erreur (non bloquante car pas de test de validation effectué : data.intitule 	Cette valeur est déjà utilisée.
-                    $f_site->handleRequest($request);
-                    // !! On ne test pas que le formulaire soit correct avec un form->isValid donc il nous faut intercepter l'exception DBAL en cas d'erreur
-                    if ($e_siteBA_update != null) {
-                        $e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
-                        // Seule la modification du nom du site n'est pas permise
-                        $e_siteBA->setIntitule($e_siteBA_update->getIntitule());
-                        $e_siteBA->setAdresse($e_siteBA_update->getAdresse());
-                        $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA_update->getLienGoogle()));
-                        $e_siteBA->setInformationsClient($e_siteBA_update->getInformationsClient());
-                        foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) {
-							$ent_fichier->setUserInitiateur($this->getUser()->getLabel());
-                            $e_siteBA->addFichiersJoint($ent_fichier);
-                        }
-                        foreach ($e_siteBA_update->getContacts() as $ent_contact) {
-                            $e_siteBA->addContact($ent_contact);
-                        }
-                        // Maintenant que j'ai modifié l'entité siteBA je détach l'entité update pour ne pas que doctrine tente de l'enrgistrer en base : Sinon erreur car doublon avec l'entité siteBA
-                        $em->detach($e_siteBA_update);
-                    } else {
-                        $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA->getLienGoogle()));
-                    }
-                    // J'effectue moi même la validation des paramètres
-                    $retourTest = $this->testEntite($e_siteBA);
-                    if ($retourTest === 0) {
-                        // Si tous les paramètres sont corrects je met à jour l'entité en base de données
-                        // L'entité est persisté pour gerer le cas ou c'est un nouvelle entité
-                        $em->persist($e_siteBA);
-                        try {
-                            $em->flush();
-                            // Si il y a une demande d'ajout de sauvegarde des contacts
-                            if (isset($_POST['site_ba']['contacts'])) {
-                                foreach ($_POST['site_ba']['contacts'] as $tab_contact) {
-                                    $ent_contact = new Contact();
-                                    $ent_contact->setNom($tab_contact['nom']);
-                                    $ent_contact->setPrenom($tab_contact['prenom']);
-                                    $ent_contact->setTelephone($tab_contact['telephone']);
-                                    $ent_contact->setMail($tab_contact['mail']);
-                                    $ent_contact->setFonction($tab_contact['fonction']);
-                                    $ent_contact->setDateMaj(new \Datetime());
-                                    $em->persist($ent_contact);
-                                    $e_siteBA->addContact($ent_contact);
-                                }
-                                $em->flush();
-                            }
-                            $request->getSession()->getFlashBag()->add('info', 'Site ' . $e_siteBA->getIntitule() . ' enregistré');
-                        } catch (\Doctrine\DBAL\DBALException $e) {
-                            $request->getSession()->getFlashBag()->add('info', "Erreur d'importation");
-                            $request->getSession()->getFlashBag()->add('info', $e->getMessage());
-                        }
-                        // Création d'un nouveau formulaire de création de site
-                        $e_siteBA = new SiteBA();
-                        $f_site = $this->createForm(SiteBAType::class, $e_siteBA, array(
-                            'action' => $this->generateUrl('lci_bons_saisie'),
-                            'method' => 'POST'
-                        ));
-                    } else {
-                        $request->getSession()->getFlashBag()->add('info', $retourTest);
-                    }
-
-
-
-
+                    	// !! On ne test pas que le formulaire soit correct avec un form->isValid donc il nous faut intercepter l'exception DBAL en cas d'erreur
+                    	if ($e_siteBA_update != null) {
+                    	    $e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
+                    	    // Seule la modification du nom du site n'est pas permise
+                    	    $e_siteBA->setIntitule($e_siteBA_update->getIntitule());
+                    	    $e_siteBA->setAdresse($e_siteBA_update->getAdresse());
+                    	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA_update->getLienGoogle()));
+                    	    $e_siteBA->setInformationsClient($e_siteBA_update->getInformationsClient());
+                    	    foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) {
+								$ent_fichier->setUserInitiateur($this->getUser()->getLabel());
+                    	        $e_siteBA->addFichiersJoint($ent_fichier);
+                    	    }
+                    	    foreach ($e_siteBA_update->getContacts() as $ent_contact) {
+                    	        $e_siteBA->addContact($ent_contact);
+                    	    }
+                    	    // Maintenant que j'ai modifié l'entité siteBA je détach l'entité update pour ne pas que doctrine tente de l'enregistrer en base : Sinon erreur car doublon avec l'entité siteBA
+                    	    $em->detach($e_siteBA_update);
+                    	} else {
+                    	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA->getLienGoogle()));
+                    	}
+                    	// J'effectue moi même la validation des paramètres
+                    	$retourTest = $this->testEntiteSiteBA($e_siteBA);
+                    	if ($retourTest === 0) 
+						{
+                    	    // Si tous les paramètres sont corrects je met à jour l'entité en base de données
+                    	    // L'entité est persisté pour gerer le cas ou c'est un nouvelle entité
+                    	    $em->persist($e_siteBA);
+                    	    try {
+                    	        $em->flush();
+                    	        // Si il y a une demande d'ajout de sauvegarde des contacts
+                    	        if (isset($_POST['site_ba']['contacts'])) 
+								{
+                    	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
+									{
+                    	                $ent_contact = new Contact();
+                    	                $ent_contact->setNom($tab_contact['nom']);
+                    	                $ent_contact->setPrenom($tab_contact['prenom']);
+                    	                $ent_contact->setTelephone($tab_contact['telephone']);
+                    	                $ent_contact->setMail($tab_contact['mail']);
+                    	                $ent_contact->setFonction($tab_contact['fonction']);
+                    	                $ent_contact->setDateMaj(new \Datetime());
+                    	                $em->persist($ent_contact);
+                    	                $e_siteBA->addContact($ent_contact);
+                    	            }
+                    	            $em->flush();
+                    	        }
+                    	        $request->getSession()->getFlashBag()->add('info', 'Site ' . $e_siteBA->getIntitule() . ' enregistré');
+                    	    } catch (\Doctrine\DBAL\DBALException $e) {
+                    	        $request->getSession()->getFlashBag()->add('info', "Erreur d'importation");
+                    	        $request->getSession()->getFlashBag()->add('info', $e->getMessage());
+                    	    }
+                    	    // Création d'un nouveau formulaire de création de site
+                    	    $e_siteBA = new SiteBA();
+                    	    $f_site = $this->createForm(SiteBAType::class, $e_siteBA, array(
+                    	        'action' => $this->generateUrl('lci_bons_saisie'),
+                    	        'method' => 'POST'
+                    	    ));
+                    	} else {
+                    	    $request->getSession()->getFlashBag()->add('info', $retourTest);
+                    	}
 					}
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
@@ -702,7 +699,7 @@ class BonsController extends Controller
         return null;
     }
 
-    private function testEntite($ent_siteBA)
+    private function testEntiteSiteBA($ent_siteBA)
     {
         $intitule = $ent_siteBA->getIntitule();
         if (($intitule == null) || ($intitule == "")) {
@@ -712,6 +709,21 @@ class BonsController extends Controller
         if (($adresse == null) || ($adresse == "")) {
             return "Veuillez indiquer une adresse pour le site";
         }
+
+        if (isset($_POST['site_ba']['contacts'])) 
+		{
+        	foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
+			{
+				if ($tab_contact['nom'] == '')
+				{ 
+					return "Veuillez indiquer un nom au contact";
+				}
+				if (($tab_contact['telephone'] == '') && ($tab_contact['mail'] == ''))
+				{
+					return "Veuillez indiquer un email ou un téléphone au contact";
+				}
+			}
+		}
         /*
         $lien = $ent_siteBA->getLienGoogle();
         if (($lien == null) || ($lien == "")) {

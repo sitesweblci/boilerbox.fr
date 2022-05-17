@@ -29,8 +29,7 @@ class ContactType extends AbstractType
                         'class'         => 'biginput centrer',
                         'placeholder'   => 'Nom',
                         'style'         => 'width:100%;'
-                    ),
-                    'required'      => false
+                    )
 			))
             ->add('prenom', TextType::class, array(
                     'label'         => 'Prénom',
@@ -68,7 +67,8 @@ class ContactType extends AbstractType
                     ),
                     'required'      => false
             ))
-            ->add('fonction', TextType::class, array())
+            ->add('fonction', TextType::class, array());
+/*
         	->add('date_maj', DateType::class, array(
         	    'label'         => 'Mise à jour des informations',
         	    'label_attr'    => array ('class' => 'label_smalltext'),
