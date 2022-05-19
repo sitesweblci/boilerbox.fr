@@ -180,7 +180,7 @@ class BonsAttachementType extends AbstractType {
 				'Certus'	=> 'certus',
 				'Export'	=> 'export'
 			],
-			'preferred_choices' => ['certus', 'bosch'],
+			//'preferred_choices' => ['certus', 'bosch'],
 			'required' => false
 		))
 		->add('typeIntervention', ChoiceType::class, array(

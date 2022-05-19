@@ -945,19 +945,19 @@
     	                    html_nouvelles_options += " \
     	                        <div id='parent_div_equipement_{{ e_equipement.id }}'> \
     	                            <div id='div_equipement_{{ e_equipement.id }}'> \
+										<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer; border:1px solid red; color:red;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \
     	                                <span><input    type='checkbox' \
                                                 id='equipement_{{ e_equipement.id }}' \
                                                 name='equipement_{{ e_equipement.id }}' \
                                                 value='{{ e_equipement.id }}' \
-                                                style='display:inline-block; width:50px; border:2px solid gray;' \
+                                                style='display:inline-block; width:50px; border:2px solid gray; cursor:pointer;' \
                                                 onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
                                             /> \
     	                                </span> \
-    	                                <label style='display: inline-block;' for='equipement_{{ e_equipement.id }}'> \
-    	                                    <span style='display: inline-block; width:100px;'>{{ e_equipement.numeroDeSerie }}</span> \
-    	                                    <span style='display: inline-block; width:200px;'> {{ e_equipement.denomination }} {{ e_equipement.siteBA.intitule }}</span> \
+    	                                <label style='display: inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'> \
+    	                                    <span style='display: inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span> \
+    	                                    <span>{{ e_equipement.denomination }}</span> \
     	                                </label> \
-										<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer; border:1px solid red; color:red;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \
     	                            </div> \
     	                        </div>";
     	                } else {
