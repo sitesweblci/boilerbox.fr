@@ -196,18 +196,16 @@
 					
 					<div style='padding:20px;'>
 						<div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
-							<div class='form_field rel'><label>Equipements sélectionnés</label></div>
+							<div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
 						</div>
 
                     	<div id="liste_des_equipements" style='padding-top:10px;'>
-							<div class='form_field rel'><label>Liste des équipements</label></div>
+							<div class='form_field rel'><label>Liste des équipements du site séléctionné</label></div>
                     	    <div id='insert_equipement'>
                     	    </div>
                     	</div>
 					</div>
 				</div>
-			</div>
-			<div id='equipements_deja_joints2' class="add-list">
 			</div>
 		</fieldset>
 		<fieldset class="fieldset">
@@ -818,7 +816,6 @@
 						{
                             $.each($tab_siteBA[8], function(index, value) {
                                 $('#equipements_deja_joints').append(value + '<br />');
-                                $('#equipements_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross' onClick='supprimeEquipement(" + $tab_siteBA[9][index] + ");'></div></div>");
                             });
                         }
 
@@ -1240,7 +1237,6 @@
         $('#titre_nouveau_siteBA').text('Nouveau site');
 
 		$('#equipements_deja_joints').html('');
-		$('#equipements_deja_joints2').html('');
 	}
 
 
