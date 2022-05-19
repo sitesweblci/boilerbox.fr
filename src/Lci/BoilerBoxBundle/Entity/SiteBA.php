@@ -80,7 +80,7 @@ class SiteBA
     private $contacts;
 
     /**
-     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\EquipementBATicket", mappedBy="siteBA")
+     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\EquipementBATicket", mappedBy="siteBA", cascade={"persist", "remove"})
      */
     private $equipementBATickets;
 

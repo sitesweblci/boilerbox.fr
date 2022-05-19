@@ -1,6 +1,70 @@
+lci_bons_attachements:
+    path: /bons/accueil
+    defaults: { _controller: LciBoilerBoxBundle:Bons:index }
+lci_bons_saisie:
+    path: /bons_saisie
+    defaults: { _controller: LciBoilerBoxBundle:Bons:saisie }
+lci_bons_visualiser:
+    path: /bons/visualiser/{refresh}
+    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiser, refresh: null }
+lci_bons_rechercher:
+    path: /bons/rechercher
+    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercher }
+lci_ajax_bons_setEnquete:
+    path: /bons/ajax/setEnquete
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setEnquete }
+lci_ajax_bons_setValidation:
+    path: /bons/ajax/setValidation
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setValidation }
+lci_ajax_bons_archive_fichier:
+    path: /bons/ajax/archiveUnFichierDeBon
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archiveUnFichierDeBon }
+lci_bons_afficher_unbon:
+    path: /bons/afficher_unbon
+    defaults: { _controller: LciBoilerBoxBundle:Bons:afficherUnBon }
+lci_bons_modifier_unbon:
+    path: /bons/modification_unbon/{idBon}
+    defaults: { _controller: LciBoilerBoxBundle:Bons:modifierUnBon }
+lci_bons_externe_enquete:
+    path: /bons/externe/enquetes
+    defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
+lci_bons_sitesBA_visualiser:
+    path: /bons/sitesBA/visualiser/{idSiteActif}
+    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: 1 }
+lci_ajax_bons_get_siteBA:
+    path: /bons/sitesBA/get
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
+lci_ajax_bon_contact_supp:
+    path: /bons/ajax/contact/supp
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }
+lci_ajax_bon_contact_modif:
+    path: /bons/ajax/contact/modif
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:modifierContact }
+lci_ajax_archivage_fichier_siteBA:
+    path: /bons/ajax/archivage/fichier/siteBA
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archivageFichierSiteBA }
+lci_ajax_bons_del_file:
+    path: /bons/ajax/del/file
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileAction }
+lci_bons_admin_site_index:
+    path: /bons/admin/site/index
+    defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
+lci_bons_admin_site_creer:
+    path: /bons/admin/site/creer
+    defaults: { _controller: LciBoilerBoxBundle:Bons:creerSite }
+lci_bons_commentaires:
+    path: /bons/modification/unbon/commentaires/{idBon}
+    defaults: { _controller: LciBoilerBoxBundle:Bons:ajoutCommentaires }
 lci_rapport_disponibilite:
     path: /rapport/disponibilite
     defaults: { _controller: LciBoilerBoxBundle:Rapport:rapportDisponibilite }
 lci_ajax_bons_select_service:
-    path: /aj/bons/choix/service
+    path: /aj/bons/choix_service
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:choixService }
+lci_ajax_bon_del_equipement:
+    path: /aj/bons/del_equipement
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delEquipement }
+lci_ajax_bon_new_equipement:
+    path: /aj/bons/new_equipement
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:newEquipement }
+

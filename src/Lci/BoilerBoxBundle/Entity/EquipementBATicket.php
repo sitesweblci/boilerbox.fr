@@ -3,12 +3,13 @@
 namespace Lci\BoilerBoxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="equipementBA")
+ * @ORM\Table(name="equipementBA", uniqueConstraints={@UniqueConstraint(name="uniq_idx", columns={"numeroDeSerie", "denomination"})})
  * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Repository\EquipementBATicketRepository")
  * @UniqueEntity(
  *    fields={"numeroDeSerie", "denomination"},

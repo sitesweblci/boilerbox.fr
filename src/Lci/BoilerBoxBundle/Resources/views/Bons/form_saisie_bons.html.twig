@@ -68,6 +68,7 @@
 
 {{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
 {{ form_errors(form) }}
+<input type='hidden' value='non' name='enregistrement' id='enregistrement'>
 <main id="grid-ba-2" class="main-content grid">
 	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
 	<section class="grid__two">
@@ -84,7 +85,7 @@
             	{{ form_label(form.numeroAffaire) }}
             	{{ form_widget(form.numeroAffaire) }}
             	{{ form_errors(form.numeroAffaire) }}
-			</div>
+            </div>
         </div>
 		{# Gestion du nom du contact en javascript car on le gère depuis le select html #}
         <div class="form__field cacher">
@@ -179,51 +180,34 @@
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field rel">
 				<span id="add-equipBon">Ajouter équipement</span>
+				{# Gestion des équipements crées en même temps que l'envoi du formulaire du bon
+                    <button type="button" id="btn_ajout_equipement" class="" onclick="gestionDesEquipements();"><span class="tooltip">Créer un équipement</span></button>
+                #}
+                <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer un équipement</span></button>
+			</div>
+			<div class="form__field rel">
+                <div style='padding:5px;' >
+					<select id='select_equipement'>
+						 <option></option>
+                        {% for e_siteBA in es_sitesBA %}
+                            <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
+						{% endfor %}
+                   	</select>
+					
+					<div style='padding:20px;'>
+						<div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
+							<div class='form_field rel'><label>Equipements sélectionnés</label></div>
+						</div>
 
-                <div style='border:2px solid gray; overflow:auto;' >
-					<div style='height:30px; border:1px solid black;'>Sélectionner des équipements</div>
-					<div id="liste_des_equipements_selectionnes" style='border-bottom: 1px dashed black;'>
-						<h3>Equipements sélectionnés</h3>
+                    	<div id="liste_des_equipements" style='padding-top:10px;'>
+							<div class='form_field rel'><label>Liste des équipements</label></div>
+                    	    <div id='insert_equipement'>
+                    	    </div>
+                    	</div>
 					</div>
-					<div id="liste_des_equipements">	
-						<h3>Liste des équipements</h3>
-                		{% for e_equipement in es_equipements %}
-							<div id='parent_div_equipement_{{ e_equipement.id }}'>
-							<div id='div_equipement_{{ e_equipement.id }}'>
-                		    	<span><input	type='checkbox' 
-												id='equipement_{{ e_equipement.id }}' 
-												name='equipement_{{ e_equipement.id }}' 
-												value='{{ e_equipement.id }}' 
-												style='display:inline-block; width:50px; border:2px solid gray;'
-												onClick="deplaceEquipement('{{ e_equipement.id }}')"
-										/>
-								</span>
-                		    	<label style='display: inline-block;' for='equipement_{{ e_equipement.id }}'>
-									<span style='display: inline-block; width:100px;'>{{ e_equipement.numeroDeSerie }}</span>
-									<span> {{ e_equipement.denomination }}</span>
-								</label>
-							</div>
-							</div>
-                		{% endfor %}
-                	</div>
 				</div>
-
-
-				<button type="button" id="btn_ajout_equipement2" class="" onclick="gestionDesEquipements2();"><span class="tooltip">Créer un équipement</span></button>
-				<button type="button" id="btn_ajout_equipement" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements();"><span class="tooltip">Créer un équipement</span></button>
 			</div>
 			<div id='equipements_deja_joints2' class="add-list">
-				<div class="add-list__added">
-					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
-					<span class="designation2">Blablabla bla</span>
-					<span class="serieEquip">xxxx8888xxxxx</span>
-					<div class="close-cross"></div></div>
-				<div class="add-list__added">
-					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
-					<span class="designation2">Blablabla bla</span>
-					<span class="serieEquip">xxxx7777xxxxx</span>
-					<div class="close-cross"></div></div>
-				</div>
 			</div>
 		</fieldset>
 		<fieldset class="fieldset">
@@ -252,11 +236,12 @@
 		</div>
 	</section>
 </main>
+
 <!-- popup Equipement -->
 <section id="popupEquipement" class="popup cacher">
 	<div class="popup__wrapper" style="width:500px;">
 		<header class="popup__header">
-        	<h1 id='titre_nouvel_equipement' class="popup__title">Nouvel Equipement</h1>
+        	<h1 id='titre_nouvel_equipement' class="popup__title">Nouvel équipement (v2)</h1>
         	<div class="close-cross" onclick="retourPopupEquipement();"></div>
         </header>
         
@@ -279,7 +264,7 @@
         	</div>
         	<div class='main-box__btn notToBePrinted'>
         		<button class="btn btn--second" onclick="retourPopupEquipement();">Retour</button>
-        		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Valider</button>
+        		<button class="btn_menu btn btn--main" onClick="attente(); $('#enregistrement').val("oui"); document.forms['myForm'].submit(); return false;">Valider</button>
         	</div>
 		</div>
 	</div>
@@ -295,13 +280,20 @@
 <section id="popupEquipement2" class="popup cacher">
     <div class="popup__wrapper" style="width:500px;">
         <header class="popup__header">
-            <h1 id='titre_nouvel_equipement2' class="popup__title">Nouvel Equipement</h1>
+            <h1 id='titre_nouvel_equipement2' class="popup__title">Nouvel équipement</h1>
             <div class="close-cross" onclick="retourPopupEquipement2();"></div>
         </header>
 
         <div class="popup__content">
             <div id="ajout_equipement2" class='ajout_equipement'>
                 <div class='ligne_error'></div>
+                <div class='form__field' id='site_equipement'>
+                    <div>
+                        {{ form_label(form_equipement.siteBA) }}
+                        {{ form_widget(form_equipement.siteBA) }}
+                        {{ form_errors(form_equipement.siteBA) }}
+                    </div>
+                </div>
                 <div class='form__field'>
 		            <div>
 		                {{ form_label(form_equipement.numeroDeSerie) }}
@@ -329,21 +321,15 @@
                 <div class='form__field'>
                     <div>
                         {{ form_label(form_equipement.anneeDeConstruction) }}
+						<input type='text' placeholder='dd/mm/YYYY' id='date_annee_construction_equipement' name='date_annee_construction_equipement'>
                         {{ form_widget(form_equipement.anneeDeConstruction) }}
                         {{ form_errors(form_equipement.anneeDeConstruction) }}
                     </div>
                 </div>
-                <div class='form__field' id='site_equipement'>
-                    <div>
-                        {{ form_label(form_equipement.siteBA) }}
-                        {{ form_widget(form_equipement.siteBA) }}
-                        {{ form_errors(form_equipement.siteBA) }}
-                    </div>
-                </div>
             </div>
             <div class='main-box__btn notToBePrinted'>
-                <button class="btn btn--second" onclick="retourPopupEquipement2();">Retour</button>
-                <button class="btn_menu btn btn--main" onClick="attente(); document.forms['formEquipement'].submit(); return false;">Valider</button>
+                <button class="btn btn--second" onClick="retourPopupEquipement2();return false;">Retour</button>
+                <button class="btn_menu btn btn--main" onClick="attente(); creerEquipement(); return false;">Valider</button>
             </div>
         </div>
     </div>
@@ -491,6 +477,10 @@
 	{# Script d'autocompletion de l'adresse #}
     <script type='text/javascript'>
 
+	// Tableau des équipements selectionnés 
+	// il permet de ne pas réafficher les équipements en doublon lors de la modification du select site
+	var tabDesEquipementsSelectionnes = [];
+
     // Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
     	$('.side-nav .bons-interv').addClass('active');
@@ -610,29 +600,18 @@
 
 	$(document).ready(function() 
 	{
-		// On défini le type du formulaire à "bon" car nous somme sur le formulaire de création de bon
-		$('#bons_attachement_type').val('bon');
-
-
-		/* A SUPPRIMER
-		$('#bons_attachement_nomDuContact').prop('readonly', true);
-		$('#bons_attachement_emailContactClient').prop('readonly', true);
-		$('#bons_attachement_telephoneContactClient').prop('class', 'disabled');
-		*/
-
-		/* Mise en place de l'objet datepicker avec 2 mois affichés */
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({
             numberOfMonths: 1,
             dateFormat: 'dd/mm/yy',
             showWeek: true,
             gotoCurrent: true,
             changeMonth: true,
-			changeYear: true,
-			monthNamesShort: [ "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" ],
-            showAnim: "fold",
-			minDate: 'today',
+            changeYear: true,
+            showAnim: "fadeIn",
             maxDate: '+2Y'
         });
+
 
 		setDatePicker();
 		
@@ -764,27 +743,30 @@
 			$('#site_ba_reset').trigger('click');
 			resetInfosSite();
 
+			// Retire des encart rouge indiquant les champs manquants pour l'envoi du formulaire site
+			resetCheck();
+
 			/* On réinitialise les valeurs de la fiche client et du contact associé au bon */
 			resetInfosContact();
 
 			/* On réinitalise le select contact */
 			$('#select_contact').html("<option></option>");
 
-			// Si un site est selectionné : Appel ajax pour obtenir les informations liées au site
+			// On lance le raffraichissement de la popup Equipement
+            refreshSelectEquipements();
+
+			// SI UN SITE EST SELECTIONNE
+			// Appel ajax pour obtenir les informations liées au site
 			// + Affichage du bouton de création/modification de contact
 			if ($('#bons_attachement_site').val() != '')
 			{
 				// On retire l'encart rouge indiquant qu'un site est necessaire pour l'envoi du formulaire
 				$('#bons_attachement_site').removeClass('erreur_formulaire');
 
+				// Affichage du bouton permettant la création/modification de contact
 				$('#btn_contact').removeClass('cacher');
 
 				$('#titre_nouveau_siteBA').text('Modification du site');
-				$('#fichiers_deja_joints').html('');
-				$('#fichiers_deja_joints2').html('');
-				$('#equipements_deja_joints').html('');
-                $('#equipements_deja_joints2').html('');
-				$('#contacts_deja_associes').html('');
 
             	var $id_site_ba = this.value;
             	var $url = "{{ path('lci_ajax_bons_get_siteBA') }}";
@@ -805,24 +787,18 @@
 						/* Gestion des contacts client  : On split sur ; pour récupérer la 1ere valeur qui correspond à l'id pour requete ajax et affichage de la fiche client*/
 						$tab_contact = $tab_siteBA[5];
 
-						/* NOUVEAU */
 						html_option = "<option></option>";
-						/**********/
 						$.each($tab_siteBA[5], function($index, $tabContact) {
 							ficheContactPourImpression($index);
 							$html = '<p>';
 							$html = $html + $tabContact['nom'] + '</p>';
                 	        $('#contacts_deja_associes').append($html);
-							/* NOUVEAU */
 							html_option += "<option value='" + $index + "'>" + $tabContact['nom'] + "</option>";
-							/**********/
                 	    });
-						/* NOUVEAU */
 						$('#select_contact').html(html_option);	
-						/**********/
             			
-						// On reselectionne le contact précédemment selectionné
-						{% if id_last_site is defined %}
+						// On re sélectionne le contact précédemment selectionné
+						{% if id_last_site is not null %}
             				if($('#bons_attachement_nomDuContact').val() != '')
             				{
                 				$('#select_contact option:contains("' + $('#bons_attachement_nomDuContact').val() + '")').prop('selected', true);
@@ -837,8 +813,9 @@
 							});
 						}
 		
-						// Ajout des équipement précédemment joints au site
-						if ($tab_siteBA[8]) {
+						// Ajout des équipements précédemment joints au site
+						if ($tab_siteBA[8]) 
+						{
                             $.each($tab_siteBA[8], function(index, value) {
                                 $('#equipements_deja_joints').append(value + '<br />');
                                 $('#equipements_deja_joints2').append("<div class='add-list__added'>" + value + "<div class='close-cross' onClick='supprimeEquipement(" + $tab_siteBA[9][index] + ");'></div></div>");
@@ -856,6 +833,7 @@
 					}
             	});
 			} else {
+
 				// Si aucun site n'est selectionné : On réinitialise les informations de la popup site
 				// + désactivation du bouton de création / modification de contact
 				$('#site_ba_reset').trigger('click');
@@ -879,7 +857,7 @@
 		/* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
         {% if id_last_site is defined %}
             var id_last_site = "{{ id_last_site }}";
-            // Sauvegarde des infomration du contact
+            // Sauvegarde des informations du contact
             save_nom_contact  = $('#bons_attachement_nomDuContact').val();
             save_tel_contact  = $('#bons_attachement_telephoneContactClient').val();
             save_mail_contact = $('#bons_attachement_emailContactClient').val();
@@ -951,6 +929,53 @@
 			}
     	});
 
+
+    	$('#select_equipement').change(function()
+    	{
+    	    var html_nouvelles_options = '';
+    	    {% for e_siteBA in es_sitesBA %}
+    	        // On affiche les équipements du site selectionné ou tous les équipements si aucun site n'est sélectionné
+    	        if (("{{ e_siteBA.id }}" == $(this).val()) || ($(this).val() === ''))
+    	        {
+    	            {% for e_equipement in e_siteBA.equipementBATickets %}
+    	                // On ajout l'équipement à la liste des équipements selectionnable si celui ci n'est pas déjà sélectionné (cad présent dans le tableau tabDesEquipementsSelectionnes)
+    	                if (tabDesEquipementsSelectionnes.indexOf("{{ e_equipement.id }}") == -1)
+    	                {
+							// Création du contenu html des Equipements
+    	                    html_nouvelles_options += " \
+    	                        <div id='parent_div_equipement_{{ e_equipement.id }}'> \
+    	                            <div id='div_equipement_{{ e_equipement.id }}'> \
+    	                                <span><input    type='checkbox' \
+                                                id='equipement_{{ e_equipement.id }}' \
+                                                name='equipement_{{ e_equipement.id }}' \
+                                                value='{{ e_equipement.id }}' \
+                                                style='display:inline-block; width:50px; border:2px solid gray;' \
+                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
+                                            /> \
+    	                                </span> \
+    	                                <label style='display: inline-block;' for='equipement_{{ e_equipement.id }}'> \
+    	                                    <span style='display: inline-block; width:100px;'>{{ e_equipement.numeroDeSerie }}</span> \
+    	                                    <span style='display: inline-block; width:200px;'> {{ e_equipement.denomination }} {{ e_equipement.siteBA.intitule }}</span> \
+    	                                </label> \
+										<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer; border:1px solid red; color:red;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \
+    	                            </div> \
+    	                        </div>";
+    	                } else {
+    	                    // Si l'équipement est déjà sélectionné, on n'affiche que le div du paretn pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
+    	                    html_nouvelles_options += "<div id='parent_div_equipement_{{ e_equipement.id }}'></div>";
+    	                }
+    	            {% endfor %}
+    	        }
+    	    {% endfor %}
+    	    $('#insert_equipement').html(html_nouvelles_options);
+    	});
+		
+		// On affiche tous les équipements au chargement de la page
+		$('#select_equipement').change();
+
+		// On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+		$("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
+		$("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
 	});
 
     /* **************************************************************************************************   */
@@ -959,7 +984,6 @@
 
     /* **************************************************************************************************   */
 
-    // Click sur le bouton RETOUR de la popup nouvel équipement
 	function gestionDesEquipements() 
 	{
         // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
@@ -979,20 +1003,25 @@
 
 
 
-    // Click sur le bouton RETOUR de la popup nouvel équipement
     function gestionDesEquipements2()
     {
-        // Si la selection du select de site n'est pas vide on affiche le formulaire de création d'équipement
+		// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
         if ($('#bons_attachement_site').val() != '')
 		{
-            // Si la selection du select de site n'est pas vide on affiche le formulaire et on cache l'encart site en lui définissant le même site que celui selectionné
             $("#site_equipement option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
-            $("#site_equipement").addClass('cacher');
         } 
 		togglePopUp(popupEquipement2);
+
+        // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
+        $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
     }
     function retourPopupEquipement2()
     {
+        $('#equipement_ba_ticket_siteBA').removeClass('erreur_formulaire');
+        $('#equipement_ba_ticket_numeroDeSerie').removeClass('erreur_formulaire');
+        $('#equipement_ba_ticket_denomination').removeClass('erreur_formulaire');
+        $('#date_annee_construction_equipement').removeClass('erreur_formulaire');
+
         togglePopUp(popupEquipement2);
     }
 
@@ -1001,17 +1030,21 @@
 		var id_div = "div_equipement_" + id_checkbox;
 		var div_tmp = $("#" + id_div);
 
+		// Selection d'un équipement
 		if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
 		{
-			// Selection d'un équipement
-
+			// On ajout d'id de l'equipement au tableau des équipements selectionnés
+			tabDesEquipementsSelectionnes.push(id_checkbox);
         	// On retire l'element du div principal
         	div_tmp.remove();
 
         	// On ajoute l'élément au div de selection
         	$('#liste_des_equipements_selectionnes').append(div_tmp);
+		// Dé selection d'un équipement
 		} else {
-			// Dé selection d'un équipement
+			// On retire l'id de l'équipement du tableau des équipement selectionnés
+			var indexARetirer = tabDesEquipementsSelectionnes.indexOf(id_checkbox);
+			tabDesEquipementsSelectionnes.splice(indexARetirer, 1);
 
 			// On retire l'element du div de selection
             div_tmp.remove();
@@ -1153,6 +1186,7 @@
 	}
 
 
+	// Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
 	function setDatePicker() 
 	{
 		$("input[placeholder='dd/mm/YYYY']").datepicker(); 
@@ -1203,12 +1237,6 @@
             data: {'id_contact_supp':$id_contact_supp},
             success: function(msg)
             {
-				/*
-				$id_site_selected = $('#bons_attachement_site').val();
-				$('#bons_attachement_site option[value=""]').prop('selected', true);
-				$('#bons_attachement_site').trigger('change');
-				$('#bons_attachement_site option[value="' + $id_site_selected + '"]').prop('selected', true);
-				*/
 				$('#bons_attachement_site').trigger('change');
             }
         });
@@ -1443,6 +1471,12 @@
 			$('#bons_attachement_site').addClass('erreur_formulaire');
 		}
 
+		// On vérifie l'ajout du numero d'affaire
+		if ($('#bons_attachement_numeroAffaire').val() === '')
+        {
+			$('#bons_attachement_numeroAffaire').addClass('erreur_formulaire');
+		}
+
 		// On vérifie qu'un intervenant est selectionné
 		if ($('#bons_attachement_user').val() === '')
 		{ 
@@ -1468,43 +1502,50 @@
 		if (send)
 		{
 			attente(); 
+			$('#enregistrement').val("oui");
 			document.forms['myForm'].submit(); 
 		}
 	}
 
+	function resetCheck()
+    {
+		$('#bons_attachement_site').removeClass('erreur_formulaire');
+		$('#bons_attachement_numeroAffaire').removeClass('erreur_formulaire');
+		$('#bons_attachement_user').removeClass('erreur_formulaire');
+		$('#select_contact').removeClass('erreur_formulaire');
+		$('#bons_attachement_emailContactClient').removeClass('erreur_formulaire');
+		$('#bons_attachement_telephoneContactClient').removeClass('erreur_formulaire');
+	}
+
+
 
     function checkValidationContactBeforeSend()
     {
-        var send = true;
+        var $send = true;
 
         if ($('#nomContact').val() === '')
         {
             $('#nomContact').addClass('erreur_formulaire');
-			send = false;
+			$send = false;
         }
         if ($('#prenomContact').val() === '')
         {
             $('#prenomContact').addClass('erreur_formulaire');
-            send = false;
+            $send = false;
         }
         if (($('#emailContact').val() === '') && ($('#telephoneContact').val() === ''))
         {
             $('#emailContact').addClass('erreur_formulaire');
 			$('#telephoneContact').addClass('erreur_formulaire');
-            send = false;
+            $send = false;
         }
 		if ($('#fonctionContact').val() === '')
         {
             $('#fonctionContact').addClass('erreur_formulaire');
-            send = false;
+            $send = false;
         }
 
-        if (send)
-        {
-			return true;
-        } else {
-			return false;
-		}
+		return $send;
     }
 
 	function resetCheckContact()
@@ -1517,12 +1558,12 @@
 	}
 
 
-	function supprimeFile(idFile)
+	function supprimeFile($idFile)
 	{
-		console.log("demande de suppression du fichier d'id : " + idFile);
+		console.log("demande de suppression du fichier d'id : " + $idFile);
 		$.ajax({
 			url: "{{ path('lci_ajax_bons_del_file') }}",
-			data: {'id_file':idFile },
+			data: {'id_file':$idFile },
 			success: function(msg)
 			{
 				console.log('fichier supprimé - A Supprimer aussi du HTML : ' + msg);
@@ -1532,6 +1573,101 @@
             }
 		});
 	}
+
+	function refreshSelectEquipements()
+	{
+		// On défini le même site sur le select des équipements que le site sélectionné
+		$('#select_equipement').val($('#bons_attachement_site').val());
+
+		// On affiche la liste des équipements associés au nouveau site sélectionné
+		$('#select_equipement').change();
+	}
+
+
+	function creerEquipement()
+	{	
+		$reg_form = true;
+
+		// On valide les informations entrées pour l'équipement
+		// Présence d'un site
+		var $new_site = $('#equipement_ba_ticket_siteBA').val();
+		if ($new_site == '')
+		{
+			$reg_form = false;
+			$('#equipement_ba_ticket_siteBA').addClass('erreur_formulaire');
+		}
+
+		// Présence du numéro de série
+		var $new_numero_de_serie = $('#equipement_ba_ticket_numeroDeSerie').val();
+		if ($new_numero_de_serie == '')
+        {
+            $reg_form = false;
+            $('#equipement_ba_ticket_numeroDeSerie').addClass('erreur_formulaire');
+        }
+
+		//Présence d'une dénomination
+		var $new_denomination = $('#equipement_ba_ticket_denomination').val();
+		if ($new_denomination == '') 
+		{
+            $reg_form = false;
+			$('#equipement_ba_ticket_denomination').addClass('erreur_formulaire');
+		}
+
+		//Présence d'une autre dénomination (non obligatoire)
+		var $new_autre_denomination = $('#equipement_ba_ticket_autreDenomination').val();
+
+		// Présence d'une date d'initialisation
+		var $new_annee_de_contruction = $('#equipement_ba_ticket_anneeDeConstruction').val();
+		if ($new_annee_de_contruction == '')
+		{
+            $reg_form = false;
+			$('#date_annee_construction_equipement').addClass('erreur_formulaire');
+		}
+
+		if ($reg_form === true)
+		{
+			// Appel ajax
+			$.ajax({
+				url: "{{ path('lci_ajax_bon_new_equipement') }}",
+				method: "POST",
+				data: {'new_site':$new_site, 'new_numero_de_serie':$new_numero_de_serie, 'new_denomination':$new_denomination, 'new_autre_denomination':$new_autre_denomination, 'new_annee_de_contruction': $new_annee_de_contruction},
+				success: function(msg) {
+					// Si on recoit un message c'est que l'insert en base est en échec
+					if (msg != '')
+					{
+						alert(msg);
+					} else {
+						// Sinon l'équipement est bien crée : On réaffiche le formulaire de bon avec les nouveaux équipements mis à jour
+						$('#enregistrement').val('non');
+						document.forms['myForm'].submit();
+					}
+				},
+				error: function(status, msg, tri) {
+					alert('error ' + msg + tri);
+				}
+			});
+		}
+		
+	}
+
+	function supprimeEquipement($idEquipement)
+	{
+        // Suppression de l'équipement en ajax et
+        // Réaffichage de la page pour prendre en compte la suppression
+		$.ajax({
+			url: "{{ path('lci_ajax_bon_del_equipement') }}",
+			data : {'id_equipement':$idEquipement },
+			method: "POST",
+            success: function(msg)
+            {
+				document.forms['myForm'].submit(); 
+            },
+            error: function(status, msg, tri) {
+                alert('error ' + msg + tri);
+            }
+		});
+	}
+
 
 </script>
 

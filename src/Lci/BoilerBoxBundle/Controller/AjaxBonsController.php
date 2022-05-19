@@ -7,6 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
+
+
 
 class AjaxBonsController extends Controller
 {
@@ -74,7 +77,7 @@ class AjaxBonsController extends Controller
             // Une Validation sur un bon d'intervention est effectuée
             $entity_validation = new Validation();
             $entity_validation->setValide(true)
-                ->setDateDeValidation(new \Datetime)
+                ->setDateDeValidation(new \Datetime())
                 ->setType($type)
                 ->setUser($user)
             ;
@@ -356,7 +359,56 @@ class AjaxBonsController extends Controller
 	// Fonction qui supprime un fichier d'un bon (appelé sur la page de saisie des bons
 	public function delFileAction(Request $request)
 	{
-		echo "suppression de ".$_POST('id_file');
+		echo "suppression (en cours de dev) de ".$_POST('id_file');
 		return new Response();
 	}
+
+	public function delEquipementAction()
+    {
+		$em           = $this->getDoctrine()->getManager();
+		if (isset($_POST['id_equipement'])) 
+		{
+			$e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($_POST['id_equipement']);
+			$em->remove($e_equipement);
+			$em->flush();
+       		echo "suppression de ".$_POST['id_equipement']." effectuée";
+		}
+        return new Response();
+    }
+
+    public function newEquipementAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+		$id_new_site 				= $_POST['new_site'];
+		$new_numero_de_serie 		= $_POST['new_numero_de_serie'];
+		$new_denomination			= $_POST['new_denomination'];
+		$new_autre_denomination 	= $_POST['new_autre_denomination'];
+		$new_annee_de_contruction 	= new \Datetime($_POST['new_annee_de_contruction']);
+		
+
+		try {
+			$e_equipement = new EquipementBATicket();
+			$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_new_site);
+			$e_siteBA->addEquipementBATicket($e_equipement);
+
+			$e_equipement->setNumeroDeSerie($new_numero_de_serie);
+			$e_equipement->setDenomination($new_denomination);
+			$e_equipement->setAutreDenomination($new_autre_denomination);
+			$e_equipement->setAnneeDeConstruction($new_annee_de_contruction);
+
+			$em->flush();
+		} catch (\Exception $e) {
+			$pattern_uniq_index = '/uniq_idx/';
+			if (preg_match($pattern_uniq_index, $e->getMessage()))
+			{
+				$e_equipement_existant = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findOneBy(array('numeroDeSerie' => $new_numero_de_serie, 'denomination' => $new_denomination));
+				echo "Un équipement avec ce numéro de série et cette dénomination existe déjà pour le site ".$e_equipement_existant->getSiteBA()->getIntitule();
+			}
+       }
+		
+        return new Response();
+	}
+
+
 }

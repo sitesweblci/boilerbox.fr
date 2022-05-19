@@ -41,7 +41,7 @@ class EquipementBATicketType extends AbstractType
         	    'trim'          => true,
         	))
             ->add('anneeDeConstruction', DateType::class, array(
-            	'label'         => 'Date d\'initialisation',
+            	'label'         => 'Année de construction',
             	'label_attr'    => array ('class' => 'label_smalltext'),
             	'widget'        => 'single_text',
             	'html5'         => false,
@@ -49,7 +49,8 @@ class EquipementBATicketType extends AbstractType
             	'invalid_message' => 'Format de la date incorrect.',
             	'attr'          => array(
             	    'placeholder'   => 'dd/mm/YYYY',
-            	    'maxlength'     => 10
+            	    'maxlength'     => 10,
+					'class'			=> 'cacher'
             	)
         	))
             ->add('siteBA', EntityType::class, array(
