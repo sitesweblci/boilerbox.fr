@@ -28,8 +28,8 @@ class BonsAttachement {
      * @var string
      *
 	 * @Assert\Type("string")
-     * @Assert\Length(min=6, max=6, exactMessage="Le numéro du bon doit contenir 6 chiffres")
-	 * @Assert\Regex("/^\d{6}$/", message="Format incorrect. 6 chiffres attendus")
+     * @Assert\Length(min=6, max=6, exactMessage="Le numéro doit contenir 6 chiffres")
+	 * @Assert\Regex("/^\d{6}$/", message="Format de numéro incorrect. 6 chiffres attendus")
 	 *
      * @ORM\Column(type="text", name="numero_ba", nullable=true)
 	*/
@@ -40,7 +40,7 @@ class BonsAttachement {
 	 *
      * @Assert\Type("string")
 	 * @Assert\NotBlank(message="Veuillez indiquer le numéro de l'affaire")
-     * @Assert\Length(min=4, max=7, minMessage="Format incorrect. Nombre de caractères minimum = 4", maxMessage="Format incorrect. Nombre de caractères maximum = 7")
+     * @Assert\Length(min=4, max=7, minMessage="Format de l'affaire incorrect. Nombre de caractères minimum = 4", maxMessage="Format de l'affaire incorrect. Nombre de caractères maximum = 7")
      * 
      * @ORM\Column(type="text", name="numero_affaire")
     */

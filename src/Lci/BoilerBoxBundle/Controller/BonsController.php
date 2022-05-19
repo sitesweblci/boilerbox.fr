@@ -75,18 +75,15 @@ class BonsController extends Controller
 
     public function saisieAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $max_upload_size = ini_get('upload_max_filesize');
-		$enregistrement_form_bon = null;
-
+        $em 									= $this->getDoctrine()->getManager();
+        $max_upload_size 						= ini_get('upload_max_filesize');
+		$enregistrement_form_bon 				= null;
+		$tab_des_id_equipements_selectionnes 	= array();
 		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
-		$echec_creation_equipement = false;
-
-        $apiKey = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
-
-        $es_sitesBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
-
-		$e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
+		$echec_creation_equipement 				= false;
+        $apiKey 								= $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+        $es_sitesBA 							= $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+		$e_user_courant 						= $this->get('security.token_storage')->getToken()->getUser();
 
         // Création d'un formulaire de bon d'attachement +  Récupération de l'utilisateur courant pour définir l'initiateur d'un nouveau bon
         $e_bons_attachement = new BonsAttachement();
@@ -94,9 +91,9 @@ class BonsController extends Controller
         $f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
 
 		// Création du formulaire des SitesBA
-        $e_siteBA = new SiteBA();
-        $e_siteBA_update = null;
-        $id_last_site = null;
+        $e_siteBA 			= new SiteBA();
+        $e_siteBA_update 	= null;
+        $id_last_site	 	= null;
         $f_site = $this->createForm(SiteBAType::class, $e_siteBA, array(
             'action' => $this->generateUrl('lci_bons_saisie'),
             'method' => 'POST'
@@ -115,6 +112,18 @@ class BonsController extends Controller
         // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
         if ($request->getMethod() == 'POST') 
 		{
+
+                    // Sauvegarde des id des équipements selectionnés pour les re sélectionner
+                    foreach($_POST as $key => $variable_post)
+                    {
+                        $pattern_equipement = '/equipement_/';
+                        if (preg_match($pattern_equipement, $key))
+                        {
+                            $e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                            array_push($tab_des_id_equipements_selectionnes, $e_equipement->getId());
+                        }
+                    }
+
             // Si le formulaire de création de bon a été soumis (retour de type POST)
 			$f_bons_attachement->handleRequest($request);
 
@@ -159,6 +168,11 @@ class BonsController extends Controller
 						// Enregistrement du bon
                     	$em->persist($e_bons_attachement);
                     	$em->flush();
+
+						return new Response();
+						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
+						$tab_des_id_equipements_selectionnes    = array();
+
                     	// Envoi d'un mail à l'intervenant
                     	$service_mailling 		= $this->get('lci_boilerbox.mailing');
                     	$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
@@ -221,7 +235,8 @@ class BonsController extends Controller
                     'apiKey' 					=> $apiKey,
 					'id_last_site'              => $id_last_site,
                 	'es_equipements'    		=> $es_equipements,
-                    'echec_creation_equipement' => $echec_creation_equipement
+                    'echec_creation_equipement' => $echec_creation_equipement,
+					'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
                 ));
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_bon === false)
@@ -361,7 +376,8 @@ class BonsController extends Controller
                     'apiKey' 					=> $apiKey,
                     'id_last_site' 				=> $id_last_site,
                 	'es_equipements'    		=> $es_equipements,
-                    'echec_creation_equipement' => $echec_creation_equipement
+                    'echec_creation_equipement' => $echec_creation_equipement,
+                    'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
                 ));
             }
         } else {
@@ -375,7 +391,8 @@ class BonsController extends Controller
                 'apiKey' 					=> $apiKey,
 				'id_last_site'              => $id_last_site,
 				'es_equipements'			=> $es_equipements,
-				'echec_creation_equipement' => $echec_creation_equipement
+				'echec_creation_equipement' => $echec_creation_equipement,
+                'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
             ));
         }
     }
