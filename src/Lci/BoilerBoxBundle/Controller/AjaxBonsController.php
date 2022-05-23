@@ -4,10 +4,15 @@ namespace Lci\BoilerBoxBundle\Controller;
 
 use Lci\BoilerBoxBundle\Entity\Validation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
+use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
+use Lci\BoilerBoxBundle\Entity\Contact;
+use Lci\BoilerBoxBundle\Form\Type\ContactType;
 
 
 
@@ -122,7 +127,7 @@ class AjaxBonsController extends Controller
     public function archiveUnFichierDeBonAction()
     {
         $id_fichier_bon = $_POST['identifiant_fichier'];
-        $em = $this->getDoctrine()->getManager();
+        $em 			= $this->getDoctrine()->getManager();
         $entity_fichier = $em->getRepository('LciBoilerBoxBundle:Fichier')->find($id_fichier_bon);
         if ($entity_fichier->getArchive() == false) {
             $message_archivage = "Archivé par " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i');
@@ -376,39 +381,94 @@ class AjaxBonsController extends Controller
         return new Response();
     }
 
-    public function newEquipementAction()
+    public function creerEquipementAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+		$e_equipement = new EquipementBATicket();
+		$f_equipement = $this->createForm(EquipementBATicketType::class, $e_equipement);
+		$f_equipement->handleRequest($request);
 
-		$id_new_site 				= $_POST['new_site'];
-		$new_numero_de_serie 		= $_POST['new_numero_de_serie'];
-		$new_denomination			= $_POST['new_denomination'];
-		$new_autre_denomination 	= $_POST['new_autre_denomination'];
-		$new_annee_de_contruction 	= new \Datetime($_POST['new_annee_de_contruction']);
-		
+        if ($request->isXMLHttpRequest())
+        {
+            if ($f_equipement->isSubmitted())
+            {
+                if ($f_equipement->isValid())
+                {
+					$em = $this->getDoctrine()->getManager();
 
-		try {
-			$e_equipement = new EquipementBATicket();
-			$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_new_site);
-			$e_siteBA->addEquipementBATicket($e_equipement);
+					$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($f_equipement->get('siteBA')->getData()->getId());
+					$e_siteBA->addEquipementBATicket($e_equipement);
 
-			$e_equipement->setNumeroDeSerie($new_numero_de_serie);
-			$e_equipement->setDenomination($new_denomination);
-			$e_equipement->setAutreDenomination($new_autre_denomination);
-			$e_equipement->setAnneeDeConstruction($new_annee_de_contruction);
-
-			$em->flush();
-		} catch (\Exception $e) {
-			$pattern_uniq_index = '/uniq_idx/';
-			if (preg_match($pattern_uniq_index, $e->getMessage()))
-			{
-				$e_equipement_existant = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findOneBy(array('numeroDeSerie' => $new_numero_de_serie, 'denomination' => $new_denomination));
-				echo "Un équipement avec ce numéro de série et cette dénomination existe déjà pour le site ".$e_equipement_existant->getSiteBA()->getIntitule();
-			}
-       }
-		
-        return new Response();
+                    $em->persist($e_equipement);
+                    $em->flush();
+					return new Response('{"message" : "Success" }'); 
+                } 
+                return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', [
+                    'form_equipement'  	=> $f_equipement->createView(),
+                    'id'            	=> $e_equipement->getId()
+                ]);
+            } 
+        }
+        return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', array(
+            'form_equipement'  	=> $f_equipement->createView(),
+            'id'            	=> $e_equipement->getId()
+        ));
 	}
 
+
+
+    public function creerContactsSitesBAAction(Request $request)
+    {
+		$em = $this->getDoctrine()->getManager();
+
+        $e_contact = new Contact();
+        $f_contact = $this->createForm(ContactType::class, $e_contact);
+        $f_contact->handleRequest($request);
+		if ($request->isXMLHttpRequest()) 
+		{
+			if ($f_contact->isSubmitted()) 
+			{
+				// Si c'est une modification de contact on recrée le formulaire à partir du contact à modifier
+				if ($f_contact->get('id')->getData() != null)
+				{	
+					$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($f_contact->get('id')->getData());
+					$f_contact = $this->createForm(ContactType::class, $e_contact);
+					$f_contact->handleRequest($request);
+				}
+				if ($f_contact->isValid())
+            	{
+					$e_contact->setDateMaj(new \Datetime());
+                	$em->persist($e_contact);
+                	$em->flush();
+					return new Response('{"message" : "Success" }');
+				}
+				return $this->render('LciBoilerBoxBundle:Bons:creer_contact.html.twig', [
+                    'form_contact' 	=> $f_contact->createView(),
+					'id' 			=> $e_contact->getId()
+                ]);
+            } 
+		}
+        return $this->render('LciBoilerBoxBundle:Bons:creer_contact.html.twig', array(
+			'form_contact' 	=> $f_contact->createView(),
+          	'id' 			=> $e_contact->getId()
+        ));
+    }
+
+    // Generate an array contains a key -> value with the errors where the key is the name of the form field
+    protected function getErrorMessages(\Symfony\Component\Form\Form $form) 
+    {
+        $errors = array();
+
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        foreach ($form->all() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = $this->getErrorMessages($child);
+            }
+        }
+
+        return $errors;
+    }
 
 }

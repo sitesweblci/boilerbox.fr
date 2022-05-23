@@ -78,6 +78,8 @@ class BonsController extends Controller
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
 		$enregistrement_form_bon 				= null;
+		// Html du formulaire du bon - permet de renvoyer les bonnes informations lors de la modification du site / des contacs d'un site
+		$enregistrement_html_form_bon			= null;
 		$tab_des_id_equipements_selectionnes 	= array();
 		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
 		$echec_creation_equipement 				= false;
@@ -94,17 +96,10 @@ class BonsController extends Controller
         $e_siteBA 			= new SiteBA();
         $e_siteBA_update 	= null;
         $id_last_site	 	= null;
-        $f_site = $this->createForm(SiteBAType::class, $e_siteBA, array(
+        $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
             'action' => $this->generateUrl('lci_bons_saisie'),
             'method' => 'POST'
         ));
-
-		$e_equipement = new EquipementBATicket();
-		$f_equipement = $this->createForm(EquipementBATicketType::class, $e_equipement, array(
-            'action' => $this->generateUrl('lci_bons_saisie'),
-            'method' => 'POST'
-        ));
-
 
 		// Recherche de l'ensemble des équipements
 		$es_equipements = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findAll();		
@@ -112,17 +107,22 @@ class BonsController extends Controller
         // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
         if ($request->getMethod() == 'POST') 
 		{
+            // Sauvegarde des id des équipements selectionnés pour les re sélectionner
+            foreach($_POST as $key => $variable_post)
+            {
+                $pattern_equipement = '/equipement_/';
+                if (preg_match($pattern_equipement, $key))
+                {
+                    $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                    array_push($tab_des_id_equipements_selectionnes, $tmp_e_equipement->getId());
+                }
+            }
 
-                    // Sauvegarde des id des équipements selectionnés pour les re sélectionner
-                    foreach($_POST as $key => $variable_post)
-                    {
-                        $pattern_equipement = '/equipement_/';
-                        if (preg_match($pattern_equipement, $key))
-                        {
-                            $e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
-                            array_push($tab_des_id_equipements_selectionnes, $e_equipement->getId());
-                        }
-                    }
+			// Envoyer lors de l'envoi du formulaire de site
+			if (isset($_POST['save_form_bon']))
+			{
+				$enregistrement_html_form_bon = $_POST['save_form_bon'];
+			}
 
             // Si le formulaire de création de bon a été soumis (retour de type POST)
 			$f_bons_attachement->handleRequest($request);
@@ -155,9 +155,9 @@ class BonsController extends Controller
                 	    $pattern_equipement = '/equipement_/';
                 	    if (preg_match($pattern_equipement, $key))
                 	    {
-                	        $e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
-                	        $e_equipement->setSiteBA($e_bons_attachement->getSite());
-							$e_bons_attachement->addEquipementBATicket($e_equipement);
+                	        $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                	        $tmp_e_equipement->setSiteBA($e_bons_attachement->getSite());
+							$e_bons_attachement->addEquipementBATicket($tmp_e_equipement);
                 	    }
                 	}
 					if($enregistrement_form_bon === true)
@@ -169,7 +169,6 @@ class BonsController extends Controller
                     	$em->persist($e_bons_attachement);
                     	$em->flush();
 
-						return new Response();
 						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
 						$tab_des_id_equipements_selectionnes    = array();
 
@@ -228,15 +227,15 @@ class BonsController extends Controller
 
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
                     'form' 						=> $f_bons_attachement->createView(),
-					'form_equipement'   		=> $f_equipement->createView(),
-                    'form_site' 				=> $f_site->createView(),
+                    'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
                     'es_sitesBA' 				=> $es_sitesBA,
                     'apiKey' 					=> $apiKey,
 					'id_last_site'              => $id_last_site,
                 	'es_equipements'    		=> $es_equipements,
                     'echec_creation_equipement' => $echec_creation_equipement,
-					'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
+					'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+					'enregistrement_html_form_bon'	=> $enregistrement_html_form_bon
                 ));
             } else {
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_bon === false)
@@ -266,18 +265,6 @@ class BonsController extends Controller
 						}
 					}
                 } else {
-		            // Si le formulaire de création d'équipement est soumis
-		            $f_equipement->handleRequest($request);
-		            if ($f_equipement->isSubmitted())
-		            {
-		                if ($f_equipement->isValid())
-		                {
-		                    $em->persist($e_equipement);
-		                    $em->flush();
-		                } else {
-							$echec_creation_equipement = true;
-						}
-		            } else {
                     	// Le formulaire de nouveau site ou de modification de site est passé
                     	// Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
                     	// Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
@@ -287,7 +274,7 @@ class BonsController extends Controller
                     	    if ($_POST['id_site_ba'] != "") 
 							{
                     	        $e_siteBA_update = new SiteBA();
-                    	        $f_site = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
+                    	        $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
                     	            'action' => $this->generateUrl('lci_bons_saisie'),
                     	            'method' => 'POST'
                     	        ));
@@ -298,10 +285,11 @@ class BonsController extends Controller
 
                     	// J'instancie l'entité $e_siteBA_update avec les valeurs du formulaire de site reçues
                     	// Retourne une erreur (non bloquante car pas de test de validation effectué : data.intitule 	Cette valeur est déjà utilisée.
-                    	$f_site->handleRequest($request);
+                    	$f_siteBA->handleRequest($request);
 
                     	// !! On ne test pas que le formulaire soit correct avec un form->isValid donc il nous faut intercepter l'exception DBAL en cas d'erreur
-                    	if ($e_siteBA_update != null) {
+                    	if ($e_siteBA_update != null) 
+						{
                     	    $e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
                     	    // Seule la modification du nom du site n'est pas permise
                     	    $e_siteBA->setIntitule($e_siteBA_update->getIntitule());
@@ -353,7 +341,7 @@ class BonsController extends Controller
                     	    }
                     	    // Création d'un nouveau formulaire de création de site
                     	    $e_siteBA = new SiteBA();
-                    	    $f_site = $this->createForm(SiteBAType::class, $e_siteBA, array(
+                    	    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
                     	        'action' => $this->generateUrl('lci_bons_saisie'),
                     	        'method' => 'POST'
                     	    ));
@@ -364,35 +352,34 @@ class BonsController extends Controller
                     	    	$request->getSession()->getFlashBag()->add('info', $retourTest);
 							}
                     	}
-					}
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
                     'form' 						=> $f_bons_attachement->createView(),
-					'form_equipement'   		=> $f_equipement->createView(),
-                    'form_site' 				=> $f_site->createView(),
+                    'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
                     'es_sitesBA' 				=> $es_sitesBA,
                     'apiKey' 					=> $apiKey,
                     'id_last_site' 				=> $id_last_site,
                 	'es_equipements'    		=> $es_equipements,
                     'echec_creation_equipement' => $echec_creation_equipement,
-                    'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
+                    'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+                    'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
                 ));
             }
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
                 'form' 						=> $f_bons_attachement->createView(),
-				'form_equipement'   		=> $f_equipement->createView(),
-                'form_site' 				=> $f_site->createView(),
+                'form_site' 				=> $f_siteBA->createView(),
                 'max_upload_size' 			=> $max_upload_size,
                 'es_sitesBA' 				=> $es_sitesBA,
                 'apiKey' 					=> $apiKey,
 				'id_last_site'              => $id_last_site,
 				'es_equipements'			=> $es_equipements,
 				'echec_creation_equipement' => $echec_creation_equipement,
-                'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes
+                'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+                'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
             ));
         }
     }

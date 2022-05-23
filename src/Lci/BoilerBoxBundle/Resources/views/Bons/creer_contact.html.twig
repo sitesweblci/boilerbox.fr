@@ -1,0 +1,69 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_contact.html.twig #}
+
+    <div class="popup__wrapper" style="width:500px;">
+        <header class="popup__header">
+            <h1 id='titre_nouveau_contact2' class="popup__title">Nouveau contact</h1>
+            <div class="close-cross" onclick="retourPopupContact2();"></div>
+        </header>
+
+        <div class="popup__content">
+            <div id="ajout_contact2">
+				{{ form_start(form_contact, {'attr': {'class': 'f_ajout_contact'}}) }}
+				{{ form_errors(form_contact) }}
+
+                <div class='ligne_error'></div>
+                <div class='form__field' id='site_equipement'>
+                    <div>
+                        {{ form_label(form_contact.siteBA) }}
+                        {{ form_widget(form_contact.siteBA) }}
+                        {{ form_errors(form_contact.siteBA) }}
+                    </div>
+                </div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_contact.nom) }}
+                        {{ form_widget(form_contact.nom) }}
+                        {{ form_errors(form_contact.nom) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_contact.prenom) }}
+                        {{ form_widget(form_contact.prenom) }}
+                        {{ form_errors(form_contact.prenom) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_contact.telephone) }}
+                        {{ form_widget(form_contact.telephone) }}
+                        {{ form_errors(form_contact.telephone) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_contact.mail) }}
+                        {{ form_widget(form_contact.mail) }}
+                        {{ form_errors(form_contact.mail) }}
+                    </div>
+                </div>
+                <div class='ligne_error'></div>
+                <div class='form__field'>
+                    <div>
+                        {{ form_label(form_contact.fonction) }}
+                        {{ form_widget(form_contact.fonction) }}
+                        {{ form_errors(form_contact.fonction) }}
+                    </div>
+                </div>
+
+				{{ form_end(form_contact) }}
+            </div>
+            <div class='main-box__btn notToBePrinted'>
+                <button class="btn btn--second" onClick="retourPopupContact2();;return false;">Retour</button>
+                <button class="btn_menu btn btn--main" onClick="attente(); creerContact2(); return false;">Valider</button>
+            </div>
+        </div>
+    </div>

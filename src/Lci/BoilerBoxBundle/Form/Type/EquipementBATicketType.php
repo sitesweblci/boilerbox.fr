@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
 
 
 class EquipementBATicketType extends AbstractType
@@ -45,10 +46,10 @@ class EquipementBATicketType extends AbstractType
             	'label_attr'    => array ('class' => 'label_smalltext'),
             	'widget'        => 'single_text',
             	'html5'         => false,
-            	'format'        => 'dd/MM/yyyy',
+            	'format'        => 'yyyy/MM/dd',
             	'invalid_message' => 'Format de la date incorrect.',
             	'attr'          => array(
-            	    'placeholder'   => 'dd/mm/YYYY',
+            	    'placeholder'   => 'yy/MM/dd',
             	    'maxlength'     => 10,
 					'class'			=> 'cacher'
             	)
@@ -65,6 +66,11 @@ class EquipementBATicketType extends AbstractType
             	'required'      => true,
             	'label_attr'    => array ('class' => 'label_smalltext'),
         	))
+			->add('reset', ResetType::class, [
+				'attr' => [
+					'class' => 'cacher'
+				]
+			])
         ;
     }
 

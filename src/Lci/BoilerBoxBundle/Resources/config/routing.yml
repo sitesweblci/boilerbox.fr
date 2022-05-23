@@ -66,5 +66,7 @@ lci_ajax_bon_del_equipement:
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delEquipement }
 lci_ajax_bon_new_equipement:
     path: /aj/bons/new_equipement
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:newEquipement }
-
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerEquipement }
+lci_ajax_siteba_new_contact:
+    path: /aj/siteba/new_contact
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerContactsSitesBA }
