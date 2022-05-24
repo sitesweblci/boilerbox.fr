@@ -1,5 +1,4 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_siteBA.html.twig #}
-
     <div class="popup__wrapper" style="width:500px;">
         <header class="popup__header">
             <h1 id='titre_nouveau_siteBA' class="popup__title">Nouveau site</h1>
@@ -134,7 +133,8 @@
 
 
         /* Mise en place du textbox dans la carte */
-        const input = document.getElementById('site_ba_adresse');
+/*        const input = document.getElementById('site_ba_adresse');*/
+		const input = document.getElementById('test_google');
 
         /* Activation de l'auto complete de google dans l'encart Adresse du formulaire */
         const autocomplete = new google.maps.places.Autocomplete(input);

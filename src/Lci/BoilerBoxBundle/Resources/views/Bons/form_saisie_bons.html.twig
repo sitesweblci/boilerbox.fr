@@ -59,6 +59,10 @@
 
 {% block mainBody %}
 
+<div style='margin-left:100px'>
+    <input type='text' value='ici' id='test_google'>
+</div>
+
 
 <input type='hidden' name='id_contact' id='idContact'>
 
@@ -182,28 +186,11 @@
 				<span id="add-equipBon">Ajouter équipement</span>
                 <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer un équipement</span></button>
 			</div>
+			<br />
 			<div class="form__field rel">
-                <div style='padding:5px;' >
-					<select id='select_equipement'>
-						 <option></option>
-                        {% for e_siteBA in es_sitesBA %}
-                            <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
-						{% endfor %}
-                   	</select>
-					
-					<div style='padding:20px;'>
-						<div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
-							<div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
-						</div>
-
-                    	<div id="liste_des_equipements" style='padding-top:10px;'>
-							<div class='form_field rel'><label>Liste des équipements du site séléctionné</label></div>
-                    	    <div id='insert_equipement'>
-                    	    </div>
-                    	</div>
-					</div>
-				</div>
-			</div>
+                <span id="add-equipBon">Sélection des équipements du bon</span>
+                <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Sélection des équipements du bon</span></button>
+            </div>
 		</fieldset>
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Photos</h2>
@@ -229,6 +216,44 @@
 		</div>
 	</section>
 </main>
+
+
+<section id="popupSelectionEquipement" class="popup cacher">
+	<div class="popup__wrapper" style="width:500px;">
+    	<header class="popup__header">
+    	    <h1 id='titre_nouvel_equipement2' class="popup__title">Selection des équipements</h1>
+    	    <div class="close-cross" onclick="retourPopupSelectionEquipement();"></div>
+    	</header>
+
+    	<div class="popup__content">
+			<div>
+        	    <div class="form__field rel">
+        	        <div style='padding:5px;' >
+            	        <select id='select_equipement'>
+            	             <option></option>
+            	            {% for e_siteBA in es_sitesBA %}
+            	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
+            	            {% endfor %}
+            	        </select>
+
+            	        <div style='padding:20px;'>
+            	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
+            	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
+            	            </div>
+
+            	            <div id="liste_des_equipements" style='padding-top:10px;'>
+            	                <div class='form_field rel'><label>Liste des équipements du site séléctionné</label></div>
+            	                <div id='insert_equipement'>
+            	                </div>
+                	        </div>
+                	    </div>
+                	</div>
+            	</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 {{ form_rest(form) }}
 {{ form_end(form) }}
 
@@ -243,7 +268,7 @@
 
 
 <!-- popup Site -->
-<section id="bonsSite" class="popup">
+<section id="bonsSite" class="popup cacher">
 	{{ render(path('lci_ajax_bon_new_siteBA')) }}
 </section>
 
@@ -693,6 +718,17 @@
         // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
         $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
     }
+
+    function gestionDesSelectionEquipements()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+        if ($('#bons_attachement_site').val() != '')
+        {
+            $("#select_equipement option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
+        }
+        togglePopUp(popupSelectionEquipement);
+    }
+
     function retourPopupEquipement2()
     {
         $('#equipement_ba_ticket_siteBA').removeClass('erreur_formulaire');
@@ -704,6 +740,11 @@
 
         togglePopUp(popupEquipement2);
     }
+
+	function retourPopupSelectionEquipement()
+	{
+		togglePopUp(popupSelectionEquipement);
+	}
 
 	function retourPopupContact2()
 	{
