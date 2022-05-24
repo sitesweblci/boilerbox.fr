@@ -1,6 +1,8 @@
 <?php 
 //src/Lci/BoilerBoxBundle/Entity/FichierJoint.php
 
+// Fichiers attachés aux problèmes techniques
+
 namespace Lci\BoilerBoxBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;

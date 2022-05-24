@@ -97,7 +97,7 @@ class SiteBAType extends AbstractType
 					'mapped'		=> false
                 ))
 				->add('cheminDossierPhotos', TextType::class, array(
-                    'label'         => 'Chemin local vers le repertoires des photos',
+                    'label'         => 'Chemin local vers le répertoire des photos',
                     'label_attr'    => array(
                         'class'         => 'label_smalltext'
                     ),

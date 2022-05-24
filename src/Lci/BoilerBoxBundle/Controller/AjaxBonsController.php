@@ -13,12 +13,13 @@ use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
 use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
 use Lci\BoilerBoxBundle\Entity\Contact;
 use Lci\BoilerBoxBundle\Form\Type\ContactType;
+use Lci\BoilerBoxBundle\Entity\SiteBA;
+use Lci\BoilerBoxBundle\Form\Type\SiteBAType;
 
 
 
 class AjaxBonsController extends Controller
 {
-
     // Fonction qui modifie le paramètre EnqueteNecessaire d'un bon
     public function setEnqueteAction()
     {
@@ -36,14 +37,12 @@ class AjaxBonsController extends Controller
     // Fonction qui effectue la validation ou la suppression d'une ancienne validation d'une catégorie d'un bon
     public function setValidationAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $idBon = $_POST['identifiant'];
-        $type = $_POST['type'];
-        $sens = $_POST['sens'];
-
+		$em 		= $this->getDoctrine()->getManager();
+        $idBon 		= $_POST['identifiant'];
+        $type 		= $_POST['type'];
+        $sens 		= $_POST['sens'];
         $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user 		= $this->get('security.token_storage')->getToken()->getUser();
 		$entity_validation 				= null;
 		$entity_user_emetteur_du_bon	= null;
 		$entities_users_validation 		= null;
@@ -126,9 +125,10 @@ class AjaxBonsController extends Controller
 
     public function archiveUnFichierDeBonAction()
     {
+		$em 			= $this->getDoctrine()->getManager();
         $id_fichier_bon = $_POST['identifiant_fichier'];
-        $em 			= $this->getDoctrine()->getManager();
         $entity_fichier = $em->getRepository('LciBoilerBoxBundle:Fichier')->find($id_fichier_bon);
+
         if ($entity_fichier->getArchive() == false) {
             $message_archivage = "Archivé par " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i');
             $entity_fichier->setArchive(true);
@@ -145,6 +145,7 @@ class AjaxBonsController extends Controller
 	// Recherches des informations du site selectionné dans le formulaire de création d'un BA
     public function getSiteBAEntityAction()
     {
+		$em 				= $this->getDoctrine()->getManager();
         $tab_fichier 		= null;
 		$tab_id_fichier 	= null;
 		$tab_equipement 	= null;
@@ -155,7 +156,6 @@ class AjaxBonsController extends Controller
         } else {
             $id_site_ba = 1;
         }
-        $em = $this->getDoctrine()->getManager();
         $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
 
         $tab_siteba[] = $e_siteba->getId();
@@ -284,10 +284,12 @@ class AjaxBonsController extends Controller
 
     public function supprimerContactAction()
     {
-        if (isset($_POST['id_contact_supp'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_contact = $_POST['id_contact_supp'];
-            $ent_contact = $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
+		$em = $this->getDoctrine()->getManager();
+
+        if (isset($_POST['id_contact_supp'])) 
+		{
+            $id_contact 	= $_POST['id_contact_supp'];
+            $ent_contact 	= $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
             $em->remove($ent_contact);
             $em->flush();
             return new Response();
@@ -297,8 +299,10 @@ class AjaxBonsController extends Controller
 
     public function modifierContactAction()
     {
-        if (isset($_POST['id_contact_modif'])) {
-            $em 			= $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
+
+        if (isset($_POST['id_contact_modif'])) 
+		{
             $id_contact 	= $_POST['id_contact_modif'];
             $ent_contact 	= $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
             $ent_contact->setNom($_POST['nomContact']);
@@ -316,11 +320,12 @@ class AjaxBonsController extends Controller
 
     public function archivageFichierSiteBAAction()
     {
+		$em = $this->getDoctrine()->getManager();
+
         if (isset($_POST['id_fichier']) && isset($_POST['archive'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_fichier = $_POST['id_fichier'];
-            $archive = $_POST['archive'];
-            $ent_fichier = $em->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($id_fichier);
+            $id_fichier 	= $_POST['id_fichier'];
+            $archive 		= $_POST['archive'];
+            $ent_fichier 	= $em->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($id_fichier);
             switch ($archive) {
                 case true:
                     $ent_fichier->setArchive(true);
@@ -339,14 +344,18 @@ class AjaxBonsController extends Controller
 
     public function choixServiceAction(Request $request)
     {
-        $em             = $this->getDoctrine()->getManager();
-        if (!($_POST['service'])) {
+		$em = $this->getDoctrine()->getManager();
+
+        if (!($_POST['service'])) 
+		{
             return new Response();
         } else {
             $role_service   = strtoupper('role_service_'.$_POST['service']);
         }
-        $ents_user      = $em->getRepository('LciBoilerBoxBundle:User')->findAll();
+
+        $ents_user      			= $em->getRepository('LciBoilerBoxBundle:User')->findAll();
         $tab_des_membres_du_service = array();
+
         foreach($ents_user as $e_user)
         {
             if ($role_service != null)
@@ -361,19 +370,46 @@ class AjaxBonsController extends Controller
     }
 
 
-	// Fonction qui supprime un fichier d'un bon (appelé sur la page de saisie des bons
+	// Fonction qui supprime un fichier d'un bon (appelé sur la page de saisie des bons)
 	public function delFileAction(Request $request)
 	{
-		echo "suppression (en cours de dev) de ".$_POST('id_file');
+		$em = $this->getDoctrine()->getManager();
+
+		if ($_GET['id_file'])
+		{
+			$e_fichier = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:Fichier')->find($_GET['id_file']);
+			$em->remove($e_fichier);
+			$em->flush();
+			echo "Fichier supprimé";
+		}
 		return new Response();
 	}
 
+    // Fonction qui supprime un fichier d'un siteBA (appelé sur la page de saisie des bons)
+    public function delFileSiteBAAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($_GET['id_file'])
+        {
+            $e_fichier = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($_GET['id_file']);
+            $em->remove($e_fichier);
+            $em->flush();
+            echo "Fichier supprimé";
+        }
+        return new Response();
+    }
+
+		
+
 	public function delEquipementAction()
     {
-		$em           = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
+
 		if (isset($_POST['id_equipement'])) 
 		{
 			$e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($_POST['id_equipement']);
+
 			$em->remove($e_equipement);
 			$em->flush();
        		echo "suppression de ".$_POST['id_equipement']." effectuée";
@@ -383,8 +419,9 @@ class AjaxBonsController extends Controller
 
     public function creerEquipementAction(Request $request)
     {
-		$e_equipement = new EquipementBATicket();
-		$f_equipement = $this->createForm(EquipementBATicketType::class, $e_equipement);
+		$em 			= $this->getDoctrine()->getManager();
+		$e_equipement 	= new EquipementBATicket();
+		$f_equipement 	= $this->createForm(EquipementBATicketType::class, $e_equipement);
 		$f_equipement->handleRequest($request);
 
         if ($request->isXMLHttpRequest())
@@ -393,8 +430,6 @@ class AjaxBonsController extends Controller
             {
                 if ($f_equipement->isValid())
                 {
-					$em = $this->getDoctrine()->getManager();
-
 					$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($f_equipement->get('siteBA')->getData()->getId());
 					$e_siteBA->addEquipementBATicket($e_equipement);
 
@@ -418,10 +453,10 @@ class AjaxBonsController extends Controller
 
     public function creerContactsSitesBAAction(Request $request)
     {
-		$em = $this->getDoctrine()->getManager();
+		$em 		= $this->getDoctrine()->getManager();
+        $e_contact 	= new Contact();
+        $f_contact 	= $this->createForm(ContactType::class, $e_contact);
 
-        $e_contact = new Contact();
-        $f_contact = $this->createForm(ContactType::class, $e_contact);
         $f_contact->handleRequest($request);
 		if ($request->isXMLHttpRequest()) 
 		{
@@ -452,6 +487,52 @@ class AjaxBonsController extends Controller
           	'id' 			=> $e_contact->getId()
         ));
     }
+
+
+
+    public function creerSiteBAAction(Request $request)
+    {
+        $em         		= $this->getDoctrine()->getManager();
+		// Lecture de l'option de configuration [upload_max_filesize] pour l'indiquer dans la page html
+		$max_upload_size	= ini_get('upload_max_filesize');
+		// Clé google pour pouvoir utiliser les API de google
+		$apiKey             = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+        $e_siteBA  			= new SiteBA();
+        $f_siteBA   		= $this->createForm(SiteBAType::class, $e_siteBA);
+        $f_siteBA->handleRequest($request);
+        if ($request->isXMLHttpRequest())
+        {
+            if ($f_siteBA->isSubmitted())
+            {
+                // Si c'est une modification de site on recrée le formulaire à partir du siteBA à modifier
+                if ($f_siteBA->get('id')->getData() != null)
+                {
+                    $e_siteBA = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:SiteBA')->find($f_siteBA->get('id')->getData());
+                    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA);
+                    $f_siteBA->handleRequest($request);
+                }
+                if ($f_siteteBA->isValid())
+                {
+                    $em->persist($e_siteBA);
+                    $em->flush();
+                    return new Response('{"message" : "Success" }');
+                }
+                return $this->render('LciBoilerBoxBundle:Bons:creer_siteBA.html.twig', [
+					'max_upload_size'	=> $max_upload_size,
+					'apiKey'			=> $apiKey,
+                    'form_siteBA'  		=> $f_siteBA->createView(),
+                    'id'            	=> $e_siteBA->getId()
+                ]);
+            }
+        }
+        return $this->render('LciBoilerBoxBundle:Bons:creer_siteBA.html.twig', array(
+			'max_upload_size'	=> $max_upload_size,
+            'apiKey'            => $apiKey,
+            'form_siteBA'  		=> $f_siteBA->createView(),
+            'id'            	=> $e_siteBA->getId()
+        ));
+    }
+
 
     // Generate an array contains a key -> value with the errors where the key is the name of the form field
     protected function getErrorMessages(\Symfony\Component\Form\Form $form) 

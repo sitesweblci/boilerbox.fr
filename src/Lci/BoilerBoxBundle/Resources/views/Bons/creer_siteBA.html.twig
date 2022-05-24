@@ -1,0 +1,205 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_siteBA.html.twig #}
+
+    <div class="popup__wrapper" style="width:500px;">
+        <header class="popup__header">
+            <h1 id='titre_nouveau_siteBA' class="popup__title">Nouveau site</h1>
+            <div class="close-cross" onclick="retourPopupSiteBA();"></div>
+        </header>
+
+        <div class="popup__content">
+            <div id="ajout_siteBA">
+				{{ form_start(form_siteBA, {attr: {'id': 'site_ba', 'class':'form' }}) }}
+				{{ form_errors(form_siteBA) }}
+
+                <input type='hidden' id='save_form_bon' name='save_form_bon' />
+                <input type='hidden' name='id_site_ba' id='id_site_ba' />
+                <fieldset class="fieldset">
+                    <div class="form__field">
+                        {{ form_label(form_siteBA.intitule) }}
+                        {{ form_widget(form_siteBA.intitule) }}
+                    </div>
+                    <div class="form__field">
+                        {{ form_label(form_siteBA.adresse) }}
+                        {{ form_widget(form_siteBA.adresse) }}
+                        {{ form_errors(form_siteBA.adresse) }}
+                    </div>
+                    <div class="form__field">
+                        {{ form_label(form_siteBA.lienGoogle) }}
+                        {{ form_widget(form_siteBA.lienGoogle) }}
+                        {{ form_errors(form_siteBA.lienGoogle) }}
+                    </div>
+                    <div class="form__field">
+                        {{ form_label(form_siteBA.informationsClient) }}
+                        {{ form_widget(form_siteBA.informationsClient) }}
+                        {{ form_errors(form_siteBA.informationsClient) }}
+                    </div>
+                    <div class="form__field">
+                        {{ form_label(form_siteBA.contacts) }}
+                        {{ form_widget(form_siteBA.contacts) }}
+                        {{ form_errors(form_siteBA.contacts) }}
+                    </div>
+                </fieldset>
+                <div id="ajout_contact" class='form__field'>
+                    <div class='ligne_error'>{{ form_errors(form_siteBA.contacts) }}</div>
+                    <div class='nouveau_probleme_ligne form__field'>
+                        <div>
+                            <span style='font-size:12px'></span>
+                            <div id='contacts_deja_associes'></div>
+                            <span id='lien_ajout_contact'></span>
+                            <div id='container_new_contact' style='overflow:auto;'></div>
+                        </div>
+                    </div>
+                    <div class='form__field'>
+                        <div id='champ_ajout_fichiers_siteBA'>
+                            {{ form_widget(form_siteBA.fichiersJoint) }}
+                        </div>
+                    </div>
+
+                    <div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
+                        <div class='ligne_error'></div>
+                        <div class='form__field'>
+                            <label class="flex flex--row" style="display:flex!important;">
+                                {{ form_label(form_siteBA.fichiersJoint) }}
+                                <span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
+                            </label>
+                            <div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
+                            <span id='lien_ajout_fichier_siteBA'></span>
+                        </div>
+                        <div class='form__field'>
+                            <div id='champ_ajout_fichiers_siteBA'>
+                                {{ form_widget(form_siteBA.fichiersJoint) }}
+                                {{ form_errors(form_siteBA.fichiersJoint) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id='encart_fichiers_siteBA'></div>
+            {{ form_rest(form_siteBA, {attr: {'class':'btn' }}) }}
+            {{ form_end(form_siteBA) }}
+
+            <div id="bloc_contact_pour_impression" class="print"></div>
+
+            <div class='main-box__btn notToBePrinted'>
+                <button class="btn btn--second" onclick="retourPopupSiteBA();">Retour</button>
+                <button class="btn_menu btn btn--main" onClick="attendreRechargement(); document.forms['site_ba'].submit(); return false;">Valider</button>
+            </div>
+        </div>
+    </div>
+
+
+{# Script d'autocompletion de l'adresse #}
+<script type='text/javascript'>
+    var maCarte;
+    var $changeEnCours;
+
+    function initAutocomplete()
+    {
+        var monMarqueur;
+
+        maCarte = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 50.474, lng: 2.97118},
+            zoom: 4,
+            mapTypeId: 'roadmap'
+        });
+
+        /* Placement du marqueur sur l'emplacement selectionné */
+        maCarte.addListener('click', function(e)
+        {
+            if (monMarqueur != null) {
+                monMarqueur.setMap(null);
+            }
+            monMarqueur = new google.maps.Marker({
+                position: e.latLng,
+                map: maCarte,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
+            });
+            maCarte.setZoom(19);
+            maCarte.setCenter(monMarqueur.getPosition());
+            maCarte.setMapTypeId('satellite');
+
+
+            /* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
+            /* On ne modifie que l'url en fonction du marqueur */
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'location':monMarqueur.getPosition()}, function(results, status) 
+			{
+                if (status == 'OK') {
+                    $('#site_ba_lienGoogle').val('latLng' + monMarqueur.getPosition());
+                    $('#site_ba_lienGoogle').attr('readonly', true);
+                } else {
+                    alert('Aucune adresse trouvée pour le lieu selectionné');
+                }
+            });
+        });
+
+
+        /* Mise en place du textbox dans la carte */
+        const input = document.getElementById('site_ba_adresse');
+
+        /* Activation de l'auto complete de google dans l'encart Adresse du formulaire */
+        const autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.setFields(['place_id', 'geometry']);
+
+
+        autocomplete.addListener('place_changed', function() {
+			alert('change');
+            var place = autocomplete.getPlace();
+            if (place.geometry) {
+                maCarte.panTo(place.geometry.location);
+                maCarte.setZoom(19);
+                maCarte.setMapTypeId('satellite');
+                monMarqueur = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: maCarte
+                });
+            }
+            $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
+            $('#site_ba_lienGoogle').attr('readonly', true)
+        });
+
+
+        $('#site_ba_lienGoogle').on('change', function() {
+            var $objPos = {};
+
+            var $position = $('#site_ba_lienGoogle').val();
+            // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
+            // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
+            var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
+            if ($coordonnees == null)
+            {
+                geocoder = new google.maps.Geocoder();
+                var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
+                $.ajax({
+                    url: $adresse,
+                    method: "get",
+                    success: function(msg) {
+                        $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
+                        $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
+                        maCarte.setCenter($objPos);
+                        maCarte.setZoom(19);
+                        maCarte.setMapTypeId('satellite');
+                        monMarqueur = new google.maps.Marker({
+                            position: $objPos,
+                            map: maCarte
+                        });
+                        $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
+                        $('#site_ba_lienGoogle').val($latLng);
+                    }
+                });
+            } else {
+                $objPos.lat = parseFloat($coordonnees[1]);
+                $objPos.lng = parseFloat($coordonnees[2]);
+                maCarte.setCenter($objPos);
+                maCarte.setZoom(19);
+                maCarte.setMapTypeId('satellite');
+            }
+        });
+    }
+</script>
+
+
+{# lien vers api autocompletion de google #}
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+</script>
+
