@@ -322,7 +322,7 @@
 			<div id="bloc_contact_pour_impression" class="print"></div>
 		   	<div class='main-box__btn notToBePrinted'>
 		   		<button class="btn btn--second" onclick="retourPopupSite();">Retour</button>
-		   		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['site_ba'].submit(); return false;">Valider</button>
+		   		<button class="btn_menu btn btn--main" onClick="attendreRechargement(); document.forms['site_ba'].submit(); return false;">Valider</button>
 			</div>
 		</div>
 	</div>
@@ -358,8 +358,8 @@
                 <input type='text' name='fonctionContact' id='fonctionContact'>
             </div>
             <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="attente(); modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
-                <button onClick="attente(); supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
+                <button onClick="modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
+                <button onClick="supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
             </div>
 		</div>
 	</div>
@@ -1232,6 +1232,12 @@
         {
             $("#contact_siteBA option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
         }
+
+		// Si le select de contact n'est pas vide on recherche les informations liés au contact pour pré remplir le formulaire de contact
+		if ($('#select_contact').val() != '')
+		{
+			$('#select_contact').trigger('change');
+		}
         togglePopUp(popupContact2);
     }
 
@@ -1358,7 +1364,7 @@
 
 		if ($send_form === true)
 		{
-			attente(); 
+			attendreRechargement();
 			$('#enregistrement').val("oui");
 			document.forms['myForm'].submit(); 
 		}
@@ -1434,6 +1440,7 @@
 	function supprimeEquipement($idEquipement)
 	{
 		attendreRechargement();
+
 		// On s'assure qu'il n'y a pas de check sur la checkbox de l'équipement à supprimer pour ne pas l'envoyer dans le formulaire de création de bon
 		$('#equipement_' + $idEquipement).prop('checked', false);
         // Suppression de l'équipement en ajax et
@@ -1479,6 +1486,8 @@
 		// Si la vérification est ok (pas de champs obligatoire vides) : Envoi du formulaire 
 		if ($send_form === true)
 		{
+			attendreRechargement();
+
         	$.ajax({
         	    url: "{{ path('lci_ajax_siteba_new_contact') }}",
         	    method: "POST",
