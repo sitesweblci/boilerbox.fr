@@ -59,10 +59,6 @@
 
 {% block mainBody %}
 
-<div style='margin-left:100px'>
-    <input type='text' value='ici' id='test_google'>
-</div>
-
 
 <input type='hidden' name='id_contact' id='idContact'>
 
@@ -183,11 +179,6 @@
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field rel">
-				<span id="add-equipBon">Ajouter équipement</span>
-                <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer un équipement</span></button>
-			</div>
-			<br />
-			<div class="form__field rel">
                 <span id="add-equipBon">Sélection des équipements du bon</span>
                 <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Sélection des équipements du bon</span></button>
             </div>
@@ -219,10 +210,10 @@
 
 
 <section id="popupSelectionEquipement" class="popup cacher">
-	<div class="popup__wrapper" style="width:500px;">
+	<div class="popup__wrapper" style="width:900px;">
     	<header class="popup__header">
-    	    <h1 id='titre_nouvel_equipement2' class="popup__title">Selection des équipements</h1>
-    	    <div class="close-cross" onclick="retourPopupSelectionEquipement();"></div>
+    	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
+    	    <div class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
     	</header>
 
     	<div class="popup__content">
@@ -235,14 +226,20 @@
             	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
             	            {% endfor %}
             	        </select>
+						<div style='padding:20px;'>
+							<div>Recherche</div>
+							<div><input type='text' id='recherche_equipement' /></div>
+						</div>
 
             	        <div style='padding:20px;'>
             	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
             	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
+                                    <span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
             	            </div>
 
             	            <div id="liste_des_equipements" style='padding-top:10px;'>
             	                <div class='form_field rel'><label>Liste des équipements du site séléctionné</label></div>
+									<span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
             	                <div id='insert_equipement'>
             	                </div>
                 	        </div>
@@ -250,19 +247,18 @@
                 	</div>
             	</div>
 			</div>
+			<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();">Enregistrer un nouvel équipement</button>
 		</div>
 	</div>
 </section>
-
 {{ form_rest(form) }}
 {{ form_end(form) }}
 
-
-
-<!-- popup Equipement 2 -->
 <section id="popupEquipement2" class="popup cacher">
     {{ render(path('lci_ajax_bon_new_equipement')) }}
 </section>
+
+
 
 
 
@@ -642,20 +638,17 @@
     	                    html_nouvelles_options += " \
     	                        <div id='parent_div_equipement_{{ e_equipement.id }}'> \
     	                            <div id='div_equipement_{{ e_equipement.id }}'> \
-										<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer; border:1px solid red; color:red;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \
-    	                                <span><input    type='checkbox' \
+										{#<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \#}
+    	                                <span style='display:inline-block; width:30px;'> \
+											<input    type='checkbox' \
                                                 id='equipement_{{ e_equipement.id }}' \
                                                 name='equipement_{{ e_equipement.id }}' \
                                                 value='{{ e_equipement.id }}' \
-                                                style='display:inline-block; width:50px; border:2px solid gray; cursor:pointer;' \
+                                                style='display:inline-block; border:2px solid gray; cursor:pointer;' \
                                                 onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
-                                            /> \
-    	                                </span> \
-    	                                <label style='display: inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'> \
-    	                                    <span style='display: inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span> \
-    	                                    <span>{{ e_equipement.denomination }}</span> \
-    	                                </label> \
-    	                            </div> \
+                                            />\
+    	                                </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
+    	                            </div>\
     	                        </div>";
     	                } else {
     	                    // Si l'équipement est déjà sélectionné, on n'affiche que le div du paretn pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
@@ -690,15 +683,40 @@
 		// On affiche les équipements du site selectionné au chargement de la page
         $('#select_equipement').change();
 
-		//
 
-
+	    // Fonction de recherche dans la liste des équipements
+	    $('#recherche_equipement').keyup(function()
+	    {
+	        $('#liste_des_equipements span').each(function()
+	        {
+	            $('#insert_equipement > div').each(function()
+	            {
+	                if ($('#recherche_equipement').val() === '')
+	                {
+	                    $(this).removeClass('cacher');
+	                } else {
+	                    if (! $(this).is(':contains("' + $('#recherche_equipement').val() + '")'))
+	                    {
+	                        $(this).addClass('cacher');
+	                    }else{
+	                        $(this).removeClass('cacher');
+	                    }
+	                }
+	            });
+	        });
+   		});
 	});
 
     function attendreRechargement()
     {
         $('*').css({'cursor' : 'wait'});
     }
+
+	function finAttendreRechargement()
+    {
+        $('*').css({'cursor' : 'default'});
+    }
+
 
     /* **************************************************************************************************   */
 
@@ -711,40 +729,61 @@
 		// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
         if ($('#bons_attachement_site').val() != '')
 		{
-            $("#site_equipement option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
-        } 
-		togglePopUp(popupEquipement2);
-
-        // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
-        $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
-    }
-
-    function gestionDesSelectionEquipements()
-    {
-        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-        if ($('#bons_attachement_site').val() != '')
+			// On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
+			$('#equipement_ba_ticket_siteBA').val($('#bons_attachement_site').val());
+        } else if ($('#select_equipement').val() != '')
         {
-            $("#select_equipement option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
-        }
-        togglePopUp(popupSelectionEquipement);
+            // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
+            $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
+		}
+		togglePopUp(popupSelectionEquipement);
+		togglePopUp(popupEquipement2);
     }
 
-    function retourPopupEquipement2()
+	// Gestion du clic sur Annuler dans la popup de création d'équipement : 
+	// Fermeture de la popup Creer un nouvel équipement
+	// Ouverture de la popup de Selection des équipements
+    function annulerPopupEquipement2()
     {
         $('#equipement_ba_ticket_siteBA').removeClass('erreur_formulaire');
         $('#equipement_ba_ticket_numeroDeSerie').removeClass('erreur_formulaire');
         $('#equipement_ba_ticket_denomination').removeClass('erreur_formulaire');
         $('#date_annee_construction_equipement').removeClass('erreur_formulaire');
 
-		$('#equipement_ba_ticket_reset').trigger('click');
+        $('#equipement_ba_ticket_reset').trigger('click');
 
         togglePopUp(popupEquipement2);
+		togglePopUp(popupSelectionEquipement);
+    }
+	// Gestion du click sur la croix de fermeture de la popup de création d'équipement :
+    // Fermeture de la popup de création d'équipement
+	// Fermeture de la popup de sélection d'équipements
+    function fermeturePopupEquipement2()
+    {
+		togglePopUp(popupEquipement2);
     }
 
-	function retourPopupSelectionEquipement()
+
+
+
+    function gestionDesSelectionEquipements()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+        if ($('#bons_attachement_site').val() != '')
+        {
+            $("#select_equipement").val($('#bons_attachement_site').val());
+        }
+        togglePopUp(popupSelectionEquipement);
+    }
+
+	// Gestion du click sur la croix de fermeture de la popup Sélection des équipements : 
+	// Fermeture de la popup 
+	function fermeturePopupSelectionEquipement()
 	{
 		togglePopUp(popupSelectionEquipement);
 	}
+
+	
 
 	function retourPopupContact2()
 	{
@@ -1311,6 +1350,7 @@
 				document.forms['myForm'].submit(); 
             },
             error: function(status, msg, tri) {
+				finAttendreRechargement();
                 alert('error ' + msg + tri);
             }
 		});
@@ -1351,6 +1391,7 @@
         	    data: $('form[name="contact"]').serialize(),
         	    success: function(output, status, xhr)
         	    {
+					console.log('success');
         	        try {
         	            // On recoit une réponse ajax : Le contact a été enregistré
         	            data = JSON.parse(output);
@@ -1366,6 +1407,7 @@
         	    },
         	    error: function (xhr, status, st_text)
         	    {
+					finAttendreRechargement
         	        console.log('error');
         	    }
         	});
@@ -1415,7 +1457,8 @@
 
         if ($send_form == true)
         {
-			attendreRechargement();
+			//attendreRechargement();
+			
 
             // Appel ajax
             $.ajax({
@@ -1428,7 +1471,7 @@
                         // On recoit une réponse ajax : L'équipement a été enregistré
                         data = JSON.parse(output);
 						$('#equipement_ba_ticket_reset').trigger('click');
-						retourPopupEquipement2();
+						annulerPopupEquipement2();
 
 						// Rechargement de la page
 						document.forms['myForm'].submit();	
@@ -1452,5 +1495,12 @@
         }
     }
 </script>
+
+
+{# lien vers api autocompletion de google #}
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+</script>
+
 
 {% endblock javascript %}

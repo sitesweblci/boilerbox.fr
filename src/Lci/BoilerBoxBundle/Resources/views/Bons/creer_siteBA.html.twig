@@ -133,8 +133,7 @@
 
 
         /* Mise en place du textbox dans la carte */
-/*        const input = document.getElementById('site_ba_adresse');*/
-		const input = document.getElementById('test_google');
+        const input = document.getElementById('site_ba_adresse');
 
         /* Activation de l'auto complete de google dans l'encart Adresse du formulaire */
         const autocomplete = new google.maps.places.Autocomplete(input);
@@ -196,10 +195,3 @@
         });
     }
 </script>
-
-
-{# lien vers api autocompletion de google #}
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
-</script>
-
