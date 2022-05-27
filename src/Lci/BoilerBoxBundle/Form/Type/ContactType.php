@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -63,7 +64,7 @@ class ContactType extends AbstractType
                     ),
                     'required'      => false
             ))
-            ->add('telephone', TextType::class, array(
+            ->add('telephone', TelType::class, array(
                     'label'         => 'Tel.',
                     'label_attr'    => array(
                         'class'         => 'label_smalltext'
@@ -71,7 +72,8 @@ class ContactType extends AbstractType
                     'attr'          => array(
                         'class'         => 'biginput centrer',
                         'placeholder'   => 'Téléphone',
-                        'style'         => 'width:100%;'
+                        'style'         => 'width:100%;',
+						'maxlength'		=> '15'
                     ),
                     'required'      => false
             ))

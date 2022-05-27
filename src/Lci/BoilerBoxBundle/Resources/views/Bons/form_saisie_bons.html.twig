@@ -360,7 +360,6 @@
 
 
     var maCarte;
-    var changeEnCours;
 
     function initAutocomplete()
 	{
@@ -502,7 +501,6 @@
             maxDate: '+2Y'
         });
 
-
 		setDatePicker();
 
 		/* Récupération du container contenant l'attribut data-prototype */
@@ -567,8 +565,6 @@
 		{
 			initAutocomplete();
 
-			$changeEnCours = true;
-
 			// Réinitialisation des informations concernant les sites
 			$('#site_ba_reset').trigger('click');
 			resetInfosSite();
@@ -576,10 +572,10 @@
 			// Retire des encart rouge indiquant les champs manquants pour l'envoi du formulaire site
 			resetCheck();
 
-			/* On réinitialise les valeurs de la fiche client et du contact associé au bon */
+			// On réinitialise les valeurs de la fiche client et du contact associé au bon 
 			resetInfosContact();
 
-			/* On réinitalise le select contact */
+			// On réinitalise le select contact 
 			$('#select_contact').html("<option></option>");
 
 			// On lance le raffraichissement de la popup Equipement
@@ -620,7 +616,13 @@
 							success: function(urlGoogleMap)
                 			{
 								$('#site_ba_lienGoogle').val(urlGoogleMap);
-								$('#site_ba_lienGoogle').trigger('change');
+
+		                        // Affichage de la map google
+		                        $('#site_ba_lienGoogle').trigger('change');
+
+		                        // Placement du marqueur sur la page 
+		                        ajoutMarqueur($('#site_ba_lienGoogle').val());
+
 							},
 							error: function()
 							{
@@ -637,7 +639,6 @@
 							$html = '<p>';
 							$html = $html + contact.nom + '</p>';
                 	        $('#contacts_deja_associes').append($html);
-//							html_option += "<option value='" + index + "'>" + contact.nom + "</option>";
 							html_option += "<option value='" + contact.id + "'>" + contact.nom + "</option>";
                 	    });
 						$('#select_contact').html(html_option);	
@@ -662,22 +663,77 @@
                                 $('#equipements_deja_joints').append(equipement.denomination + '<br />');
                         });
 
-						$('#site_ba_lienGoogle').trigger('change');
-						/* Placement du marqueur sur la page */
-						ajoutMarqueur($('#site_ba_lienGoogle').val());
-						$changeEnCours = false;
-                	    return true;
+						// Si on est dans l'action de changement de site suite au chargement de la page
+						if ($chargementEnCours == true)
+						{
+        					// On re sélectionne les équipements précédemment selectionné après l'envoi sans sauvegarde du formulaire de bon
+        					{% if tab_des_id_equipements_selectionnes | length != 0 %}
+            					// On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
+            					$('#select_equipement').val('');
+            					$('#select_equipement').change();
+					            {% for id_equipement in tab_des_id_equipements_selectionnes %}
+                					// On check les checkbox des equipements
+                					$('#equipement_' + "{{ id_equipement }}").prop('checked', true);
+                					deplaceEquipement("{{ id_equipement }}");
+            					{% endfor %}
+            					// Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
+            					$('#select_equipement').val($('#bons_attachement_site').val());
+        					{% endif %}
+
+        					// On affiche les équipements du site selectionné au chargement de la page
+        					$('#select_equipement').change();
+
+
+        					// Gestion des nouveaux contacts et nouveaux équipements a réafficher
+        					if ($('#bons_attachement_siteNouveau').val() != '')
+        					{
+            					// Selection du contact si un nouveau contact est crée pour le site courant
+            					switch($('#bons_attachement_typeNouveau').val())
+            					{
+                					case 'equipement':
+                    					gestionDesSelectionEquipements();
+                    					$('#select_equipement').val($('#bons_attachement_siteNouveau').val());
+                    					$('#select_equipement').trigger('change');
+                					break;
+                					case 'contact':
+                    					if ($('#bons_attachement_site').val() == $('#bons_attachement_siteNouveau').val())
+                    					{
+                        					// On affiche le nouveau contact ssi il est crée pour le site courant du bon
+                        					$('#select_contact').val($('#bons_attachement_idNouveau').val())
+                        					$('#select_contact').trigger('change');
+                    					}
+                					break;
+            					}
+            					// On réinitialise les paramètres de Création
+            					$('#bons_attachement_typeNouveau').val('');
+            					$('#bons_attachement_idNouveau').val('');
+            					$('#bons_attachement_bons_attachement_siteNouveau').val('');
+        					}
+							$chargementEnCours = false;
+						}
+						finAttendreRechargement();
                 	},
 					error: function(status, msg, tri) {
+						if ($chargementEnCours == true)
+						{
+							$chargementEnCours = false;
+						}
+						finAttendreRechargement();
 						alert('error ' + msg + tri);
 					}
             	});
 			} else {
-
 				// Si aucun site n'est selectionné : On réinitialise les informations de la popup site
 				// + désactivation du bouton de création / modification de contact
 				$('#site_ba_reset').trigger('click');
 				$('#btn_contact').addClass('cacher');
+
+				if ($chargementEnCours == true)
+                {
+                    $chargementEnCours = false;
+                }
+				finAttendreRechargement();
+
 			}
         });
 		
@@ -717,6 +773,7 @@
         	var $index_tab_contact = $('#select_contact').val();
         	if ($('#select_contact').val() != '')
         	{
+				attendreRechargement();
 	        	$.ajax({
 	        	    url: "{{ path('lci_ajax_bon_get_infos_contact') }}",
 	        	    method: "post",
@@ -728,11 +785,11 @@
 	                	$('#contact_nom').val(contact.nom);
 	                	$('#contact_prenom').val(contact.prenom);
 	                	$('#contact_mail').val(contact.mail);
-	                	$('#contact_telephone').val(contact.telephone);
-	                	$('#contact_fonction').val(contact.fonction);
-	                	$('#bons_attachement_nomDuContact').val(contact.nom);
-	                	$('#bons_attachement_emailContactClient').val(contact.mail);
-	                	$('#bons_attachement_telephoneContactClient').val(contact.telephone);
+	              	 	$('#contact_telephone').val(contact.telephone);
+	               		$('#contact_fonction').val(contact.fonction);
+	               		$('#bons_attachement_nomDuContact').val(contact.nom);
+	               		$('#bons_attachement_emailContactClient').val(contact.mail);
+	               		$('#bons_attachement_telephoneContactClient').val(contact.telephone);
 		            },
 					error: function()
 					{
@@ -823,10 +880,7 @@
 
 
 		/* Actions faites au chargement de la page */
-
-
-
-
+		var $chargementEnCours = true;
 
         /* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
         {% if id_last_site is defined %}
@@ -848,6 +902,7 @@
             $('#bons_attachement_emailContactClient').val(save_mail_contact);
         {% endif %}
 
+
         // Si la création d'un équipement est en erreur : affichage du formulaire
         {% if echec_creation_equipement == true %}
             $('#btn_ajout_equipement2').trigger('click');
@@ -856,49 +911,6 @@
         // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
         $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
         $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
-
-
-		// On re sélectionne les équipements précédemment selectionné après l'envoi sans sauvegarde du formulaire de bon
-        {% if tab_des_id_equipements_selectionnes | length != 0 %}
-            // On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
-            $('#select_equipement').val('');
-            $('#select_equipement').change();
-            {% for id_equipement in tab_des_id_equipements_selectionnes %}
-                // On check les checkbox des equipements
-                $('#equipement_' + "{{ id_equipement }}").prop('checked', true);
-                deplaceEquipement("{{ id_equipement }}");
-            {% endfor %}
-            // Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
-            $('#select_equipement').val($('#bons_attachement_site').val());
-        {% endif %}
-
-        // On affiche les équipements du site selectionné au chargement de la page
-        $('#select_equipement').change();
-
-
-		if ($('#bons_attachement_siteNouveau').val() != '')
-		{
-			// Selection du contact  si un nouveau contact est crée pour le site courant
-			switch($('#bons_attachement_typeNouveau').val())
-        	{
-        	    case 'equipement':
-					gestionDesSelectionEquipements();
-					$('#select_equipement').val($('#bons_attachement_siteNouveau').val());
-					$('#select_equipement').trigger('change');
-	            break;
-	            case 'contact':
-					if ($('#bons_attachement_site').val() == $('#bons_attachement_siteNouveau').val())
-					{
-						// On affiche le nouveau contact ssi il est crée pour le site courant du bon
-						$('#select_contact').val($('#bons_attachement_idNouveau').val())
-						//$('#select_contact').trigger('change');
-					}
-	            break;
-	        }
-
-		}
-		// Affichage de la popup Selection des équipements si un nouvel équipement est crée pour le site courant
-		finAttendreRechargement();
 	});
 
     function attendreRechargement()
@@ -1234,15 +1246,6 @@
 				{
 					// Après la modification d'un contact on réaffiche le site
 					$('#bons_attachement_site').trigger('change');
-					$refreshContact = setInterval(function() 
-					{
-						if ($changeEnCours == false)
-						{
-							$('#select_contact').val($opt_select_contact_val);
-							$('#select_contact').trigger('change');
-							clearInterval($refreshContact);
-						}
-					}, 2);
 				}
 			});	
 		}
