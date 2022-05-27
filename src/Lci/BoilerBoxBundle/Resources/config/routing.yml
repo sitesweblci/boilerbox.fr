@@ -76,3 +76,9 @@ lci_ajax_bon_new_siteBA:
 lci_ajax_siteba_new_contact:
     path: /aj/siteba/new_contact
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerContactsSitesBA }
+lci_ajax_bon_get_infos_contact:
+    path: /bons/ajax/get_infos_contact
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getInfosContact }
+lci_ajax_bon_get_googlemap:
+    path: /bon/ajax/get_google_map
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getGoogleMap }

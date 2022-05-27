@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * SiteBA
@@ -23,6 +25,7 @@ class SiteBA
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"groupContact"})
      */
     protected $id;
 
@@ -31,6 +34,7 @@ class SiteBA
      *
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotNull(message="Nom du site manquant")
+     * @Groups({"groupContact"})
     */
     protected $intitule;
 
@@ -56,6 +60,7 @@ class SiteBA
 	 *
 	 * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotNull(message="Veuillez entrer une adresse valide svp")
+     * @Groups({"groupContact"})
 	*/
 	protected $adresse;
 
@@ -64,23 +69,27 @@ class SiteBA
 	 * @var string
 	 *
 	 * @ORM\Column(type="text", nullable=true)
+     * @Groups({"groupContact"})
 	*/
 	protected $informationsClient;
 
     /**
      *
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\FichierSiteBA", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
      *
     */
     protected $fichiersJoint;
 
     /**
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Contact", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
      */
     private $contacts;
 
     /**
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\EquipementBATicket", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
      */
     private $equipementBATickets;
 

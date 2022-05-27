@@ -147,6 +147,28 @@
 			</div>
 		</div>
 	</fieldset>
+    <fieldset class="fieldset">
+        <h2 class="fieldset__title">Création</h2>
+        <div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.typeNouveau) }}
+                {{ form_widget(form.typeNouveau) }}
+                {{ form_errors(form.typeNouveau) }}
+            </div>
+            <div>
+                {{ form_label(form.idNouveau) }}
+                {{ form_widget(form.idNouveau) }}
+                {{ form_errors(form.idNouveau) }}
+            </div>
+        </div>
+		<div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.siteNouveau) }}
+                {{ form_widget(form.siteNouveau) }}
+                {{ form_errors(form.siteNouveau) }}
+            </div>
+        </div>
+    </fieldset>
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
 		<div id='map'></div>
@@ -179,7 +201,7 @@
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field rel">
-                <span id="add-equipBon">Sélection des équipements du bon</span>
+                <span id="add-equipBon">Sélection des équipements</span>
                 <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Sélection des équipements du bon</span></button>
             </div>
 		</fieldset>
@@ -336,6 +358,121 @@
         $('.side-nav .bons-interv').addClass('active');
     });
 
+
+    var maCarte;
+    var changeEnCours;
+
+    function initAutocomplete()
+	{
+        var monMarqueur;
+
+        maCarte = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 50.474, lng: 2.97118},
+            zoom: 4,
+            mapTypeId: 'roadmap'
+        });
+
+        /* Mise en place du textbox dans la carte */
+        var input = document.getElementById('site_ba_adresse');
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.setFields(['place_id', 'geometry']);
+
+
+        /* Placement du marqueur sur l'emplacement selectionné */
+        maCarte.addListener('click', function(e)
+		{
+            if (monMarqueur != null) {
+                monMarqueur.setMap(null);
+            }
+            monMarqueur = new google.maps.Marker({
+                position: e.latLng,
+                map: maCarte,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
+            });
+            maCarte.setZoom(19);
+            maCarte.setCenter(monMarqueur.getPosition());
+            maCarte.setMapTypeId('satellite');
+
+
+            /* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
+            /* On ne modifie que l'url en fonction du marqueur */
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'location':monMarqueur.getPosition()}, function(results, status) 
+			{
+                if (status == 'OK') 
+				{
+                    $('#site_ba_lienGoogle').val('latLng' + monMarqueur.getPosition());
+                    $('#site_ba_lienGoogle').attr('readonly', true);
+                } else {
+                    alert('Aucune adresse trouvée pour le lieu selectionné');
+                }
+            });
+        });
+
+
+        autocomplete.addListener('place_changed', function() 
+		{
+            var place = autocomplete.getPlace();
+            if (place.geometry) {
+                maCarte.panTo(place.geometry.location);
+                maCarte.setZoom(19);
+                maCarte.setMapTypeId('satellite');
+                monMarqueur = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: maCarte
+                });
+            }
+            $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
+            $('#site_ba_lienGoogle').attr('readonly', true)
+        });
+
+        $('#site_ba_lienGoogle').on('change', function() 
+		{
+            var $objPos = {};
+
+            var $position = $('#site_ba_lienGoogle').val();
+			if ($position == '' )
+			{
+				return 0;
+			}
+
+
+            // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
+            // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
+            var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
+            if ($coordonnees == null)
+            {
+                geocoder = new google.maps.Geocoder();
+                var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
+                $.ajax({
+                    url: $adresse,
+                    method: "get",
+                    success: function(msg) {
+                        $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
+                        $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
+                        maCarte.setCenter($objPos);
+                        maCarte.setZoom(19);
+                        maCarte.setMapTypeId('satellite');
+                        monMarqueur = new google.maps.Marker({
+                            position: $objPos,
+                            map: maCarte
+                        });
+                        $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
+                        $('#site_ba_lienGoogle').val($latLng);
+                    }
+                });
+            } else {
+                $objPos.lat = parseFloat($coordonnees[1]);
+                $objPos.lng = parseFloat($coordonnees[2]);
+                maCarte.setCenter($objPos);
+                maCarte.setZoom(19);
+                maCarte.setMapTypeId('satellite');
+            }
+        });
+    }
+
+
     // Tableau des équipements selectionnés
     // il permet de ne pas réafficher les équipements en doublon lors de la modification du select site
     var tabDesEquipementsSelectionnes = [];
@@ -350,6 +487,8 @@
 
 	$(document).ready(function() 
 	{
+		attendreRechargement();
+
         /* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({
             numberOfMonths: 1,
@@ -364,9 +503,6 @@
 
 
 		setDatePicker();
-		
-
-		
 
 		/* Récupération du container contenant l'attribut data-prototype */
 		$container = $('#bons_attachement_fichiersPdf');
@@ -375,15 +511,12 @@
         /* Récupération du container des contacts des SitesBA */
         $container_contact = $('#site_ba_contacts');
 
-	
-
         /* Lien permettant l'ajout d'un nouveau contact au site */
         var $addLinkContact = $('<a href="#" id="add_contact" class="small_link">Ajouter un contact</a>');
 		/* Lien permettant l'ajout d'un nouveau fichier au bon */
 		var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier</a>');
 		/* Lien permettant l'ajout d'un nouveau fichier au site */
 		var $addLinkFichierSiteBA = $('<a href="#" id="add_fichier_site" class="small_link">Ajouter un fichier</a>');
-
 
 		/* Ajout du lien dans la div du container */
 		$('#lien_ajout_fichier').html($addLink);
@@ -392,8 +525,6 @@
         /* Ajout du lien dans la div du container de contact des sites */
         $('#lien_ajout_contact').html($addLinkContact);
 
-
-
 		/* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
 		$addLink.click(function(e){
 			ajoutChampFichier();
@@ -401,6 +532,7 @@
 			$('#bons_attachement_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
 			return false;
 		});
+
 		/* Ajout d'un listener pour création d'un champs lors du clic sur le lien des fichiers des sitesBA */
 		$addLinkFichierSiteBA.click(function(e){
             ajoutChampFichierSiteBA();
@@ -408,6 +540,7 @@
             $('#site_ba_fichiersJoint_' + ( $indexFichierSiteBA - 1 ) + '_file').trigger("click");
             return false;
         });
+
         /* Ajout d'un listener pour création d'un champs contact lors du clic sur le lien des contacts */
         $addLinkContact.click(function(e){
             ajoutChampContactSiteBA();
@@ -431,6 +564,12 @@
 		/* Affichage des informations du site selectionné dans l'encart SiteBA */
 		$('#bons_attachement_site').change(function()
 		{
+maCarte = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 50.474, lng: 2.97118},
+            zoom: 4,
+            mapTypeId: 'roadmap'
+        });
+
 			$changeEnCours = true;
 
 			// Réinitialisation des informations concernant les sites
@@ -470,28 +609,43 @@
             	    data: {'id_site_ba':$id_site_ba},
             	    success: function(msg) 
 					{
-						var $tab_siteBA = $.parseJSON(msg);
+						var siteBA = $.parseJSON(msg);
 
-						$('#id_site_ba').val($tab_siteBA[0]);
-						$('#site_ba_intitule').val($tab_siteBA[1]);
+						$('#id_site_ba').val(siteBA.id);
+						$('#site_ba_intitule').val(siteBA.intitule);
 						{# $('#site_ba_intitule').attr('readonly', true); // On autorise le changement du nom du site #}
-						$('#site_ba_adresse').val($tab_siteBA[2]);
-						$('#site_ba_lienGoogle').val($tab_siteBA[3]);			
-						$('#site_ba_informationsClient').val($tab_siteBA[4]);
-						/* Gestion des contacts client  : On split sur ; pour récupérer la 1ere valeur qui correspond à l'id pour requete ajax et affichage de la fiche client*/
-						$tab_contact = $tab_siteBA[5];
+						$('#site_ba_adresse').val(siteBA.adresse);
+
+						$.ajax({
+							url: "{{ path('lci_ajax_bon_get_googlemap') }}",
+							method: "POST",
+							data: {'id_site_ba':$id_site_ba},
+							success: function(urlGoogleMap)
+                			{
+								$('#site_ba_lienGoogle').val(urlGoogleMap);
+								$('#site_ba_lienGoogle').trigger('change');
+							},
+							error: function()
+							{
+								alert('error map google');
+							}
+						});
+
+						$('#site_ba_informationsClient').val(siteBA.informationClient);
 
 						html_option = "<option></option>";
-						$.each($tab_siteBA[5], function($index, $tabContact) {
-							ficheContactPourImpression($index);
+						$.each(siteBA.contacts, function(index, contact) 
+						{
+							// ICI DEV ficheContactPourImpression(index);
 							$html = '<p>';
-							$html = $html + $tabContact['nom'] + '</p>';
+							$html = $html + contact.nom + '</p>';
                 	        $('#contacts_deja_associes').append($html);
-							html_option += "<option value='" + $index + "'>" + $tabContact['nom'] + "</option>";
+//							html_option += "<option value='" + index + "'>" + contact.nom + "</option>";
+							html_option += "<option value='" + contact.id + "'>" + contact.nom + "</option>";
                 	    });
 						$('#select_contact').html(html_option);	
             			
-						// On re sélectionne le contact précédemment selectionné
+						// On reselectionne le contact précédemment selectionné
 						{% if id_last_site is not null %}
             				if($('#bons_attachement_nomDuContact').val() != '')
             				{
@@ -501,20 +655,15 @@
 						{% endif %}
 
 						// Ajout des noms des fichiers précédemment joints au site
-						if ($tab_siteBA[6]) {
-							$.each($tab_siteBA[6], function(index, value) {
-								$('#fichiers_deja_joints').append(value + '<br />');
-								$('#fichiers_deja_joints2').append("<div class='add-list__added " + $tab_siteBA[7][index] + "'>" + value + "<div class='close-cross' onClick='supprimeFile(" + $tab_siteBA[7][index] + ");'></div></div>");
-							});
-						}
+						$.each(siteBA.fichiersJoint, function(index, fichier) {
+								$('#fichiers_deja_joints').append(fichier.alt + '<br />');
+								$('#fichiers_deja_joints2').append("<div class='add-list__added " + fichier.id + "'>" + fichier.alt + "<div class='close-cross' onClick='supprimeFile(" + fichier.id + ");'></div></div>");
+						});
 		
 						// Ajout des équipements précédemment joints au site
-						if ($tab_siteBA[8]) 
-						{
-                            $.each($tab_siteBA[8], function(index, value) {
-                                $('#equipements_deja_joints').append(value + '<br />');
-                            });
-                        }
+                        $.each(siteBA.equipementBATickets, function(index, equipement) {
+                                $('#equipements_deja_joints').append(equipement.denomination + '<br />');
+                        });
 
 						$('#site_ba_lienGoogle').trigger('change');
 						/* Placement du marqueur sur la page */
@@ -548,31 +697,6 @@
             $('#select_contact').html("<option></option>");
 		});
 
-		/* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
-        {% if id_last_site is defined %}
-            var id_last_site = "{{ id_last_site }}";
-            // Sauvegarde des informations du contact
-            save_nom_contact  = $('#bons_attachement_nomDuContact').val();
-            save_tel_contact  = $('#bons_attachement_telephoneContactClient').val();
-            save_mail_contact = $('#bons_attachement_emailContactClient').val();
-
-            // On rédéfini le select précédemment selectionné dans le select
-            $('#bons_attachement_site').val(id_last_site);
-
-            // On active le listener de changement de site courant
-            $('#bons_attachement_site').trigger('change');
-
-            // On redéfini les informations du contact précédemment selectionné
-            $('#bons_attachement_nomDuContact').val(save_nom_contact);
-            $('#bons_attachement_telephoneContactClient').val(save_tel_contact);
-            $('#bons_attachement_emailContactClient').val(save_mail_contact);
-        {% endif %}
-
-
-        // Si la création d'un équipement est en erreur : affichage du formulaire
-        {% if echec_creation_equipement == true %}
-            $('#btn_ajout_equipement2').trigger('click');
-        {% endif %}
 
 
 	    // Gestion du select contact
@@ -596,15 +720,28 @@
         	var $index_tab_contact = $('#select_contact').val();
         	if ($('#select_contact').val() != '')
         	{
-        	    $('#contact_id').val($tab_contact[$index_tab_contact]['id']);
-        	    $('#contact_nom').val($tab_contact[$index_tab_contact]['nom']);
-        	    $('#contact_prenom').val($tab_contact[$index_tab_contact]['prenom']);
-        	    $('#contact_mail').val($tab_contact[$index_tab_contact]['email']);
-        	    $('#contact_telephone').val($tab_contact[$index_tab_contact]['telephone']);
-        	    $('#contact_fonction').val($tab_contact[$index_tab_contact]['fonction']);
-        	    $('#bons_attachement_nomDuContact').val($tab_contact[$index_tab_contact]['nom']);
-        	    $('#bons_attachement_emailContactClient').val($tab_contact[$index_tab_contact]['email']);
-        	    $('#bons_attachement_telephoneContactClient').val($tab_contact[$index_tab_contact]['telephone']);
+	        	$.ajax({
+	        	    url: "{{ path('lci_ajax_bon_get_infos_contact') }}",
+	        	    method: "post",
+	        	    data: {'id_contact':$('#select_contact').val()},
+	        	    success: function(data)
+	        	    {
+						var contact = JSON.parse(data);
+						$('#contact_id').val(contact.id);
+	                	$('#contact_nom').val(contact.nom);
+	                	$('#contact_prenom').val(contact.prenom);
+	                	$('#contact_mail').val(contact.mail);
+	                	$('#contact_telephone').val(contact.telephone);
+	                	$('#contact_fonction').val(contact.fonction);
+	                	$('#bons_attachement_nomDuContact').val(contact.nom);
+	                	$('#bons_attachement_emailContactClient').val(contact.mail);
+	                	$('#bons_attachement_telephoneContactClient').val(contact.telephone);
+		            },
+					error: function()
+					{
+						alert('error');
+					}
+		        });
         	} 
 
 			// On retire l'encart rouge qui indique que les champs sont necessaires pour l'envoi du formulaire
@@ -658,30 +795,11 @@
     	        }
     	    {% endfor %}
     	    $('#insert_equipement').html(html_nouvelles_options);
+
+			// On effectue la recherche sur les équipements nouvellement affichés
+			$('#recherche_equipement').trigger('keyup');
     	});
 		
-		// On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
-        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
-        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
-
-
-
-		// On re sélectionne les équipements précédemment selectionné après l'envoi sans sauvegarde du formulaire de bon
-		{% if tab_des_id_equipements_selectionnes | length != 0 %}
-			// On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
-			$('#select_equipement').val('');
-        	$('#select_equipement').change();
-			{% for id_equipement in tab_des_id_equipements_selectionnes %}
-				// On check les checkbox des equipements
-				$('#equipement_' + "{{ id_equipement }}").prop('checked', true);
-				deplaceEquipement("{{ id_equipement }}");
-			{% endfor %}
-			// Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
-			$('#select_equipement').val($('#bons_attachement_site').val());
-		{% endif %}
-
-		// On affiche les équipements du site selectionné au chargement de la page
-        $('#select_equipement').change();
 
 
 	    // Fonction de recherche dans la liste des équipements
@@ -705,6 +823,85 @@
 	            });
 	        });
    		});
+
+
+		/* Actions faites au chargement de la page */
+
+
+
+
+
+        /* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
+        {% if id_last_site is defined %}
+            var id_last_site = "{{ id_last_site }}";
+            // Sauvegarde des informations du contact
+            save_nom_contact  = $('#bons_attachement_nomDuContact').val();
+            save_tel_contact  = $('#bons_attachement_telephoneContactClient').val();
+            save_mail_contact = $('#bons_attachement_emailContactClient').val();
+
+            // On rédéfini le select précédemment selectionné dans le select
+            $('#bons_attachement_site').val(id_last_site);
+
+            // On active le listener de changement de site courant
+            $('#bons_attachement_site').trigger('change');
+
+            // On redéfini les informations du contact précédemment selectionné
+            $('#bons_attachement_nomDuContact').val(save_nom_contact);
+            $('#bons_attachement_telephoneContactClient').val(save_tel_contact);
+            $('#bons_attachement_emailContactClient').val(save_mail_contact);
+        {% endif %}
+
+        // Si la création d'un équipement est en erreur : affichage du formulaire
+        {% if echec_creation_equipement == true %}
+            $('#btn_ajout_equipement2').trigger('click');
+        {% endif %}
+
+        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
+        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+
+
+		// On re sélectionne les équipements précédemment selectionné après l'envoi sans sauvegarde du formulaire de bon
+        {% if tab_des_id_equipements_selectionnes | length != 0 %}
+            // On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
+            $('#select_equipement').val('');
+            $('#select_equipement').change();
+            {% for id_equipement in tab_des_id_equipements_selectionnes %}
+                // On check les checkbox des equipements
+                $('#equipement_' + "{{ id_equipement }}").prop('checked', true);
+                deplaceEquipement("{{ id_equipement }}");
+            {% endfor %}
+            // Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
+            $('#select_equipement').val($('#bons_attachement_site').val());
+        {% endif %}
+
+        // On affiche les équipements du site selectionné au chargement de la page
+        $('#select_equipement').change();
+
+
+		if ($('#bons_attachement_siteNouveau').val() != '')
+		{
+			// Selection du contact  si un nouveau contact est crée pour le site courant
+			switch($('#bons_attachement_typeNouveau').val())
+        	{
+        	    case 'equipement':
+					gestionDesSelectionEquipements();
+					$('#select_equipement').val($('#bons_attachement_siteNouveau').val());
+					$('#select_equipement').trigger('change');
+	            break;
+	            case 'contact':
+					if ($('#bons_attachement_site').val() == $('#bons_attachement_siteNouveau').val())
+					{
+						// On affiche le nouveau contact ssi il est crée pour le site courant du bon
+						$('#select_contact').val($('#bons_attachement_idNouveau').val())
+						//$('#select_contact').trigger('change');
+					}
+	            break;
+	        }
+
+		}
+		// Affichage de la popup Selection des équipements si un nouvel équipement est crée pour le site courant
+		finAttendreRechargement();
 	});
 
     function attendreRechargement()
@@ -773,6 +970,7 @@
         {
             $("#select_equipement").val($('#bons_attachement_site').val());
         }
+		$('#select_equipement').trigger('change');
         togglePopUp(popupSelectionEquipement);
     }
 
@@ -884,7 +1082,6 @@
 			/* Création du marqueur */
         	monMarqueur = new google.maps.Marker({
         	    position: $objPos,
-        	    map: maCarte
         	});
 
 			/* Placement du marqueur sur la carte */
@@ -1189,7 +1386,8 @@
     // Envoi du service selectionné
     // Récupération des ids des membres du service
     // Cache les non membre du service du select html
-    $('#bons_attachement_service').change(function() {
+    $('#bons_attachement_service').change(function() 
+	{
         // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
         $('#bons_attachement_user').html(sauvegarde_select_user);
 
@@ -1262,7 +1460,10 @@
 		if ($send_form === true)
 		{
 			attendreRechargement();
+
+			// On indique que le formulaire du bon sera envoyé pour être sauvegardé en base
 			$('#enregistrement').val("oui");
+
 			document.forms['myForm'].submit(); 
 		}
 	}
@@ -1391,15 +1592,35 @@
         	    data: $('form[name="contact"]').serialize(),
         	    success: function(output, status, xhr)
         	    {
-					console.log('success');
         	        try {
         	            // On recoit une réponse ajax : Le contact a été enregistré
         	            data = JSON.parse(output);
+
+
+                        // Remplissage des champs indiquant la création d'un nouvel objet
+                        var $id_nouveau_contact = data['message'];
+                        $('#bons_attachement_idNouveau').val($id_nouveau_contact);
+                        $('#bons_attachement_typeNouveau').val('contact');
+						// Recherche de l'id du site du nouveau contact
+						$('#bons_attachement_site option').each(function()
+						{
+							if($(this).text() == $('#contact_siteBA option:selected').text())
+							{
+								$('#bons_attachement_siteNouveau').val($(this).val());
+								return false;
+							}
+						});
+				
+						// On reset le formulaire contact
 						$('#contact_reset').trigger('click');
+
+						// On ferme la popup contact
                         retourPopupContact2();
+
                         // Rechargement de la page
                         document.forms['myForm'].submit();
         	        } catch(e) {
+						finAttendreRechargement
         	            // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
         	            var form_html = output;
         	            $('#popupContact2').html(form_html);
@@ -1407,8 +1628,8 @@
         	    },
         	    error: function (xhr, status, st_text)
         	    {
-					finAttendreRechargement
-        	        console.log('error');
+					finAttendreRechargement();
+        	        alert('error');
         	    }
         	});
 		}
@@ -1457,8 +1678,7 @@
 
         if ($send_form == true)
         {
-			//attendreRechargement();
-			
+			attendreRechargement();
 
             // Appel ajax
             $.ajax({
@@ -1470,8 +1690,13 @@
                     try {
                         // On recoit une réponse ajax : L'équipement a été enregistré
                         data = JSON.parse(output);
-						$('#equipement_ba_ticket_reset').trigger('click');
-						annulerPopupEquipement2();
+
+						// Remplissage des champs indiquant la création d'un nouvel objet
+						var $id_nouvel_equipement = data['message'];
+						$('#bons_attachement_idNouveau').val($id_nouvel_equipement);
+						$('#bons_attachement_typeNouveau').val('equipement');
+                        $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
+
 
 						// Rechargement de la page
 						document.forms['myForm'].submit();	
@@ -1485,11 +1710,13 @@
         				// On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
         				$("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
         				$("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+						finAttendreRechargement();
                     }
                 },
                 error: function (xhr, status, st_text)
                 {
-                    console.log('error');
+					finAttendreRechargement
+                    alert('error');
                 }
             });
         }
@@ -1497,9 +1724,7 @@
 </script>
 
 
-{# lien vers api autocompletion de google #}
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
 </script>
 
 

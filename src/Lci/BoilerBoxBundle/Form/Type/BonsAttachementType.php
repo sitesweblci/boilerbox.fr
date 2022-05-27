@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -208,6 +209,23 @@ class BonsAttachementType extends AbstractType {
             'allow_add'     => true,
             'allow_delete'  => true,
             'required'      => true
+        ))
+		->add('typeNouveau', TextType::class, array(
+            'label'         => 'Création',
+            'required'      => false,
+			'mapped'		=> false,
+            'trim'          => true,
+        ))
+		->add('idNouveau', IntegerType::class, array(
+            'label'         => 'Id création',
+            'required'      => false,
+			'mapped'		=> false
+        ))
+        ->add('siteNouveau', TextType::class, array(
+            'label'         => 'Site création',
+            'required'      => false,
+            'mapped'        => false,
+            'trim'          => true,
         ));
 	}
 

@@ -241,6 +241,11 @@ class BonsController extends Controller
                 // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_bon === false)
                 if (($f_bons_attachement->isSubmitted()) || ($enregistrement_form_bon === false))
 				{
+					// On récupère les champs des nouveaux objet crées (contact/ équipement)
+					$nouveau_type_creation =  $f_bons_attachement->get('typeNouveau')->getData();
+					$nouvel_id_creation = $f_bons_attachement->get('idNouveau')->getData();
+					$site_nouvelle_creation = $f_bons_attachement->get('siteNouveau')->getData();
+
 					// Si le bon devait être enregsitré on affiche les erreurs du formulaire
 					if($enregistrement_form_bon === true)
 					{
@@ -256,6 +261,10 @@ class BonsController extends Controller
 
 					// On recrée le formulaire avec les données récues
 					$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+					$f_bons_attachement->get('typeNouveau')->setData($nouveau_type_creation);
+					$f_bons_attachement->get('idNouveau')->setData($nouvel_id_creation);
+					$f_bons_attachement->get('siteNouveau')->setData($site_nouvelle_creation);
+
 					// On récupère l'id du site pour le réafficher
 					if ($e_bons_attachement->getSite())
 					{

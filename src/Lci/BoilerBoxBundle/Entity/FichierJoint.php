@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 //use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
@@ -23,6 +24,7 @@ class FichierJoint {
      * @ORM\Id
      * @ORM\Column(type="integer", options={"unsigned":true})
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"groupContact"})
     */
     protected $id;
 
@@ -54,6 +56,7 @@ class FichierJoint {
 
   	/**
    	 * @ORM\Column(name="alt", type="string", length=255)
+     * @Groups({"groupContact"})
    	*/
   	protected $alt;
 

@@ -5,6 +5,7 @@ namespace Lci\BoilerBoxBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 /**
@@ -23,6 +24,7 @@ class EquipementBATicket
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"groupContact"})
      */
     private $id;
 
@@ -33,6 +35,7 @@ class EquipementBATicket
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"groupContact"})
      */
     private $denomination;
 

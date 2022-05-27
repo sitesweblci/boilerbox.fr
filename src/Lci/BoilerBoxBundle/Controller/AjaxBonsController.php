@@ -146,10 +146,6 @@ class AjaxBonsController extends Controller
     public function getSiteBAEntityAction()
     {
 		$em 				= $this->getDoctrine()->getManager();
-        $tab_fichier 		= null;
-		$tab_id_fichier 	= null;
-		$tab_equipement 	= null;
-		$tab_id_equipement 	= null;
 
         if (isset($_POST['id_site_ba'])) {
             $id_site_ba = $_POST['id_site_ba'];
@@ -158,56 +154,50 @@ class AjaxBonsController extends Controller
         }
         $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
 
-        $tab_siteba[] = $e_siteba->getId();
-        $tab_siteba[] = $e_siteba->getIntitule();
-        $tab_siteba[] = $e_siteba->getAdresse();
-        $tab_siteba[] = $this->putZoomApi($this->putApiKey($this->transformeUrlReverse($e_siteba->getLienGoogle())));
-        $tab_siteba[] = $e_siteba->getInformationsClient();
-        $tab_contacts = array();
-        foreach ($e_siteba->getContacts() as $ent_contact) {
-            $tab_contact = array();
-            $tab_contact['id'] = $ent_contact->getId();
-            $tab_contact['nom'] = $ent_contact->getNom();
-            $tab_contact['prenom'] = $ent_contact->getPrenom();
-            $tab_contact['email'] = $ent_contact->getMail();
-            $tab_contact['telephone'] = $ent_contact->getTelephone();
-            $tab_contact['fonction'] = $ent_contact->getFonction();
-            $tab_contact['maj'] = $ent_contact->getDateMaj()->format('d/m/Y');
-            $tab_contacts[] = $tab_contact;
-        }
-        $tab_siteba[] = $tab_contacts;
-
-		// Recherche des noms des fichiers liés au site
-        foreach ($e_siteba->getFichiersJoint() as $e_fichier) {
-            $tab_fichier[] 		= $e_fichier->getAlt();
-			$tab_id_fichier[] 	= $e_fichier->getId();
-        }
-		
-		if ($tab_fichier != null) {
-			$tab_siteba[] = $tab_fichier;
-			$tab_siteba[] = $tab_id_fichier;
-        } else {
-            $tab_siteba[] = null;
-			$tab_siteba[] = null;
-        }
+        // On retourne le fichier serialize
+        $serializer = $this->get('serializer');
+        $jsonContent = $serializer->serialize(
+            $e_siteba,
+            'json', array('groups' => array('groupContact'))
+        );
+        return new Response($jsonContent);
+    }
 
 
-		// Recherche des équipements
-		foreach ($e_siteba->getEquipementBATickets() as $e_equipement) {
-            $tab_equipement[] 		= $e_equipement->getDenomination();
-			$tab_id_equipement[] 	= $e_equipement->getId();
-        }
-		if ($tab_equipement != null) {
-			$tab_siteba[] = $tab_equipement;
-			$tab_siteba[] = $tab_id_equipement;
+	public function getGoogleMapAction()
+	{
+		$url;
+		$em = $this->getDoctrine()->getManager();
+
+        $id_site_ba = $_POST['id_site_ba'];
+        $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
+
+        // transformeUrlReverse
+        $patternLatLng = '$^https?://www.google.com/maps/embed/v1/view\?key=APIKEY&center=(.+?),(.+?)&zoom.*$';
+		$patternPlace = '$^https://www.google.com/maps/embed/v1/place\?key=APIKEY&q=(.+?)&zoom=.*$';
+        if (preg_match($patternLatLng, $e_siteba->getLienGoogle(), $matches)) 
+		{
+            $url = 'latLng(' . $matches[1] . ',' . $matches[2] . ')';
+        } else if (preg_match($patternPlace, $e_siteba->getLienGoogle(), $matches)) 
+		{
+        	$url = 'https://www.google.com/maps/place/' . $matches[1] . '/';
 		} else {
-			$tab_siteba[] = null;
-            $tab_siteba[] = null;
+			$url = $e_siteba->getLienGoogle();
 		}
 
-        echo json_encode($tab_siteba);
-        return new Response;
-    }
+        // putApiKey
+        $apiKey = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+        $pattern = '/APIKEY/';
+        $url = preg_replace($pattern, $apiKey, $url);
+
+        // putZoomApi
+        $zoomApi = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur();
+        $pattern = '/ZOOMAPI/';
+        $url = preg_replace($pattern, $zoomApi, $url);
+
+        return new Response($url);
+	}
+
 
 
     // Fonction qui récupère l'url retournée par l'entité et extrait la latitude et la longitude
@@ -435,7 +425,12 @@ class AjaxBonsController extends Controller
 
                     $em->persist($e_equipement);
                     $em->flush();
-					return new Response('{"message" : "Success" }'); 
+
+			        $reponse = array(
+        		    	"message" => $e_equipement->getId()
+        			);
+
+					return new Response(json_encode($reponse));
                 } 
                 return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', [
                     'form_equipement'  	=> $f_equipement->createView(),
@@ -474,7 +469,12 @@ class AjaxBonsController extends Controller
 					$e_contact->setDateMaj(new \Datetime());
                 	$em->persist($e_contact);
                 	$em->flush();
-					return new Response('{"message" : "Success" }');
+
+                    $reponse = array(
+                        "message" => $e_contact->getId()
+                    );
+
+                    return new Response(json_encode($reponse));
 				}
 				return $this->render('LciBoilerBoxBundle:Bons:creer_contact.html.twig', [
                     'form_contact' 	=> $f_contact->createView(),
@@ -551,5 +551,18 @@ class AjaxBonsController extends Controller
 
         return $errors;
     }
+
+
+	public function getInfosContactAction()
+	{
+		$e_contact = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:Contact')->find($_POST['id_contact']);
+        // On retourne le fichier serialize
+        $serializer = $this->get('serializer');
+        $jsonContent = $serializer->serialize(
+            $e_contact,
+            'json', array('groups' => array('groupContact'))
+        );
+        return new Response($jsonContent);
+	}
 
 }
