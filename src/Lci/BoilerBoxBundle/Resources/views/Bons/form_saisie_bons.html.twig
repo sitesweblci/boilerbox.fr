@@ -426,51 +426,52 @@
             $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
             $('#site_ba_lienGoogle').attr('readonly', true)
         });
-
-        $('#site_ba_lienGoogle').on('change', function() 
-		{
-            var $objPos = {};
-
-            var $position = $('#site_ba_lienGoogle').val();
-			if ($position == '' )
-			{
-				return 0;
-			}
-
-
-            // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
-            // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
-            var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
-            if ($coordonnees == null)
-            {
-                geocoder = new google.maps.Geocoder();
-                var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
-                $.ajax({
-                    url: $adresse,
-                    method: "get",
-                    success: function(msg) {
-                        $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
-                        $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
-                        maCarte.setCenter($objPos);
-                        maCarte.setZoom(19);
-                        maCarte.setMapTypeId('satellite');
-                        monMarqueur = new google.maps.Marker({
-                            position: $objPos,
-                            map: maCarte
-                        });
-                        $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
-                        $('#site_ba_lienGoogle').val($latLng);
-                    }
-                });
-            } else {
-                $objPos.lat = parseFloat($coordonnees[1]);
-                $objPos.lng = parseFloat($coordonnees[2]);
-                maCarte.setCenter($objPos);
-                maCarte.setZoom(19);
-                maCarte.setMapTypeId('satellite');
-            }
-        });
     }
+
+    $('#site_ba_lienGoogle').on('change', function()
+    {
+        var $objPos = {};
+
+        var $position = $('#site_ba_lienGoogle').val();
+        if ($position == '' )
+        {
+            return 0;
+        }
+
+
+        // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
+        // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
+        var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
+        if ($coordonnees == null)
+        {
+            geocoder = new google.maps.Geocoder();
+            var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
+            $.ajax({
+                url: $adresse,
+                method: "get",
+                success: function(msg) {
+                    $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
+                    $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
+                    maCarte.setCenter($objPos);
+                    maCarte.setZoom(19);
+                    maCarte.setMapTypeId('satellite');
+                    monMarqueur = new google.maps.Marker({
+                        position: $objPos,
+                        map: maCarte
+                    });
+                    $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
+                    $('#site_ba_lienGoogle').val($latLng);
+                }
+            });
+        } else {
+            $objPos.lat = parseFloat($coordonnees[1]);
+            $objPos.lng = parseFloat($coordonnees[2]);
+            maCarte.setCenter($objPos);
+            maCarte.setZoom(19);
+            maCarte.setMapTypeId('satellite');
+        }
+    });
+
 
 
     // Tableau des équipements selectionnés
@@ -564,11 +565,7 @@
 		/* Affichage des informations du site selectionné dans l'encart SiteBA */
 		$('#bons_attachement_site').change(function()
 		{
-maCarte = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 50.474, lng: 2.97118},
-            zoom: 4,
-            mapTypeId: 'roadmap'
-        });
+			initAutocomplete();
 
 			$changeEnCours = true;
 
