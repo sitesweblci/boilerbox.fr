@@ -181,7 +181,7 @@
 			<div class="form__field rel">
 				<label>Nom</label>
 				<select id='select_contact'>
-					<option></option>
+					<option value=''></option>
 				</select>
 				<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
 			</div>
@@ -243,7 +243,7 @@
         	    <div class="form__field rel">
         	        <div style='padding:5px;' >
             	        <select id='select_equipement'>
-            	             <option></option>
+            	             <option value=''>Affichage des équipements tous sites confondus</option>
             	            {% for e_siteBA in es_sitesBA %}
             	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
             	            {% endfor %}
@@ -254,13 +254,13 @@
 						</div>
 
             	        <div style='padding:20px;'>
-            	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px;'>
+            	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
             	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
                                     <span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
             	            </div>
 
-            	            <div id="liste_des_equipements" style='padding-top:10px;'>
-            	                <div class='form_field rel'><label>Liste des équipements du site séléctionné</label></div>
+            	            <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
+            	                <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
 									<span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
             	                <div id='insert_equipement'>
             	                </div>
@@ -269,7 +269,7 @@
                 	</div>
             	</div>
 			</div>
-			<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();">Enregistrer un nouvel équipement</button>
+			<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();">Ajouter un nouvel équipement</button>
 		</div>
 	</div>
 </section>
@@ -576,7 +576,7 @@
 			resetInfosContact();
 
 			// On réinitalise le select contact 
-			$('#select_contact').html("<option></option>");
+			$('#select_contact').html("<option value=''></option>");
 
 			// On lance le raffraichissement de la popup Equipement
             refreshSelectEquipements();
@@ -632,7 +632,8 @@
 
 						$('#site_ba_informationsClient').val(siteBA.informationClient);
 
-						html_option = "<option></option>";
+						// On ré initialise le select contact en indiquant la possiblité de création d'un contact
+						html_option = "<option value=''>Ajouter un nouveau contact</option>";
 						$.each(siteBA.contacts, function(index, contact) 
 						{
 							// ICI DEV ficheContactPourImpression(index);
@@ -747,7 +748,7 @@
             resetInfosContact();
 
             /* On réinitalise le select contact */
-            $('#select_contact').html("<option></option>");
+            $('#select_contact').html("<option value=''></option>");
 		});
 
 
@@ -790,9 +791,11 @@
 	               		$('#bons_attachement_nomDuContact').val(contact.nom);
 	               		$('#bons_attachement_emailContactClient').val(contact.mail);
 	               		$('#bons_attachement_telephoneContactClient').val(contact.telephone);
+						finAttendreRechargement();
 		            },
 					error: function()
 					{
+						finAttendreRechargement();
 						alert('error');
 					}
 		        });
