@@ -203,7 +203,7 @@ class BonsAttachementType extends AbstractType {
         ->add('equipementBATicket', CollectionType::class, array(
             'entry_type'    => EquipementBATicketType::class,
             'entry_options' => array('data_class' => 'Lci\BoilerBoxBundle\Entity\EquipementBATicket'),
-            'label'         => 'Equipements',
+            'label'         => false,
             'label_attr'    => array ('class' => 'label_smalltext'),
             'allow_add'     => true,
             'allow_delete'  => true,
