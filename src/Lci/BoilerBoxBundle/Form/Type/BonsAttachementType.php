@@ -181,7 +181,6 @@ class BonsAttachementType extends AbstractType {
 				'Certus'	=> 'certus',
 				'Export'	=> 'export'
 			],
-			//'preferred_choices' => ['certus', 'bosch'],
 			'required' => false
 		))
 		->add('typeIntervention', ChoiceType::class, array(
@@ -210,22 +209,43 @@ class BonsAttachementType extends AbstractType {
             'allow_delete'  => true,
             'required'      => true
         ))
+        ->add('cheminDossierPhotos', TextType::class, array(
+            'label'         => 'Chemin local vers le répertoire des photos',
+            'label_attr'    => array(
+                'class'         => 'label_smalltext'
+            ),
+            'attr'          => array(
+                'class'         => 'biginput centrer',
+                'placeholder'   => "Chemin vers le repertoire local des photos",
+                'style'         => 'width:100%;'
+            ),
+            'required'      => false
+        ))
 		->add('typeNouveau', TextType::class, array(
-            'label'         => 'Création',
+            'label'         => false,
             'required'      => false,
 			'mapped'		=> false,
             'trim'          => true,
+			'attr'			=> array(
+				'class'			=> 'cacher' 
+			)
         ))
 		->add('idNouveau', IntegerType::class, array(
-            'label'         => 'Id création',
+            'label'         => false,
             'required'      => false,
-			'mapped'		=> false
+			'mapped'		=> false,
+            'attr'          => array(
+                'class'         => 'cacher'
+            )
         ))
         ->add('siteNouveau', TextType::class, array(
-            'label'         => 'Site création',
+            'label'         => false,
             'required'      => false,
             'mapped'        => false,
             'trim'          => true,
+            'attr'          => array(
+                'class'         => 'cacher'
+            )
         ));
 	}
 

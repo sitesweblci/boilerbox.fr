@@ -493,38 +493,16 @@ class AjaxBonsController extends Controller
     public function creerSiteBAAction(Request $request)
     {
         $em         		= $this->getDoctrine()->getManager();
+
 		// Lecture de l'option de configuration [upload_max_filesize] pour l'indiquer dans la page html
 		$max_upload_size	= ini_get('upload_max_filesize');
+
 		// Clé google pour pouvoir utiliser les API de google
 		$apiKey             = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+
         $e_siteBA  			= new SiteBA();
         $f_siteBA   		= $this->createForm(SiteBAType::class, $e_siteBA);
-        $f_siteBA->handleRequest($request);
-        if ($request->isXMLHttpRequest())
-        {
-            if ($f_siteBA->isSubmitted())
-            {
-                // Si c'est une modification de site on recrée le formulaire à partir du siteBA à modifier
-                if ($f_siteBA->get('id')->getData() != null)
-                {
-                    $e_siteBA = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:SiteBA')->find($f_siteBA->get('id')->getData());
-                    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA);
-                    $f_siteBA->handleRequest($request);
-                }
-                if ($f_siteteBA->isValid())
-                {
-                    $em->persist($e_siteBA);
-                    $em->flush();
-                    return new Response('{"message" : "Success" }');
-                }
-                return $this->render('LciBoilerBoxBundle:Bons:creer_siteBA.html.twig', [
-					'max_upload_size'	=> $max_upload_size,
-					'apiKey'			=> $apiKey,
-                    'form_siteBA'  		=> $f_siteBA->createView(),
-                    'id'            	=> $e_siteBA->getId()
-                ]);
-            }
-        }
+
         return $this->render('LciBoilerBoxBundle:Bons:creer_siteBA.html.twig', array(
 			'max_upload_size'	=> $max_upload_size,
             'apiKey'            => $apiKey,

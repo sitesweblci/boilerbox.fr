@@ -94,17 +94,6 @@ class SiteBA
     private $equipementBATickets;
 
 
-    // Entre bon attachement et ticket
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-    */
-    protected $cheminDossierPhotos;
-
-
-
-
 
     /**
      * Constructor
@@ -400,28 +389,5 @@ class SiteBA
         return $this;
     }
 
-    /**
-     * Set cheminDossierPhoto.
-     *
-     * @param string $cheminDossierPhotos
-     *
-     * @return BonsAttachement
-     */
-    public function setCheminDossierPhotos($cheminDossierPhotos)
-    {
-        $this->cheminDossierPhotos = $cheminDossierPhotos;
-
-        return $this;
-    }
-
-    /**
-     * Get cheminDossierPhotos.
-     *
-     * @return string
-     */
-    public function getCheminDossierPhotos()
-    {
-        return $this->cheminDossierPhotos;
-    }
 
 }

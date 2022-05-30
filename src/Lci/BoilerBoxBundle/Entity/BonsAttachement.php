@@ -241,6 +241,14 @@ class BonsAttachement {
     */
     protected $type;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+    */
+    protected $cheminDossierPhotos;
+
+
 
 
 
@@ -877,4 +885,32 @@ class BonsAttachement {
     {
         return $this->equipementBATicket;
     }
+
+
+
+
+    /**
+     * Set cheminDossierPhoto.
+     *
+     * @param string $cheminDossierPhotos
+     *
+     * @return BonsAttachement
+     */
+    public function setCheminDossierPhotos($cheminDossierPhotos)
+    {
+        $this->cheminDossierPhotos = $cheminDossierPhotos;
+
+        return $this;
+    }
+
+    /**
+     * Get cheminDossierPhotos.
+     *
+     * @return string
+     */
+    public function getCheminDossierPhotos()
+    {
+        return $this->cheminDossierPhotos;
+    }
+
 }

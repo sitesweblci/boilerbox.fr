@@ -32,28 +32,7 @@
                         {{ form_widget(form_siteBA.informationsClient) }}
                         {{ form_errors(form_siteBA.informationsClient) }}
                     </div>
-                    <div class="form__field">
-                        {{ form_label(form_siteBA.contacts) }}
-                        {{ form_widget(form_siteBA.contacts) }}
-                        {{ form_errors(form_siteBA.contacts) }}
-                    </div>
                 </fieldset>
-                <div id="ajout_contact" class='form__field'>
-                    <div class='ligne_error'>{{ form_errors(form_siteBA.contacts) }}</div>
-                    <div class='nouveau_probleme_ligne form__field'>
-                        <div>
-                            <span style='font-size:12px'></span>
-                            <div id='contacts_deja_associes'></div>
-                            <span id='lien_ajout_contact'></span>
-                            <div id='container_new_contact' style='overflow:auto;'></div>
-                        </div>
-                    </div>
-                    <div class='form__field'>
-                        <div id='champ_ajout_fichiers_siteBA'>
-                            {{ form_widget(form_siteBA.fichiersJoint) }}
-                        </div>
-                    </div>
-
                     <div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
                         <div class='ligne_error'></div>
                         <div class='form__field'>
@@ -71,7 +50,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
                 <div id='encart_fichiers_siteBA'></div>
             {{ form_rest(form_siteBA, {attr: {'class':'btn' }}) }}
             {{ form_end(form_siteBA) }}
