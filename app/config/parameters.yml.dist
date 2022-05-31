@@ -31,3 +31,15 @@ parameters:
     log.class: Lci\BoilerBoxBundle\Services\ServiceLog
     mailer_disable: false
     synchronisation.class: Lci\BoilerBoxBundle\Services\ServiceSynchronisation
+## Configuration Prod LCI
+#    url_boilerbox: http://boiler-box.fr/
+#    url_cloud: http://cloud.boiler-box.fr/
+## Configuration Prod LTS
+#   url_boilerbox: http://boiler-box-lts.fr/
+#   url_cloud: http://cloud.boiler-box-lts.fr/
+## Configuration PREPROD
+#   url_boilerbox: http://preprodfr.boiler-box.fr/
+#   url_cloud: http://preprodcloud.boiler-box.fr/
+## Configuration DEV VPS
+    url_boilerbox: 'http://vps614872.ovh.net/'
+    url_cloud: 'http://vps614872.ovh.net:8081/'
