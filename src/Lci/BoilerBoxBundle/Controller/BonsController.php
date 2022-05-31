@@ -11,9 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+
+
 use Lci\BoilerBoxBundle\Entity\BonsAttachement;
 use Lci\BoilerBoxBundle\Entity\SiteBA;
-
 
 use Lci\BoilerBoxBundle\Form\Type\SiteBAType;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementType;
@@ -42,7 +45,6 @@ use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
 
 
 use Symfony\Component\Form\FormError;
-
 
 class BonsController extends Controller
 {
@@ -776,4 +778,28 @@ class BonsController extends Controller
         */
         return 0;
     }
+
+
+    // Création d'un fichier bat pour ouverture du dossier photos des BA
+    public function creationFichierBatAction($idBon)
+    {
+        $e_bon = $this->getDoctrine()->getManager()->getREpository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
+
+        $filename       = 'fichierBat.bat';
+        $filecontent    = 'explorer '.$e_bon->getCheminDossierPhotos();
+        $response       = new Response($filecontent);
+
+        // Create the disposition of the file
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+
+        // Set the content disposition
+        $response->headers->set('Content-Disposition', $disposition);
+
+        // Dispatch request
+        return $response;
+    }
+
 }

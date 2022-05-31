@@ -82,3 +82,7 @@ lci_ajax_bon_get_infos_contact:
 lci_ajax_bon_get_googlemap:
     path: /bon/ajax/get_google_map
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getGoogleMap }
+lci_get_fichier_bat:
+    path: /lci/get_bat/{idBon}
+    defaults: { _controller: LciBoilerBoxBundle:Bons:creationFichierBat }
+
