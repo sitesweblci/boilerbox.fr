@@ -235,7 +235,7 @@
 	<div class="popup__wrapper" style="width:900px;">
     	<header class="popup__header">
     	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
-    	    <div class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
+    	    <div id='close_cross_equipement' class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
     	</header>
 
     	<div class="popup__content">
@@ -269,7 +269,12 @@
                 	</div>
             	</div>
 			</div>
-			<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();">Ajouter un nouvel équipement</button>
+
+            <div class='main-box__btn notToBePrinted'>
+                <button class="btn btn--main" onclick="$('#close_cross_equipement').trigger('click'); return false;">Enregistrer</button>
+                <button class="btn btn--second" type="button" id="btn_ajout_equipement2" onclick="gestionDesEquipements2();">Ajouter un nouvel équipement</button>
+            </div>
+			
 		</div>
 	</div>
 </section>
@@ -279,7 +284,7 @@
     <div class="popup__wrapper" style="width:900px;">
         <header class="popup__header">
             <h1 id='titre_gestion_fichiers_bon' class="popup__title">Sélection des fichiers du bon</h1>
-            <div class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
+            <div id='close_cross_fichier' class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
         </header>
 
         <div class="popup__content">
@@ -294,6 +299,11 @@
 				</div>
 			</div>
 		</div>
+
+
+        <div class='main-box__btn notToBePrinted'>
+            <button class="btn btn--main" onclick="$('#close_cross_fichier').trigger('click'); return false;">Enregistrer</button>
+        </div>
 	</div>
 </section>
 
@@ -1128,6 +1138,8 @@
 
     function fermeturePopupGestionFichiersBon()
     {
+		// On supprime tous les instances de fichiers vides
+
 		// On vide l'ancienne liste des fichiers pour éviter de les afficher en double
 		$('#fichiers_deja_joints2').html('');
 
@@ -1144,6 +1156,10 @@
 			if (nom_fichier != '')
 			{
 				$('#fichiers_deja_joints2').append("<div class='add-list__added' id='encartFichierBA_" + index_fichier + "'>" + nom_fichier + "<div class='close-cross' onClick='retireBAFile(" + index_fichier + ");'></div></div>");
+			} else {
+				// Si il n'y a pas de nom de fichier on supprime le champs (simulation de click sur lien suppression
+				var id_encart_a_supp = '#bons_attachement_fichiersPdf_' + index_fichier;
+				$(id_encart_a_supp + ' + a').trigger('click');
 			}
         });
     }
