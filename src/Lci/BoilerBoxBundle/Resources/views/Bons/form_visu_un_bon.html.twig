@@ -13,28 +13,12 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-    .main-box{
-    	position: relative;
-		width: initial;
-		min-width: initial;
-		max-width: initial;
-		margin: 0;
-		margin-bottom: 16px;
-	}
 	.main-box__action{
 		top: 32px;
 	}
 	.main-box__content--padding{
 		padding-bottom: 0;
 	}
-	.main-box .green{color: #4CBB17;}
-	.main-box .orange{color: #FF8C00;}
-	.main-box .red{color: #FF2400;}
-	.main-box .blue{color: #0096FF;}
-	.main-box .green::before{background: #4CBB17;}
-	.main-box .orange::before{background: #FF8C00;}
-	.main-box .red::before{background: #FF2400;}
-	.main-box .blue::before{background: #0096FF;}
 	.flex-table{
 		width: 100%;
 		min-width: initial;
@@ -50,7 +34,19 @@
 		overflow: auto;
 	}
 	.flex-table__tbody tr{
+		height: initial;
 		cursor: initial;
+	}
+	.flex-table__tbody tr:hover{
+		background: #fff;
+	}
+	.flex-table__tbody tr td{
+		padding-top: 4px;
+		padding-bottom: 4px;
+		font-size: 10pt;
+	}
+	#validation_des_bons_attachement .flex-table__tbody tr {
+		border: none;
 	}
 	.flex-table .small{
 		width: calc(30% - 20px);
@@ -61,8 +57,9 @@
 	#table_des_fichiers tr td.small img{
 		cursor: pointer;
 	}
-	#table_validation tbody tr{
-		height: 33px;
+	#bons_attachement_commentaires_commentaires{
+		height: 40px !important;
+		margin: 0;
 	}
 	</style>
 {% endblock liens_css %}
@@ -72,44 +69,101 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
-
+<section class="flex flex--row">
+	<button class="btn btn--second"></button>
+	<h1 class="main-content__title main-content--small__title no-border">Bon {{ entity_bon.numeroBA }} / Demande {{ entity_bon.id }}</h1>
+	<button class="btn btn--main edit"></button>
+</section>
 <main id="grid-visuUnBon" class="grid">
-	<section class='grid__one'>
-		<section class="main-box">
-			<h1 class="main-box__title">Bon {{ entity_bon.numeroBA }}</h1>
-			<h2 class="main-box__sub-title">Demande {{ entity_bon.id }} (initialisée par {{ entity_bon.userInitiateur.label }})
-			</br>
-			{{ entity_bon.dateInitialisation | date('d/m/Y')  }}
-			</h2>
-		    <div class='formulaire_liste formulaire_bon'>
-				<div class='afterH1 form__field'>
-					<label>Signé le</label>
-					{% if entity_bon.dateSignature is not null  %}
-						{{ entity_bon.dateSignature | date('d/m/Y')  }}
-					{% endif %}
+	<section id="sub-grid-visuUnBon" class='main-content main-content--small grid__one'>
+		
+		<div class="main-content__content">
+	   			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Informations</h2>
+				<div class="form__field">
+					<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
 				</div>
 				<div class="form__field">
-					<label>Intervenant</label>
-					{{ entity_bon.user.label }}
+					<label>
+						initialisé le
+						<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
+						par
+						<span class="data">{{ entity_bon.userInitiateur.label }}</span>
+					</label>
 				</div>
 				<div class="form__field">
-					<label>Site d'intervention</label>
-					{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )
+					<label>
+						Signé le
+						<span class="data">
+							{% if entity_bon.dateSignature is not null  %}
+								{{ entity_bon.dateSignature | date('d/m/Y')  }}
+							{% else %}
+								&nbsp;
+							{% endif %}
+						</span>
+					</label>
 				</div>
+				<div class="form__field">
+						<label>Intervenant <span class="data">{{ entity_bon.user.label }}</span></label>
+				</div>
+			</fieldset>
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Planning</h2>
 				<div class="form__field form__field--double">
 					<div>
 						<label>Début intervention</label>
 						{% if entity_bon.dateDebutIntervention is not null  %}
-							{{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}
+							<div class="input input--disabled">{{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}</div>
+						{% else %}
+							<div class="input input--disabled">&nbsp;</div>
 						{% endif %}
 					</div>
 					<div>
 						<label>Fin intervention</label>
 						{% if entity_bon.dateFinIntervention is not null  %}
-							{{ entity_bon.dateFinIntervention | date('d/m/Y')  }}
+							<div class="input input--disabled">{{ entity_bon.dateFinIntervention | date('d/m/Y')  }}</div>
+						{% else %}
+							<div class="input input--disabled">&nbsp;</div>
 						{% endif %}
 					</div>
 				</div>
+			</fieldset>
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Site</h2>
+				<div class="form__field">
+					<label>Adresse du site</label>
+					<div class="input input--disabled">24 Paper Street</div>
+				</div>
+				<div id="map"></div>
+			</fieldset>
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Contact</h2>
+				<div class="form__field">
+					<label>Nom Contact</label>
+					<div class="input input--disabled">{{ entity_bon.nomDuContact }}</div>
+				</div>
+				<div class="form__field form__field--double">
+					<div>
+						{% if entity_bon.emailContactClient is not null  %}
+							<div class="input input--disabled">{{ entity_bon.emailContactClient }}</div>
+						{% else %}
+							<div class="input input--disabled">&nbsp;</div>
+						{% endif %}
+					</div>
+					<div>
+						<div class="input input--disabled">03 21 14 15 16</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Équipement</h2>
+				<div class="form__field">
+					Aucun équipement sélectionné
+				</div>
+			</fieldset>
+
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Enquête</h2>
 				<div class="form__field">
 					{% if entity_bon.enqueteFaite %}
 						<span class='green'>Enquête faite</span>
@@ -119,313 +173,300 @@
 						<span class='red'>Pas d'enquête demandée</span>
 					{% endif %}
 				</div>
-				<div class="form__field">
-					<label>Nom contact client</label>
-					{{ entity_bon.nomDuContact }}
-				</div>
-				<div class="form__field">
-					<label>Email contact</label>
-					{{ entity_bon.emailContactClient }}
-				</div>
-			</div>
-			<div class="main-box__btn">
-				<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
-				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-					<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Mettre à jour</button>
-				{% endif %}
-			</div>
-		</section>
-
-	    <section class='liste_fichiers_du_bon main-box main-box--table '>
-	    	<h1 class="main-box__title main-box--table__title">Fichiers</h1>
-			<h2 class="main-box__sub-title main-box--table__sub-title">
-				{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} 
-			</h2>
-			{% if is_granted('ROLE_SAISIE_BA') %}
-				<div class="main-box__content main-box__content--padding">
-		        	<div id='label_archive' class="form__field">
-		        		<div class="checkbox">
-			        	    <label>
-			        	    	<input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
-			        	    	Afficher les fichiers archivés
-			        	    </label>
+			</fieldset>
+			
+			<fieldset class="fieldset no-padding">
+				<h2 class="fieldset__title">{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} </h2>
+				{% if is_granted('ROLE_SAISIE_BA') %}
+					<div class="main-box__content main-box__content--padding">
+			        	<div id='label_archive' class="form__field">
+			        		<div class="checkbox">
+				        	    <label>
+				        	    	<input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+				        	    	Afficher les fichiers archivés
+				        	    </label>
+				        	</div>
 			        	</div>
-		        	</div>
-		        </div>
-			{% endif %}
-			<table class='flex-table'>
-				<thead class="flex-table__thead">
-					<tr class="flex-table__row">
-						{% if is_granted('ROLE_SAISIE_BA') %}
-							<th class='small'>Archiver</th>
-						{% endif %}
-						<th class='wide'>Nom</th>
-						<th class='small txt--center'>Visualiser</th>
-					</tr>
-				</thead>
-				<tbody id='table_des_fichiers' class="flex-table__tbody">
-					{% for fichier in entity_bon.fichiersPdf %}
-						<tr id="fichier_{{ fichier.id }}" {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
-							{% if is_granted('ROLE_SAISIE_BA') %}
-								<td class='small'>
-									<img id="image_{{ fichier.id }}" 
-										{% if fichier.archive == false %}
-											src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}" 
-										{% else %}
-											src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}" 
-										{% endif %} 
-											onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
-									/>
-								</td>
-							{% endif %}
-							<td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
-								<a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' 
-									href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
-								{{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
-							</a></td>
-							<td class='small selectionnable txt--center' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
-								<img src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  style="width:20px;height:20px;">
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		    <div id='formulaire_bons_fichiers' class=''>
-				<div class="main-box__content main-box__content--padding" style="margin-top:16px;">
-				    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
-					{{ form_errors(form_ajout_fichier) }}
-					<div>
-						<span id='lien_ajout_fichier'></span>
-						<div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
-						<div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
-						<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-					</div>
-					{{ form_end(form_ajout_fichier) }}
-				</div>
-			</div>
-			<div class="main-box__btn main-box--table__btn">
-				<div id="js-btn-file" class="main-box__btn--disabled">
-					<button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
-				</div>
-			</div>
-		</section>
-	</section>
-
-	<section class="grid__two">
-		<section class="main-box main-box--table">
-			<div id='validation_des_bons_attachement'>
-			    <h1 class="main-box__title main-box--table__title">Validation</h1>
-				{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
-				{{ form_errors(form_validation) }}
-					<table id="table_validation"  class='flex-table'>
+			        </div>
+				{% endif %}
+				<table class='flex-table'>
 					<thead class="flex-table__thead">
 						<tr class="flex-table__row">
-							<th>Facturation</th>
-							<th>Technique</th>
-							<th>Pièces</th>
-							<th>SAV</th>
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								<th class='small txt--center'>Archiver</th>
+							{% endif %}
+							<th class='wide'>Nom</th>
 						</tr>
 					</thead>
-					<tbody class="flex-table__tbody">
-						<tr class="flex-table__row">
-							<td>
-								{% if entity_bon.validationFacturation %}
-									{% if entity_bon.validationFacturation.valide == true %}
-										{# Service Facturation validé #}
-										<span class='green'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
-									{% else %}
-										{# Service Facturation dé-validé #}
-										<span class='red'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
-									{% endif %}	
-								{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
-									{# Service Facturation non validé - On a les droits de validation #}	
-									{{ form_widget(form_validation.validationFacturation) }}
-								{% else %}
-									{# Service Facturation non validé - On n'a pas les droits de validation #}
-									<span class='red'>Non effectuée</span>
+					<tbody id='table_des_fichiers' class="flex-table__tbody">
+						{% for fichier in entity_bon.fichiersPdf %}
+							<tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');" 
+							{% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
+								{% if is_granted('ROLE_SAISIE_BA') %}
+									<td class='small txt--center'>
+										<img id="image_{{ fichier.id }}" 
+											{% if fichier.archive == false %}
+												src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}" 
+											{% else %}
+												src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}" 
+											{% endif %} 
+												onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
+										/>
+									</td>
 								{% endif %}
-							</td>
-							<td>
-	            		        {% if entity_bon.validationTechnique %}
-	               					{% if entity_bon.validationTechnique.valide == true %}
-	               		            	{# Service Technique validé #}
-	                            		<span class='green'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
-	                        		{% else %}
-	                            		{# Service Technique dé-validé #}
-	                            		<span class='red'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
-	                        		{% endif %}
-		                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
-			                        {# Service Technique non validé - On a les droits de validation #}
-			                        {{ form_widget(form_validation.validationTechnique) }}
-			                    {% else %}
-	    		                    {# Service Technique non validé - On n'a pas les droits de validation #}
-	    		                    <span class='red'>Non effectuée</span>
-	    		                {% endif %}
-							</td>
-							<td>
-								{% if entity_bon.validationHoraire %}
-	            		            {% if entity_bon.validationHoraire.valide == true %}
-	            		                {# Service Pieces validé #}
-	            		                <span class='red'>Demandé le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
-	                		        {% else %}
-	                    		        {# Service Pieces dé-validé #}
-	                       				<span class='green'>Offre faite le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
-		                            {% endif %}
-			                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
-	    		                    {# Service Pièces non validé - On a les droits de validation #}
-	        		                {{ form_widget(form_validation.validationHoraire) }}
-	            		        {% else %}
-	                		        {# Service Pieces non validé - On n'a pas les droits de validation #}
-	                    		    <span class='green'>Non effectuée</span>
-	                    		{% endif %}
-							</td>
-							<td>
-	                    		{% if entity_bon.validationSAV %}
-	                        		{% if entity_bon.validationSAV.valide == true %}
-	                            		{# Service SAV validé #}
-		                                <span class='green'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
-			                        {% else %}
-	    		                        {# Service SAV dé-validé #}
-	        		                    <span class='red'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
-		                            {% endif %}
-				                  	{% elseif is_granted('ROLE_SERVICE_SAV') %}
-	                        		{# Service SAV non validé - On a les droits de validation #}
-	                        		{{ form_widget(form_validation.validationSAV) }}
-	                    		{% else %}
-	                       		 	{# Service SAV non validé - On n'a pas les droits de validation #}
-	                        		<span class='red'>Non effectuée</span>
-	                    		{% endif %}
-							</td>
-						</tr>
-						<tr class="flex-table__row">
-	                		<td>
-	                    		{% if entity_bon.validationFacturation %}
-		                            <span>{{ entity_bon.validationFacturation.user.label }}</span>
-		                        {% endif %}
-			                </td>
-	    		            <td>
-								{% if entity_bon.validationTechnique %}
-									<span>{{ entity_bon.validationTechnique.user.label }}</span>
-	                		    {% endif %}
-							</td>
-		                    <td>
-			                    {% if entity_bon.validationHoraire %}
-	    		                    {# <span>{{ entity_bon.validationHoraire.user.label }}</span> #}
-	        		            {% endif %}
-							</td>
-	                		<td>
-		                        {% if entity_bon.validationSAV %}
-			                        <span>{{ entity_bon.validationSAV.user.label }}</span>
-	       		             	{% endif %}
-							</td>
-						</tr>
-	            		<tr class="flex-table__row">
-	                		<td>
-	                    		{% if entity_bon.validationFacturation %}
-	                        		{% if entity_bon.validationFacturation.valide == true %}
-	                            		{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
-										{% if is_granted('ROLE_SERVICE_FACTURATION') %}
-	    									<img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	            									onClick="changeValidation('facturation', false);"
-	            									alt="Supprimer la validation facturation"
-	    									/>
-										{% endif %}
-	                        		{% else %}
-	                            		{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-										{% if is_granted('ROLE_SERVICE_FACTURATION') %}
-											{{ form_widget(form_validation.validationFacturation) }}
-										{% endif %}
-	        		                {% endif %}
-	               		     	{% endif %}
-	                		</td>
-	                		<td>
-								{% if entity_bon.validationTechnique %}
-		                            {% if entity_bon.validationTechnique.valide == true %}
-			                            {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
-	    		                        {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-	        		                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	            		                            onClick="changeValidation('technique', false);"
-	                		                        alt="Supprimer la validation technique"
-	                    		            />
-	                        		    {% endif %}
-	                        		{% else %}
-	                            		{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-		                                {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-			                                {{ form_widget(form_validation.validationTechnique) }}
-	    		                        {% endif %}
-	        		                {% endif %}
-	            		        {% endif %}
-							</td>
-		                    <td>
-			                    {% if entity_bon.validationHoraire %}
-	    		                    {% if entity_bon.validationHoraire.valide == true %}
-	        		                    {# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
-	            		                {% if is_granted('ROLE_SERVICE_PIECES') %}
-	                		                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	                    		                    onClick="changeValidation('pieces', false);"
-	                        		                alt="Supprimer la validation pièces"
-	                            		    />
-		                                {% endif %}
-			                        {% else %}
-				                        {# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-		    		                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
-		        		                    {{ form_widget(form_validation.validationHoraire) }}
-		            		            {% endif %}
-		                		    {% endif %}
-		                        {% endif %}
-							</td>
-			                <td>
-				                {% if entity_bon.validationSAV %}
-		    		                {% if entity_bon.validationSAV.valide == true %}
-		        		                {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
-		            		            {% if is_granted('ROLE_SERVICE_SAV') %}
-		                		            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-		                    		                onClick="changeValidation('sav', false);"
-		                        		            alt="Supprimer la validation SAV"
-		                            		/>
-		                                {% endif %}
-			                        {% else %}
-				                        {# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-		    		                    {% if is_granted('ROLE_SERVICE_SAV') %}
-		        		                    {{ form_widget(form_validation.validationSAV) }}
-		            		            {% endif %}
-		                		    {% endif %}
-		                        {% endif %}
-							</td>
-				        </tr>
+								<td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+									<a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' 
+										href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
+											{{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
 					</tbody>
-					</table>
-					<div class="main-box--table__legend">
-						<div class="red">Supprimée</div>
-						<div class="green">Validée</div>
-					</div>
-				{{ form_end(form_validation, {'render_rest': false}) }} 
-				<div class="main-box__btn main-box--table__btn">
-				</div>
-			</div>
-		</section>
-		<section class="main-box">
-			<div id="formulaire_bons_commentaires" class="">
-				<h1 class="main-box__title">Commentaires</h1>
-				<div id='formulaire_bons_commentaires'>
-		        	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires', 'class':'form'}) }}
-		        	{{ form_errors(form_ajout_commentaires) }}
-						<div id='commentaires_bon'>{{ entity_bon.commentaires|raw|nl2br }}</div>
-						<div class='form__field'>
-							{{ form_widget(form_ajout_commentaires.commentaires) }}
-							{{ form_errors(form_ajout_commentaires.commentaires) }}
+				</table>
+			    <div id='formulaire_bons_fichiers' class=''>
+					<div class="main-box__content main-box__content--padding" style="margin-top:16px;">
+					    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+						{{ form_errors(form_ajout_fichier) }}
+						<div>
+							<span id='lien_ajout_fichier'></span>
+							<div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
+							<div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
+							<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 						</div>
-		        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-		        	{{ form_end(form_ajout_commentaires) }}
-		    	</div>
-		    	<div id="js-btn-comm" class="main-box__btn">
-		    		<div class="main-box__btn--disabled">
-		    			<button class="btn btn--main btn--disabled" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
-		    		</div>
-		    	</div>
-		    </div>
-		</section>
+						{{ form_end(form_ajout_fichier) }}
+					</div>
+				</div>
+				<div class="main-content__btn main-content--small__btn">
+					<div id="js-btn-file" class="main-box__btn--disabled">
+						<button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<div class="main-content__btn">
+			<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
+			{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+				<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier</button>
+			{% endif %}
+		</div>
 	</section>
+
+
+	<section class="grid__two">
+		<!-- Validation -->
+		<section id='validation_des_bons_attachement' class="main-content main-content--small w100">
+		    <h1 class="main-content__title main-content--small__title">Validation</h1>
+			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
+			{{ form_errors(form_validation) }}
+				<table id="table_validation"  class='flex-table'>
+				<thead class="flex-table__thead">
+					<tr class="flex-table__row">
+						<th>Facturation</th>
+						<th>Technique</th>
+						<th>Pièces</th>
+						<th>SAV</th>
+					</tr>
+				</thead>
+				<tbody class="flex-table__tbody">
+					<tr class="flex-table__row">
+						<td>
+							{% if entity_bon.validationFacturation %}
+								{% if entity_bon.validationFacturation.valide == true %}
+									{# Service Facturation validé #}
+									<span class='green'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+								{% else %}
+									{# Service Facturation dé-validé #}
+									<span class='red'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+								{% endif %}	
+							{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
+								{# Service Facturation non validé - On a les droits de validation #}	
+								{{ form_widget(form_validation.validationFacturation) }}
+							{% else %}
+								{# Service Facturation non validé - On n'a pas les droits de validation #}
+								<span class='red'>Non effectuée</span>
+							{% endif %}
+						</td>
+						<td>
+	        		        {% if entity_bon.validationTechnique %}
+	           					{% if entity_bon.validationTechnique.valide == true %}
+	           		            	{# Service Technique validé #}
+	                        		<span class='green'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
+	                    		{% else %}
+	                        		{# Service Technique dé-validé #}
+	                        		<span class='red'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
+	                    		{% endif %}
+	                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
+		                        {# Service Technique non validé - On a les droits de validation #}
+		                        {{ form_widget(form_validation.validationTechnique) }}
+		                    {% else %}
+			                    {# Service Technique non validé - On n'a pas les droits de validation #}
+			                    <span class='red'>Non effectuée</span>
+			                {% endif %}
+						</td>
+						<td>
+							{% if entity_bon.validationHoraire %}
+	        		            {% if entity_bon.validationHoraire.valide == true %}
+	        		                {# Service Pieces validé #}
+	        		                <span class='red'>Demandé le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+	            		        {% else %}
+	                		        {# Service Pieces dé-validé #}
+	                   				<span class='green'>Offre faite le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+	                            {% endif %}
+		                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+			                    {# Service Pièces non validé - On a les droits de validation #}
+	    		                {{ form_widget(form_validation.validationHoraire) }}
+	        		        {% else %}
+	            		        {# Service Pieces non validé - On n'a pas les droits de validation #}
+	                		    <span class='green'>Non effectuée</span>
+	                		{% endif %}
+						</td>
+						<td>
+	                		{% if entity_bon.validationSAV %}
+	                    		{% if entity_bon.validationSAV.valide == true %}
+	                        		{# Service SAV validé #}
+	                                <span class='green'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
+		                        {% else %}
+			                        {# Service SAV dé-validé #}
+	    		                    <span class='red'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
+	                            {% endif %}
+			                  	{% elseif is_granted('ROLE_SERVICE_SAV') %}
+	                    		{# Service SAV non validé - On a les droits de validation #}
+	                    		{{ form_widget(form_validation.validationSAV) }}
+	                		{% else %}
+	                   		 	{# Service SAV non validé - On n'a pas les droits de validation #}
+	                    		<span class='red'>Non effectuée</span>
+	                		{% endif %}
+						</td>
+					</tr>
+					<tr class="flex-table__row">
+	            		<td>
+	                		{% if entity_bon.validationFacturation %}
+	                            <span>{{ entity_bon.validationFacturation.user.label }}</span>
+	                        {% endif %}
+		                </td>
+			            <td>
+							{% if entity_bon.validationTechnique %}
+								<span>{{ entity_bon.validationTechnique.user.label }}</span>
+	            		    {% endif %}
+						</td>
+	                    <td>
+		                    {% if entity_bon.validationHoraire %}
+			                    {# <span>{{ entity_bon.validationHoraire.user.label }}</span> #}
+	    		            {% endif %}
+						</td>
+	            		<td>
+	                        {% if entity_bon.validationSAV %}
+		                        <span>{{ entity_bon.validationSAV.user.label }}</span>
+	   		             	{% endif %}
+						</td>
+					</tr>
+	        		<tr class="flex-table__row">
+	            		<td>
+	                		{% if entity_bon.validationFacturation %}
+	                    		{% if entity_bon.validationFacturation.valide == true %}
+	                        		{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+									{% if is_granted('ROLE_SERVICE_FACTURATION') %}
+										<img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+	        									onClick="changeValidation('facturation', false);"
+	        									alt="Supprimer la validation facturation"
+										/>
+									{% endif %}
+	                    		{% else %}
+	                        		{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+									{% if is_granted('ROLE_SERVICE_FACTURATION') %}
+										{{ form_widget(form_validation.validationFacturation) }}
+									{% endif %}
+	    		                {% endif %}
+	           		     	{% endif %}
+	            		</td>
+	            		<td>
+							{% if entity_bon.validationTechnique %}
+	                            {% if entity_bon.validationTechnique.valide == true %}
+		                            {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
+			                        {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+	    		                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+	        		                            onClick="changeValidation('technique', false);"
+	            		                        alt="Supprimer la validation technique"
+	                		            />
+	                    		    {% endif %}
+	                    		{% else %}
+	                        		{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+	                                {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+		                                {{ form_widget(form_validation.validationTechnique) }}
+			                        {% endif %}
+	    		                {% endif %}
+	        		        {% endif %}
+						</td>
+	                    <td>
+		                    {% if entity_bon.validationHoraire %}
+			                    {% if entity_bon.validationHoraire.valide == true %}
+	    		                    {# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
+	        		                {% if is_granted('ROLE_SERVICE_PIECES') %}
+	            		                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+	                		                    onClick="changeValidation('pieces', false);"
+	                    		                alt="Supprimer la validation pièces"
+	                        		    />
+	                                {% endif %}
+		                        {% else %}
+			                        {# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+	    		                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+	        		                    {{ form_widget(form_validation.validationHoraire) }}
+	            		            {% endif %}
+	                		    {% endif %}
+	                        {% endif %}
+						</td>
+		                <td>
+			                {% if entity_bon.validationSAV %}
+	    		                {% if entity_bon.validationSAV.valide == true %}
+	        		                {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
+	            		            {% if is_granted('ROLE_SERVICE_SAV') %}
+	                		            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+	                    		                onClick="changeValidation('sav', false);"
+	                        		            alt="Supprimer la validation SAV"
+	                            		/>
+	                                {% endif %}
+		                        {% else %}
+			                        {# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+	    		                    {% if is_granted('ROLE_SERVICE_SAV') %}
+	        		                    {{ form_widget(form_validation.validationSAV) }}
+	            		            {% endif %}
+	                		    {% endif %}
+	                        {% endif %}
+						</td>
+			        </tr>
+				</tbody>
+				</table>
+			{{ form_end(form_validation, {'render_rest': false}) }} 
+		</section>
+
+		<!-- Commentaires -->
+		<section id="commentaire-bons-attachements" class="main-content main-content--small w100">
+			<h1 class="main-content__title main-content--small__title">Commentaires</h1>
+			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
+	        	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires', 'class':'form'}) }}
+	        	{{ form_errors(form_ajout_commentaires) }}
+					<div id='commentaires_bon' class="scroll">{{ entity_bon.commentaires|raw|nl2br }}</div>
+					<div id="my-comment" class='form__field'>
+						{{ form_widget(form_ajout_commentaires.commentaires) }}
+						{{ form_errors(form_ajout_commentaires.commentaires) }}
+						<div id="js-btn-comm" class="main-box__btn">
+							<div class="main-box__btn--disabled">
+								<button class="btn btn--main btn--disabled" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
+							</div>
+						</div>
+					</div>
+	        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+	        	{{ form_end(form_ajout_commentaires) }}
+	    	</div>
+		</section>
+
+		<!-- Fichiers -->
+	    {# <section class='liste_fichiers_du_bon main-content w100'>
+	    	<h1 class="main-content__title main-content--small__title">Fichiers</h1>
+			
+		</section>
+	</section> #}
 
 	
 	<form method='post' name='form_modification_bon' id='form_modification_bon' action="{{ path('lci_bons_modifier_unbon', { 'idBon':entity_bon.id }) }}">
@@ -477,6 +518,11 @@
     var $container;
 
 	$(document).ready(function() {
+		/* Débug largeur parent flex col */
+		$('.main-content').css({'width':'initial'});
+		setTimeout(function(){
+			$('.main-content').css({'width':'fit-content'});
+		}, 30);
 		/* Désactivation de la checkbox Archive */
 		$('#chk_archive').attr('checked', false);
 		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
@@ -744,6 +790,15 @@
         var $regex = /\([a-zA-Z0-9àéèêâ:\/\s]+\)$/;
         $('#' + $idLien).attr('download', $.trim($nomDuFichier.replace($regex, '')));
     }
+
+    /* Débug largeur parent flex col sur un resize */
+    $(window).on('resize', function(){
+        $('.main-content').css({'width':'initial'});
+        setTimeout(function(){
+        	$('.main-content').css({'width':'fit-content'});
+        }, 30);
+
+    });
 
 </script>
 {% endblock javascript %}

@@ -497,3 +497,8 @@ tr td:last-child{
 		display: none;
 	}
 }
+@media screen and (min-width: 380px) and (max-height: 800px){
+	#tableAffaire tbody {
+		max-height: 340px;
+	}
+}

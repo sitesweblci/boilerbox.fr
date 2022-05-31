@@ -27,10 +27,12 @@
 		}
 		.flex-table tr th{
 			padding: 0 3px;
-			font-size: 8pt;
+		}
+		.flex-table__tbody{
+			height: 59vh;
 		}
 		.flex-table tr{
-			cursor: initial;
+			cursor: pointer;
 		}
 		.flex-table tr td{
 			padding: 3px;
@@ -48,9 +50,9 @@
 		.flex-table .wide{
 			width: calc(100% - 6px);
 		}
-		.visu-bon-img{
-			width:20px;
-			height:20px;
+		.flex-table img{
+			width: 16px;
+			height: 14px;
 		}
 	</style>
 {% endblock liens_css %}
@@ -96,17 +98,16 @@
         <table id="js-liste-bon" class='flex-table'>
             <thead id='contenu_head_tableau_bons' class="flex-table__thead">
 				<tr class="flex-table__row">
-					<th class="small txt--center">Enquête</th>
-					<th scope='col' class='mini selectionnable' onclick="compare('numeroBA')">Bon</th>
-					<th scope='col' class='small selectionnable' onclick="compare('dateSignature');">Signé le</th>
-					<th scope='col' class='medium selectionnable' onclick="compare('initiateur')">Init. par</th>
-					<th scope='col' class='small selectionnable' onclick="compare('dateInitialisation')">le</th>
-					<th scope='col' class='mini selectionnable' onclick="compare('site');">Affaire</th> 
-					<th scope='col' class='medium selectionnable' onclick="compare('nomDuSite');">Nom</th>
+					<th scope='col' class='medium selectionnable' onclick="compare('nomDuSite');">Site</th>
+					<th scope='col' class='medium selectionnable' onclick="compare('nomDuContact');">Contact</th>
 					<th scope='col' class='small selectionnable' onclick="compare('dateDebutIntervention')">Du</th>
 					<th scope='col' class='small selectionnable' onclick="compare('dateFinIntervention')">Au</th>
+					<th scope='col' class='mini selectionnable' onclick="compare('site');">Affaire</th> 
+					<th scope='col' class='mini selectionnable' onclick="compare('numeroBA')">Numéro</th>
+					<th scope='col' class='medium selectionnable' onclick="compare('initiateur')">Init. par</th>
+					<th scope='col' class='small selectionnable' onclick="compare('dateInitialisation')">le</th>
 					<th scope='col' class='medium selectionnable' onclick="compare('label');">Intervenant</th>
-					<th scope='col' class='medium selectionnable' onclick="compare('nomDuContact');">Nom contact</th>
+					{# <th scope='col' class='small selectionnable' onclick="compare('dateSignature');">Signé le</th> #}
 					<th scope='col' class='medium'>
 						<div class='champs_validation_bon txt--center'>
 							Validations
@@ -118,56 +119,19 @@
 							</div>
 						</div>
 					</th>
-					<th scope='col' class='small
-					txt--center'>Voir</th>
+					<th class="small txt--center">Enquête</th>
+					{# <th scope='col' class='small txt--center'>Voir</th> #}
 				</tr>
 			</thead>
 
 			<tbody id='contenu_tableau_bons' class="flex-table__tbody">
 				{% for ent_bons in entities_bon %}
-				<tr class="flex-table__row">
-					<td class='small' data-intitule='enquete' data-identifiant="{{ ent_bons.id }}">
-						{# Pour le secreteriat : Si aucune enquete n'est faite : Affichage d'une checkbox pour demander l'envoi d'une enquete
-												 Si une enquete est déjà faite affichage de l'information : EnqueteFaite
-						   Pour les autres : Affichage de l'information EnqueteFaite ou EnqueteNecessaire
-						#}
-						{% if is_granted('ROLE_SECRETERIAT') %}
-							{% if ent_bons.enqueteFaite %}
-								x
-							{% else %}
-								<input type='checkbox' onclick='setEnquete({{ ent_bons.id }})' {% if ent_bons.enqueteNecessaire %} checked {% endif %} />
-							{% endif %}
-						{% else %}
-							{% if ent_bons.enqueteFaite %}
-								x
-							{% else %}
-								{% if ent_bons.enqueteNecessaire %}
-									-
-								{% endif %}
-							{% endif %}
-						{% endif %}
-					</td>
-					<td class='mini' data-intitule='numeroBA'>
-						{{ ent_bons.numeroBA }}
-					</td>
-                    <td class='small' data-intitule='dateSignature'>
-						{% if ent_bons.dateSignature is not null  %}
-                        	{{ ent_bons.dateSignature | date('d/m/Y')  }}
-						{% endif %}
-                    </td>
-                    <td class='medium' data-intitule='initiateur'>
-                        {{ ent_bons.userInitiateur.label }}
-                    </td>
-                    <td class='small' data-intitule='dateInitialisation'>
-						{% if ent_bons.dateInitialisation is not null  %}
-                        	{{ ent_bons.dateInitialisation | date('d/m/Y') }}
-						{% endif %}
-                    </td>
-					<td class='mini centrer' data-intitule='site'>
-						{{ ent_bons.numeroAffaire | upper }}
-					</td>
+				<tr class="flex-table__row" onclick="afficherLeBon({{ ent_bons.id}});">
 					<td class='medium' data-intitule='nomDuSite'>
 						{{ ent_bons.site.intitule }}
+					</td>
+					<td class='medium' data-intitule='nomDuContact'>
+					    {{ ent_bons.nomDuContact  }}
 					</td>
                     <td class='small' data-intitule='dateDebutIntervention'>
 						{% if ent_bons.dateDebutIntervention is not null  %}
@@ -179,32 +143,93 @@
                         	{{ ent_bons.dateFinIntervention | date('d/m/Y') }}
 						{% endif %}
                     </td>
-					<td class='medium' data-intitule='label'>
-						{{ ent_bons.user.label }}
-					</td>
-                    <td class='medium' data-intitule='nomDuContact'>
-                        {{ ent_bons.nomDuContact  }}
+                    <td class='mini centrer' data-intitule='site'>
+                    	{{ ent_bons.numeroAffaire | upper }}
                     </td>
+					<td class='mini' data-intitule='numeroBA'>
+						{{ ent_bons.numeroBA }}
+					</td>
+					<td class='medium' data-intitule='initiateur'>
+					    {{ ent_bons.userInitiateur.label }}
+					</td>
+                    <td class='small' data-intitule='dateInitialisation'>
+						{% if ent_bons.dateInitialisation is not null  %}
+                        	{{ ent_bons.dateInitialisation | date('d/m/Y') }}
+						{% endif %}
+                    </td>
+                    <td class='medium' data-intitule='label'>
+                    	{{ ent_bons.user.label }}
+                    </td>
+                    {# <td class='small' data-intitule='dateSignature'>
+						{% if ent_bons.dateSignature is not null  %}
+                        	{{ ent_bons.dateSignature | date('d/m/Y')  }}
+						{% endif %}
+                    </td> #}
 					<td class='medium' data-intitule='validation'>
 						<div class='champs_validation_bon'>
 							<div class='sous_champs_validation_bon'>
                                 <div data-intitule='validationTechnique'>
-                                	{% if ent_bons.validationTechnique %}{% if ent_bons.validationTechnique.valide %}x{% endif %}{% else %}&nbsp{% endif %}
+                                	{% if ent_bons.validationTechnique %}
+                                		{% if ent_bons.validationTechnique.valide %}
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                		{% endif %}
+                                		{% else %}
+                                			&nbsp
+                                	{% endif %}
                                 </div>
                                 <div data-intitule='validationHoraire'>
-                                	{% if ent_bons.validationHoraire %}{% if ent_bons.validationHoraire.valide %}x{% endif %}{% else %}&nbsp{% endif %}
+                                	{% if ent_bons.validationHoraire %}
+                                		{% if ent_bons.validationHoraire.valide %}
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                		{% endif %}
+                                		{% else %}
+                                			&nbsp
+                                	{% endif %}
                                 </div>
                                 <div data-intitule='validationSav'>
-                                	{% if ent_bons.validationSAV %}{% if ent_bons.validationSAV.valide %}x{% endif %}{% else %}&nbsp{% endif %}
+                                	{% if ent_bons.validationSAV %}
+                                		{% if ent_bons.validationSAV.valide %}
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                		{% endif %}
+                                		{% else %}
+                                			&nbsp
+                                	{% endif %}
                                 </div>
                                 <div data-intitule='validationFacturation'>
-                                	{% if ent_bons.validationFacturation %}{% if  ent_bons.validationFacturation.valide %}x{% endif %}{% else %}&nbsp{% endif %}
+                                	{% if ent_bons.validationFacturation %}
+                                		{% if  ent_bons.validationFacturation.valide %}
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                		{% endif %}
+                                		{% else %}
+                                			&nbsp
+                                	{% endif %}
                                 </div>
                             </div>
 						</div>
 					</td>
-					<td class='small cesure selectionnable centrer txt--center'>
-						<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  onclick="afficherLeBon({{ ent_bons.id}});">
+					{# <td class='small cesure selectionnable centrer txt--center'>
+						<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  >
+                    </td> #}
+                    <td class='small txt--center' data-intitule='enquete' data-identifiant="{{ ent_bons.id }}">
+                    	{# Pour le secreteriat : Si aucune enquete n'est faite : Affichage d'une checkbox pour demander l'envoi d'une enquete
+                    							 Si une enquete est déjà faite affichage de l'information : EnqueteFaite
+                    	   Pour les autres : Affichage de l'information EnqueteFaite ou EnqueteNecessaire
+                    	#}
+                    	{% if is_granted('ROLE_SECRETERIAT') %}
+                    		{% if ent_bons.enqueteFaite %}
+                    			x
+                    		{% else %}
+                    			<input type='checkbox' onclick='setEnquete({{ ent_bons.id }})' {% if ent_bons.enqueteNecessaire %} checked {% endif %} />
+                    		{% endif %}
+                    	{% else %}
+                    		{% if ent_bons.enqueteFaite %}
+                    			x
+                    		{% else %}
+                    			{% if ent_bons.enqueteNecessaire %}
+                    				-
+                    			{% endif %}
+                    		{% endif %}
+                    	{% endif %}
                     </td>
 				</tr>
 				{% endfor %}
@@ -468,31 +493,31 @@
 						$(this).children().children().children().each(function() {
 							switch ($(this).data('intitule')) {
 								case 'validationTechnique':
-									if ($(this).text().trim()) {
-										ligne.validationTechnique = 'x'
-									} else {
+									if ($(this).children().length === 0) {
 										ligne.validationTechnique = '&nbsp';
+									} else {
+										ligne.validationTechnique = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
 									}
 									break;	
                                 case 'validationHoraire':
-                                    if ($(this).text().trim()) {
-                                        ligne.validationHoraire = 'x'
+                                    if ($(this).children().length === 0) {
+                                    	ligne.validationHoraire = '&nbsp';
                                     } else {
-                                        ligne.validationHoraire = '&nbsp';
+                                        ligne.validationHoraire = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
                                     }
                                     break;
                                 case 'validationSav':
-                                    if ($(this).text().trim()) {
-                                        ligne.validationSav = 'x'
-                                    } else {
+                                    if ($(this).children().length === 0) {
                                         ligne.validationSav = '&nbsp';
+                                    } else {
+                                        ligne.validationSav = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
                                     }
                                     break;
                                 case 'validationFacturation':
-                                    if ($(this).text().trim()) {
-                                        ligne.validationFacturation = 'x'
+                                    if ($(this).children().length === 0) {
+                                    	ligne.validationFacturation = '&nbsp';
                                     } else {
-                                        ligne.validationFacturation = '&nbsp';
+                                        ligne.validationFacturation = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
                                     }
                                     break;
 							}
@@ -560,8 +585,67 @@
 
 		/* Création du nouveau tableau */
 		$.each(tableau, function(index, value){
-			nouveauTableau += "<tr class='flex-table__row'>";
-			nouveauTableau += "<td class='small centrer' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
+			nouveauTableau += "<tr class='flex-table__row' onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
+
+			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
+			nouveauTableau += tableau[index]['nomDuSite'];
+			nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='medium' data-intitule='nomDuContact'>";
+			nouveauTableau += tableau[index]['nomDuContact'];
+			nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='small' data-intitule='dateDebutIntervention'>";
+			nouveauTableau += tableau[index]['dateDebutIntervention'];
+			nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='small' data-intitule='dateFinIntervention'>";
+			nouveauTableau += tableau[index]['dateFinIntervention'];
+			nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='mini centrer' data-intitule='site'>";
+			nouveauTableau += tableau[index]['site'];
+			nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='mini' data-intitule='numeroBA'>";
+            nouveauTableau += tableau[index]['numeroBA'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='medium' data-intitule='initiateur'>";
+            nouveauTableau += tableau[index]['initiateur'];
+            nouveauTableau += "</td>";
+
+            nouveauTableau += "<td class='small' data-intitule='dateInitialisation'>";
+            nouveauTableau += tableau[index]['dateInitialisation'];
+            nouveauTableau += "</td>";
+
+            // nouveauTableau += "<td class='small' data-intitule='dateSignature'>";
+            // nouveauTableau += tableau[index]['dateSignature'];
+            // nouveauTableau += "</td>";
+
+			if (tableau[index]['label']) {
+            	nouveauTableau += "<td class='medium' data-intitule='label'>";
+            	nouveauTableau += tableau[index]['label'];
+            	nouveauTableau += "</td>";
+			}
+
+            nouveauTableau += "<td class='medium' data-intitule='validation'>";
+			nouveauTableau += "<div class='champs_validation_bon'>";
+			nouveauTableau += "<div class='sous_champs_validation_bon'>";
+			nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
+            nouveauTableau += "<div data-intitule='validationHoraire'>" + tableau[index]['validationHoraire'] + "</div>";
+            nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
+			nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
+			nouveauTableau += "</div>";
+            nouveauTableau += "</td>";
+	
+			// nouveauTableau += "<td class='small cesure selectionnable txt--center'>";
+			// nouveauTableau += "<div onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
+			// nouveauTableau += "<img class='visu-bon-img' src='" + $srcImgVisualiser + "'>";
+			// nouveauTableau += "</div>";
+			// nouveauTableau += "</td>";
+
+			nouveauTableau += "<td class='small txt--center' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
 			{% if is_granted('ROLE_SECRETERIAT') %}
 				if (tableau[index]['enqueteFaite']) {
 					nouveauTableau += "x";
@@ -576,65 +660,6 @@
                 nouveauTableau += tableau[index]['enquete'];
 			{% endif %}
 			nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='mini' data-intitule='numeroBA'>";
-            nouveauTableau += tableau[index]['numeroBA'];
-            nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='small' data-intitule='dateSignature'>";
-            nouveauTableau += tableau[index]['dateSignature'];
-            nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='medium' data-intitule='initiateur'>";
-            nouveauTableau += tableau[index]['initiateur'];
-            nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='small' data-intitule='dateInitialisation'>";
-            nouveauTableau += tableau[index]['dateInitialisation'];
-            nouveauTableau += "</td>";
-
-			nouveauTableau += "<td class='mini centrer' data-intitule='site'>";
-			nouveauTableau += tableau[index]['site'];
-			nouveauTableau += "</td>";
-
-			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
-			nouveauTableau += tableau[index]['nomDuSite'];
-			nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='small' data-intitule='dateDebutIntervention'>";
-            nouveauTableau += tableau[index]['dateDebutIntervention'];
-            nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='small' data-intitule='dateFinIntervention'>";
-            nouveauTableau += tableau[index]['dateFinIntervention'];
-            nouveauTableau += "</td>";
-
-			if (tableau[index]['label']) {
-            	nouveauTableau += "<td class='medium' data-intitule='label'>";
-            	nouveauTableau += tableau[index]['label'];
-            	nouveauTableau += "</td>";
-			}
-
-
-            nouveauTableau += "<td class='medium' data-intitule='nomDuContact'>";
-            nouveauTableau += tableau[index]['nomDuContact'];
-            nouveauTableau += "</td>";
-
-            nouveauTableau += "<td class='medium' data-intitule='validation'>";
-			nouveauTableau += "<div class='champs_validation_bon'>";
-			nouveauTableau += "<div class='sous_champs_validation_bon'>";
-			nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
-            nouveauTableau += "<div data-intitule='validationHoraire'>" + tableau[index]['validationHoraire'] + "</div>";
-            nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
-			nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
-			nouveauTableau += "</div>";
-            nouveauTableau += "</td>";
-	
-			nouveauTableau += "<td class='small cesure selectionnable txt--center'>";
-			nouveauTableau += "<div onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
-			nouveauTableau += "<img class='visu-bon-img' src='" + $srcImgVisualiser + "'>";
-			nouveauTableau += "</div>";
-			nouveauTableau += "</td>";
 			nouveauTableau += "</tr>";
 		});
 		$('#contenu_tableau_bons').html(nouveauTableau);
@@ -642,12 +667,15 @@
 
 	/* Fontion qui modifie la variable enqueteNecessaire d'un bon */
 	function setEnquete($idBon) {
+		if (!e) var e = window.event;
+		    e.cancelBubble = true;
+		    if (e.stopPropagation) e.stopPropagation();
         $.ajax({
             url: "{{ path('lci_ajax_bons_setEnquete') }}",
             method: "post",
             data: {'identifiant':$idBon}
         }).done(function(msg){
-            /*alert('done ' + msg);*/
+            alert('done ' + msg);
         }).error(function(msg){
             alert('error ' + msg);
         });

@@ -15,31 +15,83 @@
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Bon d'inteventions</h1>
 </header>
-<main class='main-box'>
-	<h1 class="main-box__title">Recherche</h1>
-	<div class='main-box__content' >
-    	{{ form_start(form, {'action':path('lci_bons_rechercher'), 'method':'POST', 'name':'myForm', 'class':'form' }) }}
-    	{{ form_errors(form) }}
-			<div class='form__field'>
-				{{ form_label(form.numeroBA) }}
-				{{ form_widget(form.numeroBA) }}
-				{{ form_errors(form.numeroBA) }}
+
+ {{ form_start(form, {'action':path('lci_bons_rechercher'), 'method':'POST', 'name':'myForm' } ) }}
+ {{ form_errors(form) }}
+	<section class="main-content">
+	<h1 class="main-content__title">Recherche</h1>
+	<section class="main-content__content">
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Type</h2>
+			<div class='form__field form__field--double'>
+				<div>
+					{{ form_label(form.numeroBA) }}
+					{{ form_widget(form.numeroBA) }}
+					{{ form_errors(form.numeroBA) }}
+				</div>
+				<div>
+					<label>Genre</label>
+					<select>
+						<option>Tous les genres</option>
+						<option>Bons</option>
+						<option>Ticket</option>
+					</select>
+				</div>
 			</div>
 			<div class="form__field">
 				{{ form_label(form.saisie) }}
 				{{ form_widget(form.saisie) }}
 				{{ form_errors(form.saisie) }}
 			</div>
-			<div class="form__field">
-				{{ form_label(form.userInitiateur) }}
-				{{ form_widget(form.userInitiateur) }}
-				{{ form_errors(form.userInitiateur) }}
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Informations</h2>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.site) }}
+					{{ form_widget(form.site) }}
+					{{ form_errors(form.site) }}
+				</div>
+				<div>
+					{{ form_label(form.numeroAffaire) }}
+					{{ form_widget(form.numeroAffaire) }}
+					{{ form_errors(form.numeroAffaire) }}
+				</div>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					<label>Service</label>
+					<select>
+						<option>Service 1</option>
+						<option>Service 2</option>
+					</select>
+				</div>
+				<div>
+					<label>Type d'intervention</label>
+					<select>
+						<option>Type 1</option>
+						<option>Type 2</option>
+					</select>
+				</div>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.userInitiateur) }}
+					{{ form_widget(form.userInitiateur) }}
+					{{ form_errors(form.userInitiateur) }}
+				</div>
+				<div>
+					{{ form_label(form.user) }}
+					{{ form_widget(form.user) }}
+					{{ form_errors(form.user) }}
+				</div>
 			</div>
 			<div class="form__field form__field--double">
 				<div>
 					{{ form_label(form.dateMinInitialisation) }}
 					{{ form_widget(form.dateMinInitialisation) }}
 					{{ form_errors(form.dateMinInitialisation) }}
+					
 				</div>
 				<div>
 					{{ form_label(form.dateMaxInitialisation) }}
@@ -47,55 +99,67 @@
 					{{ form_errors(form.dateMaxInitialisation) }}
 				</div>
 			</div>
-            <div class="form__field">
-            	{{ form_label(form.user) }}
-            	{{ form_widget(form.user) }}
-            	{{ form_errors(form.user) }}
-            </div>
-            <div class="form__field">
-            	{{ form_label(form.site) }}
-            	{{ form_widget(form.site) }}
-            	{{ form_errors(form.site) }}
-            </div>
-            <div class="form__field form__field--double">
-            	<div>
-            		{{ form_label(form.dateMinIntervention) }}
-            		{{ form_widget(form.dateMinIntervention) }}
-            		{{ form_errors(form.dateMinIntervention) }}
-            	</div>
-            	<div>
-            		{{ form_label(form.dateMaxIntervention) }}
-            		{{ form_widget(form.dateMaxIntervention) }}
-            		{{ form_errors(form.dateMaxIntervention) }}
-            	</div>
-            </div>
-            <div class="form__field">
-            	{{ form_label(form.numeroAffaire) }}
-            	{{ form_widget(form.numeroAffaire) }}
-            	{{ form_errors(form.numeroAffaire) }}
-            </div>
-            <div class="form__field form__field--double">
-            	<div>
-            		{{ form_label(form.dateMin) }}
-            		{{ form_widget(form.dateMin) }}
-            		{{ form_errors(form.dateMin) }}
-            	</div>
-            	<div>
-            		{{ form_label(form.dateMax) }}
-            		{{ form_widget(form.dateMax) }}
-            		{{ form_errors(form.dateMax) }}
-            	</div>
-            </div>
-            <div class="form__field">
-            	{{ form_label(form.nomDuContact) }}
-            	{{ form_widget(form.nomDuContact) }}
-            	{{ form_errors(form.nomDuContact) }}
-            </div>
-			<div class='ligne_error'></div>
-			<div class='form__field'>
-				{{ form_label(form.sensValidation) }}
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Planning</h2>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.dateMinIntervention) }}
+					{{ form_widget(form.dateMinIntervention) }}
+					{{ form_errors(form.dateMinIntervention) }}
+				</div>
+				<div>
+					{{ form_label(form.dateMaxIntervention) }}
+					{{ form_widget(form.dateMaxIntervention) }}
+					{{ form_errors(form.dateMaxIntervention) }}
+				</div>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.dateMin) }}
+					{{ form_widget(form.dateMin) }}
+					{{ form_errors(form.dateMin) }}
+				</div>
+				<div>
+					{{ form_label(form.dateMax) }}
+					{{ form_widget(form.dateMax) }}
+					{{ form_errors(form.dateMax) }}
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Pièces</h2>
+			<div class="form__field">
+				<label>État de la demande</label>
+				<select>
+					<option>En cours</option>
+					<option>Validée</option>
+				</select>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Contact</h2>
+			<div class="form__field">
+				{{ form_label(form.nomDuContact) }}
+				{{ form_widget(form.nomDuContact) }}
+				{{ form_errors(form.nomDuContact) }}
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Équipement</h2>
+			<div class="form__field">
+				<label>Équipement concerné</label>
+				<input type="text"/>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Validation</h2>
+			<div class="form__field">
+				{{ form_label(form.valideur) }}
+				{{ form_widget(form.valideur) }}
 			</div>
 			<div class='form__field'>
+				<label>Validité</label>
 				{{ form_widget(form.sensValidation) }}
 				<div id='checkbox_validation' style="margin-top:16px;">
 					<div>{{ form_widget(form.validationTechnique) }}</div>
@@ -104,24 +168,30 @@
                 	<div>{{ form_widget(form.validationFacturation) }}</div>
 				</div>
 			</div>
-            <div class="form__field">
-            	{{ form_label(form.valideur) }}
-            	{{ form_widget(form.valideur) }}
-            </div>
-		{{ form_rest(form) }}
-		{{ form_end(form) }}
-	</div>
-
-	<div class='form__btn notToBePrinted'>
+		</fieldset>
+	</section>
+	<div class="main-content__btn">
 		<button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
 	    <button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Rechercher</button>
 	</div>
-</main>
+</section>
+{{ form_rest(form) }}
+{{ form_end(form) }}
 {% endblock fos_user_content %}
 
 {% block javascript %}
 <script type='text/javascript'>
+
+// Fonction style barre de navigation page active
+$(window).on('load', function pageActive(){
+	$('.side-nav .bons-interv').addClass('active');
+});
     $(document).ready(function(){
+    	/* Débug largeur parent flex col */
+    	$('.main-content').css({'width':'initial'});
+    	setTimeout(function(){
+    		$('.main-content').css({'width':'fit-content'});
+    	}, 30);
         /* Mise en place de l'objet datepicker */
 		$("#obj_recherche_bons_attachement_dateMin" ).datepicker({ dateFormat: 'dd/mm/yy' });
 		$("#obj_recherche_bons_attachement_dateMax" ).datepicker({ dateFormat: 'dd/mm/yy' });
@@ -160,5 +230,13 @@
 			$('#obj_recherche_bons_attachement_valideur').prop('disabled', false);
 		}
 	}
+	/* Débug largeur parent flex col */
+	$(window).on('resize', function(){
+	    $('.main-content').css({'width':'initial'});
+	    setTimeout(function(){
+	    	$('.main-content').css({'width':'fit-content'});
+	    }, 30);
+
+	});
 </script>
 {% endblock javascript %}

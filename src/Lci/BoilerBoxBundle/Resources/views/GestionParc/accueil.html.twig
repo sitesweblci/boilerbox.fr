@@ -4,7 +4,7 @@
 
 {% block fos_user_content %}
 {{ parent() }}
-<div class='{# menu_parc #} main-content'>
+<div class='{# menu_parc #} card-wrapper'>
     {% if is_granted('ROLE_RESPONSABLE_PARC') %}
     <div class="card"onClick="attente(); changeAjaxFromVar('accueil'); redirection('ajouterModuleFromAccueil');">
         <img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/ajout-mod.svg') }}" alt="Ajouter module" >

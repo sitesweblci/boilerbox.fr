@@ -11,29 +11,28 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
-	.main-box{
-    	position: relative;
-    	display: flex;
-    	flex-flow: column wrap;
-    	justify-content: space-between;
-		width: initial;
-		min-width: initial;
-		max-width: initial;
-		margin: 0;
-	}
-	.form__btn--col{
-		width: initial;
+	.main-content > .form-group{
+		display: none;
 	}
 	#contacts_deja_associes{
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
 		margin-top: -16px;
 	}
 	#contacts_deja_associes p{
+		width: 48%;
 		padding: 8px;
+		margin-bottom: 6px;
 		border-radius: 3px;
+		background: var(--light-grey);
+		font-size: 9pt;
+		font-weight: 500;
 		cursor: pointer;
 	}
 	#contacts_deja_associes p:hover{
-		background: #f2f2f2;
+		background: var(--grey);
+		color:  var(--black);
 	}
 	#container_new_contact input, #encart_fichiers_siteBA{
 		margin-bottom: 16px;
@@ -54,7 +53,7 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 
-<main id="grid-ba" class="grid" dir="ltr">
+{# <main id="grid-ba" class="grid" dir="ltr">
 	<section id="ba-bon" class='grid__one main-box notToBePrinted'>
 		<h1 class="main-box__title">Nouveau Bon</h1>
 		<div>
@@ -150,10 +149,11 @@
 				<a href='https://goo.gl/maps/RG2zoSZrbis8vsqj6' target='google'>
 					Accès Google Map
 				</a>
-	        	{# <div class='validation_impression tooltip-wrapper notToBePrinted' style="margin:0;">
+				A COMMENTER
+	        	<div class='validation_impression tooltip-wrapper notToBePrinted' style="margin:0;">
 	        	    <img onClick="attente(); window.print(); return false;" alt="Valider" src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" style="width:20px;height:20px;cursor:pointer;"/>
 	        	    <span class="tooltip">Imprimer</span>
-	        	</div> #}
+	        	</div>
 			</div>
 
 			{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
@@ -268,12 +268,275 @@
     	</div>
 	</section>
 </main>
+#}
+{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'class':'test' }) }}
+{{ form_errors(form) }}
+<main {# id="grid-ba-2" #} class="main-content">
+	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
+	<section class="main-content__content">
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Informations</h2>
+			<div class="form__field rel">
+	    		{{ form_label(form.site) }}
+				{{ form_widget(form.site) }}
+				{{ form_errors(form.site) }}
+				<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					<label>Service</label>
+					<select>
+						<option>Automatisme</option>
+						<option>Bla bla </option>
+						<option>Bla bla 2</option>
+					</select>
+				</div>
+				<div>
+					<label>Type d'intervention</label>
+					<select>
+						<option>Intervention 1</option>
+						<option>Bla bla </option>
+						<option>Bla bla 2</option>
+					</select>
+				</div>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.userInitiateur) }}
+					{{ form_widget(form.userInitiateur) }}
+					{{ form_errors(form.userInitiateur) }}
+				</div>
+				<div>
+					{{ form_label(form.user) }}
+					{{ form_widget(form.user) }}
+					{{ form_errors(form.user) }}
+				</div>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.dateInitialisation) }}
+					{{ form_widget(form.dateInitialisation) }}
+					{{ form_errors(form.dateInitialisation) }}
+					
+				</div>
+				<div>
+					{{ form_errors(form.dateSignature) }}
+					{{ form_label(form.dateSignature) }}
+					{{ form_widget(form.dateSignature) }}
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Planning</h2>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_label(form.dateDebutIntervention) }}
+					{{ form_widget(form.dateDebutIntervention) }}
+					{{ form_errors(form.dateDebutIntervention) }}
+					
+				</div>
+				<div>
+					{{ form_label(form.dateFinIntervention) }}
+					{{ form_widget(form.dateFinIntervention) }}
+					{{ form_errors(form.dateFinIntervention) }}
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Localisation</h2>
+			<div id='map'></div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Contact</h2>
+			<div class="form__field rel">
+				<label>Nom</label>
+				<select>
+					<option></option>
+					<option>Contact 1</option>
+					<option>Contact 2</option>
+					<option>Contact 3</option>
+				</select>
+				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouveauContact)"><span class="tooltip">Créer contact</span></button>
+			</div>
+			<div class="form__field form__field--double">
+				<div>
+					{{ form_errors(form.nomDuContact) }}
+		    		{{ form_label(form.emailContactClient) }}
+		    		{{ form_widget(form.emailContactClient , { 'attr': {'class': 'disabled'} }) }}
+				</div>
+				<div>
+					<label>Téléphone</label>
+					<input type="number"/ class="disabled">
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Équipement</h2>
+			<div class="form__field rel">
+				<span id="add-equipBon">Ajouter équipement</span>
+				<button type="button" id="equipBon" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouvelEquipement)"><span class="tooltip">Ajouter équipement</span></button>
+			</div>
+			<div class="add-list">
+				<div class="add-list__added">
+					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
+					<span class="designation2">Blablabla bla</span>
+					<span class="serieEquip">xxxx8888xxxxx</span>
+					<div class="close-cross"></div></div>
+				<div class="add-list__added">
+					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
+					<span class="designation2">Blablabla bla</span>
+					<span class="serieEquip">xxxx7777xxxxx</span>
+					<div class="close-cross"></div></div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Photos</h2>
+			<label class="form__field rel">
+				Répertoire photo
+				<input type="text"/>
+				<button type="button" class="btn btn--main"></button>
+			</label>
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Fichier(s)</h2>
+			<div class="form__field rel">
+				<span id="add-fichierBon">Ajouter fichier PDF (2Mo max)</span>
+				<input type="file" multiple="multiple" name="fichierBon" id="fichierBon"  class=" btn btn--main add"/>
+				<label for="fichierBon" class="btn btn--main add"></label>
+			</div>
+			<div class="add-list">
+				<div class="add-list__added">Test<div class="close-cross"></div></div>
+				<div class="add-list__added">Test<div class="close-cross"></div></div>
+			</div>
+		</fieldset>
+	</section>
+	<div class="main-content__btn">
+		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
+		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Créer</button>
+	</div>
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
+</main>
+
+<!-- popup Site -->
+<section id="bonsSite" class="popup cacher">
+	<div class="popup__wrapper" style="width:500px;">
+		<header class="popup__header">
+			<h1 id='titre_nouveau_siteBA' class="popup__title">Nouveau Site</h1>
+			<div class="close-cross" onclick="togglePopUp(bonsSite)"></div>
+		</header>
+		<div class="popup__content">
+			{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
+			{{ form_errors(form_site) }}
+				<input type='hidden' name='id_site_ba' id='id_site_ba' />
+				<fieldset class="fieldset">
+					<div class="form__field">
+						{{ form_label(form_site.intitule) }}
+						{{ form_widget(form_site.intitule) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.adresse) }}
+						{{ form_widget(form_site.adresse) }}
+						{{ form_errors(form_site.adresse) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.lienGoogle) }}
+						{{ form_widget(form_site.lienGoogle) }}
+						{{ form_errors(form_site.lienGoogle) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.informationsClient) }}
+						{{ form_widget(form_site.informationsClient) }}
+						{{ form_errors(form_site.informationsClient) }}
+					</div>
+					<div class="form__field">
+						{{ form_label(form_site.contacts) }}
+						{{ form_widget(form_site.contacts) }}
+						{{ form_errors(form_site.contacts) }}
+					</div>
+				</fieldset>
+	            <div id="ajout_contact" class='form__field'>
+	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
+	            	<div class='nouveau_probleme_ligne form__field'>
+	            		<div>
+	            			<span style='font-size:12px'></span>
+	            			<div id='contacts_deja_associes'></div>
+	            			<span id='lien_ajout_contact'></span>
+	            			<div id='container_new_contact' style='overflow:auto;'></div>
+	            		</div>
+	            	</div>
+	            	<div class='form__field'>
+	            		<div id='champ_ajout_fichiers_siteBA'>
+	            			{{ form_widget(form_site.fichiersJoint) }}
+	            		</div>
+	            	</div>
+	            	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
+	            		<div class='ligne_error'></div>
+	            		<div class='form__field'>
+	            			<label class="flex flex--row" style="display:flex!important;">
+	            				{{ form_label(form_site.fichiersJoint) }}
+	            				<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
+	            			</label>
+	            			<div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
+	            			<span id='lien_ajout_fichier_siteBA'></span>
+	            		</div>
+	            		<div class='form__field'>
+	            			<div id='champ_ajout_fichiers_siteBA'>
+	            				{{ form_widget(form_site.fichiersJoint) }}
+	            				{{ form_errors(form_site.fichiersJoint) }}
+	            			</div>
+	            		</div>
+	            	</div>
+	            </div>
+				<div id='encart_fichiers_siteBA'></div>
+	        {{ form_rest(form_site, {attr: {'class':'btn' }}) }}
+			{{ form_end(form_site) }}
+			<div id="bloc_contact_pour_impression" class="print"></div>
+		   	<div class='main-box__btn notToBePrinted'>
+		   		<button class="btn btn--second" onclick="togglePopUp(bonsSite)">Retour</button>
+		   		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['site_ba'].submit(); return false;">Valider</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- popup Nouveau Contact -->
+<section id="bonsNouveauContact" class="popup cacher">
+	<div class="popup__wrapper">
+		<header class="popup__header">
+			<h1 class="popup__title">Nouveau Contact</h1>
+			<div class="close-cross" onclick="togglePopUp(bonsNouveauContact)"></div>
+		</header>
+		<div class="popup__content">
+		</div>
+	</div>
+</section>
+
+<!-- popup Nouvel équipement -->
+<section id="bonsNouvelEquipement" class="popup cacher">
+	<div class="popup__wrapper">
+		<header class="popup__header">
+			<h1 class="popup__title">Nouvel Équipement</h1>
+			<div class="close-cross" onclick="togglePopUp(bonsNouvelEquipement)"></div>
+		</header>
+		<div class="popup__content">
+		</div>
+	</div>
+</section>
 
 <div class="navigation-mobile">
 	<div class=""></div>
 	<div class=""></div>
 </div>
 {% endblock mainBody %}
+
+
+
+
+
+
+
 
 
 {% block javascript %}
@@ -485,6 +748,7 @@
 
 			if ($('#bons_attachement_site').val() != '')
 			{
+				$()
 				$('#titre_nouveau_siteBA').text('Modification du site');
 				$('#fichiers_deja_joints').html('');
 				$('#contacts_deja_associes').html('');
@@ -780,6 +1044,21 @@
 			}
 		});	
 	}
+
+	$("#add-fichierBon").on("click", () => {
+		$("#fichierBon").click();
+	});
+	$("#add-equipBon").on("click", () => {
+		$("#equipBon").click();
+	});
+
+	$(window).on('resize', function(){
+	    $('.main-content').css({'width':'initial'});
+	    setTimeout(function(){
+	    	$('.main-content').css({'width':'fit-content'});
+	    }, 30);
+
+	});
 
 </script>
 

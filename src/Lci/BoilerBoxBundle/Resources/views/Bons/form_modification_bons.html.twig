@@ -7,68 +7,79 @@
 
 {% form_theme form 'templates/form/fields.html.twig' %}
 
+{% block liens_css %}
+	{{ parent() }}
+		<style>
+		.main-content__content{
+			height: calc(100vh - 400px);
+		}
+		@media screen and (max-height: 800px){
+			.main-content__content{
+				height: calc(100vh - 300px) !important;
+			}
+		}
+		</style>
+{% endblock liens_css %}
 
 {% block fos_user_content %}
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'attachements</h1>
 </header>
-<main class='main-box'>
-	<h1 class="main-box__title">Modification de la demande {{ idBon }}</h1>
-	<div class='main-box__content' >
-    	{{ form_start(form, {'action':path('lci_bons_modifier_unbon', { 'idBon': idBon }), 'method':'POST', 'name':'myForm', 'class':'form'}) }}
+
+{{ form_start(form, {'action':path('lci_bons_modifier_unbon', { 'idBon': idBon }), 'method':'POST', 'name':'myForm', 'class':'form'}) }}
+<main class='main-content'>
+	<h1 class="main-content__title">Modification de la demande {{ idBon }}</h1>
+	<div class='main-content__content' >
+    	<fieldset class="fieldset">
+    		<h2 class="fieldset__title">Informations</h2>
 			{% if form.userInitiateur is defined %}
-			
 				<div class="form__field">
 					{{ form_label(form.userInitiateur) }}
 					{{ form_widget(form.userInitiateur) }}
 					{{ form_errors(form.userInitiateur) }}
 				</div>
-				<div class="form__field">
-					{{ form_label(form.dateInitialisation) }}
-					{{ form_widget(form.dateInitialisation) }}
-					{{ form_errors(form.dateInitialisation) }}
-				</div>
-            	<div class="form__field">
-            		{{ form_label(form.user) }}
-            		{{ form_widget(form.user) }}
-            		{{ form_errors(form.user) }}
-            	</div>
-			{% endif %}
 
+				<div class="form__field form__field--double">
+					<div>
+						{{ form_label(form.dateInitialisation) }}
+						{{ form_widget(form.dateInitialisation) }}
+						{{ form_errors(form.dateInitialisation) }}
+					</div>
+					<div>
+						{{ form_label(form.user) }}
+						{{ form_widget(form.user) }}
+						{{ form_errors(form.user) }}
+					</div>
+				</div>
+			{% endif %}
+        	<div class="form__field">
+        		{{ form_label(form.dateSignature) }}
+        		{{ form_widget(form.dateSignature) }}
+        		{{ form_errors(form.dateSignature) }}
+        	</div>
 			<div class="form__field">
 				{{ form_label(form.numeroBA) }}
 				{{ form_widget(form.numeroBA) }}
 				{{ form_errors(form.numeroBA) }}
 			</div>
 			{% if form.userInitiateur is defined %}
-				<div class="form__field">
-					{{ form_label(form.site) }}
-					{{ form_widget(form.site) }}
-					{{ form_errors(form.site) }}
-				</div>
-            	<div class="form__field">
-            		{{ form_label(form.numeroAffaire) }}
-            		{{ form_widget(form.numeroAffaire, {'attr' : {'class':'txt--left'} }) }}
-            		{{ form_errors(form.numeroAffaire) }}
-            	</div>
+				<div class="form__field form__field--double">
+					<div>
+						{{ form_label(form.site) }}
+						{{ form_widget(form.site) }}
+						{{ form_errors(form.site) }}
+					</div>
+	            	<div>
+	            		{{ form_label(form.numeroAffaire) }}
+	            		{{ form_widget(form.numeroAffaire, {'attr' : {'class':'txt--left'} }) }}
+	            		{{ form_errors(form.numeroAffaire) }}
+	            	</div>
+	            </div>
 			{% endif %}
-
-			<div class="form__field">
-				{{ form_label(form.nomDuContact) }}
-				{{ form_widget(form.nomDuContact) }}
-				{{ form_errors(form.nomDuContact) }}
-			</div>
-            <div class="form__field">
-            	{{ form_label(form.emailContactClient) }}
-            	{{ form_widget(form.emailContactClient) }}
-            	{{ form_errors(form.emailContactClient) }}
-            </div>
-            <div class="form__field">
-            	{{ form_label(form.dateSignature) }}
-            	{{ form_widget(form.dateSignature) }}
-            	{{ form_errors(form.dateSignature) }}
-            </div>
-            <div class="form__field form__field--double">
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Planning</h2>
+			<div class="form__field form__field--double">
             	<div>
             		{{ form_label(form.dateDebutIntervention) }}
             		{{ form_widget(form.dateDebutIntervention) }}
@@ -80,14 +91,27 @@
             		{{ form_errors(form.dateFinIntervention) }}
             	</div>
             </div>
-		{{ form_rest(form) }}
+		</fieldset>
+		<fieldset class="fieldset">
+			<h2 class="fieldset__title">Contacts</h2>
+			<div class="form__field">
+				{{ form_label(form.nomDuContact) }}
+				{{ form_widget(form.nomDuContact) }}
+				{{ form_errors(form.nomDuContact) }}
+			</div>
+			<div class="form__field">
+				{{ form_label(form.emailContactClient) }}
+				{{ form_widget(form.emailContactClient) }}
+				{{ form_errors(form.emailContactClient) }}
+			</div>
+		</fieldset>
 		{{ form_end(form) }}
 	</div>
-
-	<div class='form__btn notToBePrinted'>
+	<div class='main-content__btn notToBePrinted'>
         <button class="btn_menu btn btn--second" onClick="attente(); document.forms['form_affiche_bon'].submit(); return false;">Retour</button>
         <button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Enregistrer</button>
 	</div>
+	{{ form_rest(form) }}
 </main>
 
 <form method='post' name='form_affiche_bon' action={{ path('lci_bons_afficher_unbon') }}>
@@ -104,6 +128,11 @@
     	$('.side-nav .bons-interv').addClass('active');
     });
 	$(document).ready(function(){
+		/* Débug largeur parent flex col */
+		$('.main-content').css({'width':'initial'});
+		setTimeout(function(){
+			$('.main-content').css({'width':'fit-content'});
+		}, 30);
 		/* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({
             numberOfMonths: 2
@@ -115,6 +144,18 @@
 
 		/* On retire le verrou sur les emails pour pouvoir mettre n'importe quel email */
 		$('#bons_attachement_modification1_emailContactClient').prop('readonly', false);
+		
+		setTimeout(function(){
+		 $('.main-content').css({'width':'fit-content'});
+		}, 30);
+	});
+	/* Débug largeur parent flex col */
+	$(window).on('resize', function(){
+	    $('.main-content').css({'width':'initial'});
+	    setTimeout(function(){
+	    	$('.main-content').css({'width':'fit-content'});
+	    }, 30);
+
 	});
 </script>
 {% endblock javascript %}

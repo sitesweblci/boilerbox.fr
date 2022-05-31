@@ -1313,12 +1313,6 @@ th div.champs_validation_bon > div > div {
 th div.champs_validation_bon > div > div:first-child {
  	border-left: 1px dashed black;
 }
-td div.champs_validation_bon > div > div {
-    border-right: 1px dashed #c9c9c9;
-}
-td div.champs_validation_bon > div > div:first-child {
-    border-left: 1px dashed #c9c9c9;
-}
 #legende_sites {
     display: flex;
 	flex-direction: column;
@@ -1355,17 +1349,17 @@ td div.champs_validation_bon > div > div:first-child {
 	border: 1px solid black;
 }
 #commentaires_bon {
-	max-height: 250px;
+	max-height: 160px;
   overflow-y: auto;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .bons_commentaires_titre {
-	color: gray;
-	font-size: 13px;
+	color: var(--dark-grey);
+	font-size: 9pt;
 }
 .bons_commentaires_text {
-  margin-bottom: 8px;
-	font-size: 15px;
+  margin-bottom: 4px;
+	font-size: 10pt;
 }
 /* ********************* Boutons switch ************************** */
 .switch {
