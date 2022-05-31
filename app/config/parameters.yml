@@ -41,6 +41,5 @@ parameters:
 #   url_boilerbox: http://preprodfr.boiler-box.fr/
 #   url_cloud: http://preprodcloud.boiler-box.fr/
 ## Configuration DEV VPS
-    url_boilerbox: http://vps614872.ovh.net/
-    url_cloud: http://vps614872.ovh.net:8081/
-#
+    url_boilerbox: 'http://vps614872.ovh.net/'
+    url_cloud: 'http://vps614872.ovh.net:8081/'
