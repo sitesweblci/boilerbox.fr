@@ -783,10 +783,10 @@ class BonsController extends Controller
     // Création d'un fichier bat pour ouverture du dossier photos des BA
     public function creationFichierBatAction($idBon)
     {
-        $e_bon = $this->getDoctrine()->getManager()->getREpository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
+        $e_bon = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
 
         $filename       = 'fichierBat.bat';
-        $filecontent    = 'explorer '.$e_bon->getCheminDossierPhotos();
+        $filecontent    = "chcp 65001\nexplorer ".$e_bon->getCheminDossierPhotos();
         $response       = new Response($filecontent);
 
         // Create the disposition of the file
@@ -796,6 +796,7 @@ class BonsController extends Controller
         );
 
         // Set the content disposition
+		$response->headers->set('Content-Type', 'application/bat');
         $response->headers->set('Content-Disposition', $disposition);
 
         // Dispatch request
