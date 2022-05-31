@@ -33,7 +33,7 @@ class BonsAttachementRepository extends EntityRepository
         $queryBuilder = $this->createQueryBuilder('b');
 		// Si un choix de service valideur est effectué, la validation s'effectue sur les bons validés, les bons non validés 
 		// ou sur les bon validés dans le cas NULL (cad un valideur a été selectionné mais sans choix de service, on a alors considéré que la recherche s'effectue sur tous les services de la liste
-        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationHoraire()) {
+        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) {
             if ($entity_objRechercheBon->getSensValidation() === false){
 				$sens_validation = 0;
             } elseif ($entity_objRechercheBon->getSensValidation() === true) {
@@ -72,11 +72,11 @@ class BonsAttachementRepository extends EntityRepository
 
 		/************************************************** Recherche sur les validations de bons *********************************************************/
 		$qbExprFacture 	= null;
-		$qbExprHoraire 	= null;
+		$qbExprPiece 	= null;
 		$qbExprSAV 		= null;
 		$qbExprTechnique= null;
         $qbExprFactureNull  = null;
-        $qbExprHoraireNull  = null;
+        $qbExprPieceNull  = null;
         $qbExprSAVNull      = null;
         $qbExprTechniqueNull= null;
 		$rechercheSurValidation = false;
@@ -94,12 +94,12 @@ class BonsAttachementRepository extends EntityRepository
         }
 
 
-        if ($entity_objRechercheBon->getValidationHoraire()) {
+        if ($entity_objRechercheBon->getValidationPiece()) {
 			$rechercheSurValidation = true;
-			$queryBuilder   ->leftJoin('b.validationHoraire', 'vh');
+			$queryBuilder   ->leftJoin('b.validationPiece', 'vp');
 			if ($entity_objRechercheBon->getValideur()) {
 				$rechercheSurValideur = true;
-				$queryBuilder   ->leftJoin('vh.user','vhu');
+				$queryBuilder   ->leftJoin('vp.user','vhu');
 			}
         }
 
@@ -141,16 +141,16 @@ class BonsAttachementRepository extends EntityRepository
 			}
         }
 
-        if ($entity_objRechercheBon->getValidationHoraire()) {
+        if ($entity_objRechercheBon->getValidationPiece()) {
 			if ($entity_objRechercheBon->getValideur()) {
-            	$qbExprHoraire =    $queryBuilder->expr()->andX(
+            	$qbExprPiece =    $queryBuilder->expr()->andX(
             	                		$queryBuilder->expr()->eq('vh.valide', ':sensValidation'),
             	                		$queryBuilder->expr()->eq('vfu', ':valideur')
             						);
             } else {
-				$qbExprHoraire =   $queryBuilder->expr()->eq('vh.valide', ':sensValidation');
+				$qbExprPiece =   $queryBuilder->expr()->eq('vh.valide', ':sensValidation');
 				if ($sens_validation === 0){
-					$qbExprHoraireNull =   $queryBuilder->expr()->isNull('b.validationHoraire');
+					$qbExprPieceNull =   $queryBuilder->expr()->isNull('b.validationPiece');
 				}
 			}
         }
@@ -193,18 +193,18 @@ class BonsAttachementRepository extends EntityRepository
 
 								/********************************************************************************/
 		// Si l'un des quatres service de validation est recherché
- 		if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationHoraire()) {
+ 		if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) {
 			if ($entity_objRechercheBon->getSensValidation() === false){
 				$queryBuilder   ->andWhere(
 					$queryBuilder->expr()->orX(
-						$queryBuilder->expr()->andX($qbExprFacture, $qbExprHoraire, $qbExprSAV, $qbExprTechnique),
-						$queryBuilder->expr()->andX($qbExprFactureNull, $qbExprHoraireNull, $qbExprSAVNull, $qbExprTechniqueNull)
+						$queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique),
+						$queryBuilder->expr()->andX($qbExprFactureNull, $qbExprPieceNull, $qbExprSAVNull, $qbExprTechniqueNull)
 					)
 				);
 			} elseif ($entity_objRechercheBon->getSensValidation() === true) {
-				$queryBuilder   ->andWhere( $queryBuilder->expr()->andX($qbExprFacture, $qbExprHoraire, $qbExprSAV, $qbExprTechnique) );
+				$queryBuilder   ->andWhere( $queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique) );
 			} elseif ($entity_objRechercheBon->getSensValidation() === null) {
-				$queryBuilder   ->andWhere( $queryBuilder->expr()->orX($qbExprFacture, $qbExprHoraire, $qbExprSAV, $qbExprTechnique) );
+				$queryBuilder   ->andWhere( $queryBuilder->expr()->orX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique) );
 			}
         }
 

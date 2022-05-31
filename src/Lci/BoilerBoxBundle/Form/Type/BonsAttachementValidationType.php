@@ -21,10 +21,14 @@ class BonsAttachementValidationType extends AbstractType {
 			'label' => 'Validation Technique',
 			'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'
 		))
-		->add('validationHoraire', ValidationType::class, array(
+		->add('validationPiece', ValidationType::class, array(
 			'label' => 'Validation Pièces',
             'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'
 		))
+        ->add('validationPieceFaite', ValidationType::class, array(
+            'label' => false,
+            'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'
+        ))
 		->add('validationSAV', ValidationType::class, array(
 			'label' => 'Validation SAV',
 			'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'

@@ -31,24 +31,6 @@ lci_bons_externe_enquete:
 lci_bons_sitesBA_visualiser:
     path: /bons/sitesBA/visualiser/{idSiteActif}
     defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: 1 }
-lci_ajax_siteBA_del_file:
-    path: /bons/ajax/siteBA/delete_file
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileSiteBA }
-lci_ajax_bons_get_siteBA:
-    path: /bons/sitesBA/get
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
-lci_ajax_bon_contact_supp:
-    path: /bons/ajax/contact/supp
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }
-lci_ajax_bon_contact_modif:
-    path: /bons/ajax/contact/modif
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:modifierContact }
-lci_ajax_archivage_fichier_siteBA:
-    path: /bons/ajax/archivage/fichier/siteBA
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archivageFichierSiteBA }
-lci_ajax_bons_del_file:
-    path: /bons/ajax/delete_file
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFile }
 lci_bons_admin_site_index:
     path: /bons/admin/site/index
     defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
@@ -79,10 +61,31 @@ lci_ajax_siteba_new_contact:
 lci_ajax_bon_get_infos_contact:
     path: /bons/ajax/get_infos_contact
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getInfosContact }
+lci_ajax_siteBA_del_file:
+    path: /bons/ajax/siteBA/delete_file
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileSiteBA }
+lci_ajax_bons_get_siteBA:
+    path: /bons/sitesBA/get
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
+lci_ajax_bon_contact_supp:
+    path: /bons/ajax/contact/supp
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }
+lci_ajax_bon_contact_modif:
+    path: /bons/ajax/contact/modif
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:modifierContact }
+lci_ajax_archivage_fichier_siteBA:
+    path: /bons/ajax/archivage/fichier/siteBA
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archivageFichierSiteBA }
+lci_ajax_bons_del_file:
+    path: /bons/ajax/delete_file
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFile }
 lci_ajax_bon_get_googlemap:
     path: /bon/ajax/get_google_map
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getGoogleMap }
+lci_bons_has_url:
+    path: /bon/has_url/{id_bon}
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:hasUrl }
 lci_get_fichier_bat:
-    path: /lci/get_bat/{idBon}
+    path: /bon/get_bat/{id_bon}
     defaults: { _controller: LciBoilerBoxBundle:Bons:creationFichierBat }
 

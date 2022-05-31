@@ -177,9 +177,9 @@
                                 			&nbsp
                                 	{% endif %}
                                 </div>
-                                <div data-intitule='validationHoraire'>
-                                	{% if ent_bons.validationHoraire %}
-                                		{% if ent_bons.validationHoraire.valide %}
+                                <div data-intitule='validationPiece'>
+                                	{% if ent_bons.validationPiece %}
+                                		{% if ent_bons.validationPiece.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
                                 		{% endif %}
                                 		{% else %}
@@ -499,11 +499,11 @@
 										ligne.validationTechnique = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
 									}
 									break;	
-                                case 'validationHoraire':
+                                case 'validationPiece':
                                     if ($(this).children().length === 0) {
-                                    	ligne.validationHoraire = '&nbsp';
+                                    	ligne.validationPiece = '&nbsp';
                                     } else {
-                                        ligne.validationHoraire = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
+                                        ligne.validationPiece = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
                                     }
                                     break;
                                 case 'validationSav':
@@ -633,7 +633,7 @@
 			nouveauTableau += "<div class='champs_validation_bon'>";
 			nouveauTableau += "<div class='sous_champs_validation_bon'>";
 			nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
-            nouveauTableau += "<div data-intitule='validationHoraire'>" + tableau[index]['validationHoraire'] + "</div>";
+            nouveauTableau += "<div data-intitule='validationPiece'>" + tableau[index]['validationPiece'] + "</div>";
             nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
 			nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
 			nouveauTableau += "</div>";

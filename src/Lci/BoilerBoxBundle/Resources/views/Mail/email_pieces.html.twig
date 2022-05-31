@@ -5,12 +5,12 @@
 
 <body>
 <div id='contenu_email'>
-	<h1 style='color:red; font-size:20px; margin-bottom:-10px;'>Offre à faire pour le site {{ nom_site }}</h1>
+	<h1 style='color:green; font-size:20px; margin-bottom:-10px;'>Offre de pièce demandée pour le site {{ nom_site }}</h1>
 	<br />
 	<p style='line-height: 32px;'>
 		Bonjour, <br />
-		Une offre est à faire suite à l'intervention <b>N° {{ numero_bon }}</b> pour l'affaire <b>{{ nom_site }}</b> svp.<br />
-		(Demande effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})
+		Une offre de pièce est demandée suite à l'intervention <b>N° {{ numero_bon }}</b> svp. (Affaire <b>{{ nom_site }}</b>)<br />
+		<span style='font-size:12px'>(Demande effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})</span>
 	<p>
 	<br /><br /><br />
 	<p>

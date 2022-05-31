@@ -1,0 +1,26 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_pieces_annulation.html.twig #}
+<!DOCTYPE html>
+<html>
+<head></head>
+
+<body>
+<div id='contenu_email'>
+	<h1 style='color:red; font-size:20px; margin-bottom:-10px;'>Annulation de l'offre de pièce pour le site {{ nom_site }}</h1>
+	<br />
+	<p style='line-height: 32px;'>
+		Bonjour, <br />
+		Une annulation de l'offre de pièce est demandée pour l'intervention <b>N° {{ numero_bon }}</b>svp. (Affaire <b>{{ nom_site }}</b>)<br />
+		<span style='font-size:12px'>(Demande d'annulation effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})</span>
+	<p>
+	<br /><br /><br />
+	<p>
+	    <div>IMPORTANT NOTICE</div>
+	    <div>*** Ce message est généré automatiquement. Merci de ne pas y répondre.***</div>
+	    <div>Assistance IBC</div>
+	</p>
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' width="400" />
+
+</body>
+</html>
+

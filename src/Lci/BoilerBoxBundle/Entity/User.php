@@ -39,7 +39,7 @@ class User extends BaseUser
 	protected $totpKey;
 
     /**
-	 * Paramètres defini dans Base User et réécri pour permettre sa récupération en ajax / json  / serailizer
+	 * Paramètres defini dans Base User et réécri pour permettre sa récupération en ajax / json  / serializer
      * @var string
 	 * @Groups({"groupSite"})
      */

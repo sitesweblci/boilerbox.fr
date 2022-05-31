@@ -50,16 +50,27 @@ protected $url_boilerbox;
         }
     }
 
-	// Mail envoyé lors de la validation d'une pièce au gestionnaire de pieces (désigné dans le fichier parameters.yml)
-    public function sendMailPieces($nom_site, $numero_bon, $label_demandeur, $destinataire) 
-	{
-        $message = \Swift_Message::newInstance()
-            ->setSubject("Offre à faire pour l'affaire $nom_site")
-            ->setFrom('Assistance_IBC@lci-group.fr')
-            ->setTo([$destinataire]);
+    // Mail envoyé lors de la validation d'une pièce au gestionnaire de pieces (désigné dans le fichier parameters.yml)
+    public function sendMailPieces($type, $nom_site, $numero_bon, $label_demandeur, $destinataire)
+    {
+		if ($type == 'demande')
+		{
+        	$message = \Swift_Message::newInstance()
+        	    ->setSubject("Offre à faire pour l'affaire $nom_site")
+        	    ->setFrom('Assistance_IBC@lci-group.fr')
+        	    ->setTo([$destinataire]);
+			$image_link = $message->embed(\Swift_Image::fromPath($this->logo));
+        	$message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces.html.twig', array('nom_site' => $nom_site, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
 
-        $image_link = $message->embed(\Swift_Image::fromPath($this->logo));
-        $message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces.html.twig', array('nom_site' => $nom_site, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
+		} else {
+			$message = \Swift_Message::newInstance()
+                ->setSubject("Annulation d'offre de pièces pour l'affaire $nom_site")
+				->setFrom('Assistance_IBC@lci-group.fr')
+                ->setTo([$destinataire]);	
+			$image_link = $message->embed(\Swift_Image::fromPath($this->logo));
+        	$message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces_annulation.html.twig', array('nom_site' => $nom_site, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
+		}
+
         $message->setContentType('text/html');
         $nb_delivery = $this->mailer->send($message);
         if ($nb_delivery == 0) {
@@ -70,7 +81,6 @@ protected $url_boilerbox;
             return(0);
         }
     }
-
 
 
 
