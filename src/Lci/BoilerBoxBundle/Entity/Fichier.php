@@ -1,6 +1,8 @@
 <?php 
 //src/Lci/BoilerBoxBundle/Entity/Fichier.php
 
+// Fichiers joints aux bons d'attachements
+
 namespace Lci\BoilerBoxBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;

@@ -2,6 +2,10 @@
 # http://symfony.com/doc/current/book/service_container.html
 
 services:
+     Lci\BoilerBoxBundle\Repository\EquipementBATicketRepository:
+        autowire: true
+        tags: ['doctrine.repository_service']
+
      lci_replication:
         class: 'Lci\BoilerBoxBunde\Repository\ReplicationRepository'
         autowire: true

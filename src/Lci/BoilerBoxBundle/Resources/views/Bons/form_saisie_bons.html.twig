@@ -37,6 +37,9 @@
 	#container_new_contact input, #encart_fichiers_siteBA{
 		margin-bottom: 16px;
 	}
+	.erreur_formulaire {
+		border: 2px solid red !important;
+	}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -53,98 +56,52 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 
-{# <main id="grid-ba" class="grid" dir="ltr">
-	<section id="ba-bon" class='grid__one main-box notToBePrinted'>
-		<h1 class="main-box__title">Nouveau Bon</h1>
-		<div>
-	    	{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'id':'myForm', 'class':'form' }) }}
-	   		{{ form_errors(form) }}
-	   			<div class="form__field">
-					{{ form_label(form.userInitiateur) }}
-					{{ form_widget(form.userInitiateur) }}
-					{{ form_errors(form.userInitiateur) }}
-				</div>
-	   			<div class="form__field">
-		    		{{ form_label(form.dateInitialisation) }}
-		    		{{ form_widget(form.dateInitialisation) }}
-		    		{{ form_errors(form.dateInitialisation) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.user) }}
-					{{ form_widget(form.user) }}
-					{{ form_errors(form.user) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.numeroBA) }}
-					{{ form_widget(form.numeroBA) }}
-					{{ form_errors(form.numeroBA) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.site) }}
-					{{ form_widget(form.site) }}
-					{{ form_errors(form.site) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_label(form.numeroAffaire) }}
-					{{ form_widget(form.numeroAffaire) }}
-					{{ form_errors(form.numeroAffaire) }}
-		    	</div>
-		    	<div class="form__field form__field--double">
-		    		<div>
-		    			{{ form_label(form.dateDebutIntervention) }}
-						{{ form_widget(form.dateDebutIntervention) }}
-						{{ form_errors(form.dateDebutIntervention) }}
-		    		</div>
-		    		<div>
-		    			{{ form_label(form.dateFinIntervention) }}
-		    			{{ form_widget(form.dateFinIntervention) }}
-		    			{{ form_errors(form.dateFinIntervention) }}
-		    		</div>
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.nomDuContact) }}
-		    		{{ form_label(form.nomDuContact) }}
-		    		{{ form_widget(form.nomDuContact) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.nomDuContact) }}
-		    		{{ form_label(form.emailContactClient) }}
-		    		{{ form_widget(form.emailContactClient) }}
-		    	</div>
-		    	<div class="form__field">
-		    		{{ form_errors(form.dateSignature) }}
-		    		{{ form_label(form.dateSignature) }}
-					{{ form_widget(form.dateSignature) }}
-		    	</div>
-				<div class='form__field'>
-					<label class="flex flex--row" style="display:flex!important;">
-						{{ form_label(form.fichiersPdf) }}
-						<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
-					</label>
-					<span id='lien_ajout_fichier'></span>
-					<div id='champ_ajout_fichiers_bon'>
-						{{ form_widget(form.fichiersPdf) }}
-						{{ form_errors(form.fichiersPdf) }}
-					</div>
-				</div>
-			{{ form_rest(form) }}
-			{{ form_end(form) }}
+{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
+{{ form_errors(form) }}
+<input type='hidden' value='non' name='enregistrement' id='enregistrement'>
+<main id="grid-ba-2" class="main-content grid">
+	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
+	<section class="grid__two">
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Informations</h2>
+		<div class="form__field rel">
+    		{{ form_label(form.site) }}
+			{{ form_widget(form.site) }}
+			{{ form_errors(form.site) }}
+			<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
 		</div>
-		<div class='main-box__btn'>
-			<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second">Retour</a>
-	   		<button onClick="attente(); document.forms['myForm'].submit(); return false;"class="btn_menu btn btn--main">Valider</button>
-		</div>
-	</section>
-
-	<section id="ba-site" class='grid__two main-box'>
-		<h1 id='titre_nouveau_siteBA' class="main-box__title">Nouveau site</h1>
-		<div>
-			<div class="main-box__action notToBePrinted">
-				<span class="tooltip-wrapper" onClick="attente(); window.print(); return false;">
-					<img src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" alt="imprimer"/>
-					<span class="tooltip">Imprimer</span>
-				</span>
+        <div class="form__field form__field--double">
+			<div>
+            	{{ form_label(form.numeroAffaire) }}
+            	{{ form_widget(form.numeroAffaire) }}
+            	{{ form_errors(form.numeroAffaire) }}
+            </div>
+        </div>
+		{# Gestion du nom du contact en javascript car on le gère depuis le select html #}
+        <div class="form__field cacher">
+            {{ form_errors(form.nomDuContact) }}
+            {{ form_label(form.nomDuContact) }}
+        	{{ form_widget(form.nomDuContact) }}
+        </div>
+		<div class="form__field form__field--double">
+			<div>
+                {{ form_errors(form.service) }}
+                {{ form_label(form.service) }}
+                {{ form_widget(form.service) }}
 			</div>
+			<div>
+                {{ form_errors(form.typeIntervention) }}
+                {{ form_label(form.typeIntervention) }}
+                {{ form_widget(form.typeIntervention) }}
+			</div>
+		</div>
+		<div class="form__field form__field--double">
+			<div>
+				{{ form_label(form.userInitiateur) }}
+				{{ form_widget(form.userInitiateur) }}
+				{{ form_errors(form.userInitiateur) }}
+			</div>
+{#
 			<div id='impression_fiche_site' class="form__field flex flex--row flex--between">
 				<a href='https://goo.gl/maps/RG2zoSZrbis8vsqj6' target='google'>
 					Accès Google Map
@@ -154,376 +111,247 @@
 	        	    <img onClick="attente(); window.print(); return false;" alt="Valider" src="{{ asset('bundles/lciboilerbox/images/actions/imprimer.svg') }}" style="width:20px;height:20px;cursor:pointer;"/>
 	        	    <span class="tooltip">Imprimer</span>
 	        	</div>
-			</div>
-
-			{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
-			{{ form_errors(form_site) }}
-				<input type='hidden' name='id_site_ba' id='id_site_ba' />
-
-
-				<div class="form__field">
-					{{ form_label(form_site.intitule) }}
-					{{ form_widget(form_site.intitule) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.adresse) }}
-					{{ form_widget(form_site.adresse) }}
-					{{ form_errors(form_site.adresse) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.lienGoogle) }}
-					{{ form_widget(form_site.lienGoogle) }}
-					{{ form_errors(form_site.lienGoogle) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.informationsClient) }}
-					{{ form_widget(form_site.informationsClient) }}
-					{{ form_errors(form_site.informationsClient) }}
-				</div>
-				<div class="form__field">
-					{{ form_label(form_site.contacts) }}
-					{{ form_widget(form_site.contacts) }}
-					{{ form_errors(form_site.contacts) }}
-				</div>
-	            <div id="ajout_contact" class='form__field'>
-	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
-	            	<div class='nouveau_probleme_ligne form__field'>
-	            		<div>
-	            			<span style='font-size:12px'></span>
-	            			<div id='contacts_deja_associes'></div>
-	            			<span id='lien_ajout_contact'></span>
-	            			<div id='container_new_contact' style='overflow:auto;'></div>
-	            		</div>
-	            	</div>
-	            	<div class='form__field'>
-	            		<div id='champ_ajout_fichiers_siteBA'>
-	            			{{ form_widget(form_site.fichiersJoint) }}
-	            		</div>
-	            	</div>
-	            	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
-	            		<div class='ligne_error'></div>
-	            		<div class='form__field'>
-	            			<label class="flex flex--row" style="display:flex!important;">
-	            				{{ form_label(form_site.fichiersJoint) }}
-	            				<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
-	            			</label>
-	            			<div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
-	            			<span id='lien_ajout_fichier_siteBA'></span>
-	            		</div>
-	            		<div class='form__field'>
-	            			<div id='champ_ajout_fichiers_siteBA'>
-	            				{{ form_widget(form_site.fichiersJoint) }}
-	            				{{ form_errors(form_site.fichiersJoint) }}
-	            			</div>
-	            		</div>
-	            	</div>
-	            </div>
-				<div id='encart_fichiers_siteBA'></div>
-	        {{ form_rest(form_site, {attr: {'class':'btn' }}) }}
-			{{ form_end(form_site) }}
-
-			<div id="bloc_contact_pour_impression" class="print">
+#}
+			<div>
+				{{ form_label(form.user) }}
+				{{ form_widget(form.user) }}
+				{{ form_errors(form.user) }}
 			</div>
 		</div>
-	   	<div class='main-box__btn notToBePrinted'>
-	   		<a href="{{ path('lci_bons_attachements') }}" class="btn btn--second">Retour</a>
-	   		<button onClick="attente(); document.forms['site_ba'].submit(); return false;"class="btn_menu btn btn--main">Valider</button>
-   		</div>
+		<div class="form__field form__field--double">
+			<div>
+				{{ form_label(form.dateInitialisation) }}
+				{{ form_widget(form.dateInitialisation) }}
+				{{ form_errors(form.dateInitialisation) }}
+				
+			</div>
+			<div>
+				{{ form_errors(form.dateSignature) }}
+				{{ form_label(form.dateSignature) }}
+				{{ form_widget(form.dateSignature) }}
+			</div>
+		</div>
+	</fieldset>
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Planning</h2>
+		<div class="form__field form__field--double">
+			<div>
+				{{ form_label(form.dateDebutIntervention) }}
+				{{ form_widget(form.dateDebutIntervention) }}
+				{{ form_errors(form.dateDebutIntervention) }}
+				
+			</div>
+			<div>
+				{{ form_label(form.dateFinIntervention) }}
+				{{ form_widget(form.dateFinIntervention) }}
+				{{ form_errors(form.dateFinIntervention) }}
+			</div>
+		</div>
+	</fieldset>
+    <fieldset>
+        <div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.typeNouveau) }}
+                {{ form_widget(form.typeNouveau) }}
+                {{ form_errors(form.typeNouveau) }}
+            </div>
+            <div>
+                {{ form_label(form.idNouveau) }}
+                {{ form_widget(form.idNouveau) }}
+                {{ form_errors(form.idNouveau) }}
+            </div>
+        </div>
+		<div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.siteNouveau) }}
+                {{ form_widget(form.siteNouveau) }}
+                {{ form_errors(form.siteNouveau) }}
+            </div>
+        </div>
+    </fieldset>
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Localisation</h2>
+		<div id='map'></div>
+	</fieldset>
 	</section>
 
-	<section id="ba-contact" class='main-box grid__three'>
-		<input type='hidden' id='indexContact'>
-		<h1 class="main-box__title">
-		    Fiche Contact
-		    <h2 class="main-box__sub-title">
-	    		(mise à jour le <input type='text' name='dateMajContact' id='dateMajContact' style="width:initial;"> )
-	    	</h2>
-		</h1>
-		<div id='bloc_ajout_contact'>
-		    <div class="form__field">
-		    	<label>Nom</label>
-		    	<input type='text' name='nomContact' id='nomContact'>
-		    </div>
-		    <div class="form__field">
-		    	<label>Prénom</label>
-		    	<input type='text' name='prenomContact' id='prenomContact'>
-		    </div>
-		    <div class="form__field">
-		    	<label>Mail</label>
-		    	<input type='text' name='emailContact' id='emailContact'>
-		    </div>
-		    <div class="form__field">
-		    	<label>Téléphone</label>
-		    	<input type='text' name='telephoneContact' id='telephoneContact'>
-		    </div>
-		    <div class="form__field">
-		    	<label>Fonction</label>
-		    	<input type='text' name='fonctionContact' id='fonctionContact'>
-		    </div>
-			<div class='form__btn form__btn--col notToBePrinted'>
-        	    <button onClick="attente(); modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
-        	    <button onClick="attente(); supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
-            </div>
-            <div id='map'></div>
-    	</div>
-	</section>
-</main>
-#}
-{{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm', 'class':'test' }) }}
-{{ form_errors(form) }}
-<main {# id="grid-ba-2" #} class="main-content">
-	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
-	<section class="main-content__content">
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Informations</h2>
-			<div class="form__field rel">
-	    		{{ form_label(form.site) }}
-				{{ form_widget(form.site) }}
-				{{ form_errors(form.site) }}
-				<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
-			</div>
-			<div class="form__field form__field--double">
-				<div>
-					<label>Service</label>
-					<select>
-						<option>Automatisme</option>
-						<option>Bla bla </option>
-						<option>Bla bla 2</option>
-					</select>
-				</div>
-				<div>
-					<label>Type d'intervention</label>
-					<select>
-						<option>Intervention 1</option>
-						<option>Bla bla </option>
-						<option>Bla bla 2</option>
-					</select>
-				</div>
-			</div>
-			<div class="form__field form__field--double">
-				<div>
-					{{ form_label(form.userInitiateur) }}
-					{{ form_widget(form.userInitiateur) }}
-					{{ form_errors(form.userInitiateur) }}
-				</div>
-				<div>
-					{{ form_label(form.user) }}
-					{{ form_widget(form.user) }}
-					{{ form_errors(form.user) }}
-				</div>
-			</div>
-			<div class="form__field form__field--double">
-				<div>
-					{{ form_label(form.dateInitialisation) }}
-					{{ form_widget(form.dateInitialisation) }}
-					{{ form_errors(form.dateInitialisation) }}
-					
-				</div>
-				<div>
-					{{ form_errors(form.dateSignature) }}
-					{{ form_label(form.dateSignature) }}
-					{{ form_widget(form.dateSignature) }}
-				</div>
-			</div>
-		</fieldset>
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Planning</h2>
-			<div class="form__field form__field--double">
-				<div>
-					{{ form_label(form.dateDebutIntervention) }}
-					{{ form_widget(form.dateDebutIntervention) }}
-					{{ form_errors(form.dateDebutIntervention) }}
-					
-				</div>
-				<div>
-					{{ form_label(form.dateFinIntervention) }}
-					{{ form_widget(form.dateFinIntervention) }}
-					{{ form_errors(form.dateFinIntervention) }}
-				</div>
-			</div>
-		</fieldset>
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Localisation</h2>
-			<div id='map'></div>
-		</fieldset>
+	<section class="grid__three">
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Contact</h2>
 			<div class="form__field rel">
 				<label>Nom</label>
-				<select>
-					<option></option>
-					<option>Contact 1</option>
-					<option>Contact 2</option>
-					<option>Contact 3</option>
+				<select id='select_contact'>
+					<option value=''></option>
 				</select>
-				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouveauContact)"><span class="tooltip">Créer contact</span></button>
+				<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
 			</div>
 			<div class="form__field form__field--double">
 				<div>
-					{{ form_errors(form.nomDuContact) }}
-		    		{{ form_label(form.emailContactClient) }}
-		    		{{ form_widget(form.emailContactClient , { 'attr': {'class': 'disabled'} }) }}
+					{{ form_errors(form.emailContactClient) }}
+                    {{ form_label(form.emailContactClient) }}
+                    {{ form_widget(form.emailContactClient, {'attr':{'class':"disabled"} }) }}
 				</div>
 				<div>
-					<label>Téléphone</label>
-					<input type="number"/ class="disabled">
+					{{ form_errors(form.telephoneContactClient) }}
+                    {{ form_label(form.telephoneContactClient) }}
+					{{ form_widget(form.telephoneContactClient, {'attr':{'class':"disabled"} }) }}
 				</div>
 			</div>
 		</fieldset>
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field rel">
-				<span id="add-equipBon">Ajouter équipement</span>
-				<button type="button" id="equipBon" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsNouvelEquipement)"><span class="tooltip">Ajouter équipement</span></button>
-			</div>
-			<div class="add-list">
-				<div class="add-list__added">
-					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
-					<span class="designation2">Blablabla bla</span>
-					<span class="serieEquip">xxxx8888xxxxx</span>
-					<div class="close-cross"></div></div>
-				<div class="add-list__added">
-					<span class="designation">TestTestTestTestTestTestTestTestTestTestTestTestTestTest</span>
-					<span class="designation2">Blablabla bla</span>
-					<span class="serieEquip">xxxx7777xxxxx</span>
-					<div class="close-cross"></div></div>
-				</div>
-			</div>
+                <span id="add-equipBon">Sélection des équipements</span>
+                <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Sélection des équipements du bon</span></button>
+            </div>
 		</fieldset>
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Photos</h2>
 			<label class="form__field rel">
-				Répertoire photo
-				<input type="text"/>
+                {{ form_label(form.cheminDossierPhotos) }}
+                {{ form_widget(form.cheminDossierPhotos) }}
+                {{ form_errors(form.cheminDossierPhotos) }}
 				<button type="button" class="btn btn--main"></button>
 			</label>
 		</fieldset>
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Fichier(s)</h2>
 			<div class="form__field rel">
-				<span id="add-fichierBon">Ajouter fichier PDF (2Mo max)</span>
-				<input type="file" multiple="multiple" name="fichierBon" id="fichierBon"  class=" btn btn--main add"/>
-				<label for="fichierBon" class="btn btn--main add"></label>
+				<span id="add-fichierBon">Ajouter fichier PDF (20Mo max)</span>
+				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter un fichier</span></button>
 			</div>
-			<div class="add-list">
-				<div class="add-list__added">Test<div class="close-cross"></div></div>
-				<div class="add-list__added">Test<div class="close-cross"></div></div>
+			<div id='fichiers_deja_joints2' class="add-list">
 			</div>
 		</fieldset>
+		<div class="main-content__btn">
+			<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
+			<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer</button>
+		</div>
 	</section>
-	<div class="main-content__btn">
-		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
-		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Créer</button>
-	</div>
-	{{ form_rest(form) }}
-	{{ form_end(form) }}
 </main>
 
-<!-- popup Site -->
-<section id="bonsSite" class="popup cacher">
-	<div class="popup__wrapper" style="width:500px;">
-		<header class="popup__header">
-			<h1 id='titre_nouveau_siteBA' class="popup__title">Nouveau Site</h1>
-			<div class="close-cross" onclick="togglePopUp(bonsSite)"></div>
-		</header>
-		<div class="popup__content">
-			{{ form_start(form_site, {attr: {'id': 'site_ba', 'class':'form' }}) }}
-			{{ form_errors(form_site) }}
-				<input type='hidden' name='id_site_ba' id='id_site_ba' />
-				<fieldset class="fieldset">
-					<div class="form__field">
-						{{ form_label(form_site.intitule) }}
-						{{ form_widget(form_site.intitule) }}
-					</div>
-					<div class="form__field">
-						{{ form_label(form_site.adresse) }}
-						{{ form_widget(form_site.adresse) }}
-						{{ form_errors(form_site.adresse) }}
-					</div>
-					<div class="form__field">
-						{{ form_label(form_site.lienGoogle) }}
-						{{ form_widget(form_site.lienGoogle) }}
-						{{ form_errors(form_site.lienGoogle) }}
-					</div>
-					<div class="form__field">
-						{{ form_label(form_site.informationsClient) }}
-						{{ form_widget(form_site.informationsClient) }}
-						{{ form_errors(form_site.informationsClient) }}
-					</div>
-					<div class="form__field">
-						{{ form_label(form_site.contacts) }}
-						{{ form_widget(form_site.contacts) }}
-						{{ form_errors(form_site.contacts) }}
-					</div>
-				</fieldset>
-	            <div id="ajout_contact" class='form__field'>
-	            	<div class='ligne_error'>{{ form_errors(form_site.contacts) }}</div>
-	            	<div class='nouveau_probleme_ligne form__field'>
-	            		<div>
-	            			<span style='font-size:12px'></span>
-	            			<div id='contacts_deja_associes'></div>
-	            			<span id='lien_ajout_contact'></span>
-	            			<div id='container_new_contact' style='overflow:auto;'></div>
-	            		</div>
-	            	</div>
-	            	<div class='form__field'>
-	            		<div id='champ_ajout_fichiers_siteBA'>
-	            			{{ form_widget(form_site.fichiersJoint) }}
-	            		</div>
-	            	</div>
-	            	<div id="ajout_fichier_siteBA_mobile_portrait" class='ajout_fichier_joint'>
-	            		<div class='ligne_error'></div>
-	            		<div class='form__field'>
-	            			<label class="flex flex--row" style="display:flex!important;">
-	            				{{ form_label(form_site.fichiersJoint) }}
-	            				<span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
-	            			</label>
-	            			<div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
-	            			<span id='lien_ajout_fichier_siteBA'></span>
-	            		</div>
-	            		<div class='form__field'>
-	            			<div id='champ_ajout_fichiers_siteBA'>
-	            				{{ form_widget(form_site.fichiersJoint) }}
-	            				{{ form_errors(form_site.fichiersJoint) }}
-	            			</div>
-	            		</div>
-	            	</div>
-	            </div>
-				<div id='encart_fichiers_siteBA'></div>
-	        {{ form_rest(form_site, {attr: {'class':'btn' }}) }}
-			{{ form_end(form_site) }}
-			<div id="bloc_contact_pour_impression" class="print"></div>
-		   	<div class='main-box__btn notToBePrinted'>
-		   		<button class="btn btn--second" onclick="togglePopUp(bonsSite)">Retour</button>
-		   		<button class="btn_menu btn btn--main" onClick="attente(); document.forms['site_ba'].submit(); return false;">Valider</button>
+
+<section id="popupSelectionEquipement" class="popup cacher">
+	<div class="popup__wrapper" style="width:900px;">
+    	<header class="popup__header">
+    	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
+    	    <div class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
+    	</header>
+
+    	<div class="popup__content">
+			<div>
+        	    <div class="form__field rel">
+        	        <div style='padding:5px;' >
+            	        <select id='select_equipement'>
+            	             <option value=''>Affichage des équipements tous sites confondus</option>
+            	            {% for e_siteBA in es_sitesBA %}
+            	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
+            	            {% endfor %}
+            	        </select>
+						<div style='padding:20px;'>
+							<div>Recherche</div>
+							<div><input type='text' id='recherche_equipement' /></div>
+						</div>
+
+            	        <div style='padding:20px;'>
+            	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
+            	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
+                                    <span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
+            	            </div>
+
+            	            <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
+            	                <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
+									<span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
+            	                <div id='insert_equipement'>
+            	                </div>
+                	        </div>
+                	    </div>
+                	</div>
+            	</div>
+			</div>
+			<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesEquipements2();">Ajouter un nouvel équipement</button>
+		</div>
+	</div>
+</section>
+
+<!-- Popup d'ajout de fichiers au bon -->
+<section id="popupGestionFichiersBon" class="popup cacher">
+    <div class="popup__wrapper" style="width:900px;">
+        <header class="popup__header">
+            <h1 id='titre_gestion_fichiers_bon' class="popup__title">Sélection des fichiers du bon</h1>
+            <div class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
+        </header>
+
+        <div class="popup__content">
+			<span id='lien_ajout_fichier'></span>
+            <div>
+                <div class="form__field rel">
+       				<div>
+           				{{ form_errors(form.fichiersPdf) }}
+           				{{ form_label(form.fichiersPdf) }}
+           				{{ form_widget(form.fichiersPdf) }}
+       				</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+<section id="popupEquipement2" class="popup cacher">
+    {{ render(path('lci_ajax_bon_new_equipement')) }}
+</section>
+
+
+<!-- popup Site -->
+<section id="bonsSite" class="popup cacher">
+	{{ render(path('lci_ajax_bon_new_siteBA')) }}
+</section>
+
 
 <!-- popup Nouveau Contact -->
 <section id="bonsNouveauContact" class="popup cacher">
 	<div class="popup__wrapper">
 		<header class="popup__header">
-			<h1 class="popup__title">Nouveau Contact</h1>
+			<h1 id='titre_nouveau_contact' class="popup__title">Nouveau Contact</h1>
 			<div class="close-cross" onclick="togglePopUp(bonsNouveauContact)"></div>
 		</header>
 		<div class="popup__content">
+            <div class="form__field">
+                <label>Nom</label>
+                <input type='text' name='nomContact' id='nomContact'>
+            </div>
+            <div class="form__field">
+                <label>Prénom</label>
+                <input type='text' name='prenomContact' id='prenomContact'>
+            </div>
+            <div class="form__field">
+                <label>Mail</label>
+                <input type='text' name='emailContact' id='emailContact'>
+            </div>
+            <div class="form__field">
+                <label>Téléphone</label>
+                <input type='text' name='telephoneContact' id='telephoneContact'>
+            </div>
+            <div class="form__field">
+                <label>Fonction</label>
+                <input type='text' name='fonctionContact' id='fonctionContact'>
+            </div>
+            <div class='form__btn form__btn--col notToBePrinted'>
+                <button onClick="modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
+                <button onClick="supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
+            </div>
 		</div>
 	</div>
 </section>
 
-<!-- popup Nouvel équipement -->
-<section id="bonsNouvelEquipement" class="popup cacher">
-	<div class="popup__wrapper">
-		<header class="popup__header">
-			<h1 class="popup__title">Nouvel Équipement</h1>
-			<div class="close-cross" onclick="togglePopUp(bonsNouvelEquipement)"></div>
-		</header>
-		<div class="popup__content">
-		</div>
-	</div>
-</section>
+<!-- popup Nouveau Contact V2-->
+<section id="popupContact2" class="popup cacher">
+	{{ render(path('lci_ajax_siteba_new_contact')) }}
+</div>
+
 
 <div class="navigation-mobile">
 	<div class=""></div>
@@ -540,19 +368,20 @@
 
 
 {% block javascript %}
-	{# Script d'autocompletion de l'adresse #}
-    <script type='text/javascript'>
+
+<script type='text/javascript'>
 
     // Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
-    	$('.side-nav .bons-interv').addClass('active');
+        $('.side-nav .bons-interv').addClass('active');
     });
 
-	var maCarte;
-	var changeEnCours;
 
-    function initAutocomplete(){
-		var monMarqueur;
+    var maCarte;
+
+    function initAutocomplete()
+	{
+        var monMarqueur;
 
         maCarte = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 50.474, lng: 2.97118},
@@ -564,157 +393,176 @@
         var input = document.getElementById('site_ba_adresse');
 
         var autocomplete = new google.maps.places.Autocomplete(input);
-		autocomplete.setFields(['place_id', 'geometry']);
+        autocomplete.setFields(['place_id', 'geometry']);
 
 
-		/* Placement du marqueur sur l'emplacement selectionné */
-        maCarte.addListener('click', function(e){
-			if (monMarqueur != null) {
-				monMarqueur.setMap(null);
-			}
-			monMarqueur = new google.maps.Marker({
-				position: e.latLng,
-				map: maCarte,
-				icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
-			});
-			maCarte.setZoom(19);
-			maCarte.setCenter(monMarqueur.getPosition());
-			maCarte.setMapTypeId('satellite');
+        /* Placement du marqueur sur l'emplacement selectionné */
+        maCarte.addListener('click', function(e)
+		{
+            if (monMarqueur != null) {
+                monMarqueur.setMap(null);
+            }
+            monMarqueur = new google.maps.Marker({
+                position: e.latLng,
+                map: maCarte,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
+            });
+            maCarte.setZoom(19);
+            maCarte.setCenter(monMarqueur.getPosition());
+            maCarte.setMapTypeId('satellite');
 
-			
-			/* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
-			/* On ne modifie que l'url en fonction du marqueur */
-			geocoder = new google.maps.Geocoder();
-			geocoder.geocode({'location':monMarqueur.getPosition()}, function(results, status) {
-				if (status == 'OK') {
-					$('#site_ba_lienGoogle').val('latLng' + monMarqueur.getPosition());
-					/*$('#site_ba_adresse').val(results[0].formatted_address);*/
-					$('#site_ba_lienGoogle').attr('readonly', true);
-				} else {
-					alert('Aucune adresse trouvée pour le lieu selectionné');
-				}
-			});
+
+            /* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
+            /* On ne modifie que l'url en fonction du marqueur */
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'location':monMarqueur.getPosition()}, function(results, status) 
+			{
+                if (status == 'OK') 
+				{
+                    $('#site_ba_lienGoogle').val('latLng' + monMarqueur.getPosition());
+                    $('#site_ba_lienGoogle').attr('readonly', true);
+                } else {
+                    alert('Aucune adresse trouvée pour le lieu selectionné');
+                }
+            });
         });
 
 
-        autocomplete.addListener('place_changed', function() {
+        autocomplete.addListener('place_changed', function() 
+		{
             var place = autocomplete.getPlace();
-			if (place.geometry) {
-				maCarte.panTo(place.geometry.location);
-				maCarte.setZoom(19);
-				maCarte.setMapTypeId('satellite');
-            	monMarqueur = new google.maps.Marker({
+            if (place.geometry) {
+                maCarte.panTo(place.geometry.location);
+                maCarte.setZoom(19);
+                maCarte.setMapTypeId('satellite');
+                monMarqueur = new google.maps.Marker({
                     position: place.geometry.location,
                     map: maCarte
-            	});
-			}
-			$('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
-			$('#site_ba_lienGoogle').attr('readonly', true)
-		});
-
-		$('#site_ba_lienGoogle').on('change', function() {
-			var $objPos = {};
-
-			var $position = $('#site_ba_lienGoogle').val();
-			// Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
-			// Sinon si l'adresse provient du site web google map, on extrait les coordonnées
-			var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
-			if ($coordonnees == null) 
-			{
-				geocoder = new google.maps.Geocoder();
-				var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
-				$.ajax({
-					url: $adresse,
-					method: "get",
-					success: function(msg) {
-						$objPos.lat = msg['results'][0]['geometry']['location']['lat'];
-						$objPos.lng = msg['results'][0]['geometry']['location']['lng'];
-						maCarte.setCenter($objPos);
-						maCarte.setZoom(19);
-						maCarte.setMapTypeId('satellite');
-						monMarqueur = new google.maps.Marker({
-            				position: $objPos,
-            				map: maCarte
-        				});
-						$latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
-                        $('#site_ba_lienGoogle').val($latLng);
-					}
-				});
-			} else {
-				$objPos.lat = parseFloat($coordonnees[1]);
-				$objPos.lng = parseFloat($coordonnees[2]);
-        		maCarte.setCenter($objPos);
-				maCarte.setZoom(19);
-				maCarte.setMapTypeId('satellite');
-			}
-		});
+                });
+            }
+            $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
+            $('#site_ba_lienGoogle').attr('readonly', true)
+        });
     }
 
+    $('#site_ba_lienGoogle').on('change', function()
+    {
+        var $objPos = {};
 
+        var $position = $('#site_ba_lienGoogle').val();
+        if ($position == '' )
+        {
+            return 0;
+        }
+
+
+        // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
+        // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
+        var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
+        if ($coordonnees == null)
+        {
+            geocoder = new google.maps.Geocoder();
+            var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
+            $.ajax({
+                url: $adresse,
+                method: "get",
+                success: function(msg) {
+                    $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
+                    $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
+                    maCarte.setCenter($objPos);
+                    maCarte.setZoom(19);
+                    maCarte.setMapTypeId('satellite');
+                    monMarqueur = new google.maps.Marker({
+                        position: $objPos,
+                        map: maCarte
+                    });
+                    $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
+                    $('#site_ba_lienGoogle').val($latLng);
+                }
+            });
+        } else {
+            $objPos.lat = parseFloat($coordonnees[1]);
+            $objPos.lng = parseFloat($coordonnees[2]);
+            maCarte.setCenter($objPos);
+            maCarte.setZoom(19);
+            maCarte.setMapTypeId('satellite');
+        }
+    });
+
+
+
+    // Tableau des équipements selectionnés
+    // il permet de ne pas réafficher les équipements en doublon lors de la modification du select site
+    var tabDesEquipementsSelectionnes = [];
 	var $indexFichier = 1;
 	var $indexFichierSiteBA = 1;
 	var $indexContactSiteBA = 1;
-	var $container;
-	var $container_site;
-	var $container_contact;
+	var $container_fichiers_bon;
+	var $container_fichiers_site;
+	var $container_contacts_site;
 
 	var $tab_contact = new Array();
 
 	$(document).ready(function() 
 	{
-		$('#bons_attachement_nomDuContact').prop('readonly', true);
-		$('#bons_attachement_emailContactClient').prop('readonly', true);
+		attendreRechargement();
 
-		/* Mise en place de l'objet datepicker avec 2 mois affichés */
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({
             numberOfMonths: 1,
             dateFormat: 'dd/mm/yy',
             showWeek: true,
             gotoCurrent: true,
             changeMonth: true,
-			changeYear: true,
-			monthNamesShort: [ "Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" ],
-            showAnim: "fold",
-			minDate: 'today',
+            changeYear: true,
+            showAnim: "fadeIn",
             maxDate: '+2Y'
         });
 
 		setDatePicker();
-		
 
-		/* Récupération du container contenant l'attribut data-prototype */
-		$container = $('#bons_attachement_fichiersPdf');
-		/* Récupération du container des fichiers des SitesBA */
-		$container_site = $('#encart_fichiers_siteBA'); //$('#site_ba_fichiersJoint');
-        /* Récupération du container des contacts des SitesBA */
-        $container_contact = $('#site_ba_contacts');
+		// Récupération du container des fichiers des bons 
+		$container_fichiers_bon = $('#bons_attachement_fichiersPdf');
 
-	
+		// Récupération du container des fichiers des SitesBA 
+		$container_fichiers_site = $('#encart_fichiers_siteBA'); //$('#site_ba_fichiersJoint');
+
+        // Récupération du container des contacts des SitesBA 
+        $container_contacts_site = $('#site_ba_contacts');
+
+
 
         /* Lien permettant l'ajout d'un nouveau contact au site */
         var $addLinkContact = $('<a href="#" id="add_contact" class="small_link">Ajouter un contact</a>');
+
 		/* Lien permettant l'ajout d'un nouveau fichier au bon */
-		var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier</a>');
+		var $addLinkFichierBon = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier</a>');
+
 		/* Lien permettant l'ajout d'un nouveau fichier au site */
 		var $addLinkFichierSiteBA = $('<a href="#" id="add_fichier_site" class="small_link">Ajouter un fichier</a>');
 
 
+
 		/* Ajout du lien dans la div du container */
-		$('#lien_ajout_fichier').html($addLink);
+		$('#lien_ajout_fichier').html($addLinkFichierBon);
+
 		/* Ajout du lien dans la div du container de fichiers des sites */
 		$('#lien_ajout_fichier_siteBA').html($addLinkFichierSiteBA);
+
         /* Ajout du lien dans la div du container de contact des sites */
         $('#lien_ajout_contact').html($addLinkContact);
 
 
 
 		/* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
-		$addLink.click(function(e){
+		$addLinkFichierBon.click(function(e){
 			ajoutChampFichier();
 			e.preventDefault();
+			// On click sur le lien 'Parcourir' pour afficher la fenetre de recherche du fichier
 			$('#bons_attachement_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
 			return false;
 		});
+
 		/* Ajout d'un listener pour création d'un champs lors du clic sur le lien des fichiers des sitesBA */
 		$addLinkFichierSiteBA.click(function(e){
             ajoutChampFichierSiteBA();
@@ -722,6 +570,7 @@
             $('#site_ba_fichiersJoint_' + ( $indexFichierSiteBA - 1 ) + '_file').trigger("click");
             return false;
         });
+
         /* Ajout d'un listener pour création d'un champs contact lors du clic sur le lien des contacts */
         $addLinkContact.click(function(e){
             ajoutChampContactSiteBA();
@@ -731,27 +580,51 @@
         });
 
 
+
+		// Gestion du select intervenant
+        $('#bons_attachement_user').change(function() 
+		{
+			if ($('#bons_attachement_user').val() !=  null)
+			{
+				$('#bons_attachement_user').removeClass('erreur_formulaire');
+			}
+        });
+
+		// Gestion du select site
 		/* Affichage des informations du site selectionné dans l'encart SiteBA */
 		$('#bons_attachement_site').change(function()
 		{
-			changeEnCours = true;
-			resetInfosContact();
-			/* On réinitialise les valeurs de la fiche client et du contact associé au bon */
-            $('#idContact').val('');
-            $('#nomContact').val('');
-            $('#prenomContact').val('');
-            $('#emailContact').val('');
-            $('#telephoneContact').val('');
-            $('#fonctionContact').val('');
-            $('#bons_attachement_nomDuContact').val('');
-            $('#bons_attachement_emailContactClient').val('');
+			initAutocomplete();
 
+			// Réinitialisation des informations concernant les sites
+			$('#site_ba_reset').trigger('click');
+			resetInfosSite();
+
+			// Retire des encart rouge indiquant les champs manquants pour l'envoi du formulaire site
+			resetCheck();
+
+			// On réinitialise les valeurs de la fiche client et du contact associé au bon 
+			resetInfosContact();
+
+			// On réinitalise le select contact 
+			$('#select_contact').html("<option value=''></option>");
+
+			// On lance le raffraichissement de la popup Equipement
+            refreshSelectEquipements();
+
+			// SI UN SITE EST SELECTIONNE
+			// Appel ajax pour obtenir les informations liées au site
+			// + Affichage du bouton de création/modification de contact
 			if ($('#bons_attachement_site').val() != '')
 			{
-				$()
+				// On retire l'encart rouge indiquant qu'un site est necessaire pour l'envoi du formulaire
+				$('#bons_attachement_site').removeClass('erreur_formulaire');
+
+				// Affichage du bouton permettant la création/modification de contact
+				$('#btn_contact').removeClass('cacher');
+
 				$('#titre_nouveau_siteBA').text('Modification du site');
-				$('#fichiers_deja_joints').html('');
-				$('#contacts_deja_associes').html('');
+
             	var $id_site_ba = this.value;
             	var $url = "{{ path('lci_ajax_bons_get_siteBA') }}";
             	$.ajax({
@@ -760,63 +633,339 @@
             	    data: {'id_site_ba':$id_site_ba},
             	    success: function(msg) 
 					{
-						var $tab_siteBA = $.parseJSON(msg);
-						$('#id_site_ba').val($tab_siteBA[0]);
-						$('#site_ba_intitule').val($tab_siteBA[1]);
+						var siteBA = $.parseJSON(msg);
+
+						$('#id_site_ba').val(siteBA.id);
+						$('#site_ba_intitule').val(siteBA.intitule);
 						{# $('#site_ba_intitule').attr('readonly', true); // On autorise le changement du nom du site #}
-						$('#site_ba_adresse').val($tab_siteBA[2]);
-						$('#site_ba_lienGoogle').val($tab_siteBA[3]);			
-						$('#site_ba_informationsClient').val($tab_siteBA[4]);
-						/* Gestion des contacts client  : On split sur ; pour récupérer la 1ere valeur qui correspond à l'id pour requete ajax et affichage de la fiche client*/
-						$tab_contact = $tab_siteBA[5];
-						$.each($tab_siteBA[5], function($index, $tabContact) {
-							ficheContactPourImpression($index);
-							$html = '<p onClick=afficheContact(' + $index + ')>';
-							$html = $html + $tabContact['nom'] + '</p>';
+						$('#site_ba_adresse').val(siteBA.adresse);
+						$('#site_ba_informationsClient').val(siteBA.informationsClient);
+
+
+						$.ajax({
+							url: "{{ path('lci_ajax_bon_get_googlemap') }}",
+							method: "POST",
+							data: {'id_site_ba':$id_site_ba},
+							success: function(urlGoogleMap)
+                			{
+								$('#site_ba_lienGoogle').val(urlGoogleMap);
+
+		                        // Affichage de la map google
+		                        $('#site_ba_lienGoogle').trigger('change');
+
+		                        // Placement du marqueur sur la page 
+		                        ajoutMarqueur($('#site_ba_lienGoogle').val());
+
+							},
+							error: function()
+							{
+								alert('error map google');
+							}
+						});
+
+						// On ré initialise le select contact en indiquant la possiblité de création d'un contact
+						html_option = "<option value=''>Ajouter un nouveau contact</option>";
+						$.each(siteBA.contacts, function(index, contact) 
+						{
+							// ICI DEV ficheContactPourImpression(index);
+							$html = '<p>';
+							$html = $html + contact.nom + '</p>';
                 	        $('#contacts_deja_associes').append($html);
+							html_option += "<option value='" + contact.id + "'>" + contact.nom + "</option>";
                 	    });
-						if ($tab_siteBA[6]) {
-							$.each($tab_siteBA[9], function(index, value) {
-								$('#fichiers_deja_joints').append(value + '<br />');
-							});
+						$('#select_contact').html(html_option);	
+            			
+						// On reselectionne le contact précédemment selectionné
+						{% if id_last_site is not null %}
+            				if($('#bons_attachement_nomDuContact').val() != '')
+            				{
+                				$('#select_contact option:contains("' + $('#bons_attachement_nomDuContact').val() + '")').prop('selected', true);
+								$('#select_contact').trigger('change');
+            				}
+						{% endif %}
+
+/* ICI DEV A SUPP
+						// Ajout des noms des fichiers précédemment joints au site
+						$.each(siteBA.fichiersJoint, function(index, fichier) {
+								$('#fichiers_deja_joints').append(fichier.alt + '<br />');
+								$('#fichiers_deja_joints2').append("<div class='add-list__added " + fichier.id + "'>" + fichier.alt + "<div class='close-cross' onClick='supprimeFile(" + fichier.id + ");'></div></div>");
+						});
+*/
+		
+						// Ajout des équipements précédemment joints au site
+                        $.each(siteBA.equipementBATickets, function(index, equipement) {
+                                $('#equipements_deja_joints').append(equipement.denomination + '<br />');
+                        });
+
+						// Si on est dans l'action de changement de site suite au chargement de la page
+						if ($chargementEnCours == true)
+						{
+        					// On re sélectionne les équipements précédemment selectionné après l'envoi sans sauvegarde du formulaire de bon
+        					{% if tab_des_id_equipements_selectionnes | length != 0 %}
+            					// On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
+            					$('#select_equipement').val('');
+            					$('#select_equipement').change();
+					            {% for id_equipement in tab_des_id_equipements_selectionnes %}
+                					// On check les checkbox des equipements
+                					$('#equipement_' + "{{ id_equipement }}").prop('checked', true);
+                					deplaceEquipement("{{ id_equipement }}");
+            					{% endfor %}
+            					// Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
+            					$('#select_equipement').val($('#bons_attachement_site').val());
+        					{% endif %}
+
+        					// On affiche les équipements du site selectionné au chargement de la page
+        					$('#select_equipement').change();
+
+
+        					// Gestion des nouveaux contacts et nouveaux équipements a réafficher
+        					if ($('#bons_attachement_siteNouveau').val() != '')
+        					{
+            					// Selection du contact si un nouveau contact est crée pour le site courant
+            					switch($('#bons_attachement_typeNouveau').val())
+            					{
+                					case 'equipement':
+                    					gestionDesSelectionEquipements();
+                    					$('#select_equipement').val($('#bons_attachement_siteNouveau').val());
+                    					$('#select_equipement').trigger('change');
+                					break;
+                					case 'contact':
+                    					if ($('#bons_attachement_site').val() == $('#bons_attachement_siteNouveau').val())
+                    					{
+                        					// On affiche le nouveau contact ssi il est crée pour le site courant du bon
+                        					$('#select_contact').val($('#bons_attachement_idNouveau').val())
+                        					$('#select_contact').trigger('change');
+                    					}
+                					break;
+            					}
+            					// On réinitialise les paramètres de Création
+            					$('#bons_attachement_typeNouveau').val('');
+            					$('#bons_attachement_idNouveau').val('');
+            					$('#bons_attachement_siteNouveau').val('');
+        					}
+							$chargementEnCours = false;
 						}
-						$('#site_ba_lienGoogle').trigger('change');
-						/* Placement du marqueur sur la page */
-						ajoutMarqueur($('#site_ba_lienGoogle').val());
-						changeEnCours = false;
-                	    return true;
+						finAttendreRechargement();
                 	},
 					error: function(status, msg, tri) {
+						if ($chargementEnCours == true)
+						{
+							$chargementEnCours = false;
+						}
+						finAttendreRechargement();
 						alert('error ' + msg + tri);
 					}
             	});
 			} else {
+				// Si aucun site n'est selectionné : On réinitialise les informations de la popup site
+				// + désactivation du bouton de création / modification de contact
 				$('#site_ba_reset').trigger('click');
+				$('#btn_contact').addClass('cacher');
+
+				if ($chargementEnCours == true)
+                {
+                    $chargementEnCours = false;
+                }
+				finAttendreRechargement();
+
 			}
         });
 		
 		/* Lors du clic sur reset on réautorise l'écriture du nom du site et on supprime la valeur de l'identifiant du site  pour éviter une mise à jour */
 		$('#site_ba_reset').click(function()
 		{
-			$('#site_ba_intitule').attr('readonly', false);
-			$('#site_ba_lienGoogle').attr('readonly', false);
-			$('#id_site_ba').val('');
-			$('#fichiers_deja_joints').html('');
-			$('#contacts_deja_associes').html('');
-			$('#titre_nouveau_siteBA').text('Nouveau site');
+			/* On réinitialise les informations de la popup site
+			resetInfosSite();
 
-			resetInfosContact();
+            /* On réinitialise les valeurs de la fiche client et du contact associé au bon */
+            resetInfosContact();
+
+            /* On réinitalise le select contact */
+            $('#select_contact').html("<option value=''></option>");
 		});
 
-		/* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
+		/******************************         READY POUR LES CONTACTS         ***************************************/
+
+        // Gestion du select contact
+        $('#select_contact').change(function()
+        {
+            // Réinitialisation des informations liées au contact
+            resetInfosContact();
+
+            // Gestion du texte du bouton d'ajout/modification du contact
+            // + Gestion du titre de la popup Contact
+            if ($('#select_contact').val() === '')
+            {
+                $('#select_contact + button > span').text('Créer un contact');
+                $('#titre_nouveau_contact').text('Nouveau contact');
+            } else {
+                $('#select_contact + button > span').text('Modifier le contact');
+                $('#titre_nouveau_contact').text('Modifier le contact');
+            }
+
+            // Affichage des informations concernant le contact sélectionné
+            var $index_tab_contact = $('#select_contact').val();
+            if ($('#select_contact').val() != '')
+            {
+                attendreRechargement();
+                $.ajax({
+                    url: "{{ path('lci_ajax_bon_get_infos_contact') }}",
+                    method: "post",
+                    data: {'id_contact':$('#select_contact').val()},
+                    success: function(data)
+                    {
+                        var contact = JSON.parse(data);
+                        $('#contact_id').val(contact.id);
+                        $('#contact_nom').val(contact.nom);
+                        $('#contact_prenom').val(contact.prenom);
+                        $('#contact_mail').val(contact.mail);
+                        $('#contact_telephone').val(contact.telephone);
+                        $('#contact_fonction').val(contact.fonction);
+                        $('#bons_attachement_nomDuContact').val(contact.nom);
+                        $('#bons_attachement_emailContactClient').val(contact.mail);
+                        $('#bons_attachement_telephoneContactClient').val(contact.telephone);
+                        finAttendreRechargement();
+                    },
+                    error: function()
+                    {
+                        finAttendreRechargement();
+                        alert('error');
+                    }
+                });
+            }
+
+            // On retire l'encart rouge qui indique que les champs sont necessaires pour l'envoi du formulaire
+            if ($('#select_contact').val() != '')
+            {
+                $('#select_contact').removeClass('erreur_formulaire');
+            }
+            if ($('#bons_attachement_emailContactClient').val() != '')
+            {
+                $('#bons_attachement_emailContactClient').removeClass('erreur_formulaire');
+            }
+            if ($('#bons_attachement_telephoneContactClient').val() != '')
+            {
+                $('#bons_attachement_telephoneContactClient').removeClass('erreur_formulaire');
+            }
+        });
+
+        /******************************         READY POUR LES EQUIPEMENTS        ***************************************/
+        $('#select_equipement').change(function()
+        {
+            var html_nouvelles_options = '';
+            {% for e_siteBA in es_sitesBA %}
+                // On affiche les équipements du site selectionné ou tous les équipements si aucun site n'est sélectionné
+                if (("{{ e_siteBA.id }}" == $(this).val()) || ($(this).val() === ''))
+                {
+                    {% for e_equipement in e_siteBA.equipementBATickets %}
+                        // On ajout l'équipement à la liste des équipements selectionnable si celui ci n'est pas déjà sélectionné (cad présent dans le tableau tabDesEquipementsSelectionnes)
+                        if (tabDesEquipementsSelectionnes.indexOf("{{ e_equipement.id }}") == -1)
+                        {
+                            // Création du contenu html des Equipements
+                            html_nouvelles_options += " \
+                                <div id='parent_div_equipement_{{ e_equipement.id }}'> \
+                                    <div id='div_equipement_{{ e_equipement.id }}'> \
+                                        {#<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \#}
+                                        <span style='display:inline-block; width:30px;'> \
+                                            <input    type='checkbox' \
+                                                id='equipement_{{ e_equipement.id }}' \
+                                                name='equipement_{{ e_equipement.id }}' \
+                                                value='{{ e_equipement.id }}' \
+                                                style='display:inline-block; border:2px solid gray; cursor:pointer;' \
+                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
+                                            />\
+                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
+                                    </div>\
+                                </div>";
+                        } else {
+                            // Si l'équipement est déjà sélectionné, on n'affiche que le div du paretn pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
+                            html_nouvelles_options += "<div id='parent_div_equipement_{{ e_equipement.id }}'></div>";
+                        }
+                    {% endfor %}
+                }
+            {% endfor %}
+            $('#insert_equipement').html(html_nouvelles_options);
+
+            // On effectue la recherche sur les équipements nouvellement affichés
+            $('#recherche_equipement').trigger('keyup');
+        });
+
+
+        // Fonction de recherche dans la liste des équipements
+        $('#recherche_equipement').keyup(function()
+        {
+            $('#liste_des_equipements span').each(function()
+            {
+                $('#insert_equipement > div').each(function()
+                {
+                    if ($('#recherche_equipement').val() === '')
+                    {
+                        $(this).removeClass('cacher');
+                    } else {
+                        if (! $(this).is(':contains("' + $('#recherche_equipement').val() + '")'))
+                        {
+                            $(this).addClass('cacher');
+                        }else{
+                            $(this).removeClass('cacher');
+                        }
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+		/****************************** 		 Actions faites au chargement de la page 		********************************************/
+
+		var $chargementEnCours = true;
+
+        /* Permet de selectionner le dernier site - permet de réafficher le site après l'ajout d'un contact */
         {% if id_last_site is defined %}
             var id_last_site = "{{ id_last_site }}";
+            // Sauvegarde des informations du contact
+            save_nom_contact  = $('#bons_attachement_nomDuContact').val();
+            save_tel_contact  = $('#bons_attachement_telephoneContactClient').val();
+            save_mail_contact = $('#bons_attachement_emailContactClient').val();
+
+            // On rédéfini le select précédemment selectionné dans le select
             $('#bons_attachement_site').val(id_last_site);
+
+            // On active le listener de changement de site courant
             $('#bons_attachement_site').trigger('change');
+
+            // On redéfini les informations du contact précédemment selectionné
+            $('#bons_attachement_nomDuContact').val(save_nom_contact);
+            $('#bons_attachement_telephoneContactClient').val(save_tel_contact);
+            $('#bons_attachement_emailContactClient').val(save_mail_contact);
         {% endif %}
 
-		//$('#bons_attachement_site').trigger('change');
+
+        // Si la création d'un équipement est en erreur : affichage du formulaire
+        {% if echec_creation_equipement == true %}
+            $('#btn_ajout_equipement2').trigger('click');
+        {% endif %}
+
+        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
+        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
 	});
+
+    function attendreRechargement()
+    {
+        $('*').css({'cursor' : 'wait'});
+    }
+
+	function finAttendreRechargement()
+    {
+        $('*').css({'cursor' : 'default'});
+    }
+
+
+	
+
 
 	// Fonction qui ajoute un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
 	function ajoutChampFichier() {
@@ -833,9 +982,7 @@
 		});
 
 		// Ajout du prototype a la fin du container
-		//console.log($nouveauPrototype.html());
-		$container.prepend($nouveauPrototype);
-		//console.log($container.html());
+		$container_fichiers_bon.prepend($nouveauPrototype);
 		// Incrémentation de l'index des fichiers
 		$indexFichier ++;
 	}
@@ -857,10 +1004,8 @@
             return false;
         });
 
-		//console.log($nouveauPrototype);
         // Ajout du prototype a la fin du container
-        $container_site.prepend($nouveauPrototype);
-		//console.log($container_site.html());
+        $container_fichiers_site.prepend($nouveauPrototype);
         // Incrémentation de l'index des fichiers
         $indexFichierSiteBA ++;
     }
@@ -877,7 +1022,6 @@
 			/* Création du marqueur */
         	monMarqueur = new google.maps.Marker({
         	    position: $objPos,
-        	    map: maCarte
         	});
 
 			/* Placement du marqueur sur la carte */
@@ -889,11 +1033,501 @@
 
 
 
-
-   	// Fonction qui ajoute un champs 'Contact au site BA' 
-   	function ajoutChampContactSiteBA() 
+	// Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
+	function setDatePicker() 
 	{
-		// L'identifiant du nouveau champs sera : site_ba_contacts_$indexContactSiteBA_date_maj
+		$("input[placeholder='dd/mm/YYYY']").datepicker(); 
+	}
+
+
+	function resetInfosSite()
+	{
+        $('#site_ba_intitule').attr('readonly', false);
+        $('#site_ba_lienGoogle').attr('readonly', false);
+        $('#id_site_ba').val('');
+        $('#fichiers_deja_joints').html('');
+        $('#contacts_deja_associes').html('');
+        $('#titre_nouveau_siteBA').text('Nouveau site');
+
+		$('#equipements_deja_joints').html('');
+	}
+
+
+
+	// Fonction d'ajout fichier
+	var imageId = 0;
+	var baseFiles = [];
+
+	$("#add-fichierBon").on("click", () => {
+		$("#fichierBon").click();
+	});
+	$("#add-equipBon").on("click", () => {
+		$("#equipBon").click();
+	});
+
+	$('.file-input').change(function (e) {
+		var input = e.target;
+		var files = input.files;
+		var images = $('.images');
+
+		for (var i = 0; i < files.length; i++) {
+			imageId++;
+
+			((file) => {
+				var reader = new FileReader();
+				var fileName = file.name.replace(/\.[^.]*$/, ''); // without file extension
+				var fileId = file.size + imageId;
+				var baseFile = '';
+
+				reader.onload = (e) => {
+					var preview = '<div class="image image_' + i + '" data-id="' + fileId + '">' +
+						'<div class="img"><img src="' + e.target.result + '"></div>' +
+						'<button class="btn remove">Remove</button>' +
+						'</div>';
+					images.append(preview);
+
+					baseFile = reader.result;
+
+					baseFiles.push({
+						id: fileId,
+						name: file.name,
+						file: baseFile,
+						uploaded: 0
+					});
+				}
+
+				reader.readAsDataURL(file);
+			})(files[i]);
+		}
+
+		console.log('after upload :>> ', baseFiles);
+	});
+
+	$(document).on('click', '.remove', function (e) {
+		e.preventDefault();
+
+		var parent = $(this).parent();
+		var id = parent.data('id');
+		var removeIndex = baseFiles.map(function (item) {
+			return item.id;
+		}).indexOf(id);
+
+		baseFiles.splice(removeIndex, 1);
+		parent.remove();
+		console.log('after remove :>> ', baseFiles);
+		// var myJSON = JSON.stringify(baseFiles);
+		// $('.files-text').val(myJSON);
+	});
+
+
+    function gestionDesFichiers()
+    {
+		togglePopUp(popupGestionFichiersBon);
+		$('#add_fichier').trigger('click');
+    }
+
+    function fermeturePopupGestionFichiersBon()
+    {
+		// On vide l'ancienne liste des fichiers pour éviter de les afficher en double
+		$('#fichiers_deja_joints2').html('');
+
+        togglePopUp(popupGestionFichiersBon);
+
+		// On affiche tous les fichiers selectionné pour le bon
+        $('#popupGestionFichiersBon input[type="file"]').each(function()
+		{
+			var tab_index_fichier = this.id.split('_');
+			var index_fichier = tab_index_fichier[tab_index_fichier.length - 2];
+			var tab_nom_fichier = $('#' + this.id)[0]['value'].split('\\');
+			var nom_fichier = tab_nom_fichier[tab_nom_fichier.length - 1];
+
+			if (nom_fichier != '')
+			{
+				$('#fichiers_deja_joints2').append("<div class='add-list__added' id='encartFichierBA_" + index_fichier + "'>" + nom_fichier + "<div class='close-cross' onClick='retireBAFile(" + index_fichier + ");'></div></div>");
+			}
+        });
+    }
+
+
+
+	// Click sur le bouton RETOUR de la popup nouveau site
+	function retourPopupSiteBA()
+	{
+		togglePopUp(bonsSite);
+		// Simulation click sur le premier lien supprimer pour enlever l'encart nouveau contact
+		$('#container_new_contact a.mini_link').trigger('click');
+
+		$('#site_ba > fieldset').removeClass('cacher');
+		$('#ajout_fichier_siteBA_mobile_portrait').removeClass('cacher');
+		$('#contacts_deja_associes').removeClass('cacher');
+
+		//$('#titre_nouveau_siteBA').text('Nouveau Site');
+		if ($('#bons_attachement_site').val() === '')
+		{
+			$('#titre_nouveau_siteBA').text('Nouveau site');
+		} else {
+			$('#titre_nouveau_siteBA').text('Modification du site');
+		}
+	}
+
+
+   	var sauvegarde_select_user = $('#bons_attachement_user').html();
+    // Envoi du service selectionné
+    // Récupération des ids des membres du service
+    // Cache les non membre du service du select html
+    $('#bons_attachement_service').change(function() 
+	{
+        // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
+        $('#bons_attachement_user').html(sauvegarde_select_user);
+
+        $.ajax("{{ path('lci_ajax_bons_select_service') }}",
+        {
+            async: false,
+            method: "POST",
+            data: {service:$('#bons_attachement_service option:selected').text() },
+            success: function(data, textStatus, jqXHR) {
+                // Lors du retour de la demande Ajax, soit on récupère un tableau avec les id des membres du service soit on recoit une chaine de caractère vide
+                // Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
+                if (data != '') {
+                    var t_data = JSON.parse(data);
+                    $('#bons_attachement_user option').each(function(){
+                        if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
+                        {
+                            $(this).addClass('cacher');
+                        }
+                    });
+                    // Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
+                    $('#bons_attachement_user option[value=""]').prop('selected', true);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('error');
+            }
+        });
+    });
+
+	function checkValidationBeforeSend()
+	{
+		var $send_form = true;
+
+		// On vérifie la selection d'un site
+		if ($('#bons_attachement_site').val() === '')
+		{
+			$('#bons_attachement_site').addClass('erreur_formulaire');
+			$send_form = false;
+		}
+
+		// On vérifie l'ajout du numero d'affaire
+		if ($('#bons_attachement_numeroAffaire').val() === '')
+        {
+			$('#bons_attachement_numeroAffaire').addClass('erreur_formulaire');
+			$send_form = false;
+		}
+
+		// On vérifie qu'un intervenant est selectionné
+		if ($('#bons_attachement_user').val() === '')
+		{ 
+			$('#bons_attachement_user').addClass('erreur_formulaire');
+			$send_form = false;
+		} 
+
+		// On vérifie la selection d'un contact
+		if ($('#select_contact').val() === '')
+		{
+			$('#select_contact').addClass('erreur_formulaire');
+			$send_form = false;
+		}
+
+		// On vérifie que pour le contact selectionné, il y a soit un email soit un téléphone
+		if (($('#bons_attachement_emailContactClient').val() === '') && ($('#bons_attachement_telephoneContactClient').val() === ''))
+		{
+			$('#bons_attachement_emailContactClient').addClass('erreur_formulaire');
+			$('#bons_attachement_telephoneContactClient').addClass('erreur_formulaire');
+            $send_form = false;
+		}
+
+		if ($send_form === true)
+		{
+			attendreRechargement();
+
+			// On indique que le formulaire du bon sera envoyé pour être sauvegardé en base
+			$('#enregistrement').val("oui");
+
+			document.forms['myForm'].submit(); 
+		}
+	}
+
+	function resetCheck()
+    {
+		$('#bons_attachement_site').removeClass('erreur_formulaire');
+		$('#bons_attachement_numeroAffaire').removeClass('erreur_formulaire');
+		$('#bons_attachement_user').removeClass('erreur_formulaire');
+		$('#select_contact').removeClass('erreur_formulaire');
+		$('#bons_attachement_emailContactClient').removeClass('erreur_formulaire');
+		$('#bons_attachement_telephoneContactClient').removeClass('erreur_formulaire');
+	}
+
+
+
+    function checkValidationContactBeforeSend()
+    {
+        var $send = true;
+
+        if ($('#nomContact').val() === '')
+        {
+            $('#nomContact').addClass('erreur_formulaire');
+			$send = false;
+        }
+        if ($('#prenomContact').val() === '')
+        {
+            $('#prenomContact').addClass('erreur_formulaire');
+            $send = false;
+        }
+        if (($('#emailContact').val() === '') && ($('#telephoneContact').val() === ''))
+        {
+            $('#emailContact').addClass('erreur_formulaire');
+			$('#telephoneContact').addClass('erreur_formulaire');
+            $send = false;
+        }
+		if ($('#fonctionContact').val() === '')
+        {
+            $('#fonctionContact').addClass('erreur_formulaire');
+            $send = false;
+        }
+
+		return $send;
+    }
+
+/******************************         FONCTIONS POUR LES FICHIERS         ***************************************/
+
+
+    // Fonction de suppression d'un fichier d'un siteBA
+    function supprimeFile($idFile)
+    {
+        $.ajax({
+            url: "{{ path('lci_ajax_siteBA_del_file') }}",
+            data: {'id_file':$idFile },
+            success: function(msg)
+            {
+                console.log('fichier du site supprimé');
+            },
+            error: function(status, msg, tri) {
+                alert('error ' + msg + tri);
+            }
+        });
+    }
+
+
+
+	function retireBAFile($ind)
+	{
+		var id_lien_suppression = '#bons_attachement_fichiersPdf_' + $ind;
+		// On retire les fichiers du bon
+		$(id_lien_suppression + ' + a').trigger('click');
+		// On retire le fichier de l'affichage HTML
+		$('#encartFichierBA_' + $ind).remove();
+	}
+
+
+
+/******************************			FONCTIONS POUR LES CONTACTS 		***************************************/
+    function creerContact2()
+    {
+        var $send_form = true;
+
+
+        // Vérification des chmaps du contact
+        if($('#contact_nom').val() === '')
+        {
+            $('#contact_nom').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+        if( ($('#contact_telephone').val() === '') && ($('#contact_mail').val() === '') )
+        {
+            $('#contact_telephone').addClass('erreur_formulaire');
+            $('#contact_mail').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+        if($('#contact_fonction').val() === '')
+        {
+            $('#contact_fonction').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+
+        // Si la vérification est ok (pas de champs obligatoire vides) : Envoi du formulaire
+        if ($send_form === true)
+        {
+            attendreRechargement();
+
+            $.ajax({
+                url: "{{ path('lci_ajax_siteba_new_contact') }}",
+                method: "POST",
+                data: $('form[name="contact"]').serialize(),
+                success: function(output, status, xhr)
+                {
+                    try {
+                        // On recoit une réponse ajax : Le contact a été enregistré
+                        data = JSON.parse(output);
+
+
+                        // Remplissage des champs indiquant la création d'un nouvel objet
+                        var $id_nouveau_contact = data['message'];
+                        $('#bons_attachement_idNouveau').val($id_nouveau_contact);
+                        $('#bons_attachement_typeNouveau').val('contact');
+                        // Recherche de l'id du site du nouveau contact
+                        $('#bons_attachement_site option').each(function()
+                        {
+                            if($(this).text() == $('#contact_siteBA option:selected').text())
+                            {
+                                $('#bons_attachement_siteNouveau').val($(this).val());
+                                return false;
+                            }
+                        });
+
+                        // On reset le formulaire contact
+                        $('#contact_reset').trigger('click');
+
+                        // On ferme la popup contact
+                        retourPopupContact2();
+
+                        // Rechargement de la page
+                        document.forms['myForm'].submit();
+                    } catch(e) {
+                        finAttendreRechargement
+                        // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
+                        var form_html = output;
+                        $('#popupContact2').html(form_html);
+                    }
+                },
+                error: function (xhr, status, st_text)
+                {
+                    finAttendreRechargement();
+                    alert('error');
+                }
+            });
+        }
+    }
+
+
+    function gestionDesContacts2()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+        if ($('#bons_attachement_site').val() != '')
+        {
+            $("#contact_siteBA option[value='" + $('#bons_attachement_site').val() + "']").prop('selected', true);
+        }
+
+        // Si le select de contact n'est pas vide on recherche les informations liés au contact pour pré remplir le formulaire de contact
+        if ($('#select_contact').val() != '')
+        {
+            $('#select_contact').trigger('change');
+        }
+        togglePopUp(popupContact2);
+    }
+
+
+    function resetInfosContact()
+    {
+        /* On réinitialise les valeurs de la fiche client et du contact associé au bon */
+        $('#contact_id').val('');
+        $('#contact_nom').val('');
+        $('#contact_prenom').val('');
+        $('#contact_mail').val('');
+        $('#contact_telephone').val('');
+        $('#contact_fonction').val('');
+        $('#bons_attachement_nomDuContact').val('');
+        $('#bons_attachement_emailContactClient').val('');
+        $('#bons_attachement_telephoneContactClient').val('');
+
+        $($("#bloc_contact_pour_impression")).html('');
+    }
+
+
+    function retourPopupContact2()
+    {
+        $('#contact_nom').removeClass('erreur_formulaire');
+        $('#contact_telephone').removeClass('erreur_formulaire');
+        $('#contact_mail').removeClass('erreur_formulaire');
+        $('#contact_fonction').removeClass('erreur_formulaire');
+
+
+        $('#contact_reset').trigger('click');
+
+        togglePopUp(popupContact2);
+    }
+
+
+    function modifierContact()
+    {
+        if (checkValidationContactBeforeSend() === true)
+        {
+            // Fermeture de la popup contact
+            togglePopUp(bonsNouveauContact);
+
+            var $refreshContact;
+            $url_modif          = "{{ path('lci_ajax_bon_contact_modif') }}";
+            $id_contact_modif   = $('#idContact').val();
+            $nom                = $('#nomContact').val();
+            $prenom             = $('#prenomContact').val();
+            $email              = $('#emailContact').val();
+            $tel                = $('#telephoneContact').val();
+            $fonction           = $('#fonctionContact').val();
+
+            // On sauvegarde la valeur de l'option du contact selectionné pour le reselectionner après modification
+            $opt_select_contact_val = $('#select_contact').val();
+            $.ajax({
+                url: $url_modif,
+                method: "post",
+                data: {'id_contact_modif':$id_contact_modif, 'nomContact':$nom, 'prenomContact':$prenom, 'telephoneContact':$tel, 'emailContact':$email, 'fonctionContact':$fonction},
+                success: function(msg)
+                {
+                    // Après la modification d'un contact on réaffiche le site
+                    $('#bons_attachement_site').trigger('change');
+                }
+            });
+        }
+    }
+
+    function supprimerContact()
+    {
+        $url_supp = "{{ path('lci_ajax_bon_contact_supp') }}";
+        $id_contact_supp = $('#idContact').val();
+        $.ajax({
+            url: $url_supp,
+            method: "post",
+            data: {'id_contact_supp':$id_contact_supp},
+            success: function(msg)
+            {
+                $('#bons_attachement_site').trigger('change');
+            }
+        });
+    }
+
+    function ficheContactPourImpression($index_tab_contact)
+    {
+        var $container = $($("#bloc_contact_pour_impression"));
+        var $html = '';
+        if (($tab_contact[$index_tab_contact]['prenom'] != '') && ($tab_contact[$index_tab_contact]['prenom'] !=  null) && ($tab_contact[$index_tab_contact]['prenom'] != '-'))
+        {
+            $html += capitalize($tab_contact[$index_tab_contact]['prenom']) + ' ';
+        }
+        $html += capitalize($tab_contact[$index_tab_contact]['nom']);
+        if (($tab_contact[$index_tab_contact]['email'] != '') && ($tab_contact[$index_tab_contact]['email'] != null))
+        {
+            $html += ' - ' + $tab_contact[$index_tab_contact]['email'];
+        }
+        if (($tab_contact[$index_tab_contact]['telephone'] != '') && ($tab_contact[$index_tab_contact]['telephone'] != null))
+        {
+            $html += ' : ' + $tab_contact[$index_tab_contact]['telephone'];
+        }
+        $html += " ( " + $tab_contact[$index_tab_contact]['fonction'] + " )<br />";
+        $container.append($html);
+    }
+
+    // Fonction qui ajoute un champs 'Contact au site BA'
+    function ajoutChampContactSiteBA()
+    {
+        // L'identifiant du nouveau champs sera : site_ba_contacts_$indexContactSiteBA_date_maj
         var $nouveauPrototype = $($('#site_ba_contacts').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexContactSiteBA));
 
         // Création et ajout d'un lien de suppression en fin de container
@@ -902,24 +1536,24 @@
 
         // Ajout du listener permettant la suppression du champ fichier lors du clic sur le lien
         $deleteLink.click(function(e)
-		{
+        {
             $nouveauPrototype.remove();
             e.preventDefault();
             return false;
         });
 
-		// On place le nouveau champs input
-		$container_new_contact = $('#container_new_contact');
-		$container_new_contact.prepend($nouveauPrototype);
+        // On place le nouveau champs input
+        $container_new_contact = $('#container_new_contact');
+        $container_new_contact.prepend($nouveauPrototype);
 
-		// On indique les valeur par défaut des champs obligatoire
-		var $today = new Date();	
-		var $val_today = $today.getDate() + '/' + ($today.getMonth() + 1) + '/' +  $today.getFullYear();
-		$('#site_ba_contacts_' + $indexContactSiteBA + '_date_maj').val($val_today);
-		$('#site_ba_contacts_' + $indexContactSiteBA + '_fonction').val('Contact');
-		$('#site_ba_contacts_' + $indexContactSiteBA + '_prenom').val('-');
+        // On indique les valeur par défaut des champs obligatoire
+        var $today = new Date();
+        var $val_today = $today.getDate() + '/' + ($today.getMonth() + 1) + '/' +  $today.getFullYear();
+        $('#site_ba_contacts_' + $indexContactSiteBA + '_date_maj').val($val_today);
+        $('#site_ba_contacts_' + $indexContactSiteBA + '_fonction').val('Contact');
+        $('#site_ba_contacts_' + $indexContactSiteBA + '_prenom').val('-');
 
-		// On met en place l'activation js pour l'affichage du calendrier
+        // On met en place l'activation js pour l'affichage du calendrier
         setDatePicker();
 
         // Ajout du prototype a la fin du container
@@ -929,121 +1563,221 @@
     }
 
 
-	/* fonction qui affiche les informations du contact dans l'encart Fiche Contact */
-	function afficheContact($index_tab_contact) 
-	{
-		$('#idContact').val($tab_contact[$index_tab_contact]['id']);
 
-        $('#nomContact').val($tab_contact[$index_tab_contact]['nom']);
-        $('#prenomContact').val($tab_contact[$index_tab_contact]['prenom']);
-        $('#emailContact').val($tab_contact[$index_tab_contact]['email']);
-        $('#telephoneContact').val($tab_contact[$index_tab_contact]['telephone']);
-        $('#fonctionContact').val($tab_contact[$index_tab_contact]['fonction']);
-		$('#dateMajContact').val($tab_contact[$index_tab_contact]['maj']);
-		$('#bons_attachement_nomDuContact').val($tab_contact[$index_tab_contact]['nom']);
-		$('#bons_attachement_emailContactClient').val($tab_contact[$index_tab_contact]['email']);
-		$('#indexContact').val($index_tab_contact);
-	}
+/******************************         FONCTIONS POUR LES EQUIPEMENTS         ***************************************/
+    function creerEquipement2()
+    {
+        $send_form = true;
 
-
-	function ficheContactPourImpression($index_tab_contact)
-	{
-		var $container = $($("#bloc_contact_pour_impression"));
-		var $html = '';
-		if (($tab_contact[$index_tab_contact]['prenom'] != '') && ($tab_contact[$index_tab_contact]['prenom'] !=  null) && ($tab_contact[$index_tab_contact]['prenom'] != '-'))
+        // On valide les informations entrées pour l'équipement
+        // Présence d'un site
+        var $new_site = $('#equipement_ba_ticket_siteBA').val();
+        if ($new_site == '')
         {
- 			$html += capitalize($tab_contact[$index_tab_contact]['prenom']) + ' ';
-		}
-		$html += capitalize($tab_contact[$index_tab_contact]['nom']);
-		if (($tab_contact[$index_tab_contact]['email'] != '') && ($tab_contact[$index_tab_contact]['email'] != null))
-		{
-			$html += ' - ' + $tab_contact[$index_tab_contact]['email'];
-		}
-		if (($tab_contact[$index_tab_contact]['telephone'] != '') && ($tab_contact[$index_tab_contact]['telephone'] != null))
+            $('#equipement_ba_ticket_siteBA').addClass('erreur_formulaire');
+            $send_form = false;
+
+        }
+
+        // Présence du numéro de série
+        var $new_numero_de_serie = $('#equipement_ba_ticket_numeroDeSerie').val();
+        if ($new_numero_de_serie == '')
         {
-            $html += ' : ' + $tab_contact[$index_tab_contact]['telephone'];
-		}
-		$html += " ( " + $tab_contact[$index_tab_contact]['fonction'] + " )<br />";
-		$container.append($html);	
-	}
+            $('#equipement_ba_ticket_numeroDeSerie').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+
+        //Présence d'une dénomination
+        var $new_denomination = $('#equipement_ba_ticket_denomination').val();
+        if ($new_denomination == '')
+        {
+            $('#equipement_ba_ticket_denomination').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+
+        //Présence d'une autre dénomination (non obligatoire)
+        var $new_autre_denomination = $('#equipement_ba_ticket_autreDenomination').val();
+
+        // Présence d'une date d'initialisation
+        var $new_annee_de_contruction = $('#equipement_ba_ticket_anneeDeConstruction').val();
+        if ($new_annee_de_contruction == '')
+        {
+            $send_form = false;
+            $('#date_annee_construction_equipement').addClass('erreur_formulaire');
+        }
+
+        if ($send_form == true)
+        {
+            attendreRechargement();
+
+            // Appel ajax
+            $.ajax({
+                url: "{{ path('lci_ajax_bon_new_equipement') }}",
+                method: "POST",
+                data: $('form[name="equipement_ba_ticket"]').serialize(),
+                success: function(output, status, xhr)
+                {
+                    try {
+                        // On recoit une réponse ajax : L'équipement a été enregistré
+                        data = JSON.parse(output);
+
+                        // Remplissage des champs indiquant la création d'un nouvel objet
+                        var $id_nouvel_equipement = data['message'];
+                        $('#bons_attachement_idNouveau').val($id_nouvel_equipement);
+                        $('#bons_attachement_typeNouveau').val('equipement');
+                        $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
 
 
-	function setDatePicker() 
-	{
-		$("input[placeholder='dd/mm/YYYY']").datepicker(); 
-	}
+                        // Rechargement de la page
+                        document.forms['myForm'].submit();
+                    } catch(e) {
+                        // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
+                        var form_html = output;
+                        $('#popupEquipement2').html(form_html);
+                        // Activation du datepicker pour le nouveau formulaire
+                        setDatePicker();
+                        // On défini l'input affiché comme source pour l'input du formulaire : Permet d'afficher un format fr et d'envoyer un format  pour la date
+                        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+                        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
+                        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+                        finAttendreRechargement();
+                    }
+                },
+                error: function (xhr, status, st_text)
+                {
+                    finAttendreRechargement
+                    alert('error');
+                }
+            });
+        }
+    }
 
 
-	function resetInfosContact() 
-	{
-        /* On réinitialise les valeurs de la fiche client et du contact associé au bon */
-        $('#idContact').val('');
-        $('#nomContact').val('');
-        $('#prenomContact').val('');
-        $('#emailContact').val('');
-        $('#telephoneContact').val('');
-        $('#fonctionContact').val('');
-		$('#dateMajContact').val('');
-        $('#bons_attachement_nomDuContact').val('');
-        $('#bons_attachement_emailContactClient').val('');
-		var $container = $($("#bloc_contact_pour_impression"));
-		var $html = '';
-		$container.html($html);
-	}
 
 
-	function supprimerContact() 
-	{
-        $url_supp = "{{ path('lci_ajax_bon_contact_supp') }}";
-        $id_contact_supp = $('#idContact').val();
+
+    function refreshSelectEquipements()
+    {
+        // On défini le même site sur le select des équipements que le site sélectionné
+        $('#select_equipement').val($('#bons_attachement_site').val());
+
+        // On affiche la liste des équipements associés au nouveau site sélectionné
+        $('#select_equipement').change();
+    }
+
+
+    function supprimeEquipement($idEquipement)
+    {
+        attendreRechargement();
+
+        // On s'assure qu'il n'y a pas de check sur la checkbox de l'équipement à supprimer pour ne pas l'envoyer dans le formulaire de création de bon
+        $('#equipement_' + $idEquipement).prop('checked', false);
+        // Suppression de l'équipement en ajax et
+        // Réaffichage de la page pour prendre en compte la suppression
         $.ajax({
-            url: $url_supp,
-            method: "post",
-            data: {'id_contact_supp':$id_contact_supp},
+            url: "{{ path('lci_ajax_bon_del_equipement') }}",
+            data : {'id_equipement':$idEquipement },
+            method: "POST",
             success: function(msg)
             {
-				/*
-				$id_site_selected = $('#bons_attachement_site option:selected').val();
-				$('#bons_attachement_site option[value=""]').prop('selected', true);
-				$('#bons_attachement_site').trigger('change');
-				$('#bons_attachement_site option[value="' + $id_site_selected + '"]').prop('selected', true);
-				*/
-				$('#bons_attachement_site').trigger('change');
+                document.forms['myForm'].submit();
+            },
+            error: function(status, msg, tri) {
+                finAttendreRechargement();
+                alert('error ' + msg + tri);
             }
         });
-	}
+    }
+
+    function deplaceEquipement(id_checkbox)
+    {
+        var id_div = "div_equipement_" + id_checkbox;
+        var div_tmp = $("#" + id_div);
+
+        // Selection d'un équipement
+        if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
+        {
+            // On ajout d'id de l'equipement au tableau des équipements selectionnés
+            tabDesEquipementsSelectionnes.push(id_checkbox);
+            // On retire l'element du div principal
+            div_tmp.remove();
+
+            // On ajoute l'élément au div de selection
+            $('#liste_des_equipements_selectionnes').append(div_tmp);
+        // Dé selection d'un équipement
+        } else {
+            // On retire l'id de l'équipement du tableau des équipement selectionnés
+            var indexARetirer = tabDesEquipementsSelectionnes.indexOf(id_checkbox);
+            tabDesEquipementsSelectionnes.splice(indexARetirer, 1);
+
+            // On retire l'element du div de selection
+            div_tmp.remove();
+
+            // On ajoute l'élément au div principal dans son conteneur parent
+            $('#parent_' + id_div).append(div_tmp);
+        }
+    }
+
+    function gestionDesSelectionEquipements()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+        if ($('#bons_attachement_site').val() != '')
+        {
+            $("#select_equipement").val($('#bons_attachement_site').val());
+        }
+        $('#select_equipement').trigger('change');
+        togglePopUp(popupSelectionEquipement);
+    }
+
+    // Gestion du click sur la croix de fermeture de la popup Sélection des équipements :
+    // Fermeture de la popup
+    function fermeturePopupSelectionEquipement()
+    {
+        togglePopUp(popupSelectionEquipement);
+    }
 
 
-	function modifierContact()
-	{
-		var $refreshContact;
-		$url_modif = "{{ path('lci_ajax_bon_contact_modif') }}";
-		$id_contact_modif = $('#idContact').val();
-		$nom = $('#nomContact').val();
-		$prenom = $('#prenomContact').val();
-        $email = $('#emailContact').val();
-		$tel = $('#telephoneContact').val();
-		$fonction = $('#fonctionContact').val();
-		$index = $('#indexContact').val();
-		$.ajax({
-			url: $url_modif,
-			method: "post",
-			data: {'id_contact_modif':$id_contact_modif, 'nomContact':$nom, 'prenomContact':$prenom, 'telephoneContact':$tel, 'emailContact':$email, 'fonctionContact':$fonction},
-			success: function(msg)
-			{
-				$('#bons_attachement_site').trigger('change');
-				$refreshContact = setInterval(function() 
-				{
-					console.log('test');
-					if (changeEnCours == false)
-					{
-						afficheContact($index);
-						clearInterval($refreshContact);
-					}
-				}, 2);
-			}
-		});	
-	}
+    // Gestion du clic sur Annuler dans la popup de création d'équipement :
+    // Fermeture de la popup Creer un nouvel équipement
+    // Ouverture de la popup de Selection des équipements
+    function annulerPopupEquipement2()
+    {
+        $('#equipement_ba_ticket_siteBA').removeClass('erreur_formulaire');
+        $('#equipement_ba_ticket_numeroDeSerie').removeClass('erreur_formulaire');
+        $('#equipement_ba_ticket_denomination').removeClass('erreur_formulaire');
+        $('#date_annee_construction_equipement').removeClass('erreur_formulaire');
+
+        $('#equipement_ba_ticket_reset').trigger('click');
+
+        togglePopUp(popupEquipement2);
+        togglePopUp(popupSelectionEquipement);
+    }
+
+
+    // Gestion du click sur la croix de fermeture de la popup de création d'équipement :
+    // Fermeture de la popup de création d'équipement
+    // Fermeture de la popup de sélection d'équipements
+    function fermeturePopupEquipement2()
+    {
+        togglePopUp(popupEquipement2);
+    }
+
+
+    function gestionDesEquipements2()
+    {
+        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+        if ($('#bons_attachement_site').val() != '')
+        {
+            // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
+            $('#equipement_ba_ticket_siteBA').val($('#bons_attachement_site').val());
+        } else if ($('#select_equipement').val() != '')
+        {
+            // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
+            $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
+        }
+        togglePopUp(popupSelectionEquipement);
+        togglePopUp(popupEquipement2);
+    }
 
 	$("#add-fichierBon").on("click", () => {
 		$("#fichierBon").click();
@@ -1063,8 +1797,8 @@
 </script>
 
 
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+</script>
 
-{# lien vers api autocompletion de google #}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete"  async defer></script> 
 
 {% endblock javascript %}

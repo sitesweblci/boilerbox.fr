@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * Contact
@@ -26,41 +28,49 @@ class Contact
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+	 * @Groups({"groupContact"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"groupContact"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"groupContact"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=30, nullable=true)
+     * @Groups({"groupContact"})
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"groupContact"})
      */
     private $mail;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"groupContact"})
      */
     private $fonction;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"groupContact"})
      */
     private $statut;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"groupContact"})
      */
     private $date_maj;
 

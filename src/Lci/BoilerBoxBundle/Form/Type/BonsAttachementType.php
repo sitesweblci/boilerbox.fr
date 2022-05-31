@@ -7,12 +7,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-
-
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 
@@ -52,6 +53,7 @@ class BonsAttachementType extends AbstractType {
 					->setParameter('enabled', true)
 					->orderBy('u.label', 'ASC');
 			},
+			'placeholder'		=> "Choix de l'intervenant"
         ))
         ->add('dateInitialisation', DateType::class, array(
             'label'         => 'Date d\'initialisation',
@@ -65,6 +67,7 @@ class BonsAttachementType extends AbstractType {
                 'maxlength'     => 10
             )
         ))
+/*
 		->add('numeroBA', TextType::class, array(
 			'label' 		=> 'Numéro du bon',
 			'label_attr'    => array ('class' => 'label_smalltext'),
@@ -75,6 +78,7 @@ class BonsAttachementType extends AbstractType {
 				'maxlength'     => 6
 			)
 		))
+*/
 		->add('numeroAffaire', TextType::class, array(
             'label' 		=> 'Numéro d\'affaire',
 			'label_attr'    => array ('class' => 'label_smalltext'),
@@ -89,7 +93,7 @@ class BonsAttachementType extends AbstractType {
             'label'         => 'Site',
 			'class'			=> 'LciBoilerBoxBundle:SiteBA',
 			'choice_label'  => 'intitule',
-			'placeholder'	=> '',
+			'placeholder'	=> 'Ajouter un nouveau site',
 			'query_builder'	=> function (EntityRepository $er) {
 				return $er->createQueryBuilder('ba')
 					->orderBy('ba.intitule', 'ASC');
@@ -151,6 +155,15 @@ class BonsAttachementType extends AbstractType {
 				'placeholder' 	=> "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
 			)
 		))
+		->add('telephoneContactClient', TelType::class, array(
+            'label'         => 'Téléphone du contact',
+            'label_attr'    => array ('class' => 'label_smalltext'),
+            'required'      => true,
+            'trim'          => true,
+            'attr'          => array (
+                'placeholder'   => "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
+            )
+        ))
 		->add('fichiersPdf', CollectionType::class, array(
 			'entry_type'    => FichierType::class,
 			/* Option à ajouter pour résoudre l'erreur -> Warning: spl_object_hash() expects parameter 1 to be object, array given */
@@ -160,7 +173,80 @@ class BonsAttachementType extends AbstractType {
 			'allow_add'		=> true,
 			'allow_delete'	=> true,
 			'required' 		=> true
-		));
+		))
+		->add('service', ChoiceType::class, array(
+			'label'         => 'Service',
+			'choices'		=> [
+				'Bosch'		=> 'bosch',
+				'Certus'	=> 'certus',
+				'Export'	=> 'export'
+			],
+			'required' => false
+		))
+		->add('typeIntervention', ChoiceType::class, array(
+			'label'			=> "Type d'intervention",
+            'choices'       => [
+                'Mise en service'   => 'mes',
+                'SAV'    			=> 'sav',
+                'Rapport mensuel'   => 'rptmensuel'
+            ]
+        ))
+		->add('type', TextType::class, array(
+            'label'         => false,
+            'required'      => true,
+            'trim'          => true,
+            'attr'          => array (
+                'placeholder'   => "Type du formulaire (bon ou ticket)",
+				'class'			=> 'cacher'
+            )
+        ))
+        ->add('equipementBATicket', CollectionType::class, array(
+            'entry_type'    => EquipementBATicketType::class,
+            'entry_options' => array('data_class' => 'Lci\BoilerBoxBundle\Entity\EquipementBATicket'),
+            'label'         => false,
+            'label_attr'    => array ('class' => 'label_smalltext'),
+            'allow_add'     => true,
+            'allow_delete'  => true,
+            'required'      => true
+        ))
+        ->add('cheminDossierPhotos', TextType::class, array(
+            'label'         => 'Chemin local vers le répertoire des photos',
+            'label_attr'    => array(
+                'class'         => 'label_smalltext'
+            ),
+            'attr'          => array(
+                'class'         => 'biginput centrer',
+                'placeholder'   => "Chemin vers le repertoire local des photos",
+                'style'         => 'width:100%;'
+            ),
+            'required'      => false
+        ))
+		->add('typeNouveau', TextType::class, array(
+            'label'         => false,
+            'required'      => false,
+			'mapped'		=> false,
+            'trim'          => true,
+			'attr'			=> array(
+				'class'			=> 'cacher' 
+			)
+        ))
+		->add('idNouveau', IntegerType::class, array(
+            'label'         => false,
+            'required'      => false,
+			'mapped'		=> false,
+            'attr'          => array(
+                'class'         => 'cacher'
+            )
+        ))
+        ->add('siteNouveau', TextType::class, array(
+            'label'         => false,
+            'required'      => false,
+            'mapped'        => false,
+            'trim'          => true,
+            'attr'          => array(
+                'class'         => 'cacher'
+            )
+        ));
 	}
 
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -237,7 +237,8 @@
 
     <script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>	
+	{# Définit les valeurs par défauts pour le datePicker #}
+	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>
 
 	<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 	<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>

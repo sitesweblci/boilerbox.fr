@@ -1,4 +1,9 @@
 <?php
+/*
+
+Faire la récupération des valeur du formulaire bon lors de la création d'un équipement
+
+*/
 
 namespace Lci\BoilerBoxBundle\Controller;
 
@@ -6,9 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+
+
 use Lci\BoilerBoxBundle\Entity\BonsAttachement;
 use Lci\BoilerBoxBundle\Entity\SiteBA;
-
 
 use Lci\BoilerBoxBundle\Form\Type\SiteBAType;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementType;
@@ -30,8 +38,11 @@ use Lci\BoilerBoxBundle\Form\Type\ObjRechercheBonsAttachementType;
 
 use Lci\BoilerBoxBundle\Entity\Contact;
 
-
 use Lci\BoilerBoxBundle\Entity\Configuration;
+
+use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
+use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
+
 
 use Symfony\Component\Form\FormError;
 
@@ -54,6 +65,7 @@ class BonsController extends Controller
         }
     }
 
+
     public function indexAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
@@ -65,203 +77,320 @@ class BonsController extends Controller
 
     public function saisieAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $max_upload_size = ini_get('upload_max_filesize');
-
-        $apiKey = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
-
-        $entities_sitesBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+        $em 									= $this->getDoctrine()->getManager();
+        $max_upload_size 						= ini_get('upload_max_filesize');
+		$enregistrement_form_bon 				= null;
+		// Html du formulaire du bon - permet de renvoyer les bonnes informations lors de la modification du site / des contacs d'un site
+		$enregistrement_html_form_bon			= null;
+		$tab_des_id_equipements_selectionnes 	= array();
+		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
+		$echec_creation_equipement 				= false;
+        $apiKey 								= $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+        $es_sitesBA 							= $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+		$e_user_courant 						= $this->get('security.token_storage')->getToken()->getUser();
 
         // Création d'un formulaire de bon d'attachement +  Récupération de l'utilisateur courant pour définir l'initiateur d'un nouveau bon
-        $ent_bons_attachement = new BonsAttachement();
-        $ent_user_courant = $this->get('security.token_storage')->getToken()->getUser();
-        $ent_bons_attachement->setUserInitiateur($ent_user_courant);
-        $formulaire = $this->createForm(BonsAttachementType::class, $ent_bons_attachement);
+        $e_bons_attachement = new BonsAttachement();
+        $e_bons_attachement->setUserInitiateur($e_user_courant);
+        $f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
 
-        $entity_siteBA = new SiteBA();
-        $entity_siteBA_update = null;
-        $id_last_site = null;
-        $formulaire_site = $this->createForm(SiteBAType::class, $entity_siteBA, array(
+		// Création du formulaire des SitesBA
+        $e_siteBA 			= new SiteBA();
+        $e_siteBA_update 	= null;
+        $id_last_site	 	= null;
+        $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
             'action' => $this->generateUrl('lci_bons_saisie'),
             'method' => 'POST'
         ));
 
+		// Recherche de l'ensemble des équipements
+		$es_equipements = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findAll();		
+
         // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
-        if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') 
+		{
+            // Sauvegarde des id des équipements selectionnés pour les re sélectionner
+            foreach($_POST as $key => $variable_post)
+            {
+                $pattern_equipement = '/equipement_/';
+                if (preg_match($pattern_equipement, $key))
+                {
+                    $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                    array_push($tab_des_id_equipements_selectionnes, $tmp_e_equipement->getId());
+                }
+            }
+
+			// Envoyer lors de l'envoi du formulaire de site
+			if (isset($_POST['save_form_bon']))
+			{
+				$enregistrement_html_form_bon = $_POST['save_form_bon'];
+			}
+
             // Si le formulaire de création de bon a été soumis (retour de type POST)
-            if ($formulaire->handleRequest($request)->isValid()) {
+			$f_bons_attachement->handleRequest($request);
+
+			// Si on ne doit pas sauvegarder (dans le cas ou le formulaire est envoyé pour raffraichir la liste de équipements)
+			// On instancie la variable $id_last_site pour réafficher le bon en cours de création (et reselectionner le site choisi dans le bon pour déclancher son trigger change()
+			if ($f_bons_attachement->isSubmitted())
+			{
+				if ($_POST['enregistrement'] == 'non')
+				{
+					$enregistrement_form_bon = false;
+					if ($e_bons_attachement->getSite())
+					{
+						$id_last_site = $e_bons_attachement->getSite()->getId();
+					}
+				} else {
+					$enregistrement_form_bon = true;
+				}
+			}
+
+            if ($f_bons_attachement->isValid()) 
+			{
                 // On persist l'entité "Bon d'attachement" et par cascade l'entité" "Fichier"
                 // On enregistre le tout en base
                 try {
-                    // Sauvegarde du site
-                    $em->persist($ent_bons_attachement);
-                    $em->flush();
-                    // Envoi d'un mail à l'intervenant
-                    $service_mailling = $this->get('lci_boilerbox.mailing');
-                    $emetteur = $ent_bons_attachement->getUserInitiateur()->getEmail();
-                    $destinataire = $ent_bons_attachement->getUser()->getEmail();
-                    $sujet = "Affectation d'un nouveau bon d'attachement";
-                    $tab_message = array();
-                    $tab_message['titre'] = "Une nouvelle intervention vous est affectée";
-                    $tab_message['site'] = $ent_bons_attachement->getSite()->getIntitule() . " ( " . $ent_bons_attachement->getNumeroAffaire() . " ) ";
-                    $messages_contact = "";
-                    if (($ent_bons_attachement->getNomDuContact() != null) || ($ent_bons_attachement->getEmailContactClient() != null)) {
-                        if ($ent_bons_attachement->getNomDuContact() != null) {
-                            $messages_contact = "Votre contact sur site est : " . $ent_bons_attachement->getNomDuContact();
-                            if ($ent_bons_attachement->getEmailContactClient() != null) {
-                                $messages_contact .= " ( " . $ent_bons_attachement->getEmailContactClient() . " ) ";
-                            }
-                        } else if ($ent_bons_attachement->getEmailContactClient() != null) {
-                            $messages_contact .= "Le mail du contact sur site est : " . $ent_bons_attachement->getEmailContactClient();
-                        }
-                    } else {
-                        $messages_contact = "Aucun contact sur site n'a été renseigné";
-                    }
-                    $tab_message['contact'] = $messages_contact;
-                    $liste_fichiers = "";
-                    foreach ($ent_bons_attachement->getFichiersPdf() as $fichier) {
-                        $liste_fichiers .= $fichier->getAlt() . ' ';
-                    }
-                    if ($liste_fichiers != "") {
-                        $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
-                    } else {
-                        $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
-                    }
-                    $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
-                } catch (\Exception $e) {
-                    $pattern_error_files = "#Column 'url' cannot be null#";
-                    if (preg_match($pattern_error_files, $e->getMessage())) {
-                        $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getNumeroBA() . " non enregistré. Vous n'avez pas sélectionné de fichier.");
-                        return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                            'form' => $formulaire->createView(),
-                            'form_site' => $formulaire_site->createView(),
-                            'max_upload_size' => $max_upload_size,
-                            'ents_sitesBA' => $entities_sitesBA,
-                            'apiKey' => $apiKey
-                        ));
-                    } else {
-                        throw new \Exception();
-                    }
-                }
-                // On renvoye à la page d'ajout d'un nouveau bon d'attachement avec envoi du message de confirmation d'enregsitrement du bon
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getNumeroBA() . ' enregistré.');
+                    // Sauvegarde du bon
+					// Gestion des équipements
+                	foreach($_POST as $key => $variable_post)
+                	{
+                	    $pattern_equipement = '/equipement_/';
+                	    if (preg_match($pattern_equipement, $key))
+                	    {
+                	        $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+                	        $tmp_e_equipement->setSiteBA($e_bons_attachement->getSite());
+							$e_bons_attachement->addEquipementBATicket($tmp_e_equipement);
+                	    }
+                	}
+					if($enregistrement_form_bon === true)
+					{
+						// On défini le type pour distinguer bon de ticket
+						$e_bons_attachement->setType('bon');
 
-                // Création d'un nouveau formulaire de création de bon d'attachement
-                $ent_bons_attachement = new BonsAttachement();
-                $ent_bons_attachement->setUserInitiateur($ent_user_courant);
-                $formulaire = $this->createForm(BonsAttachementType::class, $ent_bons_attachement);
+						// Enregistrement du bon
+                    	$em->persist($e_bons_attachement);
+                    	$em->flush();
+
+						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
+						$tab_des_id_equipements_selectionnes    = array();
+
+                    	// Envoi d'un mail à l'intervenant
+                    	$service_mailling 		= $this->get('lci_boilerbox.mailing');
+                    	$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
+                    	$destinataire 			= $e_bons_attachement->getUser()->getEmail();
+                    	$sujet 					= "Affectation d'un nouveau bon d'attachement";
+                    	$tab_message 			= array();
+                    	$tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
+                    	$tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
+                    	$messages_contact 		= "";
+                    	if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
+                    	    if ($e_bons_attachement->getNomDuContact() != null) {
+                    	        $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
+                    	        if ($e_bons_attachement->getEmailContactClient() != null) {
+                    	            $messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
+                    	        }
+                    	    } else if ($e_bons_attachement->getEmailContactClient() != null) {
+                    	        $messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
+                    	    }
+                    	} else {
+                    	    $messages_contact = "Aucun contact sur site n'a été renseigné";
+                    	}
+                    	$tab_message['contact'] = $messages_contact;
+                    	$liste_fichiers = "";
+                    	foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
+                    	    $liste_fichiers .= $fichier->getAlt() . ' ';
+                    	}
+                    	if ($liste_fichiers != "") {
+                    	    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
+                    	} else {
+                    	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
+                    	}
+                    	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+					}
+                } catch (\Exception $e) {
+					echo $e->getMessage();
+					return new Response();
+                }
+
+
+                if($enregistrement_form_bon === true)
+                {
+                	// On renvoye à la page d'ajout d'un nouveau bon d'attachement avec envoi du message de confirmation d'enregsitrement du bon
+                	$request->getSession()->getFlashBag()->add('info', 'Bon enregistré.');
+
+                	// Création d'un nouveau formulaire de création de bon d'attachement
+                	$e_bons_attachement = new BonsAttachement();
+                	$e_bons_attachement->setUserInitiateur($e_user_courant);
+                	$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+				} else {
+					// Si l'enregistrement du bon ne doit pas être faite on enregistre l'entité en session 
+					$_SESSION['e_bon'] = $e_bons_attachement;
+				}
 
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' => $formulaire->createView(),
-                    'form_site' => $formulaire_site->createView(),
-                    'max_upload_size' => $max_upload_size,
-                    'ents_sitesBA' => $entities_sitesBA,
-                    'apiKey' => $apiKey
+                    'form' 						=> $f_bons_attachement->createView(),
+                    'form_site' 				=> $f_siteBA->createView(),
+                    'max_upload_size' 			=> $max_upload_size,
+                    'es_sitesBA' 				=> $es_sitesBA,
+                    'apiKey' 					=> $apiKey,
+					'id_last_site'              => $id_last_site,
+                	'es_equipements'    		=> $es_equipements,
+                    'echec_creation_equipement' => $echec_creation_equipement,
+					'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+					'enregistrement_html_form_bon'	=> $enregistrement_html_form_bon
                 ));
             } else {
-                // Soit le formulaire de création d'un bon n'est pas valide soit c'est un formulaire de site qui est envoyé
-                if ($formulaire->isSubmitted()) {
-					// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
-					$obj_erreurs = $formulaire->getErrors(true, false);
-					$message_erreur = '';
-					foreach($obj_erreurs as $obj => $error)
+                // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_bon === false)
+                if (($f_bons_attachement->isSubmitted()) || ($enregistrement_form_bon === false))
+				{
+					// On récupère les champs des nouveaux objet crées (contact/ équipement)
+					$nouveau_type_creation =  $f_bons_attachement->get('typeNouveau')->getData();
+					$nouvel_id_creation = $f_bons_attachement->get('idNouveau')->getData();
+					$site_nouvelle_creation = $f_bons_attachement->get('siteNouveau')->getData();
+
+					// Si le bon devait être enregsitré on affiche les erreurs du formulaire
+					if($enregistrement_form_bon === true)
 					{
-						$message_erreur .= $error.' - ';
+						// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
+						$obj_erreurs = $f_bons_attachement->getErrors(true, false);
+						$message_erreur = '';
+						foreach($obj_erreurs as $obj => $error)
+						{
+							$message_erreur .= $error.' - ';
+						}
+                    	$request->getSession()->getFlashBag()->add('info', $message_erreur);
 					}
-                    $request->getSession()->getFlashBag()->add('info', $message_erreur);
+
+					// On recrée le formulaire avec les données récues
+					$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+					$f_bons_attachement->get('typeNouveau')->setData($nouveau_type_creation);
+					$f_bons_attachement->get('idNouveau')->setData($nouvel_id_creation);
+					$f_bons_attachement->get('siteNouveau')->setData($site_nouvelle_creation);
+
+					// On récupère l'id du site pour le réafficher
+					if ($e_bons_attachement->getSite())
+					{
+						if ($e_bons_attachement->getSite()->getId())
+						{
+							$id_last_site = $e_bons_attachement->getSite()->getId();
+						}
+					}
                 } else {
-                    // Le formulaire de nouveau site ou de modification de site est passé
-                    // Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
-                    // Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
-                    if (isset($_POST['id_site_ba'])) {
-                        if ($_POST['id_site_ba'] != "") {
-                            $entity_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
-                            $entity_siteBA_update = new SiteBA();
-                            $formulaire_site = $this->createForm(SiteBAType::class, $entity_siteBA_update, array(
-                                'action' => $this->generateUrl('lci_bons_saisie'),
-                                'method' => 'POST'
-                            ));
-                            $id_last_site = $_POST['id_site_ba'];
-                        }
-                    }
-                    // J'instancie l'entité $entity_siteBA_update avec les valeurs du formulaire de site reçues
-                    // Retourne une erreur (non bloquante car pas de test de validation effectué : data.intitule 	Cette valeur est déjà utilisée.
-                    $formulaire_site->handleRequest($request);
-                    // !! On ne test pas que le formulaire soit correct avec un form->isValid donc il nous faut intercepter l'exception DBAL en cas d'erreur
-                    if ($entity_siteBA_update != null) {
-                        $entity_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
-                        // Seule la modification du nom du site n'est pas permise
-                        $entity_siteBA->setIntitule($entity_siteBA_update->getIntitule());
-                        $entity_siteBA->setAdresse($entity_siteBA_update->getAdresse());
-                        $entity_siteBA->setLienGoogle($this->transformeUrl($entity_siteBA_update->getLienGoogle()));
-                        $entity_siteBA->setInformationsClient($entity_siteBA_update->getInformationsClient());
-                        foreach ($entity_siteBA_update->getFichiersJoint() as $ent_fichier) {
-                            $entity_siteBA->addFichiersJoint($ent_fichier);
-                        }
-                        foreach ($entity_siteBA_update->getContacts() as $ent_contact) {
-                            $entity_siteBA->addContact($ent_contact);
-                        }
-                        // Maintenant que j'ai modifié l'entité siteBA je détach l'entité update pour ne pas que doctrine tente de l'enrgistrer en base : Sinon erreur car doublon avec l'entité siteBA
-                        $em->detach($entity_siteBA_update);
-                    } else {
-                        $entity_siteBA->setLienGoogle($this->transformeUrl($entity_siteBA->getLienGoogle()));
-                    }
-                    // J'effectue moi même la validation des paramètres
-                    $retourTest = $this->testEntite($entity_siteBA);
-                    if ($retourTest === 0) {
-                        // Si tous les paramètres sont corrects je met à jour l'entité en base de données
-                        // L'entité est persisté pour gerer le cas ou c'est un nouvelle entité
-                        $em->persist($entity_siteBA);
-                        try {
-                            $em->flush();
-                            // Si il y a une demande d'ajout de sauvegarde des contacts
-                            if (isset($_POST['site_ba']['contacts'])) {
-                                foreach ($_POST['site_ba']['contacts'] as $tab_contact) {
-                                    $ent_contact = new Contact();
-                                    $ent_contact->setNom($tab_contact['nom']);
-                                    $ent_contact->setPrenom($tab_contact['prenom']);
-                                    $ent_contact->setTelephone($tab_contact['telephone']);
-                                    $ent_contact->setMail($tab_contact['mail']);
-                                    $ent_contact->setFonction($tab_contact['fonction']);
-                                    $ent_contact->setDateMaj(new \Datetime());
-                                    $em->persist($ent_contact);
-                                    $entity_siteBA->addContact($ent_contact);
-                                }
-                                $em->flush();
-                            }
-                            $request->getSession()->getFlashBag()->add('info', 'Site ' . $entity_siteBA->getIntitule() . ' enregistré');
-                        } catch (\Doctrine\DBAL\DBALException $e) {
-                            $request->getSession()->getFlashBag()->add('info', "Erreur d'importation");
-                            $request->getSession()->getFlashBag()->add('info', $e->getMessage());
-                        }
-                        // Création d'un nouveau formulaire de création de site
-                        $entity_siteBA = new SiteBA();
-                        $formulaire_site = $this->createForm(SiteBAType::class, $entity_siteBA, array(
-                            'action' => $this->generateUrl('lci_bons_saisie'),
-                            'method' => 'POST'
-                        ));
-                    } else {
-                        $request->getSession()->getFlashBag()->add('info', $retourTest);
-                    }
+                    	// Le formulaire de nouveau site ou de modification de site est passé
+                    	// Si un identifiant de site est passé : C'est le formulaire de modification de site qui est passé => Mise à jour de l'entité
+                    	// Pour cela on enregistre les informations du formulaire dans une nouvelle entité et on met a jour l'entité à modifier
+						
+                    	if (isset($_POST['id_site_ba'])) 
+						{
+                    	    if ($_POST['id_site_ba'] != "") 
+							{
+                    	        $e_siteBA_update = new SiteBA();
+                    	        $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
+                    	            'action' => $this->generateUrl('lci_bons_saisie'),
+                    	            'method' => 'POST'
+                    	        ));
+								// Enregistrement de l'id du site modifié pour le ré selectionner dans la page HTML après modification
+                    	        $id_last_site = $_POST['id_site_ba'];
+                    	    }
+                    	}
+
+                    	// J'instancie l'entité $e_siteBA_update avec les valeurs du formulaire de site reçues
+                    	// Retourne une erreur (non bloquante car pas de test de validation effectué : data.intitule 	Cette valeur est déjà utilisée.
+                    	$f_siteBA->handleRequest($request);
+
+                    	// !! On ne test pas que le formulaire soit correct avec un form->isValid donc il nous faut intercepter l'exception DBAL en cas d'erreur
+                    	if ($e_siteBA_update != null) 
+						{
+                    	    $e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($_POST['id_site_ba']);
+                    	    // Seule la modification du nom du site n'est pas permise
+                    	    $e_siteBA->setIntitule($e_siteBA_update->getIntitule());
+                    	    $e_siteBA->setAdresse($e_siteBA_update->getAdresse());
+                    	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA_update->getLienGoogle()));
+                    	    $e_siteBA->setInformationsClient($e_siteBA_update->getInformationsClient());
+                    	    foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) {
+								$ent_fichier->setUserInitiateur($this->getUser()->getLabel());
+                    	        $e_siteBA->addFichiersJoint($ent_fichier);
+                    	    }
+                    	    foreach ($e_siteBA_update->getContacts() as $ent_contact) {
+                    	        $e_siteBA->addContact($ent_contact);
+                    	    }
+                    	    // Maintenant que j'ai modifié l'entité siteBA je détach l'entité update pour ne pas que doctrine tente de l'enregistrer en base : Sinon erreur car doublon avec l'entité siteBA
+                    	    $em->detach($e_siteBA_update);
+                    	} else {
+                    	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA->getLienGoogle()));
+                    	}
+                    	// J'effectue moi même la validation des paramètres
+                    	$retourTest = $this->testEntiteSiteBA($e_siteBA);
+                    	if ($retourTest === 0) 
+						{
+                    	    // Si tous les paramètres sont corrects je met à jour l'entité en base de données
+                    	    // L'entité est persisté pour gerer le cas ou c'est un nouvelle entité
+                    	    $em->persist($e_siteBA);
+                    	    try {
+                    	        $em->flush();
+                    	        // Si il y a une demande d'ajout de sauvegarde des contacts
+                    	        if (isset($_POST['site_ba']['contacts'])) 
+								{
+                    	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
+									{
+                    	                $ent_contact = new Contact();
+                    	                $ent_contact->setNom($tab_contact['nom']);
+                    	                $ent_contact->setPrenom($tab_contact['prenom']);
+                    	                $ent_contact->setTelephone($tab_contact['telephone']);
+                    	                $ent_contact->setMail($tab_contact['mail']);
+                    	                $ent_contact->setFonction($tab_contact['fonction']);
+                    	                $ent_contact->setDateMaj(new \Datetime());
+                    	                $em->persist($ent_contact);
+                    	                $e_siteBA->addContact($ent_contact);
+                    	            }
+                    	            $em->flush();
+                    	        }
+                    	        $request->getSession()->getFlashBag()->add('info', 'Site ' . $e_siteBA->getIntitule() . ' enregistré');
+                    	    } catch (\Doctrine\DBAL\DBALException $e) {
+                    	        $request->getSession()->getFlashBag()->add('info', "Erreur d'importation");
+                    	        $request->getSession()->getFlashBag()->add('info', $e->getMessage());
+                    	    }
+                    	    // Création d'un nouveau formulaire de création de site
+                    	    $e_siteBA = new SiteBA();
+                    	    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
+                    	        'action' => $this->generateUrl('lci_bons_saisie'),
+                    	        'method' => 'POST'
+                    	    ));
+                    	} else {
+							// on affiche l'erreur qui empeche la validation du formulaire de bon si la demande d'enregistrement du formulaire est faite
+							if ($enregistrement_form_bon === true)
+							{
+                    	    	$request->getSession()->getFlashBag()->add('info', $retourTest);
+							}
+                    	}
                 }
-                // Par défaut on renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
+                // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' => $formulaire->createView(),
-                    'form_site' => $formulaire_site->createView(),
-                    'max_upload_size' => $max_upload_size,
-                    'ents_sitesBA' => $entities_sitesBA,
-                    'apiKey' => $apiKey,
-                    'id_last_site' => $id_last_site
+                    'form' 						=> $f_bons_attachement->createView(),
+                    'form_site' 				=> $f_siteBA->createView(),
+                    'max_upload_size' 			=> $max_upload_size,
+                    'es_sitesBA' 				=> $es_sitesBA,
+                    'apiKey' 					=> $apiKey,
+                    'id_last_site' 				=> $id_last_site,
+                	'es_equipements'    		=> $es_equipements,
+                    'echec_creation_equipement' => $echec_creation_equipement,
+                    'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+                    'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
                 ));
             }
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                'form' => $formulaire->createView(),
-                'form_site' => $formulaire_site->createView(),
-                'max_upload_size' => $max_upload_size,
-                'ents_sitesBA' => $entities_sitesBA,
-                'apiKey' => $apiKey
+                'form' 						=> $f_bons_attachement->createView(),
+                'form_site' 				=> $f_siteBA->createView(),
+                'max_upload_size' 			=> $max_upload_size,
+                'es_sitesBA' 				=> $es_sitesBA,
+                'apiKey' 					=> $apiKey,
+				'id_last_site'              => $id_last_site,
+				'es_equipements'			=> $es_equipements,
+				'echec_creation_equipement' => $echec_creation_equipement,
+                'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
+                'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
             ));
         }
     }
@@ -299,24 +428,24 @@ class BonsController extends Controller
         } else {
             $id_bon = $_POST['id_bon'];
         }
-        $ent_bons_attachement = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
-        $ent_bons_attachement->setFichiersPdfToNull();
-        $form = $this->createForm(BonsAttachementModificationType::class, $ent_bons_attachement);
+        $e_bons_attachement = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+        $e_bons_attachement->setFichiersPdfToNull();
+        $form = $this->createForm(BonsAttachementModificationType::class, $e_bons_attachement);
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 // Affichage de la liste des nouveau fichiers
-                foreach ($ent_bons_attachement->getFichiersPdf() as $fichier) {
+                foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
                     if ($fichier->getBonAttachement() == null) {
-                        $fichier->setBonAttachement($ent_bons_attachement);
+                        $fichier->setBonAttachement($e_bons_attachement);
                         $em->persist($fichier);
                     }
                 }
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $ent_bons_attachement->getNumeroBA() . ' modifié.');
+                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . ' modifié.');
                 return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-                    'entity_bon' => $ent_bons_attachement,
+                    'entity_bon' => $e_bons_attachement,
                     'form' => $form->createView()
                 ));
             } else {
@@ -327,7 +456,7 @@ class BonsController extends Controller
         }
 
         return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-            'entity_bon' => $ent_bons_attachement,
+            'entity_bon' => $e_bons_attachement,
             'form' => $form->createView()
         ));
     }
@@ -386,12 +515,12 @@ class BonsController extends Controller
                 $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAll();
             } else {
                 // Affichage des bons de l'utilisateur courant
-                $ent_user_courant = $this->get('security.token_storage')->getToken()->getUser();
+                $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
                 $entity_bon_recherche = new ObjRechercheBonsAttachement();
-                $entity_bon_recherche->setUser($ent_user_courant);
+                $entity_bon_recherche->setUser($e_user_courant);
                 $entity_bon_recherche->setSaisie(false);
                 $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
-                //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($ent_user_courant);
+                //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
 
             }
         }
@@ -427,7 +556,7 @@ class BonsController extends Controller
         }
         $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
-        $formulaire_validation = $this->createForm(BonsAttachementValidationType::class, $entity_bon);
+        $f_validation = $this->createForm(BonsAttachementValidationType::class, $entity_bon);
         $f_ba_commentaires = $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
         $form = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
 
@@ -454,17 +583,17 @@ class BonsController extends Controller
             }
         }
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
-            'entity_bon' => $entity_bon,
-            'form_validation' => $formulaire_validation->createView(),
-            'form_ajout_fichier' => $form->createView(),
-            'form_ajout_commentaires' => $f_ba_commentaires->createView(),
-            'max_upload_size' => $max_upload_size
+            'entity_bon' 				=> $entity_bon,
+            'form_validation' 			=> $f_validation->createView(),
+            'form_ajout_fichier' 		=> $form->createView(),
+            'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
+            'max_upload_size' 			=> $max_upload_size
         ));
     }
 
     public function ajoutCommentairesAction($idBon, Request $request)
     {
-        $ent_user_courant = $this->get('security.token_storage')->getToken()->getUser();
+        $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $e_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
         $commentaires = $e_bon->getCommentaires();
@@ -473,7 +602,7 @@ class BonsController extends Controller
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $nouveaux_commentaires = ucfirst($e_bon->getCommentaires());
-                $e_bon->setCommentaires($commentaires . "<div class='bons_commentaires_titre'>Par " . $ent_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'>" . $nouveaux_commentaires . "</div>");
+                $e_bon->setCommentaires($commentaires . "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'>" . $nouveaux_commentaires . "</div>");
                 $em->flush();
             } else {
                 echo $form->getErrors();
@@ -579,12 +708,12 @@ class BonsController extends Controller
         $longitude = $this->getLatLng('longitude', $ent_siteBA_actif->getLienGoogle());
 
         return $this->render('LciBoilerBoxBundle:Bons:visualiser_sitesBA.html.twig', array(
-            'ents_sitesBA' => $ents_sitesBA,
-            'ent_siteBA_actif' => $ent_siteBA_actif,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'apiKey' => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
-            'zoomApi' => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
+            'ents_sitesBA' 		=> $ents_sitesBA,
+            'ent_siteBA_actif' 	=> $ent_siteBA_actif,
+            'latitude' 			=> $latitude,
+            'longitude' 		=> $longitude,
+            'apiKey' 			=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
+            'zoomApi'		 	=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
         ));
     }
 
@@ -616,7 +745,7 @@ class BonsController extends Controller
         return null;
     }
 
-    private function testEntite($ent_siteBA)
+    private function testEntiteSiteBA($ent_siteBA)
     {
         $intitule = $ent_siteBA->getIntitule();
         if (($intitule == null) || ($intitule == "")) {
@@ -626,6 +755,21 @@ class BonsController extends Controller
         if (($adresse == null) || ($adresse == "")) {
             return "Veuillez indiquer une adresse pour le site";
         }
+
+        if (isset($_POST['site_ba']['contacts'])) 
+		{
+        	foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
+			{
+				if ($tab_contact['nom'] == '')
+				{ 
+					return "Veuillez indiquer un nom au contact";
+				}
+				if (($tab_contact['telephone'] == '') && ($tab_contact['mail'] == ''))
+				{
+					return "Veuillez indiquer un email ou un téléphone au contact";
+				}
+			}
+		}
         /*
         $lien = $ent_siteBA->getLienGoogle();
         if (($lien == null) || ($lien == "")) {
@@ -634,4 +778,28 @@ class BonsController extends Controller
         */
         return 0;
     }
+
+
+    // Création d'un fichier bat pour ouverture du dossier photos des BA
+    public function creationFichierBatAction($idBon)
+    {
+        $e_bon = $this->getDoctrine()->getManager()->getREpository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
+
+        $filename       = 'fichierBat.bat';
+        $filecontent    = 'explorer '.$e_bon->getCheminDossierPhotos();
+        $response       = new Response($filecontent);
+
+        // Create the disposition of the file
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+
+        // Set the content disposition
+        $response->headers->set('Content-Disposition', $disposition);
+
+        // Dispatch request
+        return $response;
+    }
+
 }

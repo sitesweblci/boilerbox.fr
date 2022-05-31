@@ -7,10 +7,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+
 
 
 
@@ -20,6 +26,21 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('siteBA', EntityType::class, array (
+                'class'           => 'LciBoilerBoxBundle:SiteBA',
+                'required'        => true,
+                'label'           => 'Site rattaché',
+                'label_attr'      => array ('class' => 'label_smalltext'),
+                'choice_label'    => 'Intitule'
+            ))
+			->add('id', IntegerType::class, array(
+				'required'		=> false,
+				'mapped'		=> false,
+				'label'			=> false,
+				'attr'			=> array(
+					'class'			=> 'cacher'
+				)
+			))
             ->add('nom', TextType::class, array(
                     'label'         => 'Nom',
                     'label_attr'    => array(
@@ -29,8 +50,7 @@ class ContactType extends AbstractType
                         'class'         => 'biginput centrer',
                         'placeholder'   => 'Nom',
                         'style'         => 'width:100%;'
-                    ),
-                    'required'      => false
+                    )
 			))
             ->add('prenom', TextType::class, array(
                     'label'         => 'Prénom',
@@ -44,7 +64,7 @@ class ContactType extends AbstractType
                     ),
                     'required'      => false
             ))
-            ->add('telephone', TextType::class, array(
+            ->add('telephone', TelType::class, array(
                     'label'         => 'Tel.',
                     'label_attr'    => array(
                         'class'         => 'label_smalltext'
@@ -52,7 +72,8 @@ class ContactType extends AbstractType
                     'attr'          => array(
                         'class'         => 'biginput centrer',
                         'placeholder'   => 'Téléphone',
-                        'style'         => 'width:100%;'
+                        'style'         => 'width:100%;',
+						'maxlength'		=> '15'
                     ),
                     'required'      => false
             ))
@@ -69,28 +90,12 @@ class ContactType extends AbstractType
                     'required'      => false
             ))
             ->add('fonction', TextType::class, array())
-        	->add('date_maj', DateType::class, array(
-        	    'label'         => 'Mise à jour des informations',
-        	    'label_attr'    => array ('class' => 'label_smalltext'),
-        	    'widget'        => 'single_text',
-        	    'html5'         => false,
-        	    'format'        => 'dd/MM/yyyy',
-        	    'invalid_message' => 'Format de la date incorrect.',
-        	    'attr'          => array(
-        	        'class'         => 'smallinput',
-        	        'placeholder'   => 'dd/mm/YYYY',
-        	        'maxlength'     => 10
-        	    )
-        	));
-/*
-            ->add('siteBA', EntityType::class, array (
-                'class'           => 'LciBoilerBoxBundle:SiteBA',
-                'required'        => true,
-                'label'           => 'Site rattaché',
-                'label_attr'      => array ('class' => 'label_smalltext'),
-                'choice_label'    => 'Intitule'
-            ));
-*/
+			->add('reset', ResetType::class, [
+                'attr' => [
+                    'class' => 'cacher'
+                ]
+            ])
+		;
     }
 
     public function configureOptions(OptionsResolver $resolver)

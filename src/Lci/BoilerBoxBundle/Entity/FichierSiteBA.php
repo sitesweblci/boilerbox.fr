@@ -6,6 +6,8 @@ namespace Lci\BoilerBoxBundle\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 /**
@@ -20,11 +22,13 @@ class FichierSiteBA {
      * @ORM\Id
      * @ORM\Column(type="integer", options={"unsigned":true})
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"groupContact"})
     */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"groupContact"})
      *
     */
     protected $url;
@@ -37,6 +41,7 @@ class FichierSiteBA {
 
     /**
      * @ORM\Column(name="alt", type="string", length=255)
+     * @Groups({"groupContact"})
     */
     protected $alt;
 
@@ -62,14 +67,25 @@ class FichierSiteBA {
 
     protected $tempFilename;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $userInitiateur;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateImportation;
+
 
 
     /**
      * Constructor
      */
 	public function __construct() {
-		$this->archive = false;
-	}	
+    	$this->archive = false;
+		$this->dateImportation = new \Datetime();
+    }	
 
     /**
      * Get id
@@ -196,6 +212,55 @@ class FichierSiteBA {
     }
 
 
+    /**
+     * Set archive.
+     *
+     * @param bool $archive
+     *
+     * @return FichierSiteBA
+     */
+    public function setArchive($archive)
+    {
+        $this->archive = $archive;
+
+        return $this;
+    }
+
+    /**
+     * Get archive.
+     *
+     * @return bool
+     */
+    public function getArchive()
+    {
+        return $this->archive;
+    }
+
+    public function getUserInitiateur(): ?string
+    {
+        return $this->userInitiateur;
+    }
+
+    public function setUserInitiateur(string $userInitiateur): self
+    {
+        $this->userInitiateur = $userInitiateur;
+
+        return $this;
+    }
+
+    public function getDateImportation(): ?\DateTimeInterface
+    {
+        return $this->dateImportation;
+    }
+
+    public function setDateImportation(\DateTimeInterface $dateImportation): self
+    {
+        $this->dateImportation = $dateImportation;
+
+        return $this;
+    }
+
+
 
 
 
@@ -264,40 +329,4 @@ class FichierSiteBA {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Set archive.
-     *
-     * @param bool $archive
-     *
-     * @return FichierSiteBA
-     */
-    public function setArchive($archive)
-    {
-        $this->archive = $archive;
-
-        return $this;
-    }
-
-    /**
-     * Get archive.
-     *
-     * @return bool
-     */
-    public function getArchive()
-    {
-        return $this->archive;
-    }
 }

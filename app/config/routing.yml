@@ -193,70 +193,14 @@ lci_utils_afficheDispoSites:
     path:    /lci/admin/utilitaire/afficheDispoSites
     defaults: { _controller: LciBoilerBoxBundle:Utils:affichageDisponibiliteSites }
 
-
 # *****************************  Routes des Bons d'attachement ************************************** #
 
-lci_bons_attachements:
-    path: /lci/bons/accueil
-    defaults: { _controller: LciBoilerBoxBundle:Bons:index }
-lci_bons_saisie:
-    path: /lci/bons/saisie
-    defaults: { _controller: LciBoilerBoxBundle:Bons:saisie }
-lci_bons_visualiser:
-    path: /lci/bons/visualiser/{refresh}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiser, refresh: null }
-lci_bons_rechercher:
-    path: /lci/bons/rechercher
-    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercher }
-lci_ajax_bons_setEnquete:
-    path: /lci/bons/ajax/setEnquete
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setEnquete }
-lci_ajax_bons_setValidation:
-    path: /lci/bons/ajax/setValidation
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setValidation }
-lci_ajax_bons_archive_fichier: 
-    path: /lci/bons/ajax/archiveUnFichierDeBon
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archiveUnFichierDeBon }
-lci_bons_afficher_unbon:
-    path: /lci/bons/afficher/unbon
-    defaults: { _controller: LciBoilerBoxBundle:Bons:afficherUnBon }
-lci_bons_modifier_unbon:
-    path: /lci/bons/modification/unbon/{idBon}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:modifierUnBon }
-lci_bons_externe_enquete:
-    path: /lci/bons/externe/enquetes
-    defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
-lci_bons_sitesBA_visualiser:
-    path: /lci/bons/sitesBA/visualiser/{idSiteActif}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: 1 }
-lci_ajax_bons_get_siteBA:
-    path: /lci/bons/sitesBA/get
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
 lci_ajax_desactivation_auth:
     path: /lci/boilerbox/ajax/desactivation/auth
     defaults: { _controller: LciBoilerBoxBundle:Ajax:desactivationAuth }
 lci_ajax_get_site:
     path: /lci/boilerbox/ajax/get/site
     defaults: { _controller: LciBoilerBoxBundle:Ajax:getSite }
-lci_ajax_bon_contact_supp:
-    path: /lci/bons/ajax/contact/supp
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }
-lci_ajax_bon_contact_modif:
-    path: /lci/bons/ajax/contact/modif
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:modifierContact }
-lci_ajax_archivage_fichier_siteBA:
-    path: /lci/bons/ajax/archivage/fichier/siteBA
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archivageFichierSiteBA }
-
-lci_bons_admin_site_index:
-    path: /lci/bons/admin/site/index
-    defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
-lci_bons_admin_site_creer:
-    path: /lci/bons/admin/site/creer
-    defaults: { _controller: LciBoilerBoxBundle:Bons:creerSite }
-lci_bons_commentaires:
-    path: /lci/bons/modification/unbon/commentaires/{idBon}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:ajoutCommentaires }
 
 fos_user_security_login:
     path: /login

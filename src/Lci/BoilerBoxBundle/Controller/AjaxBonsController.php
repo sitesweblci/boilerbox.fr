@@ -4,11 +4,22 @@ namespace Lci\BoilerBoxBundle\Controller;
 
 use Lci\BoilerBoxBundle\Entity\Validation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+
+use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
+use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
+use Lci\BoilerBoxBundle\Entity\Contact;
+use Lci\BoilerBoxBundle\Form\Type\ContactType;
+use Lci\BoilerBoxBundle\Entity\SiteBA;
+use Lci\BoilerBoxBundle\Form\Type\SiteBAType;
+
+
 
 class AjaxBonsController extends Controller
 {
-
     // Fonction qui modifie le paramètre EnqueteNecessaire d'un bon
     public function setEnqueteAction()
     {
@@ -26,14 +37,12 @@ class AjaxBonsController extends Controller
     // Fonction qui effectue la validation ou la suppression d'une ancienne validation d'une catégorie d'un bon
     public function setValidationAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $idBon = $_POST['identifiant'];
-        $type = $_POST['type'];
-        $sens = $_POST['sens'];
-
+		$em 		= $this->getDoctrine()->getManager();
+        $idBon 		= $_POST['identifiant'];
+        $type 		= $_POST['type'];
+        $sens 		= $_POST['sens'];
         $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user 		= $this->get('security.token_storage')->getToken()->getUser();
 		$entity_validation 				= null;
 		$entity_user_emetteur_du_bon	= null;
 		$entities_users_validation 		= null;
@@ -72,7 +81,7 @@ class AjaxBonsController extends Controller
             // Une Validation sur un bon d'intervention est effectuée
             $entity_validation = new Validation();
             $entity_validation->setValide(true)
-                ->setDateDeValidation(new \Datetime)
+                ->setDateDeValidation(new \Datetime())
                 ->setType($type)
                 ->setUser($user)
             ;
@@ -116,9 +125,10 @@ class AjaxBonsController extends Controller
 
     public function archiveUnFichierDeBonAction()
     {
+		$em 			= $this->getDoctrine()->getManager();
         $id_fichier_bon = $_POST['identifiant_fichier'];
-        $em = $this->getDoctrine()->getManager();
         $entity_fichier = $em->getRepository('LciBoilerBoxBundle:Fichier')->find($id_fichier_bon);
+
         if ($entity_fichier->getArchive() == false) {
             $message_archivage = "Archivé par " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i');
             $entity_fichier->setArchive(true);
@@ -132,50 +142,62 @@ class AjaxBonsController extends Controller
         return new Response();
     }
 
-
+	// Recherches des informations du site selectionné dans le formulaire de création d'un BA
     public function getSiteBAEntityAction()
     {
-        $tab_fichier = null;
+		$em 				= $this->getDoctrine()->getManager();
+
         if (isset($_POST['id_site_ba'])) {
             $id_site_ba = $_POST['id_site_ba'];
         } else {
             $id_site_ba = 1;
         }
-        $em = $this->getDoctrine()->getManager();
-        $entity_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
+        $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
 
-        $tab_siteba[] = $entity_siteba->getId();
-        $tab_siteba[] = $entity_siteba->getIntitule();
-        $tab_siteba[] = $entity_siteba->getAdresse();
-        $tab_siteba[] = $this->putZoomApi($this->putApiKey($this->transformeUrlReverse($entity_siteba->getLienGoogle())));
-        $tab_siteba[] = $entity_siteba->getInformationsClient();
-        $tab_contacts = array();
-        foreach ($entity_siteba->getContacts() as $ent_contact) {
-            $tab_contact = array();
-            $tab_contact['id'] = $ent_contact->getId();
-            $tab_contact['nom'] = $ent_contact->getNom();
-            $tab_contact['prenom'] = $ent_contact->getPrenom();
-            $tab_contact['email'] = $ent_contact->getMail();
-            $tab_contact['telephone'] = $ent_contact->getTelephone();
-            $tab_contact['fonction'] = $ent_contact->getFonction();
-            $tab_contact['maj'] = $ent_contact->getDateMaj()->format('d/m/Y');
-            $tab_contacts[] = $tab_contact;
-        }
-        $tab_siteba[] = $tab_contacts;
-        foreach ($entity_siteba->getFichiersJoint() as $ent_fichier) {
-            $tab_fichier[] = $ent_fichier->getAlt();
-        }
-
-        if ($tab_fichier != null) {
-            $tab_siteba[] = $tab_fichier;
-        } else {
-            $tab_siteba[] = null;
-        }
-
-
-        echo json_encode($tab_siteba);
-        return new Response;
+        // On retourne le fichier serialize
+        $serializer = $this->get('serializer');
+        $jsonContent = $serializer->serialize(
+            $e_siteba,
+            'json', array('groups' => array('groupContact'))
+        );
+        return new Response($jsonContent);
     }
+
+
+	public function getGoogleMapAction()
+	{
+		$url;
+		$em = $this->getDoctrine()->getManager();
+
+        $id_site_ba = $_POST['id_site_ba'];
+        $e_siteba = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($id_site_ba);
+
+        // transformeUrlReverse
+        $patternLatLng = '$^https?://www.google.com/maps/embed/v1/view\?key=APIKEY&center=(.+?),(.+?)&zoom.*$';
+		$patternPlace = '$^https://www.google.com/maps/embed/v1/place\?key=APIKEY&q=(.+?)&zoom=.*$';
+        if (preg_match($patternLatLng, $e_siteba->getLienGoogle(), $matches)) 
+		{
+            $url = 'latLng(' . $matches[1] . ',' . $matches[2] . ')';
+        } else if (preg_match($patternPlace, $e_siteba->getLienGoogle(), $matches)) 
+		{
+        	$url = 'https://www.google.com/maps/place/' . $matches[1] . '/';
+		} else {
+			$url = $e_siteba->getLienGoogle();
+		}
+
+        // putApiKey
+        $apiKey = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+        $pattern = '/APIKEY/';
+        $url = preg_replace($pattern, $apiKey, $url);
+
+        // putZoomApi
+        $zoomApi = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur();
+        $pattern = '/ZOOMAPI/';
+        $url = preg_replace($pattern, $zoomApi, $url);
+
+        return new Response($url);
+	}
+
 
 
     // Fonction qui récupère l'url retournée par l'entité et extrait la latitude et la longitude
@@ -252,10 +274,12 @@ class AjaxBonsController extends Controller
 
     public function supprimerContactAction()
     {
-        if (isset($_POST['id_contact_supp'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_contact = $_POST['id_contact_supp'];
-            $ent_contact = $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
+		$em = $this->getDoctrine()->getManager();
+
+        if (isset($_POST['id_contact_supp'])) 
+		{
+            $id_contact 	= $_POST['id_contact_supp'];
+            $ent_contact 	= $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
             $em->remove($ent_contact);
             $em->flush();
             return new Response();
@@ -265,10 +289,12 @@ class AjaxBonsController extends Controller
 
     public function modifierContactAction()
     {
-        if (isset($_POST['id_contact_modif'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_contact = $_POST['id_contact_modif'];
-            $ent_contact = $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
+		$em = $this->getDoctrine()->getManager();
+
+        if (isset($_POST['id_contact_modif'])) 
+		{
+            $id_contact 	= $_POST['id_contact_modif'];
+            $ent_contact 	= $em->getRepository('LciBoilerBoxBundle:Contact')->find($id_contact);
             $ent_contact->setNom($_POST['nomContact']);
             $ent_contact->setPrenom($_POST['prenomContact']);
             $ent_contact->setTelephone($_POST['telephoneContact']);
@@ -276,6 +302,7 @@ class AjaxBonsController extends Controller
             $ent_contact->setFonction($_POST['fonctionContact']);
             $ent_contact->setDateMaj(new \Datetime());
             $em->flush();
+			echo 'Contact '.$_POST['nomContact'].' modifié';
             return new Response();
         }
     }
@@ -283,11 +310,12 @@ class AjaxBonsController extends Controller
 
     public function archivageFichierSiteBAAction()
     {
+		$em = $this->getDoctrine()->getManager();
+
         if (isset($_POST['id_fichier']) && isset($_POST['archive'])) {
-            $em = $this->getDoctrine()->getManager();
-            $id_fichier = $_POST['id_fichier'];
-            $archive = $_POST['archive'];
-            $ent_fichier = $em->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($id_fichier);
+            $id_fichier 	= $_POST['id_fichier'];
+            $archive 		= $_POST['archive'];
+            $ent_fichier 	= $em->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($id_fichier);
             switch ($archive) {
                 case true:
                     $ent_fichier->setArchive(true);
@@ -300,4 +328,219 @@ class AjaxBonsController extends Controller
         }
         return new Response();
     }
+
+
+
+
+    public function choixServiceAction(Request $request)
+    {
+		$em = $this->getDoctrine()->getManager();
+
+        if (!($_POST['service'])) 
+		{
+            return new Response();
+        } else {
+            $role_service   = strtoupper('role_service_'.$_POST['service']);
+        }
+
+        $ents_user      			= $em->getRepository('LciBoilerBoxBundle:User')->findAll();
+        $tab_des_membres_du_service = array();
+
+        foreach($ents_user as $e_user)
+        {
+            if ($role_service != null)
+            {
+                if ($e_user->hasRole($role_service))
+                {
+                    array_push($tab_des_membres_du_service, $e_user->getId());
+                }
+            }
+        }
+        return new Response(json_encode($tab_des_membres_du_service));
+    }
+
+
+	// Fonction qui supprime un fichier d'un bon (appelé sur la page de saisie des bons)
+	public function delFileAction(Request $request)
+	{
+		$em = $this->getDoctrine()->getManager();
+
+		if ($_GET['id_file'])
+		{
+			$e_fichier = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:Fichier')->find($_GET['id_file']);
+			$em->remove($e_fichier);
+			$em->flush();
+			echo "Fichier supprimé";
+		}
+		return new Response();
+	}
+
+    // Fonction qui supprime un fichier d'un siteBA (appelé sur la page de saisie des bons)
+    public function delFileSiteBAAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($_GET['id_file'])
+        {
+            $e_fichier = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:FichierSiteBA')->find($_GET['id_file']);
+            $em->remove($e_fichier);
+            $em->flush();
+            echo "Fichier supprimé";
+        }
+        return new Response();
+    }
+
+		
+
+	public function delEquipementAction()
+    {
+		$em = $this->getDoctrine()->getManager();
+
+		if (isset($_POST['id_equipement'])) 
+		{
+			$e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($_POST['id_equipement']);
+
+			$em->remove($e_equipement);
+			$em->flush();
+       		echo "suppression de ".$_POST['id_equipement']." effectuée";
+		}
+        return new Response();
+    }
+
+    public function creerEquipementAction(Request $request)
+    {
+		$em 			= $this->getDoctrine()->getManager();
+		$e_equipement 	= new EquipementBATicket();
+		$f_equipement 	= $this->createForm(EquipementBATicketType::class, $e_equipement);
+		$f_equipement->handleRequest($request);
+
+        if ($request->isXMLHttpRequest())
+        {
+            if ($f_equipement->isSubmitted())
+            {
+                if ($f_equipement->isValid())
+                {
+					$e_siteBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->find($f_equipement->get('siteBA')->getData()->getId());
+					$e_siteBA->addEquipementBATicket($e_equipement);
+
+                    $em->persist($e_equipement);
+                    $em->flush();
+
+			        $reponse = array(
+        		    	"message" => $e_equipement->getId()
+        			);
+
+					return new Response(json_encode($reponse));
+                } 
+                return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', [
+                    'form_equipement'  	=> $f_equipement->createView(),
+                    'id'            	=> $e_equipement->getId()
+                ]);
+            } 
+        }
+        return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', array(
+            'form_equipement'  	=> $f_equipement->createView(),
+            'id'            	=> $e_equipement->getId()
+        ));
+	}
+
+
+
+    public function creerContactsSitesBAAction(Request $request)
+    {
+		$em 		= $this->getDoctrine()->getManager();
+        $e_contact 	= new Contact();
+        $f_contact 	= $this->createForm(ContactType::class, $e_contact);
+
+        $f_contact->handleRequest($request);
+		if ($request->isXMLHttpRequest()) 
+		{
+			if ($f_contact->isSubmitted()) 
+			{
+				// Si c'est une modification de contact on recrée le formulaire à partir du contact à modifier
+				if ($f_contact->get('id')->getData() != null)
+				{	
+					$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($f_contact->get('id')->getData());
+					$f_contact = $this->createForm(ContactType::class, $e_contact);
+					$f_contact->handleRequest($request);
+				}
+				if ($f_contact->isValid())
+            	{
+					$e_contact->setDateMaj(new \Datetime());
+                	$em->persist($e_contact);
+                	$em->flush();
+
+                    $reponse = array(
+                        "message" => $e_contact->getId()
+                    );
+
+                    return new Response(json_encode($reponse));
+				}
+				return $this->render('LciBoilerBoxBundle:Bons:creer_contact.html.twig', [
+                    'form_contact' 	=> $f_contact->createView(),
+					'id' 			=> $e_contact->getId()
+                ]);
+            } 
+		}
+        return $this->render('LciBoilerBoxBundle:Bons:creer_contact.html.twig', array(
+			'form_contact' 	=> $f_contact->createView(),
+          	'id' 			=> $e_contact->getId()
+        ));
+    }
+
+
+
+    public function creerSiteBAAction(Request $request)
+    {
+        $em         		= $this->getDoctrine()->getManager();
+
+		// Lecture de l'option de configuration [upload_max_filesize] pour l'indiquer dans la page html
+		$max_upload_size	= ini_get('upload_max_filesize');
+
+		// Clé google pour pouvoir utiliser les API de google
+		$apiKey             = $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
+
+        $e_siteBA  			= new SiteBA();
+        $f_siteBA   		= $this->createForm(SiteBAType::class, $e_siteBA);
+
+        return $this->render('LciBoilerBoxBundle:Bons:creer_siteBA.html.twig', array(
+			'max_upload_size'	=> $max_upload_size,
+            'apiKey'            => $apiKey,
+            'form_siteBA'  		=> $f_siteBA->createView(),
+            'id'            	=> $e_siteBA->getId()
+        ));
+    }
+
+
+    // Generate an array contains a key -> value with the errors where the key is the name of the form field
+    protected function getErrorMessages(\Symfony\Component\Form\Form $form) 
+    {
+        $errors = array();
+
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        foreach ($form->all() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = $this->getErrorMessages($child);
+            }
+        }
+
+        return $errors;
+    }
+
+
+	public function getInfosContactAction()
+	{
+		$e_contact = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:Contact')->find($_POST['id_contact']);
+        // On retourne le fichier serialize
+        $serializer = $this->get('serializer');
+        $jsonContent = $serializer->serialize(
+            $e_contact,
+            'json', array('groups' => array('groupContact'))
+        );
+        return new Response($jsonContent);
+	}
+
 }

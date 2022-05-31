@@ -28,8 +28,8 @@ class BonsAttachement {
      * @var string
      *
 	 * @Assert\Type("string")
-     * @Assert\Length(min=6, max=6, exactMessage="Le numéro doit contenir 6 chiffres")
-	 * @Assert\Regex("/^\d{6}$/", message="Format de numéro incorrect. 6 chiffres attendus")
+     * @Assert\Length(min=6, max=6, exactMessage="Le numéro du bon doit contenir 6 chiffres")
+	 * @Assert\Regex("/^\d{6}$/", message="Format incorrect. 6 chiffres attendus")
 	 *
      * @ORM\Column(type="text", name="numero_ba", nullable=true)
 	*/
@@ -40,7 +40,7 @@ class BonsAttachement {
 	 *
      * @Assert\Type("string")
 	 * @Assert\NotBlank(message="Veuillez indiquer le numéro de l'affaire")
-     * @Assert\Length(min=4, max=7, minMessage="Format de l'affaire incorrect. Nombre de caractères minimum = 4", maxMessage="Format de l'affaire incorrect. Nombre de caractères maximum = 7")
+     * @Assert\Length(min=4, max=7, minMessage="Format incorrect. Nombre de caractères minimum = 4", maxMessage="Format incorrect. Nombre de caractères maximum = 7")
      * 
      * @ORM\Column(type="text", name="numero_affaire")
     */
@@ -63,16 +63,6 @@ class BonsAttachement {
      * @ORM\OrderBy({"label" = "ASC"})
     */
     protected $userInitiateur;
-
-
-	/**
-     * Plusieurs bons d'attachements peuvent avoir plusieurs équipements 
-     *
-     * @ORM\ManyToMany(targetEntity="EquipementBATicket", cascade={"persist"}, inversedBy="bonsAttachement")
-     * @ORM\OrderBy({"denomination" = "ASC"})
-    */
-    protected $equipementBATicket;
-
 
 
     /**
@@ -219,7 +209,7 @@ class BonsAttachement {
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="service", nullable=true)
+     * @ORM\Column(type="string", name="service")
     */
     protected $service;
 
@@ -241,23 +231,25 @@ class BonsAttachement {
     */
     protected $type;
 
+
+    // Entre bon attachement et ticket
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", name="chemin_dossier_photos")
     */
-    protected $cheminDossierPhotos;
+    protected $cheminDossierPhoto;
 
 
 
 
 
 	public function __construct() {
-       	$this->dateInitialisation = new \Datetime();
-       	$this->enqueteNecessaire = false;
-       	$this->enqueteFaite = false;
-    	$this->fichiersPdf = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+                     		$this->dateInitialisation = new \Datetime();
+                     		$this->enqueteNecessaire = false;
+                     		$this->enqueteFaite = false;
+                     		$this->fichiersPdf = new \Doctrine\Common\Collections\ArrayCollection();
+                     	}
 
 
     /**
@@ -751,166 +743,4 @@ class BonsAttachement {
     {
         $this->fichiersPdf->removeElement($fichiersPdf);
     }
-
-    /**
-     * Set telephoneContactClient.
-     *
-     * @param string|null $telephoneContactClient
-     *
-     * @return BonsAttachement
-     */
-    public function setTelephoneContactClient($telephoneContactClient = null)
-    {
-        $this->telephoneContactClient = $telephoneContactClient;
-
-        return $this;
-    }
-
-    /**
-     * Get telephoneContactClient.
-     *
-     * @return string|null
-     */
-    public function getTelephoneContactClient()
-    {
-        return $this->telephoneContactClient;
-    }
-
-    /**
-     * Set service.
-     *
-     * @param string $service
-     *
-     * @return BonsAttachement
-     */
-    public function setService($service)
-    {
-        $this->service = $service;
-
-        return $this;
-    }
-
-    /**
-     * Get service.
-     *
-     * @return string
-     */
-    public function getService()
-    {
-        return $this->service;
-    }
-
-    /**
-     * Set typeIntervention.
-     *
-     * @param string $typeIntervention
-     *
-     * @return BonsAttachement
-     */
-    public function setTypeIntervention($typeIntervention)
-    {
-        $this->typeIntervention = $typeIntervention;
-
-        return $this;
-    }
-
-    /**
-     * Get typeIntervention.
-     *
-     * @return string
-     */
-    public function getTypeIntervention()
-    {
-        return $this->typeIntervention;
-    }
-
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return BonsAttachement
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-
-    /**
-     * Add equipementBATicket.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket
-     *
-     * @return BonsAttachement
-     */
-    public function addEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
-    {
-        $this->equipementBATicket[] = $equipementBATicket;
-		$equipementBATicket->addBonsAttachement($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove equipementBaTicket.
-     *
-     * @param \Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
-    {
-        return $this->equipementBATicket->removeElement($equipementBATicket);
-    }
-
-    /**
-     * Get equipementBATicket.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEquipementBATicket()
-    {
-        return $this->equipementBATicket;
-    }
-
-
-
-
-    /**
-     * Set cheminDossierPhoto.
-     *
-     * @param string $cheminDossierPhotos
-     *
-     * @return BonsAttachement
-     */
-    public function setCheminDossierPhotos($cheminDossierPhotos)
-    {
-        $this->cheminDossierPhotos = $cheminDossierPhotos;
-
-        return $this;
-    }
-
-    /**
-     * Get cheminDossierPhotos.
-     *
-     * @return string
-     */
-    public function getCheminDossierPhotos()
-    {
-        return $this->cheminDossierPhotos;
-    }
-
 }

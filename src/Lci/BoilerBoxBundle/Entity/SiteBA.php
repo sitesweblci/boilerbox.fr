@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * SiteBA
@@ -23,6 +25,7 @@ class SiteBA
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"groupContact"})
      */
     protected $id;
 
@@ -31,6 +34,7 @@ class SiteBA
      *
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotNull(message="Nom du site manquant")
+     * @Groups({"groupContact"})
     */
     protected $intitule;
 
@@ -56,6 +60,7 @@ class SiteBA
 	 *
 	 * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotNull(message="Veuillez entrer une adresse valide svp")
+     * @Groups({"groupContact"})
 	*/
 	protected $adresse;
 
@@ -64,21 +69,29 @@ class SiteBA
 	 * @var string
 	 *
 	 * @ORM\Column(type="text", nullable=true)
+     * @Groups({"groupContact"})
 	*/
 	protected $informationsClient;
 
     /**
      *
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\FichierSiteBA", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
      *
     */
     protected $fichiersJoint;
 
     /**
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Contact", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
      */
     private $contacts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\EquipementBATicket", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @Groups({"groupContact"})
+     */
+    private $equipementBATickets;
 
 
 
@@ -87,9 +100,10 @@ class SiteBA
      */
     public function __construct()
     {
-        $this->bonsAttachement = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->fichiersJoint = new \Doctrine\Common\Collections\ArrayCollection();
-  		$this->contacts = new ArrayCollection();
+        $this->bonsAttachement 		= new \Doctrine\Common\Collections\ArrayCollection();
+		$this->fichiersJoint 		= new \Doctrine\Common\Collections\ArrayCollection();
+  		$this->contacts 			= new ArrayCollection();
+    	$this->equipementBATickets 	= new ArrayCollection();
     }
 
     /**
@@ -295,8 +309,8 @@ class SiteBA
 
 
 	public function setFichiersJointToEmpty() {
-                     		$this->fichiersJoint = array();
-                     	}
+                                    		$this->fichiersJoint = array();
+                                    	}
 
 
 
@@ -343,4 +357,37 @@ class SiteBA
 
         return $this;
     }
+
+    /**
+     * @return Collection|EquipementBATicket[]
+     */
+    public function getEquipementBATickets(): Collection
+    {
+        return $this->equipementBATickets;
+    }
+
+    public function addEquipementBATicket(EquipementBATicket $equipementBATicket): self
+    {
+        if (!$this->equipementBATickets->contains($equipementBATicket)) {
+            $this->equipementBATickets[] = $equipementBATicket;
+            $equipementBATicket->setSiteBA($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipementBATicket(EquipementBATicket $equipementBATicket): self
+    {
+        if ($this->equipementBATickets->contains($equipementBATicket)) {
+            $this->equipementBATickets->removeElement($equipementBATicket);
+            // set the owning side to null (unless already changed)
+            if ($equipementBATicket->getSiteBA() === $this) {
+                $equipementBATicket->setSiteBA(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

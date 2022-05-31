@@ -17,10 +17,7 @@ class EquipementType extends AbstractType
      * @param array $options
     */
     public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder->add('id', IntegerType::class, array (
-                    'label_attr'      => array ('class' => 'identifiant'),
-                    'attr'            => array ('class' => 'identifiant')
-            	))
+		$builder
 				->add('type', TextType::class, array(
 					'label'   	=> "Type d'equipement",
                     'label_attr'=> array('class' => 'label_smalltext'),

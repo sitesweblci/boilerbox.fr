@@ -6,15 +6,18 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use Lci\BoilerBoxBundle\Entity\Contact;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Lci\BoilerBoxBundle\Entity\SiteBA;
 
 
 
@@ -28,6 +31,13 @@ class SiteBAType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 	    $builder
+            	->add('id', IntegerType::class, array(
+            	    'required'      => false,
+            	    'label'         => false,
+            	    'attr'          => array(
+            	        'class'         => 'cacher'
+            	    )
+            	))
 				->add('intitule', TextType::class, array(
                     'label'         => 'Nom du site',
 					'label_attr'    => array (
@@ -88,16 +98,11 @@ class SiteBAType extends AbstractType
             		'allow_delete'  => true,
             		'required'      => true
         		))
-				->add('contacts', CollectionType::class, array(
-                    'entry_type'    => ContactType::class,
-                    'label'         => 'Contact(s) Client',
-					'allow_add'     => true,
-                    'allow_delete'  => true,
-					'required'      => true,
-					'mapped'		=> false
-                ))
-				
-				->add('reset', ResetType::class);
+				->add('reset', ResetType::class, array(
+					'attr'          => array(
+                        'class'         => 'cacher',
+                    ),
+				));
     }
 
     /*
