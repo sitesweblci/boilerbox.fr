@@ -40,6 +40,9 @@
 	.erreur_formulaire {
 		border: 2px solid red !important;
 	}
+	form{
+		padding: 8px;
+	}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -59,9 +62,11 @@
 {{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
 {{ form_errors(form) }}
 <input type='hidden' value='non' name='enregistrement' id='enregistrement'>
-<main id="grid-ba-2" class="main-content grid">
-	<h1 class="main-content__title grid__one">Nouveau Bon</h1>
-	<section class="grid__two">
+<section class="info">
+	<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second"></a>
+	<h1 class="info__title">Nouveau Bon</h1>
+</section>
+<main class="content">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Informations</h2>
 		<div class="form__field rel">
@@ -70,7 +75,7 @@
 			{{ form_errors(form.site) }}
 			<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
 		</div>
-        <div class="form__field form__field--double">
+        <div class="form__field">
 			<div>
             	{{ form_label(form.numeroAffaire) }}
             	{{ form_widget(form.numeroAffaire) }}
@@ -148,7 +153,7 @@
 			</div>
 		</div>
 	</fieldset>
-    <fieldset>
+    <fieldset class="cacher">
         <div class="form__field form__field--double">
             <div>
                 {{ form_label(form.typeNouveau) }}
@@ -170,121 +175,138 @@
         </div>
     </fieldset>
 	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Contact</h2>
+		<div class="form__field rel">
+			<label>Nom</label>
+			<select id='select_contact'>
+				<option value=''></option>
+			</select>
+			<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
+		</div>
+		<div class="form__field form__field--double">
+			<div>
+				{{ form_errors(form.emailContactClient) }}
+                {{ form_label(form.emailContactClient) }}
+                {{ form_widget(form.emailContactClient, {'attr':{'class':"disabled"} }) }}
+			</div>
+			<div>
+				{{ form_errors(form.telephoneContactClient) }}
+                {{ form_label(form.telephoneContactClient) }}
+				{{ form_widget(form.telephoneContactClient, {'attr':{'class':"disabled"} }) }}
+			</div>
+		</div>
+	</fieldset>
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Équipement</h2>
+		<div class="form__field rel">
+            <span id="add-equipBon">Sélection des équipements</span>
+            <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+        </div>
+	</fieldset>
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Photos</h2>
+		<label class="form__field rel">
+            {{ form_label(form.cheminDossierPhotos) }}
+            {{ form_widget(form.cheminDossierPhotos) }}
+            {{ form_errors(form.cheminDossierPhotos) }}
+		</label>
+	</fieldset>
+	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Fichier(s)</h2>
+		<div class="form__field rel">
+			<span id="add-fichierBon">Ajouter fichier PDF (20Mo max)</span>
+			<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter fichier</span></button>
+		</div>
+		<div id='fichiers_deja_joints2' class="add-list">
+		</div>
+	</fieldset>
+	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
 		<div id='map'></div>
 	</fieldset>
-	</section>
-
-	<section class="grid__three">
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Contact</h2>
-			<div class="form__field rel">
-				<label>Nom</label>
-				<select id='select_contact'>
-					<option value=''></option>
-				</select>
-				<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
-			</div>
-			<div class="form__field form__field--double">
-				<div>
-					{{ form_errors(form.emailContactClient) }}
-                    {{ form_label(form.emailContactClient) }}
-                    {{ form_widget(form.emailContactClient, {'attr':{'class':"disabled"} }) }}
-				</div>
-				<div>
-					{{ form_errors(form.telephoneContactClient) }}
-                    {{ form_label(form.telephoneContactClient) }}
-					{{ form_widget(form.telephoneContactClient, {'attr':{'class':"disabled"} }) }}
-				</div>
-			</div>
-		</fieldset>
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Équipement</h2>
-			<div class="form__field rel">
-                <span id="add-equipBon">Sélection des équipements</span>
-                <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Sélection des équipements du bon</span></button>
-            </div>
-		</fieldset>
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Photos</h2>
-			<label class="form__field rel">
-                {{ form_label(form.cheminDossierPhotos) }}
-                {{ form_widget(form.cheminDossierPhotos) }}
-                {{ form_errors(form.cheminDossierPhotos) }}
-				<button type="button" class="btn btn--main"></button>
-			</label>
-		</fieldset>
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Fichier(s)</h2>
-			<div class="form__field rel">
-				<span id="add-fichierBon">Ajouter fichier PDF (20Mo max)</span>
-				<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter un fichier</span></button>
-			</div>
-			<div id='fichiers_deja_joints2' class="add-list">
-			</div>
-		</fieldset>
-		<div class="main-content__btn">
-			<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
-			<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer</button>
-		</div>
-	</section>
+	<div class="content__btn">
+		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer bon</button>
+	</div>
 </main>
 
 
 <section id="popupSelectionEquipement" class="popup cacher">
-	<div class="popup__wrapper" style="width:900px;">
+	<div class="popup__wrapper" style="width:780px;">
     	<header class="popup__header">
     	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
-    	    <div id='close_cross_equipement' class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
+    	    <div class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
     	</header>
-
     	<div class="popup__content">
-			<div>
-        	    <div class="form__field rel">
-        	        <div style='padding:5px;' >
-            	        <select id='select_equipement'>
-            	             <option value=''>Affichage des équipements tous sites confondus</option>
-            	            {% for e_siteBA in es_sitesBA %}
-            	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
-            	            {% endfor %}
-            	        </select>
-						<div style='padding:20px;'>
-							<div>Recherche</div>
-							<div><input type='text' id='recherche_equipement' /></div>
-						</div>
+    		{# <div class="choice">
+    			<div class="choice__actionner">
+    				<label class="required checked" for="ajoutEquipement">
+    					<input type="radio" id="ajoutEquipement" name="ajoutEquipement">
+    					Sélection équipement
+    				</label>
+    			</div>
+    			<div class="choice__actionner">
+    				<label class="required" for="creationEquipement">
+    					<input type="radio" id="creationEquipement" name="creationEquipement">
+    					Créer équipement
+    				</label>
+    			</div>
+    		</div> #}
+    	    <div class="form__field form__field--double align-end">
+    	    	<div>
+		        	<label>Site</label>
+	    	        <select id='select_equipement'>
+	    	             <option value=''>Affichage des équipements tous sites confondus</option>
+	    	            {% for e_siteBA in es_sitesBA %}
+	    	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
+	    	            {% endfor %}
+	    	        </select>
+	    	    </div>
+	    	    <div>
+	    	    	<div class="search-bar">
+	    	    		<span class="search-bar__img"></span>
+	    	    		<input class="search-bar__input" type='text' id='recherche_equipement' placeholder="Rechercher" />
+	    	    	</div>
+	    	    </div>
+    	    </div>
+			<div class="form__field">
+    	        <div>
+    	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
+    	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
+                            <span  style='display:inline-block; width:20px; font-size:10px;'></span>
+                            <span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
+                            <span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
+                            <span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
+                            <span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span>
+                            <span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
+    	            </div>
 
-            	        <div style='padding:20px;'>
-            	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
-            	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
-                                    <span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-            	            </div>
-
-            	            <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
-            	                <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
-									<span  style='display:inline-block; width:30px; font-size:10px;'></span><span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span><span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span><span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span><span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span><span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-            	                <div id='insert_equipement'>
-            	                </div>
-                	        </div>
-                	    </div>
-                	</div>
-            	</div>
+    	            <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
+    	                <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
+							<span  style='display:inline-block; width:20px; font-size:10px;'></span>
+							<span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
+							<span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
+							<span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
+							<span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span>
+							<span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
+    	                <div id='insert_equipement'>
+    	                </div>
+        	        </div>
+        	    </div>
 			</div>
-
-            <div class='main-box__btn notToBePrinted'>
-                <button class="btn btn--main" onclick="$('#close_cross_equipement').trigger('click'); return false;">Enregistrer</button>
-                <button class="btn btn--second" type="button" id="btn_ajout_equipement2" onclick="gestionDesEquipements2();">Ajouter un nouvel équipement</button>
-            </div>
-			
+			<div class="form__field__choice">
+				<p>OU</p>
+				<hr>
+			</div>
+			<button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--wide add tooltip-wrapper" onclick="gestionDesEquipements2();">Créer nouvel équipement</button>
 		</div>
-	</div>
 </section>
 
 <!-- Popup d'ajout de fichiers au bon -->
 <section id="popupGestionFichiersBon" class="popup cacher">
-    <div class="popup__wrapper" style="width:900px;">
+    <div class="popup__wrapper" style="width:420px;">
         <header class="popup__header">
             <h1 id='titre_gestion_fichiers_bon' class="popup__title">Sélection des fichiers du bon</h1>
-            <div id='close_cross_fichier' class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
+            <div class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
         </header>
 
         <div class="popup__content">
@@ -299,11 +321,6 @@
 				</div>
 			</div>
 		</div>
-
-
-        <div class='main-box__btn notToBePrinted'>
-            <button class="btn btn--main" onclick="$('#close_cross_fichier').trigger('click'); return false;">Enregistrer</button>
-        </div>
 	</div>
 </section>
 
@@ -329,22 +346,26 @@
 			<div class="close-cross" onclick="togglePopUp(bonsNouveauContact)"></div>
 		</header>
 		<div class="popup__content">
-            <div class="form__field">
-                <label>Nom</label>
-                <input type='text' name='nomContact' id='nomContact'>
-            </div>
-            <div class="form__field">
-                <label>Prénom</label>
-                <input type='text' name='prenomContact' id='prenomContact'>
-            </div>
-            <div class="form__field">
-                <label>Mail</label>
-                <input type='text' name='emailContact' id='emailContact'>
-            </div>
-            <div class="form__field">
-                <label>Téléphone</label>
-                <input type='text' name='telephoneContact' id='telephoneContact'>
-            </div>
+            <div class="form__field form__field--double">
+            	<div>
+	                <label>Nom</label>
+	                <input type='text' name='nomContact' id='nomContact'>
+	            </div>
+	            <div>
+	                <label>Prénom</label>
+	                <input type='text' name='prenomContact' id='prenomContact'>
+	            </div>
+	        </div>
+            <div class="form__field form__field--double">
+            	<div>
+	                <label>Mail</label>
+	                <input type='text' name='emailContact' id='emailContact'>
+	            </div>
+	            <div>
+	                <label>Téléphone</label>
+	                <input type='text' name='telephoneContact' id='telephoneContact'>
+	            </div>
+	        </div>
             <div class="form__field">
                 <label>Fonction</label>
                 <input type='text' name='fonctionContact' id='fonctionContact'>
@@ -965,12 +986,12 @@
 
     function attendreRechargement()
     {
-        $('*').css({'cursor' : 'wait'});
+        $('*').addClass('cursor--wait');
     }
 
 	function finAttendreRechargement()
     {
-        $('*').css({'cursor' : 'default'});
+        $('*').removeClass('cursor--wait');
     }
 
 
@@ -1138,8 +1159,6 @@
 
     function fermeturePopupGestionFichiersBon()
     {
-		// On supprime tous les instances de fichiers vides
-
 		// On vide l'ancienne liste des fichiers pour éviter de les afficher en double
 		$('#fichiers_deja_joints2').html('');
 
@@ -1156,10 +1175,6 @@
 			if (nom_fichier != '')
 			{
 				$('#fichiers_deja_joints2').append("<div class='add-list__added' id='encartFichierBA_" + index_fichier + "'>" + nom_fichier + "<div class='close-cross' onClick='retireBAFile(" + index_fichier + ");'></div></div>");
-			} else {
-				// Si il n'y a pas de nom de fichier on supprime le champs (simulation de click sur lien suppression
-				var id_encart_a_supp = '#bons_attachement_fichiersPdf_' + index_fichier;
-				$(id_encart_a_supp + ' + a').trigger('click');
 			}
         });
     }
@@ -1809,6 +1824,43 @@
 	    }, 30);
 
 	});
+	// On change l'icône du bouton et le texte de l'infobulle du bouton lié au select
+	$('#bons_attachement_site').on('change', function editButton(){
+		// Si la valeur est différente de celle par défaut
+		if ($('#bons_attachement_site').val() != ''){
+			// On change l'image par un crayon
+			$('#bons_attachement_site').next(".btn--main").addClass('edit');
+			// On modifie l'infobulle par "Modifier"
+			$('#bons_attachement_site').next(".btn--main").find('.tooltip').html('Modifier Site');
+		} else {
+			$('#bons_attachement_site').next(".btn--main").removeClass('edit');
+			$('#bons_attachement_site').next(".btn--main").find('.tooltip').html('Créer Site')
+		}
+ 	});
+ 	// Même chose pour les contacts 
+	$('#select_contact').on('change', function editButton(){
+		// Si la valeur est différente de celle par défaut
+		if ($('#select_contact').val() != ''){
+			// On change l'image par un crayon
+			$('#select_contact').next(".btn--main").addClass('edit');
+			// On modifie l'infobulle par "Modifier"
+			$('#select_contact').next(".btn--main").find('.tooltip').html('Modifier contact');
+		} else {
+			$('#select_contact').next(".btn--main").removeClass('edit');
+			$('#select_contact').next(".btn--main").find('.tooltip').html('Créer contact')
+		}
+ 	});
+ 	// Fonction pour changer la bordure de la barre de recherche en focus
+ 	$(".search-bar__input").on('focus', function searchFocus(){
+ 		if(!$(this).parents(".search-bar").hasClass('search-bar--focus')){
+ 			$(this).parents(".search-bar").addClass("search-bar--focus");
+ 		}
+ 	});
+ 	$(".search-bar__input").on('blur', function searchBlur(){
+ 		if($(this).parents(".search-bar").hasClass("search-bar--focus")){
+ 			$(this).parents(".search-bar").removeClass("search-bar--focus");
+ 		}
+ 	});
 
 </script>
 

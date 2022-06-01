@@ -367,6 +367,9 @@ tr td:last-child{
 	#tableAffaire tbody{
 		height: calc(100vh - 250px);
 	}
+	#tableAffaire tbody tr{
+		padding-right: 0;
+	}
 	.CXXX{
 		width: 20%;
 	}
