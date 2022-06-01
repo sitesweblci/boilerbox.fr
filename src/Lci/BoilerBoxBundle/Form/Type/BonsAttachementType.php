@@ -182,6 +182,7 @@ class BonsAttachementType extends AbstractType {
 		))
 		->add('service', ChoiceType::class, array(
 			'label'         => 'Service',
+			'placeholder'   => 'Tous',
 			'choices'		=> [
 				'Bosch'		=> 'bosch',
 				'Certus'	=> 'certus',

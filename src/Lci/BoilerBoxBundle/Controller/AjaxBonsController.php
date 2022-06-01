@@ -372,13 +372,13 @@ class AjaxBonsController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 
-        if (!($_POST['service'])) 
+        if ($_POST['service'] == 'Tous') 
 		{
             return new Response();
         } else {
             $role_service   = strtoupper('role_service_'.$_POST['service']);
         }
-
+		
         $ents_user      			= $em->getRepository('LciBoilerBoxBundle:User')->findAll();
         $tab_des_membres_du_service = array();
 
