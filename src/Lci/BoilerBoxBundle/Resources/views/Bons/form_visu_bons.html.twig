@@ -113,7 +113,7 @@
 							Validations
 							<div class='sous_champs_validation_bon'>
 								<div>Tech.</div>
-								<div>H.</div>
+								<div>Pièces.</div>
 								<div>SAV</div>
 								<div>Fact.</div>
 							</div>
@@ -173,17 +173,23 @@
                                 		{% if ent_bons.validationTechnique.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
                                 		{% endif %}
-                                		{% else %}
-                                			&nbsp
+                                	{% else %}
+                                		&nbsp
                                 	{% endif %}
                                 </div>
                                 <div data-intitule='validationPiece'>
-                                	{% if ent_bons.validationPiece %}
-                                		{% if ent_bons.validationPiece.valide %}
+                                	{% if ent_bons.validationPieceFaite %}
+                                		{% if ent_bons.validationPieceFaite.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
                                 		{% endif %}
-                                		{% else %}
+                                	{% else %}
+										{% if ent_bons.validationPiece %}
+											{% if ent_bons.validationPiece.valide %}
+												img demande
+											{% endif %}										
+										{% else %}
                                 			&nbsp
+										{% endif %}
                                 	{% endif %}
                                 </div>
                                 <div data-intitule='validationSav'>
@@ -191,8 +197,8 @@
                                 		{% if ent_bons.validationSAV.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
                                 		{% endif %}
-                                		{% else %}
-                                			&nbsp
+                                	{% else %}
+                                		&nbsp
                                 	{% endif %}
                                 </div>
                                 <div data-intitule='validationFacturation'>
@@ -200,8 +206,8 @@
                                 		{% if  ent_bons.validationFacturation.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
                                 		{% endif %}
-                                		{% else %}
-                                			&nbsp
+                                	{% else %}
+                                		&nbsp
                                 	{% endif %}
                                 </div>
                             </div>

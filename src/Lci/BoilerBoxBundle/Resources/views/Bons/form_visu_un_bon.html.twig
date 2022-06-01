@@ -317,7 +317,7 @@
 	        		                <span style="display:inline-block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
 	            		        {% else %}
 									{# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-                                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                    {% if is_granted('ROLE_SERVICE_PIECES') %}
                                         {{ form_widget(form_validation.validationPiece) }}
                                     {% endif %}
 	                		        {# Service Pieces dé-validé #}
@@ -328,7 +328,7 @@
 	    		                {{ form_widget(form_validation.validationPiece) }}
 	        		        {% else %}
 	            		        {# Service Pieces non validé - On n'a pas les droits de validation #}
-	                		    <span style="color: green">Non effectuée</span>
+	                		    <span style="color:red;">Non effectuée</span>
 	                		{% endif %}
 						</td>
 						<td>
