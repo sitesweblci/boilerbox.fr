@@ -346,7 +346,7 @@ class AdminController extends Controller
             // Si on récupére un rôle on recherche la liste des utilisateurs appartenant au groupe définie par le role
             if (isset($_POST['role'])) {
                 $t_role = $_POST['role'];
-				$role = strtoupper('role_'.$t_role['role']);
+				$role = strtoupper($t_role);
             }
         }
 

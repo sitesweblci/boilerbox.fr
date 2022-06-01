@@ -273,12 +273,26 @@
 						<td>
 							{% if entity_bon.validationFacturation %}
 								{% if entity_bon.validationFacturation.valide == true %}
+									{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                                onClick="changeValidation('facturation', false);"
+                                                alt="Supprimer la validation facturation"
+                                        />
+                                    {% endif %}
+
 									{# Service Facturation validé #}
 									<span class='green'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
 								{% else %}
+									{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        {{ form_widget(form_validation.validationFacturation) }}
+                                    {% endif %}
+
 									{# Service Facturation dé-validé #}
 									<span class='red'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
 								{% endif %}	
+								<span>par {{ entity_bon.validationFacturation.user.label }}</span>
 							{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
 								{# Service Facturation non validé - On a les droits de validation #}	
 								{{ form_widget(form_validation.validationFacturation) }}
@@ -290,12 +304,26 @@
 						<td>
 	        		        {% if entity_bon.validationTechnique %}
 	           					{% if entity_bon.validationTechnique.valide == true %}
+									{# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                                onClick="changeValidation('technique', false);"
+                                                alt="Supprimer la validation technique"
+                                        />
+                                    {% endif %}
+
 	           		            	{# Service Technique validé #}
 	                        		<span class='green'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
 	                    		{% else %}
+									{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                        {{ form_widget(form_validation.validationTechnique) }}
+                                    {% endif %}
+
 	                        		{# Service Technique dé-validé #}
 	                        		<span class='red'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
 	                    		{% endif %}
+								<span>par {{ entity_bon.validationTechnique.user.label }}</span>
 	                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
 		                        {# Service Technique non validé - On a les droits de validation #}
 		                        {{ form_widget(form_validation.validationTechnique) }}
@@ -305,32 +333,69 @@
 			                {% endif %}
 						</td>
 						<td>
-							{% if entity_bon.validationHoraire %}
-	        		            {% if entity_bon.validationHoraire.valide == true %}
-	        		                {# Service Pieces validé #}
-	        		                <span class='red'>Demandé le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+							{% if entity_bon.validationPiece %}
+	        		            {% if entity_bon.validationPiece.valide == true %}
+									{# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
+									{# Seulement si l'offre n'a pas déjà ete faite #}
+
+									{% if entity_bon.validationPieceFaite %}
+										{% if entity_bon.validationPieceFaite.valide == false %}
+                                    		{% if is_granted('ROLE_SERVICE_PIECES') %}
+                                    		    <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                    		            onClick="changeValidation('pieces', false);"
+                                    		            alt="Supprimer la validation pièces"
+                                    		    />
+                                    		{% endif %}
+										{% endif %}
+									{% else %}
+										{% if is_granted('ROLE_SERVICE_PIECES') %}
+                                            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                                    onClick="changeValidation('pieces', false);"
+                                                    alt="Supprimer la validation pièces"
+                                            />
+                                        {% endif %}
+									{% endif %}
+	        		                <span style="display:inline-block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }} ({{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }})</span>
 	            		        {% else %}
+									{# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                        {{ form_widget(form_validation.validationPiece) }}
+                                    {% endif %}
 	                		        {# Service Pieces dé-validé #}
-	                   				<span class='green'>Offre faite le {{ entity_bon.validationHoraire.dateDeValidation | date('d-m-Y') }}</span>
+	                   				<span style="color:red">Demande annulée par {{ entity_bon.validationPiece.user.label }} ({{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }})</span>
 	                            {% endif %}
 		                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
 			                    {# Service Pièces non validé - On a les droits de validation #}
-	    		                {{ form_widget(form_validation.validationHoraire) }}
+	    		                {{ form_widget(form_validation.validationPiece) }}
 	        		        {% else %}
 	            		        {# Service Pieces non validé - On n'a pas les droits de validation #}
-	                		    <span class='green'>Non effectuée</span>
+	                		    <span style="color: green">Non effectuée</span>
 	                		{% endif %}
 						</td>
 						<td>
 	                		{% if entity_bon.validationSAV %}
 	                    		{% if entity_bon.validationSAV.valide == true %}
+									{# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_SAV') %}
+                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                                onClick="changeValidation('sav', false);"
+                                                alt="Supprimer la validation SAV"
+                                        />
+                                    {% endif %}
+
 	                        		{# Service SAV validé #}
 	                                <span class='green'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
 		                        {% else %}
+									{# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_SAV') %}
+                                        {{ form_widget(form_validation.validationSAV) }}
+                                    {% endif %}
+
 			                        {# Service SAV dé-validé #}
 	    		                    <span class='red'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
 	                            {% endif %}
-			                  	{% elseif is_granted('ROLE_SERVICE_SAV') %}
+								<span>par {{ entity_bon.validationSAV.user.label }}</span>
+			                 {% elseif is_granted('ROLE_SERVICE_SAV') %}
 	                    		{# Service SAV non validé - On a les droits de validation #}
 	                    		{{ form_widget(form_validation.validationSAV) }}
 	                		{% else %}
@@ -341,98 +406,52 @@
 					</tr>
 					<tr class="flex-table__row">
 	            		<td>
-	                		{% if entity_bon.validationFacturation %}
-	                            <span>{{ entity_bon.validationFacturation.user.label }}</span>
-	                        {% endif %}
 		                </td>
 			            <td>
-							{% if entity_bon.validationTechnique %}
-								<span>{{ entity_bon.validationTechnique.user.label }}</span>
-	            		    {% endif %}
 						</td>
 	                    <td>
-		                    {% if entity_bon.validationHoraire %}
-			                    {# <span>{{ entity_bon.validationHoraire.user.label }}</span> #}
-	    		            {% endif %}
+                            {% if entity_bon.validationPiece %}
+                                {% if entity_bon.validationPiece.valide == true %}
+									{% if entity_bon.validationPieceFaite %}
+										{% if entity_bon.validationPieceFaite.valide == true %}
+											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+                    		                    <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                		                                onClick="changeValidation('pieces_faite', false);"
+            		                                    alt="Supprimer la validation commande pièces faite"
+        		                                />
+    		                                {% endif %}
+		                                    <span style="display:inline-block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
+										{% else %}
+											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+                                        		{{ form_widget(form_validation.validationPieceFaite) }}
+                                    		{% endif %}
+											<span style="color:red;">Offre dévalidé par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
+										{% endif %}
+									{% else %}
+										{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+    	                            		{# Service piece faite non validé - On a les droits de validation #}
+											<span style="inline-block;">Attente offre de pièce
+    	                        		{% else %}
+    	                            		{# Service SAV non validé - On n'a pas les droits de validation #}
+    	                            		<span style="inline-block; pointer-events: none;">Non autorisé
+    	                        		{% endif %}
+										{{ form_widget(form_validation.validationPieceFaite) }}
+										</span>
+									{% endif %}
+								{% endif %}
+                            {% endif %}
 						</td>
 	            		<td>
-	                        {% if entity_bon.validationSAV %}
-		                        <span>{{ entity_bon.validationSAV.user.label }}</span>
-	   		             	{% endif %}
 						</td>
 					</tr>
 	        		<tr class="flex-table__row">
 	            		<td>
-	                		{% if entity_bon.validationFacturation %}
-	                    		{% if entity_bon.validationFacturation.valide == true %}
-	                        		{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
-									{% if is_granted('ROLE_SERVICE_FACTURATION') %}
-										<img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	        									onClick="changeValidation('facturation', false);"
-	        									alt="Supprimer la validation facturation"
-										/>
-									{% endif %}
-	                    		{% else %}
-	                        		{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-									{% if is_granted('ROLE_SERVICE_FACTURATION') %}
-										{{ form_widget(form_validation.validationFacturation) }}
-									{% endif %}
-	    		                {% endif %}
-	           		     	{% endif %}
 	            		</td>
 	            		<td>
-							{% if entity_bon.validationTechnique %}
-	                            {% if entity_bon.validationTechnique.valide == true %}
-		                            {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
-			                        {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-	    		                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	        		                            onClick="changeValidation('technique', false);"
-	            		                        alt="Supprimer la validation technique"
-	                		            />
-	                    		    {% endif %}
-	                    		{% else %}
-	                        		{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-	                                {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-		                                {{ form_widget(form_validation.validationTechnique) }}
-			                        {% endif %}
-	    		                {% endif %}
-	        		        {% endif %}
 						</td>
 	                    <td>
-		                    {% if entity_bon.validationHoraire %}
-			                    {% if entity_bon.validationHoraire.valide == true %}
-	    		                    {# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
-	        		                {% if is_granted('ROLE_SERVICE_PIECES') %}
-	            		                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	                		                    onClick="changeValidation('pieces', false);"
-	                    		                alt="Supprimer la validation pièces"
-	                        		    />
-	                                {% endif %}
-		                        {% else %}
-			                        {# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-	    		                    {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
-	        		                    {{ form_widget(form_validation.validationHoraire) }}
-	            		            {% endif %}
-	                		    {% endif %}
-	                        {% endif %}
 						</td>
 		                <td>
-			                {% if entity_bon.validationSAV %}
-	    		                {% if entity_bon.validationSAV.valide == true %}
-	        		                {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
-	            		            {% if is_granted('ROLE_SERVICE_SAV') %}
-	                		            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-	                    		                onClick="changeValidation('sav', false);"
-	                        		            alt="Supprimer la validation SAV"
-	                            		/>
-	                                {% endif %}
-		                        {% else %}
-			                        {# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-	    		                    {% if is_granted('ROLE_SERVICE_SAV') %}
-	        		                    {{ form_widget(form_validation.validationSAV) }}
-	            		            {% endif %}
-	                		    {% endif %}
-	                        {% endif %}
 						</td>
 			        </tr>
 				</tbody>
@@ -457,10 +476,34 @@
 						</div>
 					</div>
 	        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+
+
+                    <div>
+                    {{ form_label(form_ajout_commentaires.telephoneContactClient) }}
+                    {{ form_widget(form_ajout_commentaires.telephoneContactClient) }}
+                    </div>
+
+
+                    <div>
+                    {{ form_label(form_ajout_commentaires.service) }}
+                    {{ form_widget(form_ajout_commentaires.service) }}
+                    </div>
+
+
+                    <div>
+                    {{ form_label(form_ajout_commentaires.typeIntervention) }}
+                    {{ form_widget(form_ajout_commentaires.typeIntervention) }}
+                    </div>
+
+
+
+					<div>
+					{{ form_label(form_ajout_commentaires.cheminDossierPhotos) }}
+					{{ form_widget(form_ajout_commentaires.cheminDossierPhotos) }}
+					</div>
 	        	{{ form_end(form_ajout_commentaires) }}
 	    	</div>
 		</section>
-
 		<!-- Fichiers -->
 	    {# <section class='liste_fichiers_du_bon main-content w100'>
 	    	<h1 class="main-content__title main-content--small__title">Fichiers</h1>
@@ -531,11 +574,17 @@
 			$type = 'technique';
 			changeValidation($type, $sens);
 		});
-        $('#bons_attachement_validation_validationHoraire_valide').click(function(e){
+        $('#bons_attachement_validation_validationPiece_valide').click(function(e){
 			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationHoraire_valide').is(":checked");
+			$sens = $('#bons_attachement_validation_validationPiece_valide').is(":checked");
 			$type = 'pieces';
 			changeValidation($type, $sens);
+        });
+        $('#bons_attachement_validation_validationPieceFaite_valide').click(function(e){
+            e.preventDefault;
+            $sens = $('#bons_attachement_validation_validationPieceFaite_valide').is(":checked");
+            $type = 'pieces_faite';
+            changeValidation($type, $sens);
         });
         $('#bons_attachement_validation_validationSAV_valide').click(function(e){
 			e.preventDefault;
@@ -603,6 +652,38 @@
 
   //       });
 
+
+
+			// ************************************************************************************ LISTENERS
+			// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
+			$('#bons_attachement_commentaires_cheminDossierPhotos').click(function()
+			{
+				var $id_bon = $('#bons_attachement_commentaires_id').val();
+
+				var $url_controller_ajax_has_url 	= "{{ path('lci_bons_has_url', {'id_bon': 'identifiantDuBon'}) }}";
+				$url_controller_ajax_has_url 		= $url_controller_ajax_has_url.replace('identifiantDuBon', $id_bon);
+		
+				$.ajax({
+					url: $url_controller_ajax_has_url,
+					method: "GET",
+					success: function(msg){
+						var $retour = $.parseJSON(msg);
+						if ($retour['hasUrl'] == true)
+						{
+    		            	// Appel de la fonction pour télécharment du .bat
+    		            	var $url_controller_fonction_bat 	= "{{ path('lci_get_fichier_bat', {'id_bon': 'identifiantDuBon'}) }}";
+    		            	$url_controller_fonction_bat 		= $url_controller_fonction_bat.replace('identifiantDuBon', $id_bon);
+		                	document.location = $url_controller_fonction_bat;
+						} else {
+							alert("Aucun dossier n'a été enregistré pour le bon");
+						}
+					},
+					error: function(){
+						alert('erreur serveur survenue lors de la recherche du dossier des photos');
+					}
+				});
+			});
+
 	});	
 
 	function changeValidation($type, $sens) {
@@ -643,7 +724,10 @@
                                 $('#bons_attachement_validation_validationSAV_valide').prop("checked", false);
                                 break;
                             case 'pieces':
-                                $('#bons_attachement_validation_validationHoraire_valide').prop("checked", false);
+                                $('#bons_attachement_validation_validationPiece_valide').prop("checked", false);
+                                break;
+                            case 'pieces_faite':
+                                $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", false);
                                 break;
                             case 'facturation':
 								location.reload();
@@ -685,8 +769,11 @@
         	                $('#bons_attachement_validation_validationSAV_valide').prop("checked", true);
         	                break;
         	            case 'pieces':
-        	                $('#bons_attachement_validation_validationHoraire_valide').prop("checked", true);
+        	                $('#bons_attachement_validation_validationPiece_valide').prop("checked", true);
         	                break;
+                        case 'pieces_faite':
+                            $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", true);
+                            break;
         	            case 'facturation':
         	                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", true);
         	                break;

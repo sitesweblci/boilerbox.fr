@@ -534,9 +534,10 @@ class BonsController extends Controller
     // Dans la page du bon on affiche également le forumlaire de validation du bon
     public function afficherUnBonAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $form_message_erreur = "";
-        $max_upload_size = ini_get('upload_max_filesize');
+        $em 					= $this->getDoctrine()->getManager();
+        $form_message_erreur 	= "";
+        $max_upload_size 		= ini_get('upload_max_filesize');
+
         // Si la requete est de type GET : Un rafraichissement de page est demandé. Récupération des anciennes informations
         if ($request->getMethod() == 'POST') {
             if (isset($_POST['id_bon'])) {
@@ -554,11 +555,11 @@ class BonsController extends Controller
             // Si la page est appelée sans passer par boilerbox
             return 'Page non disponible';
         }
-        $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+        $entity_bon 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
-        $f_validation = $this->createForm(BonsAttachementValidationType::class, $entity_bon);
-        $f_ba_commentaires = $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
-        $form = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+        $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
+        $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
+        $form 				= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
 
         // Gestion de l'ajout de fichiers à un bon
         if ($request->getMethod() == 'POST') {
@@ -657,21 +658,21 @@ class BonsController extends Controller
                     // Si aucun service de validation n'est selectionné mais qu'un valideur est renseigné, on recherche les bons validés par ce valideur dans tous les services
                     if ($entity_bon_recherche->getValideur()) {
                         $entity_bon_recherche->setValidationTechnique(true);
-                        $entity_bon_recherche->setValidationHoraire(true);
+                        $entity_bon_recherche->setValidationPiece(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
                     } else {
                         $entity_bon_recherche->setValidationTechnique(false);
-                        $entity_bon_recherche->setValidationHoraire(false);
+                        $entity_bon_recherche->setValidationPiece(false);
                         $entity_bon_recherche->setValidationSAV(false);
                         $entity_bon_recherche->setValidationFacturation(false);
                     }
                 } else {
                     // Si une validation par service est demandées
                     // Si aucun service n'est selectionné, on considère qu'on recherche les bons de tous les services
-                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationHoraire()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation())) {
+                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationPiece()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation())) {
                         $entity_bon_recherche->setValidationTechnique(true);
-                        $entity_bon_recherche->setValidationHoraire(true);
+                        $entity_bon_recherche->setValidationPiece(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
                     }
@@ -781,12 +782,12 @@ class BonsController extends Controller
 
 
     // Création d'un fichier bat pour ouverture du dossier photos des BA
-    public function creationFichierBatAction($idBon)
+    public function creationFichierBatAction($id_bon = null)
     {
-        $e_bon = $this->getDoctrine()->getManager()->getREpository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
+        $e_bon = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
-        $filename       = 'fichierBat.bat';
-        $filecontent    = 'explorer '.$e_bon->getCheminDossierPhotos();
+        $filename       = 'chemin_vers_bi_'.$e_bon->getNumeroBA().'.bat';
+        $filecontent    = "chcp 65001\nexplorer ".$e_bon->getCheminDossierPhotos();
         $response       = new Response($filecontent);
 
         // Create the disposition of the file
@@ -796,6 +797,7 @@ class BonsController extends Controller
         );
 
         // Set the content disposition
+		$response->headers->set('Content-Type', 'application/bat');
         $response->headers->set('Content-Disposition', $disposition);
 
         // Dispatch request

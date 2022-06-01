@@ -214,8 +214,8 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             ),
             'required'    => false
         ))
-        ->add('validationHoraire', CheckboxType::class, array(
-            'label'       => 'Horaire',
+        ->add('validationPiece', CheckboxType::class, array(
+            'label'       => 'Piéces',
             'label_attr'  => array('class' => 'label_smalltext'),
             'attr'        => array(
                 'class'       => 'input_checkbox'

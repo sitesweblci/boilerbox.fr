@@ -24,6 +24,12 @@ class BonsAttachementType extends AbstractType {
     */
 	public function buildForm(FormBuilderInterface $builder, array $option) {
 		$builder
+		->add('id', IntegerType::class, array(
+			'label'				=> false,
+			'attr'				=> array(
+				'class'				=> 'cacher'
+			)
+		))
         ->add('userInitiateur', EntityType::class, array (
             'class'           => 'LciBoilerBoxBundle:User',
             'required'        => true,

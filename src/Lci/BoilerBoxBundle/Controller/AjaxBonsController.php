@@ -49,7 +49,8 @@ class AjaxBonsController extends Controller
 
         // Si le sens est false c'est que la checkbox est décochée : On définit le champs valide à 0 pour signifier que l'entité Validation est une Dé-Validation
         // Ajout du 02/12/2019 : Lors d'une dévalidation on informe l'ensemble des valideurs par mail.
-        if ($sens == 'false') {
+        if ($sens == 'false') 
+		{
             switch ($type) {
                 case 'technique':
 					$entity_validation = $entity_bon->getValidationTechnique();
@@ -60,8 +61,21 @@ class AjaxBonsController extends Controller
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_SAV');
                     break;
                 case 'pieces':
-					$entity_validation = $entity_bon->getValidationHoraire();
+					$entity_validation = $entity_bon->getValidationPiece();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_PIECES');
+
+                    // Si c'est une dévalidation de type pièce on informe le gestionnaire_de_pieces (designation du gestionnaire de pièces dans le fichier app/config/parameters.yml)
+                    // ICI DEV Recherche du gestionnaire par son role SERVICE_GESTION_PIECES - A faire pour remplacer la lecture en dure dans le fichier parameter
+                    $entity_gestionnaire = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->findOneByUsername($this->container->getParameter('gestionnaire_pieces'));
+                    if ($entity_gestionnaire) {
+                        $service_mail = $this->get('lci_boilerbox.mailing');
+                        $service_mail->sendMailPieces('annulation', $entity_bon->getSite()->getIntitule() . ' (' . $entity_bon->getNumeroAffaire() . ') ', $entity_bon->getNumeroBA(), $user->getLabel(), $entity_gestionnaire->getEmail());
+                    }
+
+                    break;
+                case 'pieces_faite':
+                    $entity_validation = $entity_bon->getValidationPieceFaite();
+                    $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_GESTION_PIECES');
                     break;
                 case 'facturation':
 					$entity_validation = $entity_bon->getValidationFacturation();
@@ -94,13 +108,17 @@ class AjaxBonsController extends Controller
                     break;
                 case 'pieces':
                     // Si c'est une validation de type pièce on informe le gestionnaire_de_pieces (designation du gestionnaire de pièces dans le fichier app/config/parameters.yml)
-                    $entity_bon->setValidationHoraire($entity_validation);
+					// ICI DEV Recherche du gestionnaire par son role SERVICE_GESTION_PIECES - A faire pour remplacer la lecture en dure dans le fichier parameter
+                    $entity_bon->setValidationPiece($entity_validation);
                     $entity_gestionnaire = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->findOneByUsername($this->container->getParameter('gestionnaire_pieces'));
                     if ($entity_gestionnaire) {
                         $service_mail = $this->get('lci_boilerbox.mailing');
-                        $service_mail->sendMailPieces($entity_bon->getSite()->getIntitule() . ' (' . $entity_bon->getNumeroAffaire() . ') ', $entity_bon->getNumeroBA(), $user->getLabel(), $entity_gestionnaire->getEmail());
+                        $service_mail->sendMailPieces('demande', $entity_bon->getSite()->getIntitule() . ' (' . $entity_bon->getNumeroAffaire() . ') ', $entity_bon->getNumeroBA(), $user->getLabel(), $entity_gestionnaire->getEmail());
                     }
                     break;
+				case 'pieces_faite':
+					$entity_bon->setValidationPieceFaite($entity_validation);	
+					break;
                 case 'facturation':
                     $entity_bon->setValidationFacturation($entity_validation);
                     break;
@@ -541,6 +559,33 @@ class AjaxBonsController extends Controller
             'json', array('groups' => array('groupContact'))
         );
         return new Response($jsonContent);
+	}
+
+
+	// Fonction qui vérifie qu'une url existe vers le chemin des photos pour un bon
+	// Fonction executée avec l'action de creation et téléchargement du fichier bat
+	public function hasUrlAction($id_bon = null)
+	{
+		$has_url    = false;
+		// Si pas d'id de bon on retourne l'info d'erreur
+		if ($id_bon == null)
+		{
+			$reponse = array("hasUrl" => $has_url);
+			return new Response(json_encode($reponse));
+		}
+
+		$e_bon 		= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+
+		if ($e_bon->getCheminDossierPhotos() != '')
+		{
+			$has_url = true;
+		} 
+
+		$reponse = array("hasUrl" => $has_url);
+
+        return new Response(json_encode($reponse));
+
+
 	}
 
 }

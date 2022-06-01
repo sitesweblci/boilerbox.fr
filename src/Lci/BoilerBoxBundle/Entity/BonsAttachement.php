@@ -165,7 +165,14 @@ class BonsAttachement {
      *
      * @ORM\OneToOne(targetEntity="Validation", cascade={"persist", "remove"})
     */
-    protected $validationHoraire;
+    protected $validationPiece;
+
+    /**
+     *
+     * @ORM\OneToOne(targetEntity="Validation", cascade={"persist", "remove"})
+    */
+    protected $validationPieceFaite;
+
 
     /**
      *
@@ -534,27 +541,54 @@ class BonsAttachement {
     }
 
     /**
-     * Set validationHoraire
+     * Set validationPiece
      *
-     * @param \Lci\BoilerBoxBundle\Entity\Validation $validationHoraire
+     * @param \Lci\BoilerBoxBundle\Entity\Validation $validationPiece
      * @return BonsAttachement
      */
-    public function setValidationHoraire(\Lci\BoilerBoxBundle\Entity\Validation $validationHoraire = null)
+    public function setValidationPiece(\Lci\BoilerBoxBundle\Entity\Validation $validationPiece = null)
     {
-        $this->validationHoraire = $validationHoraire;
+        $this->validationPiece = $validationPiece;
 
         return $this;
     }
 
     /**
-     * Get validationHoraire
+     * Get validationPiece
      *
      * @return \Lci\BoilerBoxBundle\Entity\Validation 
      */
-    public function getValidationHoraire()
+    public function getValidationPiece()
     {
-        return $this->validationHoraire;
+        return $this->validationPiece;
     }
+
+
+
+
+    /**
+     * Set validationPieceFaite
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\Validation $validationPieceFaite
+     * @return BonsAttachement
+     */
+    public function setValidationPieceFaite(\Lci\BoilerBoxBundle\Entity\Validation $validationPieceFaite = null)
+    {
+        $this->validationPieceFaite = $validationPieceFaite;
+
+        return $this;
+    }
+
+    /**
+     * Get validationPieceFaite
+     *
+     * @return \Lci\BoilerBoxBundle\Entity\Validation
+     */
+    public function getValidationPieceFaite()
+    {
+        return $this->validationPieceFaite;
+    }
+
 
     /**
      * Set validationSAV

@@ -30,6 +30,10 @@ class BonsAttachementCommentairesType extends BaseType {
         		->remove('numeroAffaire')
         		->remove('site')
         		->remove('fichiersPdf')
+				->remove('typeNouveau')
+				->remove('idNouveau')
+                ->remove('siteNouveau')
+				->remove('equipementBATicket')
 				->add('commentaires', TextareaType::class, array(
             		'label'         => 'Commentaires ...',
             		'label_attr'    => array ('class' => 'label_bigtext'),
@@ -41,7 +45,6 @@ class BonsAttachementCommentairesType extends BaseType {
             							),
 					'data'			=> ''	
         		));
-
 	}
 
 

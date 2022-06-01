@@ -146,7 +146,7 @@ class ObjRechercheBonsAttachement {
      * @var boolean
      *
     */
-    protected $validationHoraire;
+    protected $validationPiece;
 
     /**
      * @var boolean
@@ -542,22 +542,22 @@ class ObjRechercheBonsAttachement {
 	}
 
     /**
-     * Get ValidationHoraire
+     * Get ValidationPiece
      *
      * @return boolean
     */
-    public function getValidationHoraire() {
-        return $this->validationHoraire;
+    public function getValidationPiece() {
+        return $this->validationPiece;
     }
 
     /**
-     * Set ValidationHoraire
+     * Set ValidationPiece
      *
      * param boolean $validation
      * @return ObjRechercheBonsAttachement
     */
-    public function setValidationHoraire($validation) {
-        $this->validationHoraire = $validation;
+    public function setValidationPiece($validation) {
+        $this->validationPiece = $validation;
         return $this;
     }
 
