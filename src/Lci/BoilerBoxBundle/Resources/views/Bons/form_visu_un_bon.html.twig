@@ -323,7 +323,7 @@
 	                		        {# Service Pieces dé-validé #}
 	                   				<span style="color:red">Demande annulée par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
 	                            {% endif %}
-		                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
+		                    {% elseif is_granted('ROLE_SERVICE_PIECES') %}
 			                    {# Service Pièces non validé - On a les droits de validation #}
 	    		                {{ form_widget(form_validation.validationPiece) }}
 	        		        {% else %}

@@ -180,12 +180,20 @@
                                 <div data-intitule='validationPiece'>
                                 	{% if ent_bons.validationPieceFaite %}
                                 		{% if ent_bons.validationPieceFaite.valide %}
-                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation piece"/>
+										{% else %}
+											{% if ent_bons.validationPiece %}
+                                        	    {% if ent_bons.validationPiece.valide %}
+                                        	        <img src="/bundles/lciboilerbox/images/picto/pieceDemandee.svg" alt="demande de piece"/>
+                                        	    {% endif %}
+                                        	{% else %}
+                                        	    &nbsp
+                                        	{% endif %}
                                 		{% endif %}
                                 	{% else %}
 										{% if ent_bons.validationPiece %}
 											{% if ent_bons.validationPiece.valide %}
-												img demande
+												<img src="/bundles/lciboilerbox/images/picto/pieceDemandee.svg" alt="demande de piece"/>
 											{% endif %}										
 										{% else %}
                                 			&nbsp
@@ -195,7 +203,7 @@
                                 <div data-intitule='validationSav'>
                                 	{% if ent_bons.validationSAV %}
                                 		{% if ent_bons.validationSAV.valide %}
-                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation sav"/>
                                 		{% endif %}
                                 	{% else %}
                                 		&nbsp
@@ -204,7 +212,7 @@
                                 <div data-intitule='validationFacturation'>
                                 	{% if ent_bons.validationFacturation %}
                                 		{% if  ent_bons.validationFacturation.valide %}
-                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
+                                			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation facturation"/>
                                 		{% endif %}
                                 	{% else %}
                                 		&nbsp
