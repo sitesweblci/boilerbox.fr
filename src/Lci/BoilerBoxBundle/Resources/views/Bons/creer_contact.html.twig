@@ -1,6 +1,6 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_contact.html.twig #}
 
-    <div class="popup__wrapper" style="width:500px;">
+    <div class="popup__wrapper">
         <header class="popup__header">
             <h1 id='titre_nouveau_contact2' class="popup__title">Nouveau contact</h1>
             <div class="close-cross" onclick="retourPopupContact2();"></div>
@@ -19,38 +19,35 @@
                         {{ form_errors(form_contact.siteBA) }}
                     </div>
                 </div>
-                <div class='form__field'>
-                    <div>
+                <div class='form__field form__field--double'>
+                    <diV>
                         {{ form_label(form_contact.nom) }}
                         {{ form_widget(form_contact.nom) }}
                         {{ form_errors(form_contact.nom) }}
+                        <div class='ligne_error'></div>
                     </div>
-                </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
                     <div>
                         {{ form_label(form_contact.prenom) }}
                         {{ form_widget(form_contact.prenom) }}
                         {{ form_errors(form_contact.prenom) }}
+                         <div class='ligne_error'></div>
                     </div>
-                </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
+                </diV>
+               
+                <div class='form__field form__field--double'>
                     <div>
                         {{ form_label(form_contact.telephone) }}
                         {{ form_widget(form_contact.telephone) }}
                         {{ form_errors(form_contact.telephone) }}
+                        <div class='ligne_error'></div>
                     </div>
-                </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
                     <div>
                         {{ form_label(form_contact.mail) }}
                         {{ form_widget(form_contact.mail) }}
                         {{ form_errors(form_contact.mail) }}
+                        <div class='ligne_error'></div>
                     </div>
                 </div>
-                <div class='ligne_error'></div>
                 <div class='form__field'>
                     <div>
                         {{ form_label(form_contact.fonction) }}
@@ -58,7 +55,6 @@
                         {{ form_errors(form_contact.fonction) }}
                     </div>
                 </div>
-
 				{{ form_end(form_contact) }}
             </div>
             <div class='main-box__btn notToBePrinted'>

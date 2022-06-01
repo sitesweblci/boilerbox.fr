@@ -1,6 +1,6 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_equipement.html.twig #}
 
-<div class="popup__wrapper" style="width:500px;">
+<div class="popup__wrapper">
     <header class="popup__header">
         <h1 id='titre_nouvel_equipement2' class="popup__title">Nouvel équipement</h1>
         <div class="close-cross" onclick="fermeturePopupEquipement2();"></div>
@@ -53,7 +53,7 @@
 			{{ form_end(form_equipement) }}
         </div>
         <div class='main-box__btn notToBePrinted'>
-            <button class="btn btn--second" onClick="annulerPopupEquipement2();return false;">Annuler</button>
+            <button class="btn btn--second" onClick="annulerPopupEquipement2();return false;">Retour</button>
             <button class="btn_menu btn btn--main" onClick="creerEquipement2(); return false;">Valider</button>
         </div>
     </div>
