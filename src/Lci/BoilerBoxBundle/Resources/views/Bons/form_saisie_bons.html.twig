@@ -63,10 +63,11 @@
 {{ form_errors(form) }}
 <input type='hidden' value='non' name='enregistrement' id='enregistrement'>
 <section class="info">
-	<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second"></a>
-	<h1 class="info__title">Nouveau Bon</h1>
+	
+	<h1 class="info__title" style="margin-left:0px">Nouveau Bon</h1>
 </section>
-<main class="content">
+<main class="testMain {# content #}">
+<section class="testSection">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Informations</h2>
 		<div class="form__field rel">
@@ -153,6 +154,8 @@
 			</div>
 		</div>
 	</fieldset>
+</section>
+<section class="testSection cacher">
     <fieldset class="cacher">
         <div class="form__field form__field--double">
             <div>
@@ -174,6 +177,8 @@
             </div>
         </div>
     </fieldset>
+</section>
+<section class="testSection">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Contact</h2>
 		<div class="form__field rel">
@@ -204,14 +209,6 @@
         </div>
 	</fieldset>
 	<fieldset class="fieldset">
-		<h2 class="fieldset__title">Photos</h2>
-		<label class="form__field rel">
-            {{ form_label(form.cheminDossierPhotos) }}
-            {{ form_widget(form.cheminDossierPhotos) }}
-            {{ form_errors(form.cheminDossierPhotos) }}
-		</label>
-	</fieldset>
-	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Fichier(s)</h2>
 		<div class="form__field rel">
 			<span id="add-fichierBon">Ajouter fichier PDF (20Mo max)</span>
@@ -221,12 +218,26 @@
 		</div>
 	</fieldset>
 	<fieldset class="fieldset">
+		<h2 class="fieldset__title">Photos</h2>
+		<label class="form__field rel">
+            {{ form_label(form.cheminDossierPhotos) }}
+            {{ form_widget(form.cheminDossierPhotos) }}
+            {{ form_errors(form.cheminDossierPhotos) }}
+		</label>
+	</fieldset>
+</section>
+<section class="testSection">
+	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
 		<div id='map'></div>
 	</fieldset>
 	<div class="content__btn">
+		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second" style="margin-right:12px">Retour</a>
 		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer bon</button>
 	</div>
+</section>
+	
+	
 </main>
 
 
@@ -234,7 +245,8 @@
 	<div class="popup__wrapper" style="width:780px;">
     	<header class="popup__header">
     	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
-    	    <div class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
+    	    <div id='close_cross_equipement'  class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
+    	    <button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--wide add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer nouvel équipement</span></button>
     	</header>
     	<div class="popup__content">
     		{# <div class="choice">
@@ -293,11 +305,7 @@
         	        </div>
         	    </div>
 			</div>
-			<div class="form__field__choice">
-				<p>OU</p>
-				<hr>
-			</div>
-			<button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--wide add tooltip-wrapper" onclick="gestionDesEquipements2();">Créer nouvel équipement</button>
+			<button class="btn btn--main btn--wide" onclick="$('#close_cross_equipement').trigger('click'); return false;" style="margin-top:12px;">Enregistrer</button>
 		</div>
 </section>
 
@@ -306,7 +314,7 @@
     <div class="popup__wrapper" style="width:420px;">
         <header class="popup__header">
             <h1 id='titre_gestion_fichiers_bon' class="popup__title">Sélection des fichiers du bon</h1>
-            <div class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
+            <div id='close_cross_fichier' class="close-cross" onclick="fermeturePopupGestionFichiersBon();"></div>
         </header>
 
         <div class="popup__content">
@@ -319,6 +327,9 @@
            				{{ form_widget(form.fichiersPdf) }}
        				</div>
 				</div>
+			</div>
+			<div class="main-box__btn" style="margin-top:24px;">
+				<button class="btn btn--main btn--wide" onclick="$('#close_cross_fichier').trigger('click'); return false;" style="margin-left:0;">Enregistrer</button>
 			</div>
 		</div>
 	</div>
@@ -1175,7 +1186,11 @@
 			if (nom_fichier != '')
 			{
 				$('#fichiers_deja_joints2').append("<div class='add-list__added' id='encartFichierBA_" + index_fichier + "'>" + nom_fichier + "<div class='close-cross' onClick='retireBAFile(" + index_fichier + ");'></div></div>");
-			}
+			} else {
+                // Si il n'y a pas de nom de fichier on supprime le champs (simulation de click sur lien suppression
+                var id_encart_a_supp = '#bons_attachement_fichiersPdf_' + index_fichier;
+                $(id_encart_a_supp + ' + a').trigger('click');
+            }
         });
     }
 
