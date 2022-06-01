@@ -273,63 +273,43 @@
 						<td>
 							{% if entity_bon.validationFacturation %}
 								{% if entity_bon.validationFacturation.valide == true %}
-									{# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
-                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                                onClick="changeValidation('facturation', false);"
-                                                alt="Supprimer la validation facturation"
-                                        />
-                                    {% endif %}
-
-									{# Service Facturation validé #}
-									<span class='green'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+									<span style='color:green;'>{{ entity_bon.validationFacturation.user.label }}<br />Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
 								{% else %}
 									{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_FACTURATION') %}
                                         {{ form_widget(form_validation.validationFacturation) }}
+									{% else %}
+										{# Service Facturation non validé - On n'a pas les droits de validation #}
+                                		<span style='color:red;'>Non effectuée</span>
                                     {% endif %}
-
-									{# Service Facturation dé-validé #}
-									<span class='red'>Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
 								{% endif %}	
-								<span>par {{ entity_bon.validationFacturation.user.label }}</span>
 							{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
 								{# Service Facturation non validé - On a les droits de validation #}	
 								{{ form_widget(form_validation.validationFacturation) }}
 							{% else %}
 								{# Service Facturation non validé - On n'a pas les droits de validation #}
-								<span class='red'>Non effectuée</span>
+								<span style='color:red;'>Non effectuée</span>
 							{% endif %}
 						</td>
 						<td>
 	        		        {% if entity_bon.validationTechnique %}
 	           					{% if entity_bon.validationTechnique.valide == true %}
-									{# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
-                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                                onClick="changeValidation('technique', false);"
-                                                alt="Supprimer la validation technique"
-                                        />
-                                    {% endif %}
-
-	           		            	{# Service Technique validé #}
-	                        		<span class='green'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
-	                    		{% else %}
+                                    <span style='color:green;'>{{ entity_bon.validationTechnique.user.label }}<br />Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
+                                {% else %}
 									{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
                                         {{ form_widget(form_validation.validationTechnique) }}
+									{% else %}
+										{# Service Technique non validé - On n'a pas les droits de validation #}
+										<span style='color:red;'>Non effectuée</span>
                                     {% endif %}
-
-	                        		{# Service Technique dé-validé #}
-	                        		<span class='red'>Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
 	                    		{% endif %}
-								<span>par {{ entity_bon.validationTechnique.user.label }}</span>
 	                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
 		                        {# Service Technique non validé - On a les droits de validation #}
 		                        {{ form_widget(form_validation.validationTechnique) }}
 		                    {% else %}
 			                    {# Service Technique non validé - On n'a pas les droits de validation #}
-			                    <span class='red'>Non effectuée</span>
+			                    <span style='color:red;'>Non effectuée</span>
 			                {% endif %}
 						</td>
 						<td>
@@ -355,14 +335,14 @@
                                             />
                                         {% endif %}
 									{% endif %}
-	        		                <span style="display:inline-block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }} ({{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }})</span>
+	        		                <span style="display:inline-block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
 	            		        {% else %}
 									{# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
                                         {{ form_widget(form_validation.validationPiece) }}
                                     {% endif %}
 	                		        {# Service Pieces dé-validé #}
-	                   				<span style="color:red">Demande annulée par {{ entity_bon.validationPiece.user.label }} ({{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }})</span>
+	                   				<span style="color:red">Demande annulée par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
 	                            {% endif %}
 		                    {% elseif is_granted('ROLE_SERVICE_SAV') or is_granted('ROLE_SERVICE_TECHNIQUE') %}
 			                    {# Service Pièces non validé - On a les droits de validation #}
@@ -376,82 +356,89 @@
 	                		{% if entity_bon.validationSAV %}
 	                    		{% if entity_bon.validationSAV.valide == true %}
 									{# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
-                                    {% if is_granted('ROLE_SERVICE_SAV') %}
-                                        <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                                onClick="changeValidation('sav', false);"
-                                                alt="Supprimer la validation SAV"
-                                        />
-                                    {% endif %}
-
-	                        		{# Service SAV validé #}
-	                                <span class='green'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
-		                        {% else %}
+									<span style='color:green;'>{{ entity_bon.validationSAV.user.label }}<br />Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
+                                {% else %}
 									{# Service SAV dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_SAV') %}
                                         {{ form_widget(form_validation.validationSAV) }}
+									{% else %}
+										{# Service SAV non validé - On n'a pas les droits de validation #}
+										<span style='color:red;'>Non effectuée</span>
                                     {% endif %}
-
-			                        {# Service SAV dé-validé #}
-	    		                    <span class='red'>Le {{ entity_bon.validationSAV.dateDeValidation | date('d-m-Y') }}</span>
 	                            {% endif %}
-								<span>par {{ entity_bon.validationSAV.user.label }}</span>
 			                 {% elseif is_granted('ROLE_SERVICE_SAV') %}
 	                    		{# Service SAV non validé - On a les droits de validation #}
 	                    		{{ form_widget(form_validation.validationSAV) }}
 	                		{% else %}
 	                   		 	{# Service SAV non validé - On n'a pas les droits de validation #}
-	                    		<span class='red'>Non effectuée</span>
+	                    		<span style='color:red;'>Non effectuée</span>
 	                		{% endif %}
 						</td>
 					</tr>
-					<tr class="flex-table__row">
+
+
+	        		<tr class="flex-table__row">
 	            		<td>
-		                </td>
-			            <td>
+                            {% if entity_bon.validationFacturation %}
+                                {% if entity_bon.validationFacturation.valide == true %}
+                                    {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+										<span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
+                                    {% endif %}
+								{% endif %}
+                            {% endif %}
+	            		</td>
+	            		<td>
+                            {% if entity_bon.validationTechnique %}
+                                {% if entity_bon.validationTechnique.valide == true %}
+                                    {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+										<span style='color:red; cursor:pointer;' onClick="changeValidation('technique', false);">Annuler</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
 						</td>
 	                    <td>
                             {% if entity_bon.validationPiece %}
                                 {% if entity_bon.validationPiece.valide == true %}
-									{% if entity_bon.validationPieceFaite %}
-										{% if entity_bon.validationPieceFaite.valide == true %}
-											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
-                    		                    <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                		                                onClick="changeValidation('pieces_faite', false);"
-            		                                    alt="Supprimer la validation commande pièces faite"
-        		                                />
-    		                                {% endif %}
-		                                    <span style="display:inline-block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
-										{% else %}
-											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
-                                        		{{ form_widget(form_validation.validationPieceFaite) }}
-                                    		{% endif %}
-											<span style="color:red;">Offre dévalidée par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
-										{% endif %}
-									{% else %}
-										{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
-    	                            		{# Service piece faite non validé - On a les droits de validation #}
-											<span style="inline-block;">Attente offre de pièce
-    	                        		{% else %}
-    	                            		{# Service SAV non validé - On n'a pas les droits de validation #}
-    	                            		<span style="inline-block; pointer-events: none;">Non autorisé
-    	                        		{% endif %}
-										{{ form_widget(form_validation.validationPieceFaite) }}
-										</span>
-									{% endif %}
-								{% endif %}
+                                    {% if entity_bon.validationPieceFaite %}
+                                        {% if entity_bon.validationPieceFaite.valide == true %}
+                                            {% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+                                                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                                        onClick="changeValidation('pieces_faite', false);"
+                                                        alt="Supprimer la validation commande pièces faite"
+                                                />
+                                            {% endif %}
+                                            <span style="display:inline-block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }}<br />Le {{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }}</span>
+                                        {% else %}
+                                            {% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+                                                {{ form_widget(form_validation.validationPieceFaite) }}
+                                            {% endif %}
+                                            <span style="color:red;">Offre dévalidée par {{ entity_bon.validationPieceFaite.user.label }}<br />Le {{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+                                            {# Service piece faite non validé - On a les droits de validation #}
+                                            <span style="inline-block;">Attente offre de pièce
+                                        {% else %}
+                                            {# Service SAV non validé - On n'a pas les droits de validation #}
+                                            <span style="inline-block; pointer-events: none;">Non autorisé
+                                        {% endif %}
+                                        {{ form_widget(form_validation.validationPieceFaite) }}
+                                        </span>
+                                    {% endif %}
+                                {% endif %}
                             {% endif %}
 						</td>
-	            		<td>
-						</td>
-					</tr>
-	        		<tr class="flex-table__row">
-	            		<td>
-	            		</td>
-	            		<td>
-						</td>
-	                    <td>
-						</td>
 		                <td>
+                            {% if entity_bon.validationSAV %}
+                                {% if entity_bon.validationSAV.valide == true %}
+                                    {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_SAV') %}
+										<span style='color:red; cursor:pointer;' onClick="changeValidation('sav', false);">Annuler</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
 						</td>
 			        </tr>
 				</tbody>
