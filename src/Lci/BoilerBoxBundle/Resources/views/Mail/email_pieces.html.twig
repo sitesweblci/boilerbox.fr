@@ -1,16 +1,16 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/email_pieces.html.twig #}
+{# Mail de Demande d'offre de pièce #}
 <!DOCTYPE html>
 <html>
 <head></head>
 
 <body>
 <div id='contenu_email'>
-	<h1 style='color:green; font-size:20px; margin-bottom:-10px;'>Offre de pièce demandée pour le site {{ nom_site }}</h1>
-	<br />
+	<h1 style='color:green; font-size:20px; margin-bottom:-10px;'>Demande d'offre de pièces pour l'affaire {{ code_affaire }}</h1>
 	<p style='line-height: 32px;'>
 		Bonjour, <br />
-		Une offre de pièce est demandée suite à l'intervention <b>N° {{ numero_bon }}</b> svp. (Affaire <b>{{ nom_site }}</b>)<br />
-		<span style='font-size:12px'>(Demande effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})</span>
+		Une offre de pièce est demandée suite à l'intervention <b>{{ numero_bon }}</b> svp. ( {{ nom_site }} - {{ code_affaire }} )<br />
+		<span style='font-size:12px'>( Demande effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }} )</span>
 	<p>
 	<br /><br /><br />
 	<p>

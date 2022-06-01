@@ -1,0 +1,25 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_pieces_faite.html.twig #}
+<!DOCTYPE html>
+<html>
+<head></head>
+
+<body>
+<div id='contenu_email'>
+	<h1 style='color:green; font-size:20px; margin-bottom:-10px;'>Offre de pièces effectuée pour l'affaire {{ code_affaire }}</h1>
+	<p style='line-height: 32px;'>
+		Bonjour, <br />
+		L'offre de pièce demandée pour l'intervention <b>{{ numero_bon }}</b> a été faite. ( {{ nom_site }} - {{ code_affaire }} )<br />
+		<span style='font-size:12px'>( Offre effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }} )</span>
+	<p>
+	<br /><br /><br />
+	<p>
+	    <div>IMPORTANT NOTICE</div>
+	    <div>*** Ce message est généré automatiquement. Merci de ne pas y répondre.***</div>
+	    <div>Assistance IBC</div>
+	</p>
+</div>
+<img src="{{ image_link }}" alt='IPC' align='left' width="400" />
+
+</body>
+</html>
+

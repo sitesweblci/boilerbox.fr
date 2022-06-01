@@ -5,12 +5,11 @@
 
 <body>
 <div id='contenu_email'>
-	<h1 style='color:red; font-size:20px; margin-bottom:-10px;'>Annulation de l'offre de pièce pour le site {{ nom_site }}</h1>
-	<br />
+	<h1 style='color:red; font-size:20px; margin-bottom:-10px;'>Annulation de demande d'offre de pièces pour l'affaire {{ code_affaire }}</h1>
 	<p style='line-height: 32px;'>
 		Bonjour, <br />
-		Une annulation de l'offre de pièce est demandée pour l'intervention <b>N° {{ numero_bon }}</b>svp. (Affaire <b>{{ nom_site }}</b>)<br />
-		<span style='font-size:12px'>(Demande d'annulation effectuée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }})</span>
+		Une annulation d'offre de pièces est demandée pour l'intervention <b>{{ numero_bon }}</b> svp. ( {{ nom_site }} - {{ code_affaire }} )<br />
+		<span style='font-size:12px'>( Annulation demandée le {{ "now" | date("d/m/Y") }} par {{ label_demandeur }} )</span>
 	<p>
 	<br /><br /><br />
 	<p>

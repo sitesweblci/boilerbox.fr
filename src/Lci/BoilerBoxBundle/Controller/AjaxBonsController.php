@@ -42,7 +42,7 @@ class AjaxBonsController extends Controller
         $type 		= $_POST['type'];
         $sens 		= $_POST['sens'];
         $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $user 		= $this->get('security.token_storage')->getToken()->getUser();
+        $e_user_actif = $this->get('security.token_storage')->getToken()->getUser();
 		$entity_validation 				= null;
 		$entity_user_emetteur_du_bon	= null;
 		$entities_users_validation 		= null;
@@ -53,23 +53,23 @@ class AjaxBonsController extends Controller
 		{
             switch ($type) {
                 case 'technique':
-					$entity_validation = $entity_bon->getValidationTechnique();
-                    $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
+					$entity_validation 			= $entity_bon->getValidationTechnique();
+                    $entities_users_validation 	= $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
                     break;
                 case 'sav':
-					$entity_validation = $entity_bon->getValidationSAV();
-                    $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_SAV');
+					$entity_validation 			= $entity_bon->getValidationSAV();
+                    $entities_users_validation 	= $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_SAV');
                     break;
                 case 'pieces':
-					$entity_validation = $entity_bon->getValidationPiece();
-                    $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_PIECES');
+					$entity_validation 			= $entity_bon->getValidationPiece();
+                    $entities_users_validation 	= $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_PIECES');
 
                     // Si c'est une dévalidation de type pièce on informe le gestionnaire_de_pieces (designation du gestionnaire de pièces dans le fichier app/config/parameters.yml)
                     // ICI DEV Recherche du gestionnaire par son role SERVICE_GESTION_PIECES - A faire pour remplacer la lecture en dure dans le fichier parameter
                     $entity_gestionnaire = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->findOneByUsername($this->container->getParameter('gestionnaire_pieces'));
                     if ($entity_gestionnaire) {
                         $service_mail = $this->get('lci_boilerbox.mailing');
-                        $service_mail->sendMailPieces('annulation', $entity_bon->getSite()->getIntitule() . ' (' . $entity_bon->getNumeroAffaire() . ') ', $entity_bon->getNumeroBA(), $user->getLabel(), $entity_gestionnaire->getEmail());
+                        $service_mail->sendMailPieces('annulation', $entity_bon->getSite()->getIntitule(), $entity_bon->getNumeroAffaire(), $entity_bon->getNumeroBA(), $e_user_actif->getLabel(), $entity_gestionnaire->getEmail());
                     }
 
                     break;
@@ -87,9 +87,18 @@ class AjaxBonsController extends Controller
 			if ($entity_validation != null)
 			{
 				$entity_user_emetteur_du_bon = $entity_validation->getUser();
-				$this->devalidation($entity_validation, $user);
+				$this->devalidation($entity_validation, $e_user_actif);
 				// Envoi du mail à l'ensemble du groupe de dévalidation
-            	$this->sendMailDevalidation($type, $entity_bon, $entities_users_validation, $user, $entity_user_emetteur_du_bon);
+
+				$titre_titre_pour_mail = $type;
+				if ($type == 'pieces_faite') 
+				{
+					$titre_titre_pour_mail = "d'offre de pièces";
+				} else if ($type == 'pieces')
+				{
+					$titre_titre_pour_mail = "de demande de pièces";
+				}
+            	$this->sendMailDevalidation($titre_titre_pour_mail, $entity_bon->getSite()->getIntitule(), $entity_bon->getNumeroAffaire(), $entity_bon->getNumeroBA(), $entities_users_validation, $e_user_actif, $entity_user_emetteur_du_bon);
 			}
         } else {
             // Une Validation sur un bon d'intervention est effectuée
@@ -97,7 +106,7 @@ class AjaxBonsController extends Controller
             $entity_validation->setValide(true)
                 ->setDateDeValidation(new \Datetime())
                 ->setType($type)
-                ->setUser($user)
+                ->setUser($e_user_actif)
             ;
             switch ($type) {
                 case 'technique':
@@ -113,11 +122,17 @@ class AjaxBonsController extends Controller
                     $entity_gestionnaire = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->findOneByUsername($this->container->getParameter('gestionnaire_pieces'));
                     if ($entity_gestionnaire) {
                         $service_mail = $this->get('lci_boilerbox.mailing');
-                        $service_mail->sendMailPieces('demande', $entity_bon->getSite()->getIntitule() . ' (' . $entity_bon->getNumeroAffaire() . ') ', $entity_bon->getNumeroBA(), $user->getLabel(), $entity_gestionnaire->getEmail());
+                        $service_mail->sendMailPieces('demande', $entity_bon->getSite()->getIntitule(), $entity_bon->getNumeroAffaire(), $entity_bon->getNumeroBA(), $e_user_actif->getLabel(), $entity_gestionnaire->getEmail());
                     }
                     break;
 				case 'pieces_faite':
+					// Si la demande d'offre est faite. Envoi d'un mail information à l'emetteur de la demande d'offre
 					$entity_bon->setValidationPieceFaite($entity_validation);	
+					$label_gestionnaire = $e_user_actif->getLabel();
+					$email_demandeur = $entity_bon->getValidationPiece()->getUser()->getEmail();
+
+					$service_mail = $this->get('lci_boilerbox.mailing');
+					$service_mail->sendMailPieces('faite', $entity_bon->getSite()->getIntitule(), $entity_bon->getNumeroAffaire(), $entity_bon->getNumeroBA(), $label_gestionnaire, $email_demandeur);
 					break;
                 case 'facturation':
                     $entity_bon->setValidationFacturation($entity_validation);
@@ -252,19 +267,22 @@ class AjaxBonsController extends Controller
     }
 
 
-    private function sendMailDevalidation($type, $entity_bon, $entities_users, $entity_devalideur, $entity_user_emetteur)
+    private function sendMailDevalidation($type, $nom_site, $code_affaire, $numero_ba, $entities_users, $entity_devalideur, $entity_user_emetteur)
     {
-        $sujet = 'Dévalidation ' . $type;
-        $titre = 'Dévalidation ' . $type . " pour l'affaire " . $entity_bon->getNumeroAffaire();
+
+        $sujet = "Annulation $type pour l'affaire $code_affaire ( $nom_site ) ";
+        $titre = "Annulation $type pour l'affaire $code_affaire";
 
         $tab_destinataires = [];
         foreach ($entities_users as $entity_user) 
 		{
 			// On ne met pas le devalideur dans la liste des utilisateurs qui doivent recevoir le mail de dévalidation
+/* Mis en commentaire pour envoyer aussi le mail à l'annuleur pour qu'il ai la confirmation de prise en compte de sa demande
 			if ($entity_user->getId() != $entity_devalideur->getId())
 			{
             	$tab_destinataires[] = $entity_user->getEmail();
 			}
+*/
         }
 		// Ajout de l'emetteur de la demande de validation au mail de dévalidation
 		$tab_destinataires[] = $entity_user_emetteur->getEmail();
@@ -272,13 +290,13 @@ class AjaxBonsController extends Controller
         $service_mail = $this->get('lci_boilerbox.mailing');
 
         $tab_contenu = array();
-        $tab_contenu[] = '%PLe ' . date('d-m-Y à H\hi');
-        $tab_contenu[] = ':%P';
-        $tab_contenu[] = '%PUne dévalidation ';
+        $tab_contenu[] = '%P';
+        $tab_contenu[] = '%PUne annulation ';
         $tab_contenu[] = '%G' . $type . ' ';
-        $tab_contenu[] = " a été effectuée sur le bon d'attachement de numéro " . $entity_bon->getNumeroBA() . ' par ' . $entity_devalideur->getUsername();
-        $tab_contenu[] = '%M (' . $entity_devalideur->getEmail() . ')';
-        $tab_contenu[] = '.%P';
+        $tab_contenu[] = " a été effectuée sur le bon d'attachement <b>".$numero_ba."</b> ( $nom_site - $code_affaire )<br />";
+        $tab_contenu[] = '%P';
+		$tab_contenu[] = "<span style='font-size:12px'>( Annulation effectuée le ".date("d/m/Y")." par ".$entity_devalideur->getUsername()." )</span>";
+        $tab_contenu[] = '%P';
         $tab_contenu[] = "<br /><br /><br />";
         $tab_contenu[] = "Cordialement.<br /><br />";
         $tab_contenu[] = "Assistance BoilerBox.<br />";

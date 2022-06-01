@@ -425,7 +425,7 @@
 											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
                                         		{{ form_widget(form_validation.validationPieceFaite) }}
                                     		{% endif %}
-											<span style="color:red;">Offre dévalidé par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
+											<span style="color:red;">Offre dévalidée par {{ entity_bon.validationPieceFaite.user.label }} ({{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }})</span>
 										{% endif %}
 									{% else %}
 										{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
@@ -686,9 +686,14 @@
 
 	});	
 
-	function changeValidation($type, $sens) {
+	function changeValidation($type, $sens) 
+	{
         // On n'affiche plus les msgbox - Mettre en commentaire cette ligne pour proposer les msgbox ci dessous
         return sendAjaxRequest($idBon, $type, $sens);
+
+
+
+
 
 		if($sens === false) {
 			$.msgBox({
