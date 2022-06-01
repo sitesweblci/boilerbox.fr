@@ -262,56 +262,35 @@
 				<table id="table_validation"  class='flex-table'>
 				<thead class="flex-table__thead">
 					<tr class="flex-table__row">
-						<th>Facturation</th>
 						<th>Technique</th>
 						<th>Pièces</th>
 						<th>SAV</th>
+						<th>Facturation</th>
 					</tr>
 				</thead>
 				<tbody class="flex-table__tbody">
 					<tr class="flex-table__row">
-						<td>
-							{% if entity_bon.validationFacturation %}
-								{% if entity_bon.validationFacturation.valide == true %}
-									<span style='color:green;'>{{ entity_bon.validationFacturation.user.label }}<br />Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
-								{% else %}
-									{# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-                                        {{ form_widget(form_validation.validationFacturation) }}
-									{% else %}
-										{# Service Facturation non validé - On n'a pas les droits de validation #}
-                                		<span style='color:red;'>Non effectuée</span>
-                                    {% endif %}
-								{% endif %}	
-							{% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
-								{# Service Facturation non validé - On a les droits de validation #}	
-								{{ form_widget(form_validation.validationFacturation) }}
-							{% else %}
-								{# Service Facturation non validé - On n'a pas les droits de validation #}
-								<span style='color:red;'>Non effectuée</span>
-							{% endif %}
-						</td>
-						<td>
-	        		        {% if entity_bon.validationTechnique %}
-	           					{% if entity_bon.validationTechnique.valide == true %}
+                        <td>
+                            {% if entity_bon.validationTechnique %}
+                                {% if entity_bon.validationTechnique.valide == true %}
                                     <span style='color:green;'>{{ entity_bon.validationTechnique.user.label }}<br />Le {{ entity_bon.validationTechnique.dateDeValidation | date('d-m-Y') }}</span>
                                 {% else %}
-									{# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {# Service Technique dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
                                         {{ form_widget(form_validation.validationTechnique) }}
-									{% else %}
-										{# Service Technique non validé - On n'a pas les droits de validation #}
-										<span style='color:red;'>Non effectuée</span>
+                                    {% else %}
+                                        {# Service Technique non validé - On n'a pas les droits de validation #}
+                                        <span style='color:red;'>Non effectuée</span>
                                     {% endif %}
-	                    		{% endif %}
-	                        {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
-		                        {# Service Technique non validé - On a les droits de validation #}
-		                        {{ form_widget(form_validation.validationTechnique) }}
-		                    {% else %}
-			                    {# Service Technique non validé - On n'a pas les droits de validation #}
-			                    <span style='color:red;'>Non effectuée</span>
-			                {% endif %}
-						</td>
+                                {% endif %}
+                            {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                {# Service Technique non validé - On a les droits de validation #}
+                                {{ form_widget(form_validation.validationTechnique) }}
+                            {% else %}
+                                {# Service Technique non validé - On n'a pas les droits de validation #}
+                                <span style='color:red;'>Non effectuée</span>
+                            {% endif %}
+                        </td>
 						<td>
 							{% if entity_bon.validationPiece %}
 	        		            {% if entity_bon.validationPiece.valide == true %}
@@ -374,20 +353,31 @@
 	                    		<span style='color:red;'>Non effectuée</span>
 	                		{% endif %}
 						</td>
+                        <td>
+                            {% if entity_bon.validationFacturation %}
+                                {% if entity_bon.validationFacturation.valide == true %}
+                                    <span style='color:green;'>{{ entity_bon.validationFacturation.user.label }}<br />Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+                                {% else %}
+                                    {# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        {{ form_widget(form_validation.validationFacturation) }}
+                                    {% else %}
+                                        {# Service Facturation non validé - On n'a pas les droits de validation #}
+                                        <span style='color:red;'>Non effectuée</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
+                                {# Service Facturation non validé - On a les droits de validation #}
+                                {{ form_widget(form_validation.validationFacturation) }}
+                            {% else %}
+                                {# Service Facturation non validé - On n'a pas les droits de validation #}
+                                <span style='color:red;'>Non effectuée</span>
+                            {% endif %}
+                        </td>
 					</tr>
 
 
 	        		<tr class="flex-table__row">
-	            		<td>
-                            {% if entity_bon.validationFacturation %}
-                                {% if entity_bon.validationFacturation.valide == true %}
-                                    {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
-                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-										<span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
-                                    {% endif %}
-								{% endif %}
-                            {% endif %}
-	            		</td>
 	            		<td>
                             {% if entity_bon.validationTechnique %}
                                 {% if entity_bon.validationTechnique.valide == true %}
@@ -440,6 +430,16 @@
                                 {% endif %}
                             {% endif %}
 						</td>
+                        <td>
+                            {% if entity_bon.validationFacturation %}
+                                {% if entity_bon.validationFacturation.valide == true %}
+                                    {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
 			        </tr>
 				</tbody>
 				</table>
