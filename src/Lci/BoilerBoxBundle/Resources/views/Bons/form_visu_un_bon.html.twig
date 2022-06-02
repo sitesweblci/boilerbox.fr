@@ -71,7 +71,7 @@
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
 <section class="info">
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
-	<h1 class="info__title">Bon {{ entity_bon.numeroBA }} / Demande {{ entity_bon.id }}</h1>
+	<h1 class="info__title">Bon {{ entity_bon.numeroBA }}</h1>
 	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
 		<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier</button>
 	{% endif %}
@@ -85,7 +85,7 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Site</label>
-						<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
+						<span class="data">{{ entity_bon.site.intitule }}</span>
 					</div>
 				
 					<div>
