@@ -33,6 +33,13 @@
 		/* Remplacement du menu 'outils' par 'accueil' */
 	    $('#lien_menu_boiler_outil').html("<a href={{ path('lci_boilerbox_index') }} title='Retour accueil'>Accueil</a>");
 	    $('#sousmenu_boiler_deroulant1').addClass('nopadding');
+
+
+        // Fermeture popup
+        function togglePopUp(id){
+            ($(id)).toggleClass('cacher');
+        };
+
 	</script>
 {% endblock %}
 

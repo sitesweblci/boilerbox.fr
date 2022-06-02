@@ -602,8 +602,25 @@ class AjaxBonsController extends Controller
 		$reponse = array("hasUrl" => $has_url);
 
         return new Response(json_encode($reponse));
-
-
 	}
 
+
+	// Ajout d'un commentaire de facturation après validation SAV
+	public function setComFactAction()
+	{
+		$em             		= $this->getDoctrine()->getManager();
+		$id_bon 	 			= $_POST['id_bon'];
+		$nouveau_commentaire 	= $_POST['commentaire'];
+
+		$e_user_courant 		= $this->get('security.token_storage')->getToken()->getUser();
+
+		$e_bon 					= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+
+		$commentaires_existants =  $e_bon->getCommentaires();
+		$e_bon->setCommentaires($commentaires_existants . "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'>" . $nouveau_commentaire . "</div>");
+
+		$em->flush();
+		$reponse = array('retour' => 'succes');
+		return new Response(json_encode($reponse));
+	}
 }

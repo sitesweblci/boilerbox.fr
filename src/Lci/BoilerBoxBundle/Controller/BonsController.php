@@ -595,10 +595,10 @@ class BonsController extends Controller
     public function ajoutCommentairesAction($idBon, Request $request)
     {
         $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $e_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $commentaires = $e_bon->getCommentaires();
-        $form = $this->createForm(BonsAttachementCommentairesType::class, $e_bon);
+        $em 			= $this->getDoctrine()->getManager();
+        $e_bon 			= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
+        $commentaires 	= $e_bon->getCommentaires();
+        $form 			= $this->createForm(BonsAttachementCommentairesType::class, $e_bon);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->isValid()) {

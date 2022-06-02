@@ -88,4 +88,7 @@ lci_bons_has_url:
 lci_get_fichier_bat:
     path: /bon/get_bat/{id_bon}
     defaults: { _controller: LciBoilerBoxBundle:Bons:creationFichierBat }
+lci_bon_commentaire_consigne_facturation:
+    path: /bon/ajax/set_commentaire_facturation
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setComFact }
 

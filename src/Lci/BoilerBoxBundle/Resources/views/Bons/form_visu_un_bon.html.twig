@@ -503,6 +503,30 @@
 		<input type='hidden' name='id_bon' id='id_bon' />
 	</form>
 </main>
+
+
+<!-- popup Nouveau Contact -->
+<section id="commentaireSAV" class="popup cacher">
+    <div class="popup__wrapper">
+        <header class="popup__header">
+            <h1 id='titre_commentaire_sav' class="popup__title">Consignes de facturation</h1>
+            <div class="close-cross" onclick="validationCommentairesSAV();"></div>
+        </header>
+        <div class="popup__content">
+            <div class="form__field form__field--double">
+				<p id='avertissementConsignesFacturation' style='color:red'></p>
+                <div>
+                    <label>Consignes</label>
+                    <input type='text' name='consignesFacturation' id='consignesFacturation'>
+                </div>
+            </div>
+            <div class='form__btn form__btn--col notToBePrinted'>
+                <button onClick="validationCommentairesSAV();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock fos_user_content %}
 
 
@@ -510,6 +534,7 @@
 {% block javascript %}
 
 <script type='text/javascript'>
+
 	// Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
     	$('.side-nav .bons-interv').addClass('active');
@@ -547,7 +572,8 @@
     var $indexFichier;
     var $container;
 
-	$(document).ready(function() {
+	$(document).ready(function() 
+	{
 		/* Débug largeur parent flex col */
 		$('.main-content').css({'width':'initial'});
 		setTimeout(function(){
@@ -575,9 +601,9 @@
         });
         $('#bons_attachement_validation_validationSAV_valide').click(function(e){
 			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
-			$type = 'sav';
-			changeValidation($type, $sens);
+            $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
+            $type = 'sav';
+			togglePopUp(commentaireSAV);
         });
         $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
 			e.preventDefault;
@@ -670,8 +696,42 @@
 					}
 				});
 			});
-
 	});	
+
+
+
+    function validationCommentairesSAV()
+    {
+        var texte = $('#consignesFacturation').val();
+        if (texte != '')
+        {
+            // Ajout du commentaire
+            $('#bons_attachement_commentaires_commentaires').val(texte);
+            document.forms['myFormCommentaires'].submit();
+
+			$.ajax({
+				url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
+				data: {'id_bon':$idBon, 'commentaire':texte},
+				method: "POST",
+				success: function(msg){
+               		// Modification de la checkbox
+					console.log('demande : ' + $idBon + ' : ' + $type + ' : ' +$sens);
+					changeValidation($type, $sens);
+				}, 
+				error: function(){
+					alert("Erreur d'envoi de la consigne de facturation");
+					return 1;
+				}
+			});
+           } else {
+            $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
+			return 1;
+        }
+    }
+
+
+
+
 
 	function changeValidation($type, $sens) 
 	{
@@ -740,17 +800,22 @@
 
 	function sendAjaxRequest($idBon, $type, $sens) {
 		attente();
-		setTimeout(function() {
+		setTimeout(function() 
+		{
+			console.log('time');
 			$.ajax({
         	    url: "{{ path('lci_ajax_bons_setValidation') }}",
         	    method: "post",
         	    data: {'identifiant':$idBon, 'type':$type, 'sens':$sens},
-        	    success: function(msg) {
-					window.location.assign(location.href); 
+        	    success: function(msg) 
+				{
+					console.log('ici');
+	//				window.location.assign(location.href); 
 					fin_attente();
 					return true;
         	    },
-        	    error: function(request, $error, $msg) {
+        	    error: function(request, $error, $msg) 
+				{
         	        alert('error ' + $error + $msg);
         	        fin_attente();
 					switch($type) {
