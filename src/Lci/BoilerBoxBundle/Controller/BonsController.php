@@ -167,6 +167,12 @@ class BonsController extends Controller
 						// On défini le type pour distinguer bon de ticket
 						$e_bons_attachement->setType('bon');
 
+						// On incrémente le numero de BA pour définir le nouveau numéro
+						// Selection des numeroBA avec type=bon
+						$tmp_numeroBa = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('bon');
+						$tmp_numeroBa ++;	
+						$e_bons_attachement->setNumeroBA($tmp_numeroBa);
+
 						// Enregistrement du bon
                     	$em->persist($e_bons_attachement);
                     	$em->flush();
@@ -559,13 +565,13 @@ class BonsController extends Controller
 
         $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
         $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
-        $form 				= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+        $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
 
         // Gestion de l'ajout de fichiers à un bon
         if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
-            if ($form->isSubmitted()) {
-                if ($form->isValid()) {
+            $f_ba_modification->handleRequest($request);
+            if ($f_ba_modification->isSubmitted()) {
+                if ($f_ba_modification->isValid()) {
                     foreach ($entity_bon->getFichiersPdf() as $fichier) {
                         if ($fichier->getBonAttachement() == null) {
                             $fichier->setBonAttachement($entity_bon);
@@ -579,16 +585,19 @@ class BonsController extends Controller
                     }
                     $em->flush();
                 } else {
-                    $form->addError(new FormError($form_message_erreur));
+                    $f_ba_modification->addError(new FormError($form_message_erreur));
                 }
             }
         }
+
+		$commentaires = $entity_bon->getCommentaires();
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
             'entity_bon' 				=> $entity_bon,
             'form_validation' 			=> $f_validation->createView(),
-            'form_ajout_fichier' 		=> $form->createView(),
+            'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
-            'max_upload_size' 			=> $max_upload_size
+            'max_upload_size' 			=> $max_upload_size,
+			'commentaires'				=> $commentaires
         ));
     }
 

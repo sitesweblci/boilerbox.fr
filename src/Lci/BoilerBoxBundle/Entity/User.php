@@ -95,7 +95,7 @@ class User extends BaseUser
 
     /**
      * One User can have many problems to solve
-     * @ORM\OneToMany(targetEntity="ProblemeTechnique", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="ProblemeTechnique", mappedBy="user")
     */
     protected $problemeTechnique;
 
@@ -103,14 +103,14 @@ class User extends BaseUser
     /**
      * Un utilisateur peut être la cible de plusieurs bons d'attachements
      *
-     * @ORM\OneToMany(targetEntity="BonsAttachement", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="BonsAttachement", mappedBy="user")
     */
     protected $bonsAttachement;
 
     /**
      * Un utilisateur peut être la cible de plusieurs bons d'attachements
      *
-     * @ORM\OneToMany(targetEntity="BonsAttachement", mappedBy="userInitiateur", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="BonsAttachement", mappedBy="userInitiateur")
     */
     protected $bonsAttachementInitiateur;
 
@@ -119,7 +119,7 @@ class User extends BaseUser
 	/**
 	 * Un utilisateur peut valider plusieurs bons
 	 *
-	 * @ORM\OneToMany(targetEntity="Validation", mappedBy="user", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="Validation", mappedBy="user")
 	*/
 	protected $validations;
 

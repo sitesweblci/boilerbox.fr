@@ -57,7 +57,7 @@
 	#table_des_fichiers tr td.small img{
 		cursor: pointer;
 	}
-	#bons_attachement_commentaires_commentaires{
+	#commentaires{
 		height: 40px !important;
 		margin: 0;
 	}
@@ -68,15 +68,22 @@
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
-<div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
+
+<div id='erreur_formulaire_bon'>{{ form_errors(form_modification) }}</div>
+
 <section class="info">
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
 	<h1 class="info__title">Bon {{ entity_bon.numeroBA }}</h1>
 	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-		<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier</button>
+		<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier le bon</button>
 	{% endif %}
 </section>
+
 <main id="grid-visuUnBon" class="testMain grid">
+
+{{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+
 	<section id="sub-grid-visuUnBon" class='grid grid__one'>
 		<div class="testSection grid__one">
    			<fieldset class="fieldset">
@@ -85,79 +92,59 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Site</label>
-						<span class="data">{{ entity_bon.site.intitule }}</span>
+						<span class="data">{{ form_widget(form_modification.site) }}</span>
 					</div>
 				
 					<div>
             	        <label>Affaire</label>
-            	        <span class="data">{{ entity_bon.numeroAffaire | upper }}</span>
+            	        <span class="data">{{ form_widget(form_modification.numeroAffaire) }}</span>
 					</div>
 				</div>
 
             	<div class="form__field form__field--double">
             	    <div>
             	        <label>Service</label>
-						{% if entity_bon.service is not null  %}
-            	       	 	<span class="data">{{ entity_bon.service }}</span>
-            	        {% else %}
+						{# if entity_bon.service is not null  #}
+            	       	 	<span class="data">{{ form_widget(form_modification.service) }}</span>
+            	        {# else #}
             	            &nbsp;
-            	        {% endif %}
+            	        {# endif #}
             	    </div>
 
                     <div>
                         <label>Type d'intervention</label>
-                        {% if entity_bon.typeIntervention is not null  %}
-							<span class="data">
-								{% if entity_bon.typeIntervention == 'mes' %}
-                            		Mise en service
-								{% elseif entity_bon.typeIntervention == 'rptmensuel' %}
-									Rapport mensuel
-								{% elseif entity_bon.typeIntervention == 'sav' %}
-									SAV
-								{% endif %}	
-							</span>
-                        {% else %}
-                            &nbsp;
-                        {% endif %}
+						<span class="data">{{ form_widget(form_modification.typeIntervention) }}</span>
                     </div>
             	</div>
 
             	<div class="form__field">
             	    <div>
             	        <label>Numéro du bon</label>
-            	        <span class="data">{{ entity_bon.numeroBA }}</span>
+            	        <span class="data">{{ form_widget(form_modification.numeroBA) }}</span>
             	    </div>
             	</div>
 
             	<div class="form__field form__field--double">
             	    <div>
             	        <label>Initiateur</label>
-            	        <span class="data">{{ entity_bon.userInitiateur.label }}</span>
+            	        <span class="data">{{ form_widget(form_modification.userInitiateur) }}</span>
            	     	</div>
 
 	                <div>
 	                    <label>Intervenant</label>
-	                    <span class="data">{{ entity_bon.user.label }}</span>
+	                    <span class="data">{{ form_widget(form_modification.user) }}</span>
 	                </div>
 	            </div>
 
 				<div class="form__field form__field--double">
 					<div>
 						<label>Date d'initialisation</label>
-						{% if entity_bon.dateInitialisation is not null %}
-							<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
-						{% else %}
-							&nbsp;
-						{% endif %}	
+						<span class="data">{{ form_widget(form_modification.dateInitialisation) }}</span>
 					</div>
 
 	                <div>
 	    	            <label>Date de la signature</label>
-	                    {% if entity_bon.dateSignature is not null %}
-	                        <span class="data">{{ entity_bon.dateSignature | date('d/m/Y')  }}</span>
-	                    {% else %}
-	                        &nbsp;
-	                    {% endif %}
+	                    <span class="data">{{ form_widget(form_modification.dateSignature) }}</span>
 	                </div>
 				</div>
 			</fieldset>
@@ -167,20 +154,12 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Du</label>
-						{% if entity_bon.dateDebutIntervention is not null  %}
-							<div class="input input--disabled">{{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}</div>
-						{% else %}
-							<div class="input input--disabled">&nbsp;</div>
-						{% endif %}
+						<span class="data">{{ form_widget(form_modification.dateDebutIntervention) }}</span>
 					</div>
 
 					<div>
 						<label>Au</label>
-						{% if entity_bon.dateFinIntervention is not null  %}
-							<div class="input input--disabled">{{ entity_bon.dateFinIntervention | date('d/m/Y')  }}</div>
-						{% else %}
-							<div class="input input--disabled">&nbsp;</div>
-						{% endif %}
+						<span class="data">{{ form_widget(form_modification.dateFinIntervention) }}</span>
 					</div>
 				</div>
 			</fieldset>
@@ -206,18 +185,18 @@
 
 				<div class="form__field">
 					<label>Nom Contact</label>
-					<div class="input input--disabled">{{ entity_bon.nomDuContact }}</div>
+					<div class="data">{{ form_widget(form_modification.nomDuContact) }}</div>
 				</div>
 
 				<div class="form__field form__field--double">
 					<div>
 						<label>Email</label>
-						<div class="input input--disabled">{{ entity_bon.emailContactClient }}</div>
+						<div class="data">{{ form_widget(form_modification.emailContactClient) }}</div>
 					</div>
 
 					<div>
 						<label>Téléphone</label>
-						<div class="input input--disabled">{{ entity_bon.telephoneContactClient }}</div>
+						<div class="data">{{ form_widget(form_modification.telephoneContactClient) }}</div>
 					</div>
 				</div>
 			</fieldset>
@@ -232,7 +211,6 @@
 					</table>
 				</div>
 			</fieldset>
-
 
             <fieldset class="fieldset">
                 <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
@@ -285,15 +263,16 @@
                 </table>
                 <div id='formulaire_bons_fichiers' class=''>
                     <div class="main-box__content main-box__content--padding" style="margin-top:16px;">
-                        {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
-                        {{ form_errors(form_ajout_fichier) }}
+{# ICI DEV                        {{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }} #}
+                        {{ form_errors(form_modification) }}
                         <div>
+							{{ form_widget(form_modification.numeroAffaire) }} 
                             <span id='lien_ajout_fichier'></span>
-                            <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
-                            <div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
+                            <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
+                            <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
                             <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
                         </div>
-                        {{ form_end(form_ajout_fichier) }}
+{#             ICI DEV           {{ form_end(form_modification) }}  #}
                     </div>
                 </div>
                 <div class="content__btn">
@@ -309,7 +288,7 @@
                 <h2 class="fieldset__title">Photos</h2>
                 <div class="form__field">
 					<label>Chemin local vers le répertoire des photos</label>
-                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ entity_bon.cheminDossierPhotos }}</div>
+                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ form_widget(form_modification.cheminDossierPhotos) }}</div>
                 </div>
             </fieldset>
 
@@ -327,9 +306,11 @@
 					{% endif %}
 				</div>
 			</fieldset>
-			
 		</div>
 	</section>
+	<button type='submit' onClick="document.forms['myFormFichiers'].submit();">SEND</button>
+	{{ form_end(form_modification) }}
+
 
 
 	<section class="grid__two testSection">
@@ -520,26 +501,18 @@
 		<fieldset id="commentaire-bons-attachements" class="fieldset">
 			<h1 class="fieldset__title">Commentaires</h1>
 			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
-	        	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires', 'class':'form'}) }}
-	        	{{ form_errors(form_ajout_commentaires) }}
-					<div id='commentaires_bon' class="scroll">{{ entity_bon.commentaires|raw|nl2br }}</div>
-					<div id="my-comment" class='form__field'>
-						{{ form_widget(form_ajout_commentaires.commentaires) }}
-						{{ form_errors(form_ajout_commentaires.commentaires) }}
-						<div id="js-btn-comm" class="main-box__btn">
-							<div class="main-box__btn--disabled">
-								<button style='width:100px' onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
-							</div>
+				<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
+				<div id="my-comment" class='form__field'>
+					<input type='text' id='commentaires'>
+					<div id="js-btn-comm" class="main-box__btn">
+						<div class="main-box__btn--disabled">
+							<button style='width:100px' onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
 						</div>
 					</div>
-	        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-	        	{{ form_end(form_ajout_commentaires) }}
+				</div>
+	            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 	    	</div>
 		</fieldset>
-	
-	<form method='post' name='form_modification_bon' id='form_modification_bon' action="{{ path('lci_bons_modifier_unbon', { 'idBon':entity_bon.id }) }}">
-		<input type='hidden' name='id_bon' id='id_bon' />
-	</form>
 </main>
 
 
@@ -595,11 +568,11 @@
         })
     });
     // Fonction d'activation du bouton 'publier commentaire'
-    $('#bons_attachement_commentaires_commentaires').on('keyup', function enableBtnComm(){
-    	if($('#bons_attachement_commentaires_commentaires').val().length){
+    $('#commentaires').on('keyup', function enableBtnComm(){
+    	if($('#commentaires').val().length){
     		$('#js-btn-comm > div').removeClass('main-box__btn--disabled');
     		$('#js-btn-comm .btn--main').removeClass('btn--disabled');
-    	} else if (!$('#bons_attachement_commentaires_commentaires').val().length){
+    	} else if (!$('#commentaires').val().length){
     		$('#js-btn-comm > div').addClass('main-box__btn--disabled');
     		$('#js-btn-comm .btn--main').addClass('btn--disabled');
     	}
@@ -651,6 +624,11 @@
             numberOfMonths: 2
         });
         $("#bons_attachement_validation_dateSignature" ).datepicker();
+
+
+
+
+
 
         /* Récupération du container contenant l'attribut data-prototype */
         $container = $('#bons_attachement_modification_fichiersPdf');
@@ -731,6 +709,20 @@
 					}
 				});
 			});
+
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
+        $.datepicker.setDefaults({
+            numberOfMonths: 1,
+            dateFormat: 'dd/mm/yy',
+            showWeek: true,
+            gotoCurrent: true,
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+            maxDate: '+2Y'
+        });
+
+		setDatePicker();
 	});	
 
 
@@ -740,26 +732,51 @@
         var texte = $('#consignesFacturation').val();
         if (texte != '')
         {
-            // Ajout du commentaire en ajax
-			$.ajax({
-				url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
-				data: {'id_bon':$idBon, 'commentaire':texte},
-				method: "POST",
-				success: function(msg){
-               		// Modification de la checkbox
-					changeValidation($type, $sens);
-				}, 
-				error: function(){
-					alert("Erreur d'envoi de la consigne de facturation");
-					return 1;
-				}
-			});
-           } else {
+			ajoutCommentaire(texte);
+        } else {
             $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
 			return 1;
         }
     }
 
+
+	function ajoutCommentaire(commentaire=null)
+	{
+		if (commentaire == null)
+		{
+			commentaire  = $('#commentaires').val();
+			$.ajax({
+                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
+                data: {'id_bon':$idBon, 'commentaire':commentaire},
+                method: "POST",
+                success: function(msg){
+					$('#commentaires_bon').prepend(commentaire);
+					$('#commentaires').val('');
+					fin_attente();
+                },
+                error: function(){
+                    alert("Erreur d'envoi de la consigne de facturation");
+                    return 1;
+                }
+            });
+			//Ou document.forms['myFormCommentaires'].submit();
+		} else {
+			// Ajout du commentaire en ajax
+            $.ajax({
+                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
+                data: {'id_bon':$idBon, 'commentaire':commentaire},
+                method: "POST",
+                success: function(msg){
+                    // Modification de la checkbox
+                    changeValidation($type, $sens);
+                },
+                error: function(){
+                    alert("Erreur d'envoi de la consigne de facturation");
+                    return 1;
+                }
+            });
+		}
+	}
 
 
 
@@ -973,6 +990,12 @@
         }, 30);
 
     });
+
+    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
+    function setDatePicker()
+    {
+        $("input[placeholder='dd/mm/YYYY']").datepicker();
+    }
 
 </script>
 {% endblock javascript %}

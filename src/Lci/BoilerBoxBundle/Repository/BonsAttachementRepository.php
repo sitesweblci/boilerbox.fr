@@ -1,5 +1,5 @@
 <?php
-namespace Lci\BoilerBoxBundle\Entity;
+namespace Lci\BoilerBoxBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -277,8 +277,18 @@ class BonsAttachementRepository extends EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-
-
+	// Retourne le dernier numéro de BA ou de Ticket (en fonction de type passé en paramètre)
+	public function myFindLastNumeroBA($type)
+	{
+		$qb = $this->createQueryBuilder('b');
+		$qb->select('b.numeroBA')
+			->where('b.type = :type')
+			->add('orderBy', 'b.numeroBA DESC')
+			->setFirstResult(0)
+			->setMaxResults(1)
+			->setParameter('type', $type);
+		return $qb->getQuery()->getSingleScalarResult();
+	}	
 
 	private function convertirDate($date) {
 		// On remplace les caractères - par /

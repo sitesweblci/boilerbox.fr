@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="bon_attachement")
- * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Entity\BonsAttachementRepository")
+ * @ORM\Entity(repositoryClass="Lci\BoilerBoxBundle\Repository\BonsAttachementRepository")
  * @ORM\HasLifecycleCallbacks()
 */
 
@@ -27,11 +27,7 @@ class BonsAttachement {
     /**
      * @var string
      *
-	 * @Assert\Type("string")
-     * @Assert\Length(min=6, max=6, exactMessage="Le numéro doit contenir 6 chiffres")
-	 * @Assert\Regex("/^\d{6}$/", message="Format de numéro incorrect. 6 chiffres attendus")
-	 *
-     * @ORM\Column(type="text", name="numero_ba", nullable=true)
+     * @ORM\Column(type="integer", name="numero_ba", nullable=false)
 	*/
 	protected $numeroBA;
 
