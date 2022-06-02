@@ -69,43 +69,44 @@
 	<h1 class="sub-header__title">Bons d'interventions</h1>
 </header>
 <div id='erreur_formulaire_bon'>{{ form_errors(form_ajout_fichier) }}</div>
-<section class="flex flex--row">
-	<button class="btn btn--second"></button>
-	<h1 class="main-content__title main-content--small__title no-border">Bon {{ entity_bon.numeroBA }} / Demande {{ entity_bon.id }}</h1>
-	<button class="btn btn--main edit"></button>
+<section class="info">
+	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
+	<h1 class="info__title">Bon {{ entity_bon.numeroBA }} / Demande {{ entity_bon.id }}</h1>
+	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+		<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier</button>
+	{% endif %}
 </section>
-<main id="grid-visuUnBon" class="grid">
-	<section id="sub-grid-visuUnBon" class='main-content main-content--small grid__one'>
-		
-		<div class="main-content__content">
-	   			<fieldset class="fieldset">
-				<h2 class="fieldset__title">Informations</h2>
-				<div class="form__field">
-					<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
-				</div>
-				<div class="form__field">
-					<label>
-						initialisé le
-						<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
-						par
-						<span class="data">{{ entity_bon.userInitiateur.label }}</span>
-					</label>
-				</div>
-				<div class="form__field">
-					<label>
-						Signé le
-						<span class="data">
-							{% if entity_bon.dateSignature is not null  %}
-								{{ entity_bon.dateSignature | date('d/m/Y')  }}
-							{% else %}
-								&nbsp;
-							{% endif %}
-						</span>
-					</label>
-				</div>
-				<div class="form__field">
-						<label>Intervenant <span class="data">{{ entity_bon.user.label }}</span></label>
-				</div>
+<main id="grid-visuUnBon" class="testMain grid">
+	<section id="sub-grid-visuUnBon" class='grid grid__one'>
+		<div class="testSection grid__one">
+   			<fieldset class="fieldset">
+			<h2 class="fieldset__title">Informations</h2>
+			<div class="form__field">
+				<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
+			</div>
+			<div class="form__field">
+				<label>
+					initialisé le
+					<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
+					par
+					<span class="data">{{ entity_bon.userInitiateur.label }}</span>
+				</label>
+			</div>
+			<div class="form__field">
+				<label>
+					Signé le
+					<span class="data">
+						{% if entity_bon.dateSignature is not null  %}
+							{{ entity_bon.dateSignature | date('d/m/Y')  }}
+						{% else %}
+							&nbsp;
+						{% endif %}
+					</span>
+				</label>
+			</div>
+			<div class="form__field">
+					<label>Intervenant <span class="data">{{ entity_bon.user.label }}</span></label>
+			</div>
 			</fieldset>
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Planning</h2>
@@ -136,6 +137,8 @@
 				</div>
 				<div id="map"></div>
 			</fieldset>
+		</div>
+		<div class="testSection grid__two">
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Contact</h2>
 				<div class="form__field">
@@ -237,26 +240,20 @@
 						{{ form_end(form_ajout_fichier) }}
 					</div>
 				</div>
-				<div class="main-content__btn main-content--small__btn">
+				<div class="content__btn">
 					<div id="js-btn-file" class="main-box__btn--disabled">
 						<button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
 					</div>
 				</div>
 			</fieldset>
 		</div>
-		<div class="main-content__btn">
-			<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
-			{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-				<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier</button>
-			{% endif %}
-		</div>
 	</section>
 
 
-	<section class="grid__two">
+	<section class="grid__two testSection">
 		<!-- Validation -->
-		<section id='validation_des_bons_attachement' class="main-content main-content--small w100">
-		    <h1 class="main-content__title main-content--small__title">Validation</h1>
+		<fieldset id='validation_des_bons_attachement' class="fieldset">
+		    <h1 class="fieldset__title">Validation</h1>
 			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
 			{{ form_errors(form_validation) }}
 				<table id="table_validation"  class='flex-table'>
@@ -457,11 +454,11 @@
 				</tbody>
 				</table>
 			{{ form_end(form_validation, {'render_rest': false}) }} 
-		</section>
+		</fieldset>
 
 		<!-- Commentaires -->
-		<section id="commentaire-bons-attachements" class="main-content main-content--small w100">
-			<h1 class="main-content__title main-content--small__title">Commentaires</h1>
+		<fieldset id="commentaire-bons-attachements" class="fieldset">
+			<h1 class="fieldset__title">Commentaires</h1>
 			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
 	        	{{ form_start(form_ajout_commentaires, {'action':path('lci_bons_commentaires', {'idBon':entity_bon.id}), 'method':'POST', 'name':'myFormCommentaires', 'class':'form'}) }}
 	        	{{ form_errors(form_ajout_commentaires) }}
@@ -503,7 +500,7 @@
 					</div>
 	        	{{ form_end(form_ajout_commentaires) }}
 	    	</div>
-		</section>
+		</fieldset>
 		<!-- Fichiers -->
 	    {# <section class='liste_fichiers_du_bon main-content w100'>
 	    	<h1 class="main-content__title main-content--small__title">Fichiers</h1>
@@ -562,10 +559,7 @@
 
 	$(document).ready(function() {
 		/* Débug largeur parent flex col */
-		$('.main-content').css({'width':'initial'});
-		setTimeout(function(){
-			$('.main-content').css({'width':'fit-content'});
-		}, 30);
+
 		/* Désactivation de la checkbox Archive */
 		$('#chk_archive').attr('checked', false);
 		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
