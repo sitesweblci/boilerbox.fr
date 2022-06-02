@@ -75,13 +75,14 @@
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
 	<h1 class="info__title">Bon {{ entity_bon.numeroBA }}</h1>
 	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-		<button type="button" class="btn btn--main" onClick="updateBon({{ entity_bon.id }});">Modifier le bon</button>
+		<button type="button" class="btn btn--main" onClick="document.forms['myFormFichiers'].submit();">Modifier le bon</button>
 	{% endif %}
 </section>
 
 <main id="grid-visuUnBon" class="testMain grid">
 
 {{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+{# form_start(form_modification) #}
 <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 
 	<section id="sub-grid-visuUnBon" class='grid grid__one'>
@@ -104,24 +105,13 @@
             	<div class="form__field form__field--double">
             	    <div>
             	        <label>Service</label>
-						{# if entity_bon.service is not null  #}
-            	       	 	<span class="data">{{ form_widget(form_modification.service) }}</span>
-            	        {# else #}
-            	            &nbsp;
-            	        {# endif #}
+            	     	<span class="data">{{ form_widget(form_modification.service) }}</span>
             	    </div>
 
                     <div>
                         <label>Type d'intervention</label>
 						<span class="data">{{ form_widget(form_modification.typeIntervention) }}</span>
                     </div>
-            	</div>
-
-            	<div class="form__field">
-            	    <div>
-            	        <label>Numéro du bon</label>
-            	        <span class="data">{{ form_widget(form_modification.numeroBA) }}</span>
-            	    </div>
             	</div>
 
             	<div class="form__field form__field--double">
@@ -263,26 +253,15 @@
                 </table>
                 <div id='formulaire_bons_fichiers' class=''>
                     <div class="main-box__content main-box__content--padding" style="margin-top:16px;">
-{# ICI DEV                        {{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }} #}
-                        {{ form_errors(form_modification) }}
                         <div>
-							{{ form_widget(form_modification.numeroAffaire) }} 
                             <span id='lien_ajout_fichier'></span>
                             <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
                             <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
                             <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
                         </div>
-{#             ICI DEV           {{ form_end(form_modification) }}  #}
-                    </div>
-                </div>
-                <div class="content__btn">
-                    <div id="js-btn-file" class="main-box__btn--disabled">
-                        <button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
                     </div>
                 </div>
             </fieldset>
-
-
 
             <fieldset class="fieldset">
                 <h2 class="fieldset__title">Photos</h2>
@@ -291,8 +270,6 @@
                     <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ form_widget(form_modification.cheminDossierPhotos) }}</div>
                 </div>
             </fieldset>
-
-
 
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Enquête</h2>
@@ -306,9 +283,18 @@
 					{% endif %}
 				</div>
 			</fieldset>
+	        <div class="content__btn">
+	            {#
+	            <div id="js-btn-file" class="main-box__btn--disabled">
+	                <button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
+	            </div>
+	            #}
+	            <div id="js-btn-file">
+	                <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
+	            </div>
+	        </div>
 		</div>
 	</section>
-	<button type='submit' onClick="document.forms['myFormFichiers'].submit();">SEND</button>
 	{{ form_end(form_modification) }}
 
 

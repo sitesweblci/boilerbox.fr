@@ -117,7 +117,8 @@ class BonsAttachementType extends AbstractType {
 			'attr' 			=> array(
 				'placeholder' 	=> 'dd/mm/YYYY',
 				'maxlength' 	=> 10
-			)
+			),
+            'required'      => false
 		))
         ->add('dateDebutIntervention', DateType::class, array(
             'label'         => 'Date de début d\'intervention',
@@ -129,7 +130,8 @@ class BonsAttachementType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10
-            )
+            ),
+			'required'		=> false
         ))
         ->add('dateFinIntervention', DateType::class, array(
             'label'         => 'Date de fin d\'intervention',
@@ -141,7 +143,8 @@ class BonsAttachementType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10
-            )
+            ),
+            'required'      => false
         ))
 		->add('nomDuContact', TextType::class, array(
 			'label'			=> 'Nom du contact',
@@ -159,7 +162,8 @@ class BonsAttachementType extends AbstractType {
             'trim' 			=> true,
 			'attr' 			=> array ( 
 				'placeholder' 	=> "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
-			)
+			),
+            'required'      => false
 		))
 		->add('telephoneContactClient', TelType::class, array(
             'label'         => 'Téléphone du contact',
@@ -168,7 +172,8 @@ class BonsAttachementType extends AbstractType {
             'trim'          => true,
             'attr'          => array (
                 'placeholder'   => "Champs rempli automatiquement lors de la sélection d'un contact dans l'encart de droite",
-            )
+            ),
+            'required'      => false
         ))
 		->add('fichiersPdf', CollectionType::class, array(
 			'entry_type'    => FichierType::class,

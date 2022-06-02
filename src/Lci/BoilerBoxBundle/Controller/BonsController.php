@@ -425,6 +425,7 @@ class BonsController extends Controller
     }
 
     // Fonction qui permet de modifier une entité de la base pour y ajouter des fichiers
+/* ICI DEV A SUPPP
     public function ajoutFichiersAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -466,6 +467,7 @@ class BonsController extends Controller
             'form' => $form->createView()
         ));
     }
+*/
 
     /* Seul l'initiateur du bon ou l'intervenant peuvent modifier un bon */
     public function modifierUnBonAction($idBon, Request $request)
@@ -545,8 +547,10 @@ class BonsController extends Controller
         $max_upload_size 		= ini_get('upload_max_filesize');
 
         // Si la requete est de type GET : Un rafraichissement de page est demandé. Récupération des anciennes informations
-        if ($request->getMethod() == 'POST') {
-            if (isset($_POST['id_bon'])) {
+        if ($request->getMethod() == 'POST') 
+		{
+            if (isset($_POST['id_bon'])) 
+			{
                 $id_bon = $_POST['id_bon'];
                 $request->getSession()->set('idBonAttachement', $id_bon);
             } else {
