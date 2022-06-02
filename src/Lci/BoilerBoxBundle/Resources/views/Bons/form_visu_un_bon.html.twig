@@ -94,7 +94,7 @@
 					</div>
 				</div>
 
-            	<div class="form__field">
+            	<div class="form__field form__field--double">
             	    <div>
             	        <label>Service</label>
 						{% if entity_bon.service is not null  %}
@@ -103,6 +103,23 @@
             	            &nbsp;
             	        {% endif %}
             	    </div>
+
+                    <div>
+                        <label>Type d'intervention</label>
+                        {% if entity_bon.typeIntervention is not null  %}
+							<span class="data">
+								{% if entity_bon.typeIntervention == 'mes' %}
+                            		Mise en service
+								{% elseif entity_bon.typeIntervention == 'rptmensuel' %}
+									Rapport mensuel
+								{% elseif entity_bon.typeIntervention == 'sav' %}
+									SAV
+								{% endif %}	
+							</span>
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </div>
             	</div>
 
             	<div class="form__field">
@@ -292,7 +309,7 @@
                 <h2 class="fieldset__title">Photos</h2>
                 <div class="form__field">
 					<label>Chemin local vers le répertoire des photos</label>
-                    <div id='cheminDossierPhotos' class="input input--disabled">{{ entity_bon.cheminDossierPhotos }}</div>
+                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ entity_bon.cheminDossierPhotos }}</div>
                 </div>
             </fieldset>
 
@@ -511,36 +528,11 @@
 						{{ form_errors(form_ajout_commentaires.commentaires) }}
 						<div id="js-btn-comm" class="main-box__btn">
 							<div class="main-box__btn--disabled">
-								<button class="btn btn--main btn--disabled" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
+								<button style='width:100px' class="btn btn--main" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
 							</div>
 						</div>
 					</div>
 	        	    <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-
-
-                    <div>
-                    {{ form_label(form_ajout_commentaires.telephoneContactClient) }}
-                    {{ form_widget(form_ajout_commentaires.telephoneContactClient) }}
-                    </div>
-
-
-                    <div>
-                    {{ form_label(form_ajout_commentaires.service) }}
-                    {{ form_widget(form_ajout_commentaires.service) }}
-                    </div>
-
-
-                    <div>
-                    {{ form_label(form_ajout_commentaires.typeIntervention) }}
-                    {{ form_widget(form_ajout_commentaires.typeIntervention) }}
-                    </div>
-
-
-
-					<div>
-					{{ form_label(form_ajout_commentaires.cheminDossierPhotos) }}
-					{{ form_widget(form_ajout_commentaires.cheminDossierPhotos) }}
-					</div>
 	        	{{ form_end(form_ajout_commentaires) }}
 	    	</div>
 		</fieldset>
