@@ -670,7 +670,7 @@
 			// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
 			$('#cheminDossierPhotos').dblclick(function()
 			{
-				var $id_bon = $('#bons_attachement_commentaires_id').val();
+				var $id_bon = $('#bons_attachement_modification_id').val();
 
 				var $url_controller_ajax_has_url 	= "{{ path('lci_bons_has_url', {'id_bon': 'identifiantDuBon'}) }}";
 				$url_controller_ajax_has_url 		= $url_controller_ajax_has_url.replace('identifiantDuBon', $id_bon);
