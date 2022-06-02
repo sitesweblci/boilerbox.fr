@@ -528,7 +528,7 @@
 						{{ form_errors(form_ajout_commentaires.commentaires) }}
 						<div id="js-btn-comm" class="main-box__btn">
 							<div class="main-box__btn--disabled">
-								<button style='width:100px' class="btn btn--main" onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
+								<button style='width:100px' onClick="attente(); document.forms['myFormCommentaires'].submit(); return false;">Publier</button>
 							</div>
 						</div>
 					</div>
@@ -536,13 +536,6 @@
 	        	{{ form_end(form_ajout_commentaires) }}
 	    	</div>
 		</fieldset>
-		<!-- Fichiers -->
-	    {# <section class='liste_fichiers_du_bon main-content w100'>
-	    	<h1 class="main-content__title main-content--small__title">Fichiers</h1>
-			
-		</section>
-	</section> #}
-
 	
 	<form method='post' name='form_modification_bon' id='form_modification_bon' action="{{ path('lci_bons_modifier_unbon', { 'idBon':entity_bon.id }) }}">
 		<input type='hidden' name='id_bon' id='id_bon' />
