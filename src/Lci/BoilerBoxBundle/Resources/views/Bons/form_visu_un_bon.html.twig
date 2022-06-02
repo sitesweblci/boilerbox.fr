@@ -80,47 +80,85 @@
 	<section id="sub-grid-visuUnBon" class='grid grid__one'>
 		<div class="testSection grid__one">
    			<fieldset class="fieldset">
-			<h2 class="fieldset__title">Informations</h2>
-			<div class="form__field">
-				<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
-			</div>
-			<div class="form__field">
-				<label>
-					initialisé le
-					<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
-					par
-					<span class="data">{{ entity_bon.userInitiateur.label }}</span>
-				</label>
-			</div>
-			<div class="form__field">
-				<label>
-					Signé le
-					<span class="data">
-						{% if entity_bon.dateSignature is not null  %}
-							{{ entity_bon.dateSignature | date('d/m/Y')  }}
+				<h2 class="fieldset__title">Informations</h2>
+
+				<div class="form__field form__field--double">
+					<div>
+						<label>Site</label>
+						<span class="data">{{ entity_bon.site.intitule }} ( {{ entity_bon.numeroAffaire | upper }} )</span>
+					</div>
+				
+					<div>
+            	        <label>Affaire</label>
+            	        <span class="data">{{ entity_bon.numeroAffaire | upper }}</span>
+					</div>
+				</div>
+
+            	<div class="form__field">
+            	    <div>
+            	        <label>Service</label>
+						{% if entity_bon.service is not null  %}
+            	       	 	<span class="data">{{ entity_bon.service }}</span>
+            	        {% else %}
+            	            &nbsp;
+            	        {% endif %}
+            	    </div>
+            	</div>
+
+            	<div class="form__field">
+            	    <div>
+            	        <label>Numéro du bon</label>
+            	        <span class="data">{{ entity_bon.numeroBA }}</span>
+            	    </div>
+            	</div>
+
+            	<div class="form__field form__field--double">
+            	    <div>
+            	        <label>Initiateur</label>
+            	        <span class="data">{{ entity_bon.userInitiateur.label }}</span>
+           	     	</div>
+
+	                <div>
+	                    <label>Intervenant</label>
+	                    <span class="data">{{ entity_bon.user.label }}</span>
+	                </div>
+	            </div>
+
+				<div class="form__field form__field--double">
+					<div>
+						<label>Date d'initialisation</label>
+						{% if entity_bon.dateInitialisation is not null %}
+							<span class="data">{{ entity_bon.dateInitialisation | date('d/m/Y')  }}</span>
 						{% else %}
 							&nbsp;
-						{% endif %}
-					</span>
-				</label>
-			</div>
-			<div class="form__field">
-					<label>Intervenant <span class="data">{{ entity_bon.user.label }}</span></label>
-			</div>
+						{% endif %}	
+					</div>
+
+	                <div>
+	    	            <label>Date de la signature</label>
+	                    {% if entity_bon.dateSignature is not null %}
+	                        <span class="data">{{ entity_bon.dateSignature | date('d/m/Y')  }}</span>
+	                    {% else %}
+	                        &nbsp;
+	                    {% endif %}
+	                </div>
+				</div>
 			</fieldset>
+
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Planning</h2>
 				<div class="form__field form__field--double">
 					<div>
-						<label>Début intervention</label>
+						<label>Du</label>
 						{% if entity_bon.dateDebutIntervention is not null  %}
 							<div class="input input--disabled">{{ entity_bon.dateDebutIntervention | date('d/m/Y')  }}</div>
 						{% else %}
 							<div class="input input--disabled">&nbsp;</div>
 						{% endif %}
 					</div>
+
 					<div>
-						<label>Fin intervention</label>
+						<label>Au</label>
 						{% if entity_bon.dateFinIntervention is not null  %}
 							<div class="input input--disabled">{{ entity_bon.dateFinIntervention | date('d/m/Y')  }}</div>
 						{% else %}
@@ -129,41 +167,136 @@
 					</div>
 				</div>
 			</fieldset>
+
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Site</h2>
 				<div class="form__field">
-					<label>Adresse du site</label>
-					<div class="input input--disabled">24 Paper Street</div>
+					<label>Adresse</label>
+					{% if entity_bon.site %}
+						<div class="input input--disabled">{{ entity_bon.site.adresse }}</div>
+					{% else %}
+						&nbsp;
+					{% endif %}
 				</div>
 				<div id="map"></div>
 			</fieldset>
 		</div>
+
+
 		<div class="testSection grid__two">
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Contact</h2>
+
 				<div class="form__field">
 					<label>Nom Contact</label>
 					<div class="input input--disabled">{{ entity_bon.nomDuContact }}</div>
 				</div>
+
 				<div class="form__field form__field--double">
 					<div>
-						{% if entity_bon.emailContactClient is not null  %}
-							<div class="input input--disabled">{{ entity_bon.emailContactClient }}</div>
-						{% else %}
-							<div class="input input--disabled">&nbsp;</div>
-						{% endif %}
+						<label>Email</label>
+						<div class="input input--disabled">{{ entity_bon.emailContactClient }}</div>
 					</div>
+
 					<div>
-						<div class="input input--disabled">03 21 14 15 16</div>
+						<label>Téléphone</label>
+						<div class="input input--disabled">{{ entity_bon.telephoneContactClient }}</div>
 					</div>
 				</div>
 			</fieldset>
+
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Équipement</h2>
 				<div class="form__field">
-					Aucun équipement sélectionné
+					<table style='border-spacing:10px;'>
+						{% for e_equipement in entity_bon.equipementBATicket %}
+							<tr><td>Equipement{{ loop.index }}</td><td>{{ e_equipement.denomination }}</td><td>{{ e_equipement.numeroDeSerie }}</td></tr></div>
+						{% endfor %}
+					</table>
 				</div>
 			</fieldset>
+
+
+            <fieldset class="fieldset">
+                <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
+                {% if is_granted('ROLE_SAISIE_BA') %}
+                    <div class="main-box__content main-box__content--padding">
+                        <div id='label_archive' class="form__field">
+                            <div class="checkbox">
+                                <label>
+                                    <input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+                                    Afficher les fichiers archivés
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <table class='flex-table'>
+                    <thead class="flex-table__thead">
+                        <tr class="flex-table__row">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                <th class='small txt--center'>Archiver</th>
+                            {% endif %}
+                            <th class='wide'>Nom</th>
+                        </tr>
+                    </thead>
+                    <tbody id='table_des_fichiers' class="flex-table__tbody">
+                        {% for fichier in entity_bon.fichiersPdf %}
+                            <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
+                            {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
+                                {% if is_granted('ROLE_SAISIE_BA') %}
+                                    <td class='small txt--center'>
+                                        <img id="image_{{ fichier.id }}"
+                                            {% if fichier.archive == false %}
+                                                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}"
+                                            {% else %}
+                                                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                            {% endif %}
+                                                onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
+                                        />
+                                    </td>
+                                {% endif %}
+                                <td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+                                    <a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable'
+                                        href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
+                                            {{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id='formulaire_bons_fichiers' class=''>
+                    <div class="main-box__content main-box__content--padding" style="margin-top:16px;">
+                        {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+                        {{ form_errors(form_ajout_fichier) }}
+                        <div>
+                            <span id='lien_ajout_fichier'></span>
+                            <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
+                            <div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
+                            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+                        </div>
+                        {{ form_end(form_ajout_fichier) }}
+                    </div>
+                </div>
+                <div class="content__btn">
+                    <div id="js-btn-file" class="main-box__btn--disabled">
+                        <button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
+                    </div>
+                </div>
+            </fieldset>
+
+
+
+            <fieldset class="fieldset">
+                <h2 class="fieldset__title">Photos</h2>
+                <div class="form__field">
+					<label>Chemin local vers le répertoire des photos</label>
+                    <div id='cheminDossierPhotos' class="input input--disabled">{{ entity_bon.cheminDossierPhotos }}</div>
+                </div>
+            </fieldset>
+
+
 
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Enquête</h2>
@@ -178,74 +311,6 @@
 				</div>
 			</fieldset>
 			
-			<fieldset class="fieldset no-padding">
-				<h2 class="fieldset__title">{{ entity_bon.fichiersPdf | length }}  Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} attaché{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} </h2>
-				{% if is_granted('ROLE_SAISIE_BA') %}
-					<div class="main-box__content main-box__content--padding">
-			        	<div id='label_archive' class="form__field">
-			        		<div class="checkbox">
-				        	    <label>
-				        	    	<input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
-				        	    	Afficher les fichiers archivés
-				        	    </label>
-				        	</div>
-			        	</div>
-			        </div>
-				{% endif %}
-				<table class='flex-table'>
-					<thead class="flex-table__thead">
-						<tr class="flex-table__row">
-							{% if is_granted('ROLE_SAISIE_BA') %}
-								<th class='small txt--center'>Archiver</th>
-							{% endif %}
-							<th class='wide'>Nom</th>
-						</tr>
-					</thead>
-					<tbody id='table_des_fichiers' class="flex-table__tbody">
-						{% for fichier in entity_bon.fichiersPdf %}
-							<tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');" 
-							{% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
-								{% if is_granted('ROLE_SAISIE_BA') %}
-									<td class='small txt--center'>
-										<img id="image_{{ fichier.id }}" 
-											{% if fichier.archive == false %}
-												src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}" 
-											{% else %}
-												src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}" 
-											{% endif %} 
-												onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
-										/>
-									</td>
-								{% endif %}
-								<td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
-									<a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable' 
-										href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
-											{{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
-									</a>
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			    <div id='formulaire_bons_fichiers' class=''>
-					<div class="main-box__content main-box__content--padding" style="margin-top:16px;">
-					    {{ form_start(form_ajout_fichier, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
-						{{ form_errors(form_ajout_fichier) }}
-						<div>
-							<span id='lien_ajout_fichier'></span>
-							<div id='champ_ajout_fichiers_bon'>{{ form_widget(form_ajout_fichier.fichiersPdf) }}</div>
-							<div>{{ form_errors(form_ajout_fichier.fichiersPdf) }}</div>
-							<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-						</div>
-						{{ form_end(form_ajout_fichier) }}
-					</div>
-				</div>
-				<div class="content__btn">
-					<div id="js-btn-file" class="main-box__btn--disabled">
-						<button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
-					</div>
-				</div>
-			</fieldset>
 		</div>
 	</section>
 
@@ -293,25 +358,18 @@
 	        		            {% if entity_bon.validationPiece.valide == true %}
 									{# Service Pieces validé : On affiche l'icone pour le dévalider si on a les droits #}
 									{# Seulement si l'offre n'a pas déjà ete faite #}
-
+	        		                <span style="display:block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
 									{% if entity_bon.validationPieceFaite %}
-										{% if entity_bon.validationPieceFaite.valide == false %}
-                                    		{% if is_granted('ROLE_SERVICE_PIECES') %}
-                                    		    <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                    		            onClick="changeValidation('pieces', false);"
-                                    		            alt="Supprimer la validation pièces"
-                                    		    />
-                                    		{% endif %}
-										{% endif %}
-									{% else %}
-										{% if is_granted('ROLE_SERVICE_PIECES') %}
-                                            <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                                    onClick="changeValidation('pieces', false);"
-                                                    alt="Supprimer la validation pièces"
-                                            />
+                                        {% if entity_bon.validationPieceFaite.valide == false %}
+											{% if is_granted('ROLE_SERVICE_PIECES') %}
+												<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces', false);">Annuler</span>
+											 {% endif %}
                                         {% endif %}
-									{% endif %}
-	        		                <span style="display:inline-block; color:green;">Pièces demandées par {{ entity_bon.validationPiece.user.label }}<br />Le {{ entity_bon.validationPiece.dateDeValidation | date('d-m-Y') }}</span>
+                                    {% else %}
+										{% if is_granted('ROLE_SERVICE_PIECES') %}
+											<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces', false);">Annuler</span>
+										{% endif %}
+                                    {% endif %}
 	            		        {% else %}
 									{# Service Pieces dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     {% if is_granted('ROLE_SERVICE_PIECES') %}
@@ -390,13 +448,11 @@
                                 {% if entity_bon.validationPiece.valide == true %}
                                     {% if entity_bon.validationPieceFaite %}
                                         {% if entity_bon.validationPieceFaite.valide == true %}
-                                            {% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
-                                                <img    src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
-                                                        onClick="changeValidation('pieces_faite', false);"
-                                                        alt="Supprimer la validation commande pièces faite"
-                                                />
-                                            {% endif %}
-                                            <span style="display:inline-block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }}<br />Le {{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }}</span>
+                                            <span style="display:block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }}<br />Le {{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }}</span>
+											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
+												<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces_faite', false);">Annuler</span>
+											{% endif %}
+										
                                         {% else %}
                                             {% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
                                                 {{ form_widget(form_validation.validationPieceFaite) }}
@@ -594,7 +650,7 @@
             changeValidation($type, $sens);
         });
         $('#bons_attachement_validation_validationSAV_valide').click(function(e){
-			e.preventDefault;
+			//e.preventDefault;
             $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
             $type = 'sav';
 			togglePopUp(commentaireSAV);
@@ -663,7 +719,7 @@
 
 			// ************************************************************************************ LISTENERS
 			// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
-			$('#bons_attachement_commentaires_cheminDossierPhotos').dblclick(function()
+			$('#cheminDossierPhotos').dblclick(function()
 			{
 				var $id_bon = $('#bons_attachement_commentaires_id').val();
 
@@ -699,17 +755,13 @@
         var texte = $('#consignesFacturation').val();
         if (texte != '')
         {
-            // Ajout du commentaire
-            $('#bons_attachement_commentaires_commentaires').val(texte);
-            document.forms['myFormCommentaires'].submit();
-
+            // Ajout du commentaire en ajax
 			$.ajax({
 				url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
 				data: {'id_bon':$idBon, 'commentaire':texte},
 				method: "POST",
 				success: function(msg){
                		// Modification de la checkbox
-					console.log('demande : ' + $idBon + ' : ' + $type + ' : ' +$sens);
 					changeValidation($type, $sens);
 				}, 
 				error: function(){
@@ -792,19 +844,18 @@
 
 
 
-	function sendAjaxRequest($idBon, $type, $sens) {
+	function sendAjaxRequest($idBon, $type, $sens) 
+	{
 		attente();
 		setTimeout(function() 
 		{
-			console.log('time');
 			$.ajax({
         	    url: "{{ path('lci_ajax_bons_setValidation') }}",
         	    method: "post",
         	    data: {'identifiant':$idBon, 'type':$type, 'sens':$sens},
         	    success: function(msg) 
 				{
-					console.log('ici');
-	//				window.location.assign(location.href); 
+					window.location.assign(location.href); 
 					fin_attente();
 					return true;
         	    },
