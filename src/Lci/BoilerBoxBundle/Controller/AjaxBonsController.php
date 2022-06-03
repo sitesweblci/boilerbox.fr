@@ -480,6 +480,38 @@ class AjaxBonsController extends Controller
         ));
 	}
 
+	// Fonction qui assigne un équipement à un bon
+	public function assignEquipementToBonAction(Request $request)
+	{
+		$em             = $this->getDoctrine()->getManager();
+		$e_equipement   = new EquipementBATicket();
+        $f_equipement   = $this->createForm(EquipementBATicketType::class, $e_equipement);
+        $f_equipement->handleRequest($request);
+
+        if ($request->isXMLHttpRequest())
+        {
+			$id_equipement 	= $_POST['id_equipement'];
+			$id_bon 		= $_POST['id_bon'];
+			$e_equipement	= $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement);
+			$e_bon			= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+
+			// On affecte l'équipement au site du bon
+			$e_equipement->setSiteBA($e_bon->getSite());
+
+			// L'assignation se fait du coté du bon : Il gère l'assignation inverse
+			$e_bon->addEquipementBATicket($e_equipement);
+
+			$reponse = array(
+                "message" => 'success'
+            );
+		} else {
+			$reponse = array(
+                "message" => 'pas de requête xml reçue'
+            );
+		}
+        return new Response(json_encode($reponse));
+	}
+
 
 
     public function creerContactsSitesBAAction(Request $request)

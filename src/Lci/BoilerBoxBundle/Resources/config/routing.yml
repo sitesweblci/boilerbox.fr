@@ -52,6 +52,9 @@ lci_ajax_bon_del_equipement:
 lci_ajax_bon_new_equipement:
     path: /aj/bons/new_equipement
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerEquipement }
+lci_ajax_bon_assign_equipement_to_bon:
+    path: /aj/bons/assign_equipement_to_bon
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:assignEquipementToBon }
 lci_ajax_bon_new_siteBA:
     path: /aj/bons/new_siteBA
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerSiteBA }

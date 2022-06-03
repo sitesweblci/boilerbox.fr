@@ -149,7 +149,13 @@ $(document).ready(function()
             method: "POST",
             success: function(msg)
             {
-                document.forms['myForm'].submit();
+				if ($('#bons_attachement_site').length != 0)
+				{
+                	document.forms['myForm'].submit();
+				} else if ($('#bons_attachement_modification_site').length != 0)
+                {
+					document.forms['myFormFichiers'].submit();
+				}
             },
             error: function(status, msg, tri) {
                 finAttendreRechargement();
@@ -250,9 +256,30 @@ $(document).ready(function()
                         $('#bons_attachement_typeNouveau').val('equipement');
                         $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
 
-
-                        // Rechargement de la page
-                        document.forms['myForm'].submit();
+						// Assignation de l'équipement au bon si on est sur la page de visu (modification de bon)
+						if ($('#bons_attachement_modification_site').length != 0)
+						{
+							$.ajax({
+								url : "{{ path('lci_ajax_bon_assign_equipement_to_bon') }}",
+								method: "POST",
+								data: {'id_equipement':$id_nouvel_equipement, 'id_bon': $('#bons_attachement_modification_id').val()},
+								success: function(msg){
+									// Raffraichissement du formulaire du bon
+									document.forms['myFormFichiers'].submit();
+									return 0;
+								},
+								error: function(data) {
+									alert("Assignation de l'équipement en echec");
+									console.log(data);
+									return -1;
+								}
+							});
+						} else if ($('#bons_attachement_site').length != 0)
+                        {
+							// Si on est su la page de saisie d'un bon on raffraichit la page
+                        	// Rechargement de la page de saisie
+                        	document.forms['myForm'].submit();
+						}
                     } catch(e) {
                         // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
                         var form_html = output;

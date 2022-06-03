@@ -159,6 +159,7 @@ class BonsController extends Controller
                 	    {
                 	        $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
                 	        $tmp_e_equipement->setSiteBA($e_bons_attachement->getSite());
+							// L'assignation se fait du coté du bon : Il gère l'assignation inverse
 							$e_bons_attachement->addEquipementBATicket($tmp_e_equipement);
                 	    }
                 	}
