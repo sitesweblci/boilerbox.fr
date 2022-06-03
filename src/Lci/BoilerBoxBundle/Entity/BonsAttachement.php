@@ -903,6 +903,7 @@ class BonsAttachement {
      */
     public function removeEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
     {
+		$equipementBATicket->removeBonsAttachement($this);
         return $this->equipementBATicket->removeElement($equipementBATicket);
     }
 

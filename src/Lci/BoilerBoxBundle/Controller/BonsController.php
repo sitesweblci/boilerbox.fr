@@ -590,11 +590,13 @@ class BonsController extends Controller
 			{
                 if ($f_ba_modification->isValid()) 
 				{
+					$tab_des_equipements_modif = array();
                     foreach($_POST as $key => $variable_post)
                     {
                         $pattern_equipement = '/equipement_/';
                         if (preg_match($pattern_equipement, $key))
                         {
+							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
 							if (!$entity_bon->getEquipementBATicket()->contains($e_tmp_equipement))
@@ -619,6 +621,23 @@ class BonsController extends Controller
                         }
                     }
                     $em->flush();
+
+					$tab_des_equipements_presents = array();
+					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
+					{
+						array_push($tab_des_equipements_presents, $e_equipement_ba_ticket_modif->getId());
+					}
+			
+
+					foreach($tab_des_equipements_presents as $key => $id_equipement_present)
+					{
+						if (in_array($id_equipement_present, $tab_des_equipements_modif) == false)
+						{
+							$e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement_present);
+							$entity_bon->removeEquipementBATicket($e_tmp_equipement);
+						}
+					}
+					$em->flush();
                 } else {
                     $f_ba_modification->addError(new FormError($form_message_erreur));
                 }

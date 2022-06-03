@@ -87,7 +87,6 @@
 <main id="grid-visuUnBon" class="testMain grid">
 
 {{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
-{# form_start(form_modification) #}
 <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 
 	<section id="sub-grid-visuUnBon" class='grid grid__one'>
@@ -308,6 +307,11 @@
 	{# Popup Equipement #}
 	{% include "Equipements/html_popup_equipement.html.twig" %}
 
+	{# Encart qui permet la modification des Equipements #}
+	<section class='cacher'>
+		{{ form_rest(form_modification) }}
+	</section>
+
 	{{ form_end(form_modification) }}
 
 
@@ -318,13 +322,13 @@
 
 
 
-
 	<section class="grid__two testSection">
 		<!-- Validation -->
 		<fieldset id='validation_des_bons_attachement' class="fieldset">
 		    <h1 class="fieldset__title">Validation</h1>
 			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
 			{{ form_errors(form_validation) }}
+
 				<table id="table_validation"  class='flex-table'>
 				<thead class="flex-table__thead">
 					<tr class="flex-table__row">
