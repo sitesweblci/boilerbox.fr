@@ -61,6 +61,11 @@
 		height: 40px !important;
 		margin: 0;
 	}
+    .erreur_formulaire {
+        border: 2px solid red !important;
+		position: relative;
+		margin-top: 0px;
+    }
 	</style>
 {% endblock liens_css %}
 
@@ -202,6 +207,10 @@
 				</div>
 			</fieldset>
 
+{# ICI DEV inclure le fichier "src/Lci/BoilerBoxBundle/Resources/views/Equipements/html_encart_equipement.html.twig" #}
+			{% include  "Equipements/html_encart_equipement.html.twig" %}
+
+
             <fieldset class="fieldset">
                 <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
                 {% if is_granted('ROLE_SAISIE_BA') %}
@@ -295,7 +304,18 @@
 	        </div>
 		</div>
 	</section>
+
+	{# Popup Equipement #}
+	{% include "Equipements/html_popup_equipement.html.twig" %}
+
 	{{ form_end(form_modification) }}
+
+
+	{# Popup Création d'équipement #}
+	<section id="popupEquipement2" class="popup cacher">
+    	{{ render(path('lci_ajax_bon_new_equipement')) }}
+	</section>
+
 
 
 
@@ -507,7 +527,7 @@
     <div class="popup__wrapper">
         <header class="popup__header">
             <h1 id='titre_commentaire_sav' class="popup__title">Consignes de facturation</h1>
-            <div class="close-cross" onclick="validationCommentairesSAV();"></div>
+            <div class="close-cross" onclick="fermeturePopupCommentairesSAV();"></div>
         </header>
         <div class="popup__content">
             <div class="form__field form__field--double">
@@ -524,6 +544,7 @@
     </div>
 </section>
 
+
 {% endblock fos_user_content %}
 
 
@@ -531,6 +552,18 @@
 {% block javascript %}
 
 <script type='text/javascript'>
+
+    function attendreRechargement()
+    {
+        $('*').addClass('cursor--wait');
+    }
+
+    function finAttendreRechargement()
+    {
+        $('*').removeClass('cursor--wait');
+    }
+
+
 
 	// Fonction style barre de navigation page active
     $(window).on('load', function pageActive(){
@@ -696,6 +729,9 @@
 				});
 			});
 
+		refreshSelectEquipements();
+
+
         /* Mise en place de l'objet datepicker avec 2 mois affichés */
         $.datepicker.setDefaults({
             numberOfMonths: 1,
@@ -713,6 +749,7 @@
 
 
 
+	/******************* Fonctions pour les consignes de facturation */
     function validationCommentairesSAV()
     {
         var texte = $('#consignesFacturation').val();
@@ -724,6 +761,13 @@
 			return 1;
         }
     }
+	// Permet la fermeture de la popup sans consigne mais désactive alors la checkbox
+	function fermeturePopupCommentairesSAV()
+	{	
+		$('#bons_attachement_validation_validationSAV_valide').prop('checked', false);
+		$('#avertissementConsignesFacturation').text('');
+		togglePopUp(commentaireSAV);
+	}
 
 
 	function ajoutCommentaire(commentaire=null)
@@ -982,6 +1026,8 @@
     {
         $("input[placeholder='dd/mm/YYYY']").datepicker();
     }
-
 </script>
+{# ICI DEV inclure le fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
+{% include "Equipements/fonction_equipements.js" %}
+
 {% endblock javascript %}

@@ -201,13 +201,10 @@
 			</div>
 		</div>
 	</fieldset>
-	<fieldset class="fieldset">
-		<h2 class="fieldset__title">Équipement</h2>
-		<div class="form__field rel">
-            <span id="add-equipBon">Sélection des équipements</span>
-            <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
-        </div>
-	</fieldset>
+
+	{# fieldset Equipement #}
+	{% include "Equipements/html_encart_equipement.html.twig" %}
+
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Fichier(s)</h2>
 		<div class="form__field rel">
@@ -240,74 +237,8 @@
 	
 </main>
 
-
-<section id="popupSelectionEquipement" class="popup cacher">
-	<div class="popup__wrapper" style="width:780px;">
-    	<header class="popup__header">
-    	    <h1 id='titre_nouvel_equipement2' class="popup__title">Sélection des équipements</h1>
-    	    <div id='close_cross_equipement'  class="close-cross" onclick="fermeturePopupSelectionEquipement();"></div>
-    	    <button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--wide add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer nouvel équipement</span></button>
-    	</header>
-    	<div class="popup__content">
-    		{# <div class="choice">
-    			<div class="choice__actionner">
-    				<label class="required checked" for="ajoutEquipement">
-    					<input type="radio" id="ajoutEquipement" name="ajoutEquipement">
-    					Sélection équipement
-    				</label>
-    			</div>
-    			<div class="choice__actionner">
-    				<label class="required" for="creationEquipement">
-    					<input type="radio" id="creationEquipement" name="creationEquipement">
-    					Créer équipement
-    				</label>
-    			</div>
-    		</div> #}
-    	    <div class="form__field form__field--double align-end">
-    	    	<div>
-		        	<label>Site</label>
-	    	        <select id='select_equipement'>
-	    	             <option value=''>Affichage des équipements tous sites confondus</option>
-	    	            {% for e_siteBA in es_sitesBA %}
-	    	                <option value="{{ e_siteBA.id }}">{{ e_siteBA.intitule }}</option>
-	    	            {% endfor %}
-	    	        </select>
-	    	    </div>
-	    	    <div>
-	    	    	<div class="search-bar">
-	    	    		<span class="search-bar__img"></span>
-	    	    		<input class="search-bar__input" type='text' id='recherche_equipement' placeholder="Rechercher" />
-	    	    	</div>
-	    	    </div>
-    	    </div>
-			<div class="form__field">
-    	        <div>
-    	            <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
-    	                <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
-                            <span  style='display:inline-block; width:20px; font-size:10px;'></span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span>
-                            <span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-    	            </div>
-
-    	            <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
-    	                <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
-							<span  style='display:inline-block; width:20px; font-size:10px;'></span>
-							<span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
-							<span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
-							<span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
-							<span  style='display:inline-block; width:150px; font-size:10px;'>Autre nom</span>
-							<span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-    	                <div id='insert_equipement'>
-    	                </div>
-        	        </div>
-        	    </div>
-			</div>
-			<button class="btn btn--main btn--wide" onclick="$('#close_cross_equipement').trigger('click'); return false;" style="margin-top:12px;">Enregistrer</button>
-		</div>
-</section>
+{# Popup Equipements #}
+{% include "Equipements/html_popup_equipement.html.twig" %}
 
 <!-- Popup d'ajout de fichiers au bon -->
 <section id="popupGestionFichiersBon" class="popup cacher">
@@ -338,6 +269,7 @@
 {{ form_rest(form) }}
 {{ form_end(form) }}
 
+{# Popup de création des équipements #}
 <section id="popupEquipement2" class="popup cacher">
     {{ render(path('lci_ajax_bon_new_equipement')) }}
 </section>
@@ -420,6 +352,18 @@
 
 
     var maCarte;
+
+    function attendreRechargement()
+    {
+        $('*').addClass('cursor--wait');
+    }
+
+    function finAttendreRechargement()
+    {
+        $('*').removeClass('cursor--wait');
+    }
+
+
 
     function initAutocomplete()
 	{
@@ -533,9 +477,6 @@
 
 
 
-    // Tableau des équipements selectionnés
-    // il permet de ne pas réafficher les équipements en doublon lors de la modification du select site
-    var tabDesEquipementsSelectionnes = [];
 	var $indexFichier = 1;
 	var $indexFichierSiteBA = 1;
 	var $indexContactSiteBA = 1;
@@ -891,75 +832,6 @@
             }
         });
 
-        /******************************         READY POUR LES EQUIPEMENTS        ***************************************/
-        $('#select_equipement').change(function()
-        {
-            var html_nouvelles_options = '';
-            {% for e_siteBA in es_sitesBA %}
-                // On affiche les équipements du site selectionné ou tous les équipements si aucun site n'est sélectionné
-                if (("{{ e_siteBA.id }}" == $(this).val()) || ($(this).val() === ''))
-                {
-                    {% for e_equipement in e_siteBA.equipementBATickets %}
-                        // On ajout l'équipement à la liste des équipements selectionnable si celui ci n'est pas déjà sélectionné (cad présent dans le tableau tabDesEquipementsSelectionnes)
-                        if (tabDesEquipementsSelectionnes.indexOf("{{ e_equipement.id }}") == -1)
-                        {
-                            // Création du contenu html des Equipements
-                            html_nouvelles_options += " \
-                                <div id='parent_div_equipement_{{ e_equipement.id }}'> \
-                                    <div id='div_equipement_{{ e_equipement.id }}'> \
-                                        {#<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \#}
-                                        <span style='display:inline-block; width:30px;'> \
-                                            <input    type='checkbox' \
-                                                id='equipement_{{ e_equipement.id }}' \
-                                                name='equipement_{{ e_equipement.id }}' \
-                                                value='{{ e_equipement.id }}' \
-                                                style='display:inline-block; border:2px solid gray; cursor:pointer;' \
-                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
-                                            />\
-                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
-                                    </div>\
-                                </div>";
-                        } else {
-                            // Si l'équipement est déjà sélectionné, on n'affiche que le div du paretn pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
-                            html_nouvelles_options += "<div id='parent_div_equipement_{{ e_equipement.id }}'></div>";
-                        }
-                    {% endfor %}
-                }
-            {% endfor %}
-            $('#insert_equipement').html(html_nouvelles_options);
-
-            // On effectue la recherche sur les équipements nouvellement affichés
-            $('#recherche_equipement').trigger('keyup');
-        });
-
-
-        // Fonction de recherche dans la liste des équipements
-        $('#recherche_equipement').keyup(function()
-        {
-            $('#liste_des_equipements span').each(function()
-            {
-                $('#insert_equipement > div').each(function()
-                {
-                    if ($('#recherche_equipement').val() === '')
-                    {
-                        $(this).removeClass('cacher');
-                    } else {
-                        if (! $(this).is(':contains("' + $('#recherche_equipement').val() + '")'))
-                        {
-                            $(this).addClass('cacher');
-                        }else{
-                            $(this).removeClass('cacher');
-                        }
-                    }
-                });
-            });
-        });
-
-
-
-
-
-
 		/****************************** 		 Actions faites au chargement de la page 		********************************************/
 
 		var $chargementEnCours = true;
@@ -989,24 +861,8 @@
         {% if echec_creation_equipement == true %}
             $('#btn_ajout_equipement2').trigger('click');
         {% endif %}
-
-        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
-        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
-        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
 	});
 
-    function attendreRechargement()
-    {
-        $('*').addClass('cursor--wait');
-    }
-
-	function finAttendreRechargement()
-    {
-        $('*').removeClass('cursor--wait');
-    }
-
-
-	
 
 
 	// Fonction qui ajoute un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
@@ -1199,6 +1055,10 @@
 	// Click sur le bouton RETOUR de la popup nouveau site
 	function retourPopupSiteBA()
 	{
+		// On retire les encart rouge
+		$('#site_ba_intitule').removeClass('erreur_formulaire');
+		$('#site_ba_adresse').removeClass('erreur_formulaire');
+		
 		togglePopUp(bonsSite);
 		// Simulation click sur le premier lien supprimer pour enlever l'encart nouveau contact
 		$('#container_new_contact a.mini_link').trigger('click');
@@ -1608,223 +1468,6 @@
         $indexContactSiteBA ++;
     }
 
-
-
-/******************************         FONCTIONS POUR LES EQUIPEMENTS         ***************************************/
-    function creerEquipement2()
-    {
-        $send_form = true;
-
-        // On valide les informations entrées pour l'équipement
-        // Présence d'un site
-        var $new_site = $('#equipement_ba_ticket_siteBA').val();
-        if ($new_site == '')
-        {
-            $('#equipement_ba_ticket_siteBA').addClass('erreur_formulaire');
-            $send_form = false;
-
-        }
-
-        // Présence du numéro de série
-        var $new_numero_de_serie = $('#equipement_ba_ticket_numeroDeSerie').val();
-        if ($new_numero_de_serie == '')
-        {
-            $('#equipement_ba_ticket_numeroDeSerie').addClass('erreur_formulaire');
-            $send_form = false;
-        }
-
-        //Présence d'une dénomination
-        var $new_denomination = $('#equipement_ba_ticket_denomination').val();
-        if ($new_denomination == '')
-        {
-            $('#equipement_ba_ticket_denomination').addClass('erreur_formulaire');
-            $send_form = false;
-        }
-
-        //Présence d'une autre dénomination (non obligatoire)
-        var $new_autre_denomination = $('#equipement_ba_ticket_autreDenomination').val();
-
-        // Présence d'une date d'initialisation
-        var $new_annee_de_contruction = $('#equipement_ba_ticket_anneeDeConstruction').val();
-        if ($new_annee_de_contruction == '')
-        {
-            $send_form = false;
-            $('#date_annee_construction_equipement').addClass('erreur_formulaire');
-        }
-
-        if ($send_form == true)
-        {
-            attendreRechargement();
-
-            // Appel ajax
-            $.ajax({
-                url: "{{ path('lci_ajax_bon_new_equipement') }}",
-                method: "POST",
-                data: $('form[name="equipement_ba_ticket"]').serialize(),
-                success: function(output, status, xhr)
-                {
-                    try {
-                        // On recoit une réponse ajax : L'équipement a été enregistré
-                        data = JSON.parse(output);
-
-                        // Remplissage des champs indiquant la création d'un nouvel objet
-                        var $id_nouvel_equipement = data['message'];
-                        $('#bons_attachement_idNouveau').val($id_nouvel_equipement);
-                        $('#bons_attachement_typeNouveau').val('equipement');
-                        $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
-
-
-                        // Rechargement de la page
-                        document.forms['myForm'].submit();
-                    } catch(e) {
-                        // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
-                        var form_html = output;
-                        $('#popupEquipement2').html(form_html);
-                        // Activation du datepicker pour le nouveau formulaire
-                        setDatePicker();
-                        // On défini l'input affiché comme source pour l'input du formulaire : Permet d'afficher un format fr et d'envoyer un format  pour la date
-                        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
-                        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
-                        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
-                        finAttendreRechargement();
-                    }
-                },
-                error: function (xhr, status, st_text)
-                {
-                    finAttendreRechargement
-                    alert('error');
-                }
-            });
-        }
-    }
-
-
-
-
-
-    function refreshSelectEquipements()
-    {
-        // On défini le même site sur le select des équipements que le site sélectionné
-        $('#select_equipement').val($('#bons_attachement_site').val());
-
-        // On affiche la liste des équipements associés au nouveau site sélectionné
-        $('#select_equipement').change();
-    }
-
-
-    function supprimeEquipement($idEquipement)
-    {
-        attendreRechargement();
-
-        // On s'assure qu'il n'y a pas de check sur la checkbox de l'équipement à supprimer pour ne pas l'envoyer dans le formulaire de création de bon
-        $('#equipement_' + $idEquipement).prop('checked', false);
-        // Suppression de l'équipement en ajax et
-        // Réaffichage de la page pour prendre en compte la suppression
-        $.ajax({
-            url: "{{ path('lci_ajax_bon_del_equipement') }}",
-            data : {'id_equipement':$idEquipement },
-            method: "POST",
-            success: function(msg)
-            {
-                document.forms['myForm'].submit();
-            },
-            error: function(status, msg, tri) {
-                finAttendreRechargement();
-                alert('error ' + msg + tri);
-            }
-        });
-    }
-
-    function deplaceEquipement(id_checkbox)
-    {
-        var id_div = "div_equipement_" + id_checkbox;
-        var div_tmp = $("#" + id_div);
-
-        // Selection d'un équipement
-        if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
-        {
-            // On ajout d'id de l'equipement au tableau des équipements selectionnés
-            tabDesEquipementsSelectionnes.push(id_checkbox);
-            // On retire l'element du div principal
-            div_tmp.remove();
-
-            // On ajoute l'élément au div de selection
-            $('#liste_des_equipements_selectionnes').append(div_tmp);
-        // Dé selection d'un équipement
-        } else {
-            // On retire l'id de l'équipement du tableau des équipement selectionnés
-            var indexARetirer = tabDesEquipementsSelectionnes.indexOf(id_checkbox);
-            tabDesEquipementsSelectionnes.splice(indexARetirer, 1);
-
-            // On retire l'element du div de selection
-            div_tmp.remove();
-
-            // On ajoute l'élément au div principal dans son conteneur parent
-            $('#parent_' + id_div).append(div_tmp);
-        }
-    }
-
-    function gestionDesSelectionEquipements()
-    {
-        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-        if ($('#bons_attachement_site').val() != '')
-        {
-            $("#select_equipement").val($('#bons_attachement_site').val());
-        }
-        $('#select_equipement').trigger('change');
-        togglePopUp(popupSelectionEquipement);
-    }
-
-    // Gestion du click sur la croix de fermeture de la popup Sélection des équipements :
-    // Fermeture de la popup
-    function fermeturePopupSelectionEquipement()
-    {
-        togglePopUp(popupSelectionEquipement);
-    }
-
-
-    // Gestion du clic sur Annuler dans la popup de création d'équipement :
-    // Fermeture de la popup Creer un nouvel équipement
-    // Ouverture de la popup de Selection des équipements
-    function annulerPopupEquipement2()
-    {
-        $('#equipement_ba_ticket_siteBA').removeClass('erreur_formulaire');
-        $('#equipement_ba_ticket_numeroDeSerie').removeClass('erreur_formulaire');
-        $('#equipement_ba_ticket_denomination').removeClass('erreur_formulaire');
-        $('#date_annee_construction_equipement').removeClass('erreur_formulaire');
-
-        $('#equipement_ba_ticket_reset').trigger('click');
-
-        togglePopUp(popupEquipement2);
-        togglePopUp(popupSelectionEquipement);
-    }
-
-
-    // Gestion du click sur la croix de fermeture de la popup de création d'équipement :
-    // Fermeture de la popup de création d'équipement
-    // Fermeture de la popup de sélection d'équipements
-    function fermeturePopupEquipement2()
-    {
-        togglePopUp(popupEquipement2);
-    }
-
-
-    function gestionDesEquipements2()
-    {
-        // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-        if ($('#bons_attachement_site').val() != '')
-        {
-            // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
-            $('#equipement_ba_ticket_siteBA').val($('#bons_attachement_site').val());
-        } else if ($('#select_equipement').val() != '')
-        {
-            // On définie le site selectionné comme site selectionnée dans le select nouvel Equipement
-            $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
-        }
-        togglePopUp(popupSelectionEquipement);
-        togglePopUp(popupEquipement2);
-    }
-
 	$("#add-fichierBon").on("click", () => {
 		$("#fichierBon").click();
 	});
@@ -1837,8 +1480,8 @@
 	    setTimeout(function(){
 	    	$('.main-content').css({'width':'fit-content'});
 	    }, 30);
-
 	});
+
 	// On change l'icône du bouton et le texte de l'infobulle du bouton lié au select
 	$('#bons_attachement_site').on('change', function editButton(){
 		// Si la valeur est différente de celle par défaut
@@ -1879,6 +1522,7 @@
 
 </script>
 
+{% include "Equipements/fonction_equipements.js" %}
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
 </script>

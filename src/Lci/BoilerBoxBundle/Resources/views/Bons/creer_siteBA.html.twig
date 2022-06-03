@@ -56,7 +56,7 @@
 
             <div class='main-box__btn notToBePrinted'>
                 <button class="btn btn--second" onclick="retourPopupSiteBA();">Retour</button>
-                <button class="btn_menu btn btn--main" onClick="attendreRechargement(); document.forms['site_ba'].submit(); return false;">Valider</button>
+                <button class="btn_menu btn btn--main" onClick="verificationBeforeSendFormSite(); return false;">Valider</button>
             </div>
         </div>
     </div>
@@ -170,4 +170,25 @@
             }
         });
     }
+
+	function verificationBeforeSendFormSite()
+	{
+		var send_form_site = true;
+		if ($('#site_ba_intitule').val() == '')
+		{
+			$('#site_ba_intitule').addClass('erreur_formulaire');
+			send_form_site = false;
+		}
+		if ($('#site_ba_adresse').val() == '')
+        {
+			$('#site_ba_adresse').addClass('erreur_formulaire');
+            send_form_site = false;
+        }
+
+		if (send_form_site == true) 
+		{
+			attendreRechargement();
+			document.forms['site_ba'].submit(); 
+		}
+	}
 </script>

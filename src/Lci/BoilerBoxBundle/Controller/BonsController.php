@@ -313,7 +313,8 @@ class BonsController extends Controller
                     	    $e_siteBA->setAdresse($e_siteBA_update->getAdresse());
                     	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA_update->getLienGoogle()));
                     	    $e_siteBA->setInformationsClient($e_siteBA_update->getInformationsClient());
-                    	    foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) {
+                    	    foreach ($e_siteBA_update->getFichiersJoint() as $ent_fichier) 
+							{
 								$ent_fichier->setUserInitiateur($this->getUser()->getLabel());
                     	        $e_siteBA->addFichiersJoint($ent_fichier);
                     	    }
@@ -323,6 +324,11 @@ class BonsController extends Controller
                     	    // Maintenant que j'ai modifié l'entité siteBA je détach l'entité update pour ne pas que doctrine tente de l'enregistrer en base : Sinon erreur car doublon avec l'entité siteBA
                     	    $em->detach($e_siteBA_update);
                     	} else {
+							foreach ($e_siteBA->getFichiersJoint() as $e_fichier)
+                            {
+                                $e_fichier->setUserInitiateur($this->getUser()->getLabel());
+                                $e_siteBA->addFichiersJoint($e_fichier);
+                            }
                     	    $e_siteBA->setLienGoogle($this->transformeUrl($e_siteBA->getLienGoogle()));
                     	}
                     	// J'effectue moi même la validation des paramètres
@@ -333,7 +339,10 @@ class BonsController extends Controller
                     	    // L'entité est persisté pour gerer le cas ou c'est un nouvelle entité
                     	    $em->persist($e_siteBA);
                     	    try {
+								// Enregistrement du siteBA en base
                     	        $em->flush();
+								// Mise en commentaire pour réafficher le site nouvellement créé
+								$id_last_site = $e_siteBA->getId();
                     	        // Si il y a une demande d'ajout de sauvegarde des contacts
                     	        if (isset($_POST['site_ba']['contacts'])) 
 								{
@@ -357,7 +366,8 @@ class BonsController extends Controller
                     	        $request->getSession()->getFlashBag()->add('info', $e->getMessage());
                     	    }
                     	    // Création d'un nouveau formulaire de création de site
-                    	    $e_siteBA = new SiteBA();
+							// Mise en commentaire pour réafficher le site nouvellement créé
+                    	    //$e_siteBA = new SiteBA();
                     	    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
                     	        'action' => $this->generateUrl('lci_bons_saisie'),
                     	        'method' => 'POST'
@@ -572,12 +582,32 @@ class BonsController extends Controller
         $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
 
         // Gestion de l'ajout de fichiers à un bon
-        if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST') 
+		{
             $f_ba_modification->handleRequest($request);
-            if ($f_ba_modification->isSubmitted()) {
-                if ($f_ba_modification->isValid()) {
-                    foreach ($entity_bon->getFichiersPdf() as $fichier) {
-                        if ($fichier->getBonAttachement() == null) {
+            if ($f_ba_modification->isSubmitted()) 
+			{
+                if ($f_ba_modification->isValid()) 
+				{
+                    foreach($_POST as $key => $variable_post)
+                    {
+                        $pattern_equipement = '/equipement_/';
+                        if (preg_match($pattern_equipement, $key))
+                        {
+							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
+                            $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+							if (!$entity_bon->getEquipementBATicket()->contains($e_tmp_equipement))
+							{
+								$e_tmp_equipement->setSiteBA($entity_bon->getSite());
+								$entity_bon->addEquipementBATicket($e_tmp_equipement);
+							}
+                        }
+                    }
+
+                    foreach ($entity_bon->getFichiersPdf() as $fichier) 
+					{
+                        if ($fichier->getBonAttachement() == null) 
+						{
                             $fichier->setBonAttachement($entity_bon);
                             $em->persist($fichier);
                             $fichier->setAlt($fichier->getAlt() . " ( " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i') . " )");
@@ -595,13 +625,16 @@ class BonsController extends Controller
         }
 
 		$commentaires = $entity_bon->getCommentaires();
+		$es_sitesBA = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
             'entity_bon' 				=> $entity_bon,
             'form_validation' 			=> $f_validation->createView(),
             'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
             'max_upload_size' 			=> $max_upload_size,
-			'commentaires'				=> $commentaires
+			'commentaires'				=> $commentaires,
+			'es_sitesBA'				=> $es_sitesBA
         ));
     }
 
