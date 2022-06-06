@@ -380,11 +380,9 @@ $(document).ready(function()
 	{
 		if (direction == 'entre')
 		{
-			console.log('entre ' + id_element);
 			$('#' + id_element).css('background-color', 'lightgray');
 		} else {
 			$('#' + id_element).css('background-color', 'white');
-			console.log('leave ' + id_element);
 		}
 	}
 </script>
