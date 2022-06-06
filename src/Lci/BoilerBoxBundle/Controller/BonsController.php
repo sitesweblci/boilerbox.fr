@@ -649,8 +649,6 @@ class BonsController extends Controller
             }
         }
 
-		$commentaires = $entity_bon->getCommentaires();
-		$es_sitesBA = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
 
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
             'entity_bon' 				=> $entity_bon,
@@ -658,8 +656,12 @@ class BonsController extends Controller
             'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
             'max_upload_size' 			=> $max_upload_size,
-			'commentaires'				=> $commentaires,
-			'es_sitesBA'				=> $es_sitesBA
+			'commentaires'				=> $entity_bon->getCommentaires(),
+			'es_sitesBA'				=> $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll(),
+			'latitude'					=> $this->getLatLng('latitude', $entity_bon->getSite()->getLienGoogle()),
+			'longitude'					=> $this->getLatLng('longitude', $entity_bon->getSite()->getLienGoogle()),
+			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
+			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
         ));
     }
 
@@ -770,14 +772,19 @@ class BonsController extends Controller
     // Fonction qui permet de visualiser les informations d'un site
     public function visualiserSitesAction($idSiteActif)
     {
-        $ents_sitesBA = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
-        $ent_siteBA_actif = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->find($idSiteActif);
+		
+        $ents_sitesBA 		= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+		if ($idSiteActif == null)
+		{
+			$idSiteActif = $ents_sitesBA[0]->getId();
+		}
+        $ent_siteBA_actif 	= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->find($idSiteActif);
 
         $ent_siteBA_actif->setLienGoogle($this->putZoomApi($this->putApiKey($ent_siteBA_actif->getLienGoogle())));
         //'https://www.google.com/maps/embed/v1/view?key=APIKEY&center='.trim($matches[1]).','.trim($matches[2]).'&zoom=ZOOMAPI&maptype=satellite';
 
-        $latitude = $this->getLatLng('latitude', $ent_siteBA_actif->getLienGoogle());
-        $longitude = $this->getLatLng('longitude', $ent_siteBA_actif->getLienGoogle());
+        $latitude 	= $this->getLatLng('latitude', $ent_siteBA_actif->getLienGoogle());
+        $longitude 	= $this->getLatLng('longitude', $ent_siteBA_actif->getLienGoogle());
 
         return $this->render('LciBoilerBoxBundle:Bons:visualiser_sitesBA.html.twig', array(
             'ents_sitesBA' 		=> $ents_sitesBA,

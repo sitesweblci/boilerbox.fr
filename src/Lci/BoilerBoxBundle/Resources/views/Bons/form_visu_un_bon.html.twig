@@ -211,7 +211,7 @@
 				<div class="form__field">
 					<label>Adresse</label>
 					{% if entity_bon.site %}
-						<div class="input input--disabled">{{ entity_bon.site.adresse }}</div>
+						<div id='site_ba_adresse' class="input input--disabled">{{ entity_bon.site.adresse }}</div>
 					{% else %}
 						&nbsp;
 					{% endif %}
@@ -629,6 +629,45 @@
     {
         $('*').removeClass('cursor--wait');
     }
+
+
+
+
+	// Affichage de la map du site avec le marqueur
+    function initAutocomplete()
+    {
+
+            if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))
+            {
+                $('#map').removeClass('cacher');
+                var $objPos = {};
+                $objPos.lat = parseFloat("{{ latitude }}");
+                $objPos.lng = parseFloat("{{ longitude }}");
+                var maCarte = new google.maps.Map(document.getElementById('map'), {
+                    center: $objPos,
+                    zoom: parseInt("{{ zoomApi }}"),
+                    mapTypeId: 'satellite'
+                });
+                var monMarqueur = new google.maps.Marker({
+                    position: $objPos,
+                    map: maCarte
+                });
+            }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1097,5 +1136,8 @@
 
 {# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
 {% include "Equipements/fonction_equipements.js" %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+</script>
 
 {% endblock javascript %}

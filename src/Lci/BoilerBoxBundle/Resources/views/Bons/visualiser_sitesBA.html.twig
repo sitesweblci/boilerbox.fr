@@ -163,8 +163,10 @@
 			document.location.href = $url;
 		}	
 
-		function initAutocomplete() {
-			if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))  {
+		function initAutocomplete() 
+		{
+			if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))  
+			{
 				$('#mapIFrame').addClass('cacher');
 				$('#map').removeClass('cacher');
 				var $objPos = {};

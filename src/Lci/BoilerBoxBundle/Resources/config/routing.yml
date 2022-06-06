@@ -30,7 +30,7 @@ lci_bons_externe_enquete:
     defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
 lci_bons_sitesBA_visualiser:
     path: /bons/sitesBA/visualiser/{idSiteActif}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: 1 }
+    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: null }
 lci_bons_admin_site_index:
     path: /bons/admin/site/index
     defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
