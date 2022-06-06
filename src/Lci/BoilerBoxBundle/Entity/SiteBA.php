@@ -309,8 +309,8 @@ class SiteBA
 
 
 	public function setFichiersJointToEmpty() {
-                                    		$this->fichiersJoint = array();
-                                    	}
+    	$this->fichiersJoint = array();
+    }
 
 
 

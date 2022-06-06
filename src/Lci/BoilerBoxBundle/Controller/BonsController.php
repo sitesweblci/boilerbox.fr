@@ -531,7 +531,7 @@ class BonsController extends Controller
             // Sinon il ne peut visualiser que ses bons
             if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) {
                 // Affichage de tous les bons
-                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAll();
+                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAllByDtCreation();
             } else {
                 // Affichage des bons de l'utilisateur courant
                 $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
@@ -540,9 +540,9 @@ class BonsController extends Controller
                 $entity_bon_recherche->setSaisie(false);
                 $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
                 //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
-
             }
         }
+
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_bons.html.twig', array(
             'filtre' => $filtre,
             'entities_bon' => $entities_bons

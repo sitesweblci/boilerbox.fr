@@ -273,7 +273,8 @@ class BonsAttachementRepository extends EntityRepository
         	                    ->setParameter('empty', '');
 			}
 		}
-
+		$queryBuilder   ->orderBy('b.dateInitialisation', 'DESC'); 
+		//echo $queryBuilder->getQuery()->getSQL();
         return $queryBuilder->getQuery()->getResult();
     }
 
@@ -295,4 +296,11 @@ class BonsAttachementRepository extends EntityRepository
 		$date = str_replace('/', '-', $date);
 		return date_format(date_create($date), 'Y-m-d');
 	}
+
+
+    public function findAllByDtCreation()
+    {
+        return $this->findBy(array(), array('dateInitialisation' => 'ASC'));
+    }
+
 }
