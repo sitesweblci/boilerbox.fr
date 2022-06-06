@@ -6,10 +6,8 @@
 		</div>
 		<div class="form__field">
             {% if entity_bon is defined %}
-                    <table style='border-spacing:10px;'>
-                        {% for e_equipement in entity_bon.equipementBATicket %}
-                            <tr><td>Equipement{{ loop.index }}</td><td>{{ e_equipement.denomination }}</td><td>{{ e_equipement.numeroDeSerie }}</td></tr></div>
-                        {% endfor %}
+                    <table id="table_des_equipements" style='border-spacing:10px;'>
+						<tr><td>Dénomination</td><td>Numéro de série</td></tr>
                     </table>
             {% endif %}
         </div>

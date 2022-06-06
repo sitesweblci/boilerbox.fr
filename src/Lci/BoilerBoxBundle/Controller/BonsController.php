@@ -578,6 +578,7 @@ class BonsController extends Controller
         }
         $entity_bon 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
+
         $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
         $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
         $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
@@ -622,22 +623,26 @@ class BonsController extends Controller
                     }
                     $em->flush();
 
+					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
 					$tab_des_equipements_presents = array();
 					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
 					{
 						array_push($tab_des_equipements_presents, $e_equipement_ba_ticket_modif->getId());
 					}
-			
 
 					foreach($tab_des_equipements_presents as $key => $id_equipement_present)
 					{
 						if (in_array($id_equipement_present, $tab_des_equipements_modif) == false)
 						{
 							$e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement_present);
+							// Gère la relation inverse
 							$entity_bon->removeEquipementBATicket($e_tmp_equipement);
 						}
 					}
 					$em->flush();
+
+					// On recree le formulaire des bons avec la prise en compte des modification sur les équipements
+					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
                 } else {
                     $f_ba_modification->addError(new FormError($form_message_erreur));
                 }

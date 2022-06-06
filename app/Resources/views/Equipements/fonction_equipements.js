@@ -28,7 +28,7 @@ $(document).ready(function()
                                                 name='equipement_{{ e_equipement.id }}' \
                                                 value='{{ e_equipement.id }}' \
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
-                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}')\" \
+                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.denomination }}', '{{ e_equipement.numeroDeSerie }}')\" \
                                             />\
                                         </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
@@ -164,7 +164,7 @@ $(document).ready(function()
         });
     }
 
-    function deplaceEquipement(id_checkbox)
+    function deplaceEquipement(id_checkbox, denomination, numeroDeSerie)
     {
         var id_div = "div_equipement_" + id_checkbox;
         var div_tmp = $("#" + id_div);
@@ -179,7 +179,10 @@ $(document).ready(function()
 
             // On ajoute l'élément au div de selection
             $('#liste_des_equipements_selectionnes').append(div_tmp);
-        // Dé selection d'un équipement
+
+			// Ajout de l'élément sur la page HTML
+			$html = "<tr id='tr_equipement_" + id_checkbox + "'><td>" + denomination + "</td><td>" + numeroDeSerie + "</td></tr>";
+			$('#table_des_equipements').append($html);
         } else {
             // On retire l'id de l'équipement du tableau des équipement selectionnés
             var indexARetirer = tabDesEquipementsSelectionnes.indexOf(id_checkbox);
@@ -190,6 +193,10 @@ $(document).ready(function()
 
             // On ajoute l'élément au div principal dans son conteneur parent
             $('#parent_' + id_div).append(div_tmp);
+
+
+			$('#tr_equipement_' + id_checkbox).remove();
+
         }
     }
 
