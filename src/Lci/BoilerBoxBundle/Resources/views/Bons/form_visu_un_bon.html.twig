@@ -195,18 +195,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="fieldset">
-				<h2 class="fieldset__title">Équipement</h2>
-				<div class="form__field">
-					<table style='border-spacing:10px;'>
-						{% for e_equipement in entity_bon.equipementBATicket %}
-							<tr><td>Equipement{{ loop.index }}</td><td>{{ e_equipement.denomination }}</td><td>{{ e_equipement.numeroDeSerie }}</td></tr></div>
-						{% endfor %}
-					</table>
-				</div>
-			</fieldset>
-
-{# ICI DEV inclure le fichier "src/Lci/BoilerBoxBundle/Resources/views/Equipements/html_encart_equipement.html.twig" #}
+			{# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/views/Equipements/html_encart_equipement.html.twig" #}
 			{% include  "Equipements/html_encart_equipement.html.twig" %}
 
 
@@ -1031,7 +1020,8 @@
         $("input[placeholder='dd/mm/YYYY']").datepicker();
     }
 </script>
-{# ICI DEV inclure le fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
+
+{# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
 {% include "Equipements/fonction_equipements.js" %}
 
 {% endblock javascript %}

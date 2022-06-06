@@ -172,7 +172,7 @@ $(document).ready(function()
         // Selection d'un équipement
         if ($('#' + id_div + ' input[type="checkbox"]').is(':checked'))
         {
-            // On ajout d'id de l'equipement au tableau des équipements selectionnés
+            // On ajoute l'id de l'équipement au tableau des équipements sélectionnés
             tabDesEquipementsSelectionnes.push(id_checkbox);
             // On retire l'element du div principal
             div_tmp.remove();
