@@ -781,6 +781,8 @@ class BonsController extends Controller
         $ent_siteBA_actif 	= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->find($idSiteActif);
 
         $ent_siteBA_actif->setLienGoogle($this->putZoomApi($this->putApiKey($ent_siteBA_actif->getLienGoogle())));
+
+
         //'https://www.google.com/maps/embed/v1/view?key=APIKEY&center='.trim($matches[1]).','.trim($matches[2]).'&zoom=ZOOMAPI&maptype=satellite';
 
         $latitude 	= $this->getLatLng('latitude', $ent_siteBA_actif->getLienGoogle());
