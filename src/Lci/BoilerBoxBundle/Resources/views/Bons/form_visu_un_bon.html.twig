@@ -97,36 +97,72 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Site</label>
-						<span class="data">{{ form_widget(form_modification.site) }}</span>
+						<span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.site) }}
+							{% else %}
+								{{ entity_bon.site.intitule }}
+							{% endif %}
+						</span>
 					</div>
 				
 					<div>
             	        <label>Affaire</label>
-            	        <span class="data">{{ form_widget(form_modification.numeroAffaire) }}</span>
+            	        <span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.numeroAffaire) }}
+                        	{% else %}
+                        	    {{ entity_bon.numeroAffaire }}
+                        	{% endif %}
+						</span>
 					</div>
 				</div>
 
             	<div class="form__field form__field--double">
             	    <div>
             	        <label>Service</label>
-            	     	<span class="data">{{ form_widget(form_modification.service) }}</span>
+            	     	<span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.service) }}
+							{% else %}
+                            	{{ entity_bon.service }}
+                        	{% endif %}
+						</span>
             	    </div>
 
                     <div>
                         <label>Type d'intervention</label>
-						<span class="data">{{ form_widget(form_modification.typeIntervention) }}</span>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.typeIntervention) }}
+                            {% else %}
+                                {{ entity_bon.typeIntervention }}
+                            {% endif %}
+                        </span>
                     </div>
             	</div>
 
             	<div class="form__field form__field--double">
             	    <div>
             	        <label>Initiateur</label>
-            	        <span class="data">{{ form_widget(form_modification.userInitiateur) }}</span>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.userInitiateur) }}
+                            {% else %}
+                                {{ entity_bon.userInitiateur.label }}
+                            {% endif %}
+                        </span>
            	     	</div>
 
 	                <div>
 	                    <label>Intervenant</label>
-	                    <span class="data">{{ form_widget(form_modification.user) }}</span>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.user) }}
+                            {% else %}
+                                {{ entity_bon.user.label }}
+                            {% endif %}
+                        </span>
 	                </div>
 	            </div>
 
@@ -148,12 +184,24 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Du</label>
-						<span class="data">{{ form_widget(form_modification.dateDebutIntervention) }}</span>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.dateDebutIntervention) }}
+                            {% else %}
+                                {{ entity_bon.dateDebutIntervention | date('d/m/Y') }}
+                            {% endif %}
+                        </span>
 					</div>
 
 					<div>
 						<label>Au</label>
-						<span class="data">{{ form_widget(form_modification.dateFinIntervention) }}</span>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.dateFinIntervention) }}
+                            {% else %}
+                                {{ entity_bon.dateFinIntervention | date('d/m/Y') }}
+                            {% endif %}
+                        </span>
 					</div>
 				</div>
 			</fieldset>
@@ -179,18 +227,36 @@
 
 				<div class="form__field">
 					<label>Nom Contact</label>
-					<div class="data">{{ form_widget(form_modification.nomDuContact) }}</div>
+                    <span class="data">
+                        {% if is_granted('ROLE_SAISIE_BA') %}
+							{{ form_widget(form_modification.nomDuContact) }}
+                        {% else %}
+                            {{ entity_bon.nomDuContact }}
+                        {% endif %}
+                    </span>
 				</div>
 
 				<div class="form__field form__field--double">
 					<div>
 						<label>Email</label>
-						<div class="data">{{ form_widget(form_modification.emailContactClient) }}</div>
+                       	<span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.emailContactClient) }}
+                            {% else %}
+                                {{ entity_bon.emailContactClient }}
+                            {% endif %}
+                        </span>
 					</div>
 
 					<div>
 						<label>Téléphone</label>
-						<div class="data">{{ form_widget(form_modification.telephoneContactClient) }}</div>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                {{ form_widget(form_modification.telephoneContactClient) }}
+                            {% else %}
+                                {{ entity_bon.telephoneContactClient }}
+                            {% endif %}
+                        </span>
 					</div>
 				</div>
 			</fieldset>
@@ -264,7 +330,15 @@
                 <h2 class="fieldset__title">Photos</h2>
                 <div class="form__field">
 					<label>Chemin local vers le répertoire des photos</label>
-                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ form_widget(form_modification.cheminDossierPhotos) }}</div>
+                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">
+                        <span>
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.cheminDossierPhotos) }}
+                            {% else %}
+                                {{ entity_bon.cheminDossierPhotos }}
+                            {% endif %}
+                        </span>
+					</div>
                 </div>
             </fieldset>
 

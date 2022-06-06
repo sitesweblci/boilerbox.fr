@@ -19,7 +19,7 @@ $(document).ready(function()
                         {
                             // Création du contenu html des Equipements
                             html_nouvelles_options += " \
-                                <div id='parent_div_equipement_{{ e_equipement.id }}'> \
+                                <div id='parent_div_equipement_{{ e_equipement.id }}' onMouseEnter='sourisOver(\"entre\",this.id);' onMouseLeave='sourisOver(\"sort\",this.id);'> \
                                     <div id='div_equipement_{{ e_equipement.id }}'> \
                                         {#<span style='display: inline-block; width:15px; line-height:11px; padding-bottom: 3px; text-align:center; cursor:pointer;' onClick=\"supprimeEquipement('{{ e_equipement.id  }}');\">x</span> \#}
                                         <span style='display:inline-block; width:30px;'> \
@@ -34,7 +34,7 @@ $(document).ready(function()
                                     </div>\
                                 </div>";
                         } else {
-                            // Si l'équipement est déjà sélectionné, on n'affiche que le div du paretn pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
+                            // Si l'équipement est déjà sélectionné, on n'affiche que le div du parent pour pouvoir replacer l'équipement en cas de dé sélection de celui ci
                             html_nouvelles_options += "<div id='parent_div_equipement_{{ e_equipement.id }}'></div>";
                         }
                     {% endfor %}
@@ -376,4 +376,15 @@ $(document).ready(function()
         togglePopUp(popupEquipement2);
     }
 
+	function sourisOver(direction, id_element) 
+	{
+		if (direction == 'entre')
+		{
+			console.log('entre ' + id_element);
+			$('#' + id_element).css('background-color', 'lightgray');
+		} else {
+			$('#' + id_element).css('background-color', 'white');
+			console.log('leave ' + id_element);
+		}
+	}
 </script>
