@@ -34,7 +34,7 @@ class SiteBA
      *
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotNull(message="Nom du site manquant")
-     * @Groups({"groupContact"})
+     * @Groups({"groupContact", "groupEquipement"})
     */
     protected $intitule;
 

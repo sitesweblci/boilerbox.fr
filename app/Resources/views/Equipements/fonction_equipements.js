@@ -135,17 +135,100 @@ $(document).ready(function()
     }
 
 
-    function supprimeEquipement($idEquipement)
+    function modifierEquipement($id_equipement=null)
+    {
+		var $data_a_envoyer = $id_equipement;
+		if ($id_equipement == null)
+		{
+			$data_a_envoyer = $('form[name="equipement_ba_ticket"]').serialize()
+		} else {
+			$data_a_envoyer = {'id_equipement':$id_equipement}
+		}
+        attendreRechargement();
+
+        // Modification de l'équipement en ajax et
+        // Réaffichage de la page pour prendre en compte la suppression
+        $.ajax({
+            url: "{{ path('lci_ajax_bon_new_equipement') }}",
+            data : $data_a_envoyer,
+            method: "POST",
+            success: function(output)
+            {
+				try {
+                   	// On recoit une réponse ajax : L'équipement a été enregistré : On recoit l'entité de l'equipement
+                	var $data_e_equipement = JSON.parse(output);
+
+/*
+					var $html_equipement = "<td style='cursor:pointer;' onClick=\"modifierEquipement('" + $data_e_equipement['id'] + "');\">x</td>" + "<td>" + $data_e_equipement['numeroDeSerie'] + "</td>" + "<td>" + $data_e_equipement['denomination'] + "</td>" + "<td>" + $data_e_equipement['autreDenomination'] + "</td>";
+					$("#tr_equipement_" + $data_e_equipement['id']).html($html_equipement);
+
+					
+					// Modification de la checkbox
+					var new_input = "<input type='checkbox' checked id='equipement_" + $data_e_equipement['id'] + "' name='equipement_" + $data_e_equipement['id'] + "' value='" + $data_e_equipement['id'] + "' style='display:inline-block; border:2px solid gray; cursor:pointer;' onClick=\"deplaceEquipement('" + $data_e_equipement['id'] + "', '" + $data_e_equipement['numeroDeSerie'] + "', '" + $data_e_equipement['denomination'] + "', '" + $data_e_equipement['autreDenomination'] + "')\" />";
+					$('#equipement_' + $data_e_equipement['id']).replaceWith(new_input);
+
+					// Modification du numéro de série
+					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:first-child').text($data_e_equipement['numeroDeSerie']);
+					// Modification du construit le
+					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(2)').text(transformeDateEntiteSerialise($data_e_equipement['anneeDeConstruction']));
+					// Modification de dénomination
+					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(3)').text($data_e_equipement['denomination']);
+                    // Modification de autre dénomination
+                    $('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(4)').text($data_e_equipement['autreDenomination']);
+					// Modification de site 
+					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(5)').text($data_e_equipement['siteBA']['intitule']);
+
+
+
+					togglePopUp(popupSelectionEquipement);
+*/
+					// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
+					$('#bons_attachement_modification_equipementBATicket').remove();
+				} catch(e)
+				{
+					// Si reception d'un page HTML c'est qu'on recoit le formulaire du bon
+					// On modifie le contenu de la popup de création d'équipement pour lui mettre le contenu de l'équipement à modifier
+					$('#popupEquipement2').html(output);
+					togglePopUp(popupEquipement2);
+
+					// Activation du datepicker pour le nouveau formulaire
+					setDatePicker();
+
+					// On définit le champs qui recoit la date
+                    // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+        			$("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
+        			$("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+
+					return 0;
+				}
+				// Submit du formulaire de bon de la page de saisie de bon
+                if ($('#bons_attachement_site').length != 0)
+                {
+                    document.forms['myForm'].submit();
+                } else if ($('#bons_attachement_modification_site').length != 0)
+                {
+					// Submit du formulaire de bon de la page de visu / modification de bon
+                    document.forms['myFormFichiers'].submit();
+                }
+            },
+            error: function(status, msg, tri) {
+                finAttendreRechargement();
+                alert('error ' + msg + tri);
+            }
+        });
+    }
+
+    function supprimeEquipement($id_equipement)
     {
         attendreRechargement();
 
         // On s'assure qu'il n'y a pas de check sur la checkbox de l'équipement à supprimer pour ne pas l'envoyer dans le formulaire de création de bon
-        $('#equipement_' + $idEquipement).prop('checked', false);
+        $('#equipement_' + $id_equipement).prop('checked', false);
         // Suppression de l'équipement en ajax et
         // Réaffichage de la page pour prendre en compte la suppression
         $.ajax({
             url: "{{ path('lci_ajax_bon_del_equipement') }}",
-            data : {'id_equipement':$idEquipement },
+            data : {'id_equipement':$id_equipement },
             method: "POST",
             success: function(msg)
             {
@@ -181,7 +264,7 @@ $(document).ready(function()
             $('#liste_des_equipements_selectionnes').append(div_tmp);
 
 			// Ajout de l'élément sur la page HTML
-			$html = "<tr id='tr_equipement_" + id_checkbox + "'><td>" + numeroDeSerie + "</td><td>" + denomination + "</td><td>" + autreDenomination+ "</td></tr>";
+			$html = "<tr id='tr_equipement_" + id_checkbox + "'><td style='cursor:pointer;' onClick=\"modifierEquipement('" + id_checkbox + "');\">x</td>" + "<td>" + numeroDeSerie + "</td>" + "<td>" + denomination + "</td>" + "<td>" + autreDenomination+ "</td></tr>";
 			$('#table_des_equipements').append($html);
         } else {
             // On retire l'id de l'équipement du tableau des équipement selectionnés
@@ -204,6 +287,14 @@ $(document).ready(function()
 	/**********************************			Fonction pour la création des équipements ************************************/
 	function creerEquipement2()
     {
+
+		// Si on est sur la page de modification d'un équipement : Renvoi à la fonction de modification
+		if ($('#bons_attachement_modification_site').length !=  0)
+		{
+			togglePopUp(popupEquipement2);
+			return modifierEquipement();
+		}
+	
         $send_form = true;
 
         // On valide les informations entrées pour l'équipement
@@ -254,11 +345,10 @@ $(document).ready(function()
                 success: function(output, status, xhr)
                 {
                     try {
-                        // On recoit une réponse ajax : L'équipement a été enregistré
-                        data = JSON.parse(output);
-
+                        // On recoit une réponse ajax : L'équipement a été enregistré (on recoit l'entité équipement)
+                        $data_e_equipement = JSON.parse(output);
                         // Remplissage des champs indiquant la création d'un nouvel objet
-                        var $id_nouvel_equipement = data['message'];
+                        var $id_nouvel_equipement = $data_e_equipement['id'];
                         $('#bons_attachement_idNouveau').val($id_nouvel_equipement);
                         $('#bons_attachement_typeNouveau').val('equipement');
                         $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
@@ -276,7 +366,7 @@ $(document).ready(function()
 									return 0;
 								},
 								error: function(data) {
-									alert("Assignation de l'équipement en echec");
+									alert("Echec d'assignation de l'équipement");
 									console.log(data);
 									return -1;
 								}
@@ -384,5 +474,15 @@ $(document).ready(function()
 		} else {
 			$('#' + id_element).css('background-color', 'white');
 		}
+	}
+
+
+
+	function transformeDateEntiteSerialise(str_date)
+	{	
+		var new_ch = str_date.substr(0,10);
+		var new_ch2 = new_ch.replace(/..(..)-(..)-(..)/,"$3/$2/$1");
+		return new_ch2;
+		
 	}
 </script>

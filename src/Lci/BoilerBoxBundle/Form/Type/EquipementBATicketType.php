@@ -12,6 +12,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+
 
 
 class EquipementBATicketType extends AbstractType
@@ -19,6 +21,12 @@ class EquipementBATicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+        ->add('id', IntegerType::class, array(
+            	'label'             => false,
+            	'attr'              => array(
+            	    'class'             => 'cacher'
+            	)
+        	))
             ->add('numeroDeSerie', TextType::class, array(
         	    'label'         => 'Numéro de série',
         	    'label_attr'    => array ('class' => 'label_smalltext'),

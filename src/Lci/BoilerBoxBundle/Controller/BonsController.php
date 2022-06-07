@@ -577,7 +577,6 @@ class BonsController extends Controller
         }
         $entity_bon 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
-
         $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
         $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
         $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
@@ -622,7 +621,6 @@ class BonsController extends Controller
                     }
 
                     $em->flush();
-
 					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
 					$tab_des_equipements_presents = array();
 					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
