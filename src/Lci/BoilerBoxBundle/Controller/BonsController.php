@@ -168,11 +168,7 @@ class BonsController extends Controller
 						// On défini le type pour distinguer bon de ticket
 						$e_bons_attachement->setType('bon');
 
-						// On incrémente le numero de BA pour définir le nouveau numéro
-						// Selection des numeroBA avec type=bon
-						$tmp_numeroBa = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('bon');
-						$tmp_numeroBa ++;	
-						$e_bons_attachement->setNumeroBA($tmp_numeroBa);
+						// Le numero BA est remplit par le techniciens
 
 						// Enregistrement du bon
                     	$em->persist($e_bons_attachement);
@@ -521,24 +517,27 @@ class BonsController extends Controller
             $request->getSession()->remove('objRechercheBon');
         }
         // Si une recherche existe pour le bon affichage de la recherche
-        if ($request->getSession()->has('objRechercheBon')) {
-            $entity_bon_recherche = $request->getSession()->get('objRechercheBon', null);
-            $filtre = true;
-            $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
+        if ($request->getSession()->has('objRechercheBon')) 
+		{
+            $entity_bon_recherche 	= $request->getSession()->get('objRechercheBon', null);
+            $filtre 				= true;
+            $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
         } else {
             // On vérifie quel est le type du compte.
             // Si il a les droits de gestion ba il peut visualiser tous les bons
             // Sinon il ne peut visualiser que ses bons
-            if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) {
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) 
+			{
                 // Affichage de tous les bons
                 $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAllByDtCreation();
             } else {
                 // Affichage des bons de l'utilisateur courant
-                $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
-                $entity_bon_recherche = new ObjRechercheBonsAttachement();
+                $e_user_courant 		= $this->get('security.token_storage')->getToken()->getUser();
+                $entity_bon_recherche 	= new ObjRechercheBonsAttachement();
                 $entity_bon_recherche->setUser($e_user_courant);
                 $entity_bon_recherche->setSaisie(false);
-                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
+
+                $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
                 //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
             }
         }

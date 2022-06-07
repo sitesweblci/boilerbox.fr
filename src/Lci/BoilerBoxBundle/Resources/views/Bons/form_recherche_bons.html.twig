@@ -44,6 +44,19 @@
 				{{ form_errors(form.saisie) }}
 			</div>
 		</fieldset>
+
+
+        <fieldset class="fieldset">
+            <h2 class="fieldset__title">Type</h2>
+            <div class='form__field form__field--double'>
+                <div>
+                    {{ form_label(form.type) }}
+                    {{ form_widget(form.type) }}
+                    {{ form_errors(form.type) }}
+                </div>
+        </fieldset>
+
+
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Informations</h2>
 			<div class="form__field form__field--double">
@@ -60,18 +73,14 @@
 			</div>
 			<div class="form__field form__field--double">
 				<div>
-					<label>Service</label>
-					<select>
-						<option>Service 1</option>
-						<option>Service 2</option>
-					</select>
+                    {{ form_label(form.service) }}
+                    {{ form_widget(form.service) }}
+                    {{ form_errors(form.service) }}
 				</div>
 				<div>
-					<label>Type d'intervention</label>
-					<select>
-						<option>Type 1</option>
-						<option>Type 2</option>
-					</select>
+                    {{ form_label(form.typeIntervention) }}
+                    {{ form_widget(form.typeIntervention) }}
+                    {{ form_errors(form.typeIntervention) }}
 				</div>
 			</div>
 			<div class="form__field form__field--double">
@@ -130,11 +139,11 @@
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Pièces</h2>
 			<div class="form__field">
-				<label>État de la demande</label>
-				<select>
-					<option>En cours</option>
-					<option>Validée</option>
-				</select>
+                <div>
+                    {{ form_label(form.pieces) }}
+                    {{ form_widget(form.pieces) }}
+                    {{ form_errors(form.pieces) }}
+                </div>
 			</div>
 		</fieldset>
 		<fieldset class="fieldset">

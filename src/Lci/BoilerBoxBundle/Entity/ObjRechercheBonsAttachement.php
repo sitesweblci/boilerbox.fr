@@ -169,6 +169,40 @@ class ObjRechercheBonsAttachement {
 	protected $sensValidation;
 
 
+    /**
+     * @var string
+     *
+    */
+    protected $pieces;
+
+	/**
+	 * @var string
+	 *	
+	*/
+	protected $type;
+
+    /**
+     * @var string
+     *
+    */
+    protected $typeIntervention;
+
+    /**
+     * @var string
+     *
+    */
+    protected $service;
+
+    /**
+     * @var string
+     *
+    */
+    protected $numeroDeSerie;
+
+
+
+
+
 
 
     /**
@@ -616,7 +650,6 @@ class ObjRechercheBonsAttachement {
 		return $this;
 	}
 
-
 	/**
 	 * Get Saisie
 	 * 
@@ -636,7 +669,6 @@ class ObjRechercheBonsAttachement {
     public function getSensValidation() {
         return $this->sensValidation;
     }
-
     /**
      * Set SensValidation
      *
@@ -648,6 +680,102 @@ class ObjRechercheBonsAttachement {
         return $this;
     }
 
+
+
+
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setType($type)
+    {
+        $this->type = ucfirst(strtolower($type));
+
+        return $this;
+    }
+    /**
+     * Get type
+     *
+     * @return string
+    */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+
+    /**
+     * Set typeIntervention
+     *
+     * @param string $typeIntervention
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setTypeIntervention($typeIntervention)
+    {
+        $this->typeIntervention = ucfirst(strtolower($typeIntervention));
+
+        return $this;
+    }
+    /**
+     * Get typeIntervention
+     *
+     * @return string
+    */
+    public function getTypeIntervention()
+    {
+        return $this->typeIntervention;
+    }
+
+
+
+
+    /**
+     * Set service
+     *
+     * @param string $service
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setService($service)
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+    /**
+     * Get service
+     *
+     * @return string
+    */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+
+
+
+
+    /**
+     * Set pieces
+     *
+     * param boolean $pieces
+     * @return ObjRechercheBonAttachement
+    */
+    public function setPieces($pieces) {
+        $this->pieces = $pieces;
+        return $this;
+    }
+    /**
+     * Get Pieces
+     *
+     * @return boolean
+    */
+    public function getPieces() {
+        return $this->pieces;
+    }
 
 
 

@@ -247,7 +247,45 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 			),
 			'expanded'	=> true,
 			'multiple'	=> false
-		));
+		))
+
+        ->add('type', ChoiceType::class, array(
+            'label'     => 'Type',
+            'choices'   => array(
+                'Tous'      => null,
+                'Bons'      => true,
+                'Tickets'  	=> false
+            ),
+            'expanded'  => true,
+            'multiple'  => false
+        ))
+        ->add('typeIntervention', ChoiceType::class, array(
+            'label'         => "Type d'intervention",
+            'choices'       => [
+                'Mise en service'   => 'mes',
+                'SAV'               => 'sav',
+                'Rapport mensuel'   => 'rptmensuel'
+            ]
+        ))
+        ->add('service', ChoiceType::class, array(
+            'label'         => 'Service',
+            'placeholder'   => 'Tous',
+            'choices'       => [
+                'Bosch'     => 'bosch',
+                'Certus'    => 'certus',
+                'Export'    => 'export'
+            ],
+            'required' => false
+        ))
+        ->add('pieces', ChoiceType::class, array(
+            'label'         => 'Pièces',
+            'placeholder'   => 'Tous',
+            'choices'       => [
+                'En cours'   	=> 'demande',
+                'Validée' 		=> 'fait'
+            ],
+            'required' => false
+        ));
 	}
 
 

@@ -28,12 +28,14 @@ class BonsAttachementRepository extends EntityRepository
 
 
     // Fonction utilisée pour la recherche des bons
-    public function rechercheDesBons($entity_objRechercheBon) {
+    public function rechercheDesBons($entity_objRechercheBon) 
+	{
 		$critereValidation = false;
         $queryBuilder = $this->createQueryBuilder('b');
 		// Si un choix de service valideur est effectué, la validation s'effectue sur les bons validés, les bons non validés 
 		// ou sur les bon validés dans le cas NULL (cad un valideur a été selectionné mais sans choix de service, on a alors considéré que la recherche s'effectue sur tous les services de la liste
-        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) {
+        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) 
+		{
             if ($entity_objRechercheBon->getSensValidation() === false){
 				$sens_validation = 0;
             } elseif ($entity_objRechercheBon->getSensValidation() === true) {

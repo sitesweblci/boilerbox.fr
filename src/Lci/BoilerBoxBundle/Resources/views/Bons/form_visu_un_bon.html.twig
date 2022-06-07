@@ -94,7 +94,7 @@
    			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Informations</h2>
 
-				<div class="form__field form__field--double">
+				<div class="form__field">
 					<div>
 						<label>Site</label>
 						<span class="data">
@@ -105,7 +105,8 @@
 							{% endif %}
 						</span>
 					</div>
-				
+				</div>
+				<div class="form__field form__field--double">	
 					<div>
             	        <label>Affaire</label>
             	        <span class="data">
@@ -116,6 +117,15 @@
                         	{% endif %}
 						</span>
 					</div>
+             
+					<div class="form__field">
+                    	<div>
+                    	    <label>Numéro de bon</label>
+                    	    <span class="data">
+                    	        {{ form_widget(form_modification.numeroBA) }}
+                    	    </span>
+                    	</div>
+                	</div>
 				</div>
 
             	<div class="form__field form__field--double">
@@ -169,15 +179,19 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Date d'initialisation</label>
-						<span class="data">{{ form_widget(form_modification.dateInitialisation) }}</span>
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                {{ form_widget(form_modification.dateInitialisation) }}
+                            {% else %}
+                                {{ entity_bon.dateInitialisation | date('d/m/Y') }}
+                            {% endif %}
 					</div>
-
 	                <div>
 	    	            <label>Date de la signature</label>
 	                    <span class="data">{{ form_widget(form_modification.dateSignature) }}</span>
 	                </div>
 				</div>
-			</fieldset>
+            </fieldset>
+
 
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Planning</h2>
