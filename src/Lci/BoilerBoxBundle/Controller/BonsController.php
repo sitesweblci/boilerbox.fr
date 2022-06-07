@@ -620,6 +620,7 @@ class BonsController extends Controller
                             }
                         }
                     }
+
                     $em->flush();
 
 					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
