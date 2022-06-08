@@ -170,7 +170,7 @@ $(document).ready(function()
 					// Modification du numéro de série
 					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:first-child').text($data_e_equipement['numeroDeSerie']);
 					// Modification du construit le
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(2)').text(transformeDateEntiteSerialise($data_e_equipement['anneeDeConstruction']));
+					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(2)').text(dateTransformeEntiteSerialise($data_e_equipement['anneeDeConstruction']));
 					// Modification de dénomination
 					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(3)').text($data_e_equipement['denomination']);
                     // Modification de autre dénomination
@@ -191,13 +191,20 @@ $(document).ready(function()
 					$('#popupEquipement2').html(output);
 					togglePopUp(popupEquipement2);
 
+					// Sauvegarde de la date de création car après setDatePicket, la valeur  du champs est remise à 0
+					var date_creation_equipement = $('#equipement_ba_ticket_anneeDeConstruction').val();
+
 					// Activation du datepicker pour le nouveau formulaire
 					setDatePicker();
+
 
 					// On définit le champs qui recoit la date
                     // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
         			$("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
         			$("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+
+					// On réindique la date de création de l'équipement
+					$("#date_annee_construction_equipement").val(dateReverseForPicker(date_creation_equipement));
 
 					return 0;
 				}
@@ -478,11 +485,17 @@ $(document).ready(function()
 
 
 
-	function transformeDateEntiteSerialise(str_date)
+	function dateTransformeEntiteSerialise(str_date)
 	{	
 		var new_ch = str_date.substr(0,10);
 		var new_ch2 = new_ch.replace(/..(..)-(..)-(..)/,"$3/$2/$1");
 		return new_ch2;
-		
+	}
+
+
+	function dateReverseForPicker(date_enter)
+	{
+		var new_ch2 = date_enter.replace(/(....)\/(..)\/(..)/,"$3/$2/$1");
+        return new_ch2;
 	}
 </script>

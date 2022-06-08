@@ -65,7 +65,6 @@ class BonsController extends Controller
         }
     }
 
-
     public function indexAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
@@ -120,7 +119,7 @@ class BonsController extends Controller
                 }
             }
 
-			// Envoyer lors de l'envoi du formulaire de site
+			// Envoyé lors de l'envoi du formulaire de site
 			if (isset($_POST['save_form_bon']))
 			{
 				$enregistrement_html_form_bon = $_POST['save_form_bon'];

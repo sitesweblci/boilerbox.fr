@@ -583,7 +583,6 @@ class AjaxBonsController extends Controller
 		$f_equipement   = $this->createForm(EquipementBATicketType::class, $e_equipement);
 		$f_equipement->handleRequest($request);
 
-
         if ($request->isXMLHttpRequest())
         {
             if ($f_equipement->isSubmitted())
@@ -624,6 +623,7 @@ class AjaxBonsController extends Controller
                 ]);
             }
         }
+
         return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', array(
             'form_equipement'   => $f_equipement->createView(),
             'id'                => $e_equipement->getId()
