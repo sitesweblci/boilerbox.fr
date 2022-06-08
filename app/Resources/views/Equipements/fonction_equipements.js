@@ -283,11 +283,23 @@ $(document).ready(function()
 
             // On ajoute l'élément au div principal dans son conteneur parent
             $('#parent_' + id_div).append(div_tmp);
-
-
 			$('#tr_equipement_' + id_checkbox).remove();
-
         }
+		// On crée le select des équipements sélectionnés
+		var select_equipement_page_principale = '<select>';
+		var nombre_d_equipements = 0 ;
+		$('#liste_des_equipements_selectionnes > div > label > span:nth-child(4)').each(function()
+		{
+			nombre_d_equipements ++;
+			select_equipement_page_principale += '<option>' + $(this).text() + '</option>';
+		});
+		if (nombre_d_equipements == 0 )
+		{
+			$("#infos_equipements").html('<p>Equipement(s) non défini(s)</p>');
+		} else {
+			select_equipement_page_principale += '</select>';
+			$("#infos_equipements").html(select_equipement_page_principale);
+		}
     }
 
 

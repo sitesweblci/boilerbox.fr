@@ -207,6 +207,7 @@ class BonsController extends Controller
                     	} else {
                     	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
                     	}
+						// Envoi du mail à l'intervenant uniquement
                     	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
 					}
                 } catch (\Exception $e) {
