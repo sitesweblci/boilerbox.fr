@@ -164,6 +164,7 @@
 	<div class="main-content__btn">
 		<button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
 	    <button class="btn_menu btn btn--main" onClick="attente(); document.forms['myForm'].submit(); return false;">Rechercher</button>
+		<button class="btn_menu btn btn--second" onClick="attente(); resetRecherche(); return false;">Reset</button>
 	</div>
 </section>
 {{ form_rest(form) }}
@@ -327,6 +328,12 @@
 
 	// Fin du ready
     });
+
+	// Reset les champs du formulaire de recherche
+	function resetRecherche()
+	{
+		location.href = "{{ path('lci_bon_rechecher_reset') }}";			
+	}
 
 
 	// Lors de la selection d'un choix bons validés ou bons non validés, on autorise ou pas la selection du valideur

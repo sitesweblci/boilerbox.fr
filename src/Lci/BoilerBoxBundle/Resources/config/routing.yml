@@ -10,6 +10,9 @@ lci_bons_visualiser:
 lci_bons_rechercher:
     path: /bons/rechercher
     defaults: { _controller: LciBoilerBoxBundle:Bons:rechercher }
+lci_bon_rechecher_reset:
+    path: /bons/rechercher_reset
+    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercherReset }
 lci_ajax_bons_setEnquete:
     path: /bons/ajax/setEnquete
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setEnquete }

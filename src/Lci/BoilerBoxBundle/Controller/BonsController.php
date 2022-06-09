@@ -468,7 +468,8 @@ class BonsController extends Controller
     public function visualiserAction($refresh = null, Request $request)
     {
         $filtre = false;
-        if ($refresh !== null) {
+        if ($refresh !== null) 
+		{
             $request->getSession()->remove('objRechercheBon');
         }
         // Si une recherche existe pour le bon affichage de la recherche
@@ -647,6 +648,13 @@ class BonsController extends Controller
         return $this->redirectToRoute('lci_bons_afficher_unbon');
     }
 
+	// Action du bouton reset de la recherche
+	public function rechercherResetAction(Request $request)
+	{
+		$request->getSession()->remove('objRechercheBon');
+		return $this->redirectToRoute('lci_bons_rechercher');
+	}
+
     public function rechercherAction(Request $request)
     {
         // On envoi un formulaire de recherche pour pouvoir affiner la recherche des bons
@@ -725,7 +733,7 @@ class BonsController extends Controller
                     }
                 }
 
-                // Snuvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
+                // Sauvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
                 $session->set('objRechercheBon', $entity_bon_recherche);
 				
                 return $this->redirectToRoute('lci_bons_visualiser');
