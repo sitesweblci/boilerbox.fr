@@ -129,7 +129,7 @@
 
 			<tbody id='contenu_tableau_bons' class="flex-table__tbody">
 				{% for ent_bons in entities_bon %}
-				<tr class="flex-table__row" onclick="afficherLeBon({{ ent_bons.id}});" {% if ent_bons.type == "bon" %}style='background-color:lightgray;'{% endif %}>
+				<tr class="flex-table__row" onclick="afficherLeBon({{ ent_bons.id}});" {% if ent_bons.type == "ticket" %}style='background-color:#FAA0A0;'{% endif %}>
 					<td class='medium' data-intitule='nomDuSite'>
 						{{ ent_bons.site.intitule }}
 					</td>

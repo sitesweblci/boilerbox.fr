@@ -72,7 +72,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             ),
         ))
         ->add('numeroBA', TextType::class, array(
-            'label'      => 'Numéro de bon',
+            'label'      => 'Numéro de bon / de ticket',
             'label_attr' => array('class' => 'label_smalltext'),
             'trim'       => true,
             'attr'       => array(
@@ -250,13 +250,13 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 		))
 
         ->add('type', ChoiceType::class, array(
-            'label'     => 'Type',
+            'label'     => 'Genre',
             'choices'   => array(
-                'Tous'      => null,
-                'Bons'      => true,
-                'Tickets'  	=> false
+                'Tous les genres'   => 'tous',
+                'Bons'      		=> 'bons',
+                'Tickets'  			=> 'tickets'
             ),
-            'expanded'  => true,
+            'expanded'  => false,
             'multiple'  => false
         ))
         ->add('typeIntervention', ChoiceType::class, array(
@@ -281,8 +281,8 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             'label'         => 'Pièces',
             'placeholder'   => 'Tous',
             'choices'       => [
-                'En cours'   	=> 'demande',
-                'Validée' 		=> 'fait'
+                'Pièces demandées'   	=> 'demande',
+                'Offre de pièces faite'	=> 'fait'
             ],
             'required' => false
         ));

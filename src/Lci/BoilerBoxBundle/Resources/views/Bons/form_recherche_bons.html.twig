@@ -30,12 +30,9 @@
 					{{ form_errors(form.numeroBA) }}
 				</div>
 				<div>
-					<label>Genre</label>
-					<select>
-						<option>Tous les genres</option>
-						<option>Bons</option>
-						<option>Ticket</option>
-					</select>
+					{{ form_label(form.type) }}
+                    {{ form_widget(form.type) }}
+                    {{ form_errors(form.type) }}
 				</div>
 			</div>
 			<div class="form__field">
@@ -44,17 +41,6 @@
 				{{ form_errors(form.saisie) }}
 			</div>
 		</fieldset>
-
-
-        <fieldset class="fieldset">
-            <h2 class="fieldset__title">Type</h2>
-            <div class='form__field form__field--double'>
-                <div>
-                    {{ form_label(form.type) }}
-                    {{ form_widget(form.type) }}
-                    {{ form_errors(form.type) }}
-                </div>
-        </fieldset>
 
 
 		<fieldset class="fieldset">
@@ -71,7 +57,7 @@
 					{{ form_errors(form.numeroAffaire) }}
 				</div>
 			</div>
-			<div class="form__field form__field--double">
+			<div class="form__field form__field--double champs_pour_bons">
 				<div>
                     {{ form_label(form.service) }}
                     {{ form_widget(form.service) }}
@@ -136,7 +122,7 @@
 				</div>
 			</div>
 		</fieldset>
-		<fieldset class="fieldset">
+		<fieldset class="fieldset champs_pour_bons">
 			<h2 class="fieldset__title">Pièces</h2>
 			<div class="form__field">
                 <div>
@@ -191,11 +177,15 @@
 {% block javascript %}
 <script type='text/javascript'>
 
-// Fonction style barre de navigation page active
-$(window).on('load', function pageActive(){
-	$('.side-nav .bons-interv').addClass('active');
-});
-    $(document).ready(function(){
+	// Fonction style barre de navigation page active
+	$(window).on('load', function pageActive(){
+		$('.side-nav .bons-interv').addClass('active');
+	});
+
+
+
+    $(document).ready(function()
+	{
     	/* Débug largeur parent flex col */
     	$('.main-content').css({'width':'initial'});
     	setTimeout(function(){
@@ -226,6 +216,18 @@ $(window).on('load', function pageActive(){
         });
 
 		$('#obj_recherche_bons_attachement_sensValidation_0').trigger("click");
+
+		// Selection de bons, tickets ou tous : On affiche ou cache les champs spécifiques aux bons
+		$('#obj_recherche_bons_attachement_type').click(function()
+		{
+			console.log($('#obj_recherche_bons_attachement_type').val());
+			if ($('#obj_recherche_bons_attachement_type').val() == 'tickets')
+			{
+				$('.champs_pour_bons').addClass('cacher');
+			} else {
+				$('.champs_pour_bons').removeClass('cacher');
+			}
+		});
 
     });
 
