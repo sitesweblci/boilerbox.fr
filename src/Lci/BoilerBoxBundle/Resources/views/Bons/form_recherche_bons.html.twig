@@ -132,6 +132,14 @@
                 </div>
 			</div>
 		</fieldset>
+
+		<fieldset class="fieldset">
+            <h2 class="fieldset__title">Contact</h2>
+            <div class="form__field">
+				<select id='select_contact'></select>
+            </div>
+        </fieldset>
+
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Contact</h2>
 			<div class="form__field">
@@ -220,7 +228,6 @@
 		// Selection de bons, tickets ou tous : On affiche ou cache les champs spécifiques aux bons
 		$('#obj_recherche_bons_attachement_type').click(function()
 		{
-			console.log($('#obj_recherche_bons_attachement_type').val());
 			if ($('#obj_recherche_bons_attachement_type').val() == 'tickets')
 			{
 				$('.champs_pour_bons').addClass('cacher');
@@ -229,6 +236,108 @@
 			}
 		});
 
+
+
+
+		// Modification du select contact lors du select du site
+		$('#obj_recherche_bons_attachement_site').change(function()
+        {
+
+			// Sauvegarde de l'id de l'ancien contact selectionné
+			var id_ancien_contact_selectionne = $('#obj_recherche_bons_attachement_nomDuContact').val();
+
+			// Remise à empty du champs contact du formulaire de recherche
+			$('#obj_recherche_bons_attachement_nomDuContact').val('');
+
+			// On réinitalise le select contact
+            $('#select_contact').html("<option value=''></option>");
+			if ($('#obj_recherche_bons_attachement_site').val() != '')
+			{
+				// Selection d'un site
+				var $id_site_ba = this.value;
+                var $url = "{{ path('lci_ajax_bons_get_siteBA') }}";
+                $.ajax({
+                    url: $url,
+                    method: "post",
+                    data: {'id_site_ba':$id_site_ba},
+                    success: function(msg)
+                    {
+                        var siteBA = $.parseJSON(msg);
+
+                        // On ré initialise le select contact
+						html_option = "<option value=''>Tous</option>";
+                        $.each(siteBA.contacts, function(index, contact)
+                        {
+                            html_option += "<option value='" + contact.id + "'>" + contact.nom + "</option>";
+                        });
+
+						// On redefini le select
+                        $('#select_contact').html(html_option);
+
+            			// On reselectionne le contact précédemment selectionné
+            			if (id_ancien_contact_selectionne != '')
+            			{
+                			if ($("#select_contact option[value='" + id_ancien_contact_selectionne + "']").length != 0)
+                			{
+                    			$("#select_contact").val(id_ancien_contact_selectionne);
+								$('#obj_recherche_bons_attachement_nomDuContact').val(id_ancien_contact_selectionne);				
+                			} 
+            			}
+					}, 
+					error: function(data)
+					{			
+						alert('Erreur de récupération du site sélectionné');
+					}
+				});
+			} else {
+				// Si "tous les sites" est selectionné : Affichage de tous les contacts
+				$.ajax({
+					url: "{{ path('lci_ajax_bon_get_infos_contacts') }}",
+					method: 'POST',
+					data: {'id_contact':null},
+					success: function(data)
+					{
+						es_contacts = $.parseJSON(data);
+
+						html_option = "<option value=''>Tous</option>";
+						$(es_contacts).each(function()
+						{
+							html_option += "<option value='" + this.id + "'>" + this.nom + "</option>";
+						});
+
+						// On redefini le select
+						$('#select_contact').html(html_option);
+
+
+                        // On reselectionne le contact précédemment selectionné
+                        if (id_ancien_contact_selectionne != '')
+                        {
+                            if ($("#select_contact option[value='" + id_ancien_contact_selectionne + "']").length != 0)
+                            {
+                                $("#select_contact").val(id_ancien_contact_selectionne);
+								$('#obj_recherche_bons_attachement_nomDuContact').val(id_ancien_contact_selectionne);
+                            }
+                        }
+					},
+					error: function(data) {
+						alert(data);
+					}
+				});	
+			}	
+		});
+
+		// On active le listener au chargement de la page html
+		$('#obj_recherche_bons_attachement_site').trigger('change');
+
+
+		// On place l'id du contact selectionné dans le champs du formulaire de recherche
+		$('#select_contact').change(function() 
+		{
+			$('#obj_recherche_bons_attachement_nomDuContact').val($('#select_contact').val());
+		});
+
+
+	// Fin du ready
     });
 
 

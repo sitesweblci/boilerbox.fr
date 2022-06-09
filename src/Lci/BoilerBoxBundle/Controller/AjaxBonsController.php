@@ -416,21 +416,6 @@ class AjaxBonsController extends Controller
     }
 
 
-
-
-	public function getInfosContactAction()
-	{
-		$e_contact = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:Contact')->find($_POST['id_contact']);
-        // On retourne le fichier serialize
-        $serializer = $this->get('serializer');
-        $jsonContent = $serializer->serialize(
-            $e_contact,
-            'json', array('groups' => array('groupContact'))
-        );
-        return new Response($jsonContent);
-	}
-
-
 	// Fonction qui vérifie qu'une url existe vers le chemin des photos pour un bon
 	// Fonction executée avec l'action de creation et téléchargement du fichier bat
 	public function hasUrlAction($id_bon = null)
@@ -556,6 +541,37 @@ class AjaxBonsController extends Controller
         }
     }
 
+
+    public function getInfosContactsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if (isset($_POST['id_contact']))
+        {
+            // Si id_contact est vide on retourne tous les contacts
+            if ($_POST['id_contact'] == null)
+            {
+                $es_contacts    = $em->getRepository('LciBoilerBoxBundle:Contact')->findBy([], ['nom' => 'ASC']);
+                // On retourne le fichier serialize
+                $serializer     = $this->get('serializer');
+                $jsonContent    = $serializer->serialize(
+                    $es_contacts,
+                    'json', array('groups' => array('groupContact'))
+                );
+                return new Response($jsonContent);
+            } else {
+                $e_contact      = $em->getRepository('LciBoilerBoxBundle:Contact')->find($_POST['id_contact']);
+                // On retourne le fichier serialize
+                $serializer     = $this->get('serializer');
+                $jsonContent    = $serializer->serialize(
+                    $e_contact,
+                    'json', array('groups' => array('groupContact'))
+                );
+            }
+           	return new Response($jsonContent);
+        }
+        return new Response();
+    }
 
 
 	// Gestion des EQUIPEMENTS	***************************

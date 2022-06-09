@@ -83,6 +83,7 @@ class SiteBA
 
     /**
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Contact", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"nom" = "ASC"})
      * @Groups({"groupContact"})
      */
     private $contacts;

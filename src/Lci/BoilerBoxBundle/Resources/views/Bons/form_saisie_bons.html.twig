@@ -792,7 +792,7 @@
             {
                 attendreRechargement();
                 $.ajax({
-                    url: "{{ path('lci_ajax_bon_get_infos_contact') }}",
+                    url: "{{ path('lci_ajax_bon_get_infos_contacts') }}",
                     method: "post",
                     data: {'id_contact':$('#select_contact').val()},
                     success: function(data)
