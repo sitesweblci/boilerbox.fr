@@ -122,32 +122,19 @@
 				</div>
 			</div>
 		</fieldset>
-		<fieldset class="fieldset champs_pour_bons">
-			<h2 class="fieldset__title">Pièces</h2>
-			<div class="form__field">
-                <div>
-                    {{ form_label(form.pieces) }}
-                    {{ form_widget(form.pieces) }}
-                    {{ form_errors(form.pieces) }}
-                </div>
-			</div>
-		</fieldset>
 
 		<fieldset class="fieldset">
             <h2 class="fieldset__title">Contact</h2>
             <div class="form__field">
 				<select id='select_contact'></select>
             </div>
+			<div class="form__field">
+                {{ form_label(form.nomDuContact) }}
+                {{ form_widget(form.nomDuContact) }}
+                {{ form_errors(form.nomDuContact) }}
+            </div>
         </fieldset>
 
-		<fieldset class="fieldset">
-			<h2 class="fieldset__title">Contact</h2>
-			<div class="form__field">
-				{{ form_label(form.nomDuContact) }}
-				{{ form_widget(form.nomDuContact) }}
-				{{ form_errors(form.nomDuContact) }}
-			</div>
-		</fieldset>
 		<fieldset class="fieldset">
 			<h2 class="fieldset__title">Équipement</h2>
 			<div class="form__field">
@@ -167,6 +154,7 @@
 				<div id='checkbox_validation' style="margin-top:16px;">
 					<div>{{ form_widget(form.validationTechnique) }}</div>
 					<div>{{ form_widget(form.validationPiece) }}</div>
+					<div>{{ form_widget(form.validationPieceFaite) }}</div>
 					<div>{{ form_widget(form.validationSAV) }}</div>
                 	<div>{{ form_widget(form.validationFacturation) }}</div>
 				</div>
@@ -226,9 +214,9 @@
 		$('#obj_recherche_bons_attachement_sensValidation_0').trigger("click");
 
 		// Selection de bons, tickets ou tous : On affiche ou cache les champs spécifiques aux bons
-		$('#obj_recherche_bons_attachement_type').click(function()
+		$('#obj_recherche_bons_attachement_type').change(function()
 		{
-			if ($('#obj_recherche_bons_attachement_type').val() == 'tickets')
+			if ($('#obj_recherche_bons_attachement_type').val() == 'ticket')
 			{
 				$('.champs_pour_bons').addClass('cacher');
 			} else {

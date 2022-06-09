@@ -14,8 +14,6 @@ class ObjRechercheBonsAttachement {
 	 * @var string
 	 *
 	 * @Assert\Type("string")
-	 * @Assert\Length(min=6, max=6, exactMessage= "Le numéro doit contenir 6 chiffres")
-	 * @Assert\Regex("/^\d{6}$/", message="Format incorrect. 6 chiffres attendus")
 	*/
 	protected $numeroBA;
 
@@ -152,6 +150,13 @@ class ObjRechercheBonsAttachement {
      * @var boolean
      *
     */
+    protected $validationPieceFaite;
+
+
+    /**
+     * @var boolean
+     *
+    */
     protected $validationSAV;
 
     /**
@@ -168,12 +173,6 @@ class ObjRechercheBonsAttachement {
 	*/
 	protected $sensValidation;
 
-
-    /**
-     * @var string
-     *
-    */
-    protected $pieces;
 
 	/**
 	 * @var string
@@ -200,7 +199,10 @@ class ObjRechercheBonsAttachement {
     protected $numeroDeSerie;
 
 
-
+	/**
+	 * @var string
+	*/
+	protected $conditionValidation;
 
 
 
@@ -597,6 +599,28 @@ class ObjRechercheBonsAttachement {
 
 
     /**
+     * Get ValidationPieceFaite
+     *
+     * @return boolean
+    */
+    public function getValidationPieceFaite() {
+        return $this->validationPieceFaite;
+    }
+
+    /**
+     * Set ValidationPieceFaite
+     *
+     * param boolean $validation
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setValidationPieceFaite($validation) {
+        $this->validationPieceFaite = $validation;
+        return $this;
+    }
+
+
+
+    /**
      * Get ValidationSAV
      *
      * @return boolean
@@ -756,27 +780,28 @@ class ObjRechercheBonsAttachement {
 
 
 
-
-
     /**
-     * Set pieces
+     * Set conditionValidation
      *
-     * param boolean $pieces
-     * @return ObjRechercheBonAttachement
+     * @param string $conditionValidation
+     * @return ObjRechercheBonsAttachement
     */
-    public function setPieces($pieces) {
-        $this->pieces = $pieces;
+    public function setConditionValidation($conditionValidation)
+    {
+        $this->conditionValidation= $conditionValidation;
+
         return $this;
     }
-    /**
-     * Get Pieces
-     *
-     * @return boolean
-    */
-    public function getPieces() {
-        return $this->pieces;
-    }
 
+    /**
+     * Get conditionValidation
+     *
+     * @return string
+    */
+    public function getConditionValidation()
+    {
+        return $this->conditionValidation;
+    }
 
 
 }

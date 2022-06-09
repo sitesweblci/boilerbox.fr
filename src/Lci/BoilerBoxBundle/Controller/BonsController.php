@@ -431,51 +431,6 @@ class BonsController extends Controller
         return null;
     }
 
-    // Fonction qui permet de modifier une entité de la base pour y ajouter des fichiers
-/* ICI DEV A SUPPP
-    public function ajoutFichiersAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        if ($request->getMethod() == 'GET') {
-            $id_bon = $_GET['id_bon'];
-        } else {
-            $id_bon = $_POST['id_bon'];
-        }
-        $e_bons_attachement = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
-        $e_bons_attachement->setFichiersPdfToNull();
-        $form = $this->createForm(BonsAttachementModificationType::class, $e_bons_attachement);
-
-        if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                // Affichage de la liste des nouveau fichiers
-                foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
-                    if ($fichier->getBonAttachement() == null) {
-                        $fichier->setBonAttachement($e_bons_attachement);
-                        $em->persist($fichier);
-                    }
-                }
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . ' modifié.');
-                return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-                    'entity_bon' => $e_bons_attachement,
-                    'form' => $form->createView()
-                ));
-            } else {
-                echo "non valid";
-                print_r($form->getErrors(true));
-                return new Response();
-            }
-        }
-
-        return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-            'entity_bon' => $e_bons_attachement,
-            'form' => $form->createView()
-        ));
-    }
-*/
-
     /* Seul l'initiateur du bon ou l'intervenant peuvent modifier un bon */
     public function modifierUnBonAction($idBon, Request $request)
     {
@@ -520,6 +475,14 @@ class BonsController extends Controller
         if ($request->getSession()->has('objRechercheBon')) 
 		{
             $entity_bon_recherche 	= $request->getSession()->get('objRechercheBon', null);
+
+			// Modification de l'id du contact en nom de contact
+			if ($entity_bon_recherche->getNomDuContact())
+			{
+				$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($entity_bon_recherche->getNomDuContact());
+				$entity_bon_recherche->setNomDuContact($e_contact->getNom());
+			}
+
             $filtre 				= true;
             $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
         } else {
@@ -720,42 +683,54 @@ class BonsController extends Controller
 
         $formulaire_bons_recherche = $this->createForm(ObjRechercheBonsAttachementType::class, $entity_bon_recherche);
         if ($request->getMethod() == 'POST') {
-            if ($formulaire_bons_recherche->handleRequest($request)->isValid()) {
+            if ($formulaire_bons_recherche->handleRequest($request)->isValid()) 
+			{
+				// Indique si lors de la selection de plusieurs Validations nous faisons un AND ou un OR
+				$entity_bon_recherche->setConditionValidation('and');
+
                 // Si un valideur est demandé mais qu'aucun service n'est selectionné, sélection de tous les services
                 // Si la recherche sur la validation est effectuée, on analyse le sens de la validation (bon validé ou bon non validés par un service)
                 // Si la recherche porte sur les bons non validés, on mets les valeurs des validations à false
                 // Paramètre qui indique si la recherche se fait sur les bons validés (valeur par défaut) ou non validés
-                if ($entity_bon_recherche->getSensValidation() === null) {
-                    // Si aucun service de validation n'est selectionné mais qu'un valideur est renseigné, on recherche les bons validés par ce valideur dans tous les services
-                    if ($entity_bon_recherche->getValideur()) {
+                if ($entity_bon_recherche->getSensValidation() === null) 	
+				{
+                    // Si aucun service de validation n'est selectionné mais qu'un valideur est renseigné, on recherche les bons validés par ce valideur dans tous les services (avec un OR)
+                    if ($entity_bon_recherche->getValideur()) 
+					{
                         $entity_bon_recherche->setValidationTechnique(true);
                         $entity_bon_recherche->setValidationPiece(true);
+						$entity_bon_recherche->setValidationPieceFaite(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
+
+						$entity_bon_recherche->setConditionValidation('or');
+						$entity_bon_recherche->setSensValidation(true);
                     } else {
+						// On ne fait pas de recherche sur une validation spécifique
                         $entity_bon_recherche->setValidationTechnique(false);
                         $entity_bon_recherche->setValidationPiece(false);
+						$entity_bon_recherche->setValidationPieceFaite(false);
                         $entity_bon_recherche->setValidationSAV(false);
                         $entity_bon_recherche->setValidationFacturation(false);
                     }
                 } else {
                     // Si une validation par service est demandées
                     // Si aucun service n'est selectionné, on considère qu'on recherche les bons de tous les services
-                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationPiece()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation())) {
+                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationPiece()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation()) && (!$entity_bon_recherche->getValidationPieceFaite())) {
                         $entity_bon_recherche->setValidationTechnique(true);
                         $entity_bon_recherche->setValidationPiece(true);
+						$entity_bon_recherche->setValidationPieceFaite(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
                     }
                 }
 
-                // Sauvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
+                // Snuvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
                 $session->set('objRechercheBon', $entity_bon_recherche);
-
+				
                 return $this->redirectToRoute('lci_bons_visualiser');
             }
         }
-
         return $this->render('LciBoilerBoxBundle:Bons:form_recherche_bons.html.twig', array(
             'form' => $formulaire_bons_recherche->createView()
         ));

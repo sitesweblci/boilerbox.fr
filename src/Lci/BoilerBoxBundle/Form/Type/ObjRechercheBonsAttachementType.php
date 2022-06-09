@@ -95,25 +95,23 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 			'placeholder'   => 'Tout site'
 		))
         ->add('nomDuContact', TextType::class, array(
-            'label'         => 'Nom du contact',
-            'label_attr'    => array ('class' => 'label_smalltext'),
+            'label'         => false,
             'required'      => true,
             'trim'          => true,
             'attr'          => array(
-                'class'         => 'biginput centrer'
+                'class'         => 'biginput centrer cacher'
             )
         ))
 	 	->add('saisie', ChoiceType::class, array(
 			'label'			=> 'Type de bon',
 			'label_attr' 	=> array('class' => 'label_smalltext'),
-			'expanded'		=> true,
+			'expanded'		=> false,
 			'multiple'		=> false,
 			'choices'		=> array(
-                'Tous type de bons' => null,
-                'Bons saisis'    	=> true,
-                'Bons non saisis'   => false
+                'Tous type de bons' => '',
+                'Bons saisis (avec numero de bon)'  => 'oui',
+                'Bons non saisis (sans numéro)' 	=> 'non'
 			),
-            'required'    	=> false
 		))
 		->add('dateMin', DateType::class, array(
             'label' 	 => 'Signé (entre) le ',
@@ -215,7 +213,15 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             'required'    => false
         ))
         ->add('validationPiece', CheckboxType::class, array(
-            'label'       => 'Piéces',
+            'label'       => "Demande d'offre de piéces",
+            'label_attr'  => array('class' => 'label_smalltext'),
+            'attr'        => array(
+                'class'       => 'input_checkbox'
+            ),
+            'required'    => false
+        ))
+        ->add('validationPieceFaite', CheckboxType::class, array(
+            'label'       => 'Offre de pièce',
             'label_attr'  => array('class' => 'label_smalltext'),
             'attr'        => array(
                 'class'       => 'input_checkbox'
@@ -241,7 +247,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 		->add('sensValidation', ChoiceType::class, array(
 			'label'		=> 'Validation',
 			'choices'	=> array(
-                'Aucune'  			=> null,
+                ' '  				=> null,
                 'Bons validés'  	=> true,
                 'Bons non validés' 	=> false
 			),
@@ -252,9 +258,9 @@ class ObjRechercheBonsAttachementType extends AbstractType {
         ->add('type', ChoiceType::class, array(
             'label'     => 'Genre',
             'choices'   => array(
-                'Tous les genres'   => 'tous',
-                'Bons'      		=> 'bons',
-                'Tickets'  			=> 'tickets'
+                'Bon & Tickets' => '',
+                'Bons'      	=> 'bon',
+                'Tickets'  		=> 'ticket'
             ),
             'expanded'  => false,
             'multiple'  => false
@@ -262,6 +268,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
         ->add('typeIntervention', ChoiceType::class, array(
             'label'         => "Type d'intervention",
             'choices'       => [
+				'Toutes'			=> '',
                 'Mise en service'   => 'mes',
                 'SAV'               => 'sav',
                 'Rapport mensuel'   => 'rptmensuel'
@@ -271,18 +278,10 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             'label'         => 'Service',
             'placeholder'   => 'Tous',
             'choices'       => [
+				'Tous'		=> '',
                 'Bosch'     => 'bosch',
                 'Certus'    => 'certus',
                 'Export'    => 'export'
-            ],
-            'required' => false
-        ))
-        ->add('pieces', ChoiceType::class, array(
-            'label'         => 'Pièces',
-            'placeholder'   => 'Tous',
-            'choices'       => [
-                'Pièces demandées'   	=> 'demande',
-                'Offre de pièces faite'	=> 'fait'
             ],
             'required' => false
         ));
