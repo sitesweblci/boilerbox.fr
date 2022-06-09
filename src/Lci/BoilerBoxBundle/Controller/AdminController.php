@@ -334,19 +334,27 @@ class AdminController extends Controller
         $entity_role 	= new Role();
         $form 			= $this->createForm(RoleType::class, $entity_role);
         $form->handleRequest($request);
-        // Par défaut on affiche les utilisateurs ayant le role user
-        $role = 'ROLE_USER';
 
-        if ($request->getMethod() == 'POST') {
-            if ($form->isValid()) {
+        // Par défaut on affiche les utilisateurs ayant le role user
+        $role			 = 'ROLE_USER';
+
+        if ($request->getMethod() == 'POST') 
+		{
+            if ($form->isValid()) 
+			{
+				echo "valid";
                 // Enregistrement du nouveau ROLE
                 $em->persist($entity_role);
                 $em->flush();
             }
-            // Si on récupére un rôle on recherche la liste des utilisateurs appartenant au groupe définie par le role
-            if (isset($_POST['role'])) {
+            // Si on récupére un rôle on recherche la liste des utilisateurs appartenant au groupe défini par le role
+            if (isset($_POST['role'])) 
+			{
                 $t_role = $_POST['role'];
-				$role = strtoupper($t_role);
+				if (gettype($t_role) == 'string')
+				{
+					$role = strtoupper($t_role);
+				}
             }
         }
 

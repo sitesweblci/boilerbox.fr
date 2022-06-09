@@ -1083,9 +1083,13 @@
     // Cache les non membre du service du select html
     $('#bons_attachement_service').change(function() 
 	{
+        // On sauvegarde le nom de l'intervenant selectionné
+        var intervenant = $('#bons_attachement_user').val();
+
         // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
         $('#bons_attachement_user').html(sauvegarde_select_user);
 
+		var intervenant_identique = false;
         $.ajax("{{ path('lci_ajax_bons_select_service') }}",
         {
             async: false,
@@ -1096,14 +1100,27 @@
                 // Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
                 if (data != '') {
                     var t_data = JSON.parse(data);
-                    $('#bons_attachement_user option').each(function(){
+                    $('#bons_attachement_user option').each(function()
+					{
                         if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
                         {
                             $(this).addClass('cacher');
-                        }
+                        } else {
+                            // On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
+                            // Si oui on le reselectionnera
+                            if ($(this).val() == intervenant)
+                            {
+                                intervenant_identique = true;
+                            }
+						}
                     });
-                    // Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
-                    $('#bons_attachement_user option[value=""]').prop('selected', true);
+                    if (intervenant_identique == true)
+                    {
+                        $('#bons_attachement_user').val(intervenant);
+                    } else {
+                        // Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
+                        $('#bons_attachement_user option[value=""]').prop('selected', true);
+                    }
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
