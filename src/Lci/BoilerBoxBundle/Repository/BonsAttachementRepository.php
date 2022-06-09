@@ -302,7 +302,7 @@ class BonsAttachementRepository extends EntityRepository
 
     public function findAllByDtCreation()
     {
-        return $this->findBy(array(), array('dateInitialisation' => 'ASC'));
+        return $this->findBy(array(), array('dateInitialisation' => 'DESC'));
     }
 
 }
