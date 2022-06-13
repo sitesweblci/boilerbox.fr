@@ -168,7 +168,6 @@ $(document).ready(function()
             method: "POST",
             success: function(output)
             {
-				console.log('success JSON');
 				try {
                    	// On recoit une réponse ajax : 
 					//					L'équipement a été enregistré : On recoit l'entité de l'equipement
@@ -176,59 +175,28 @@ $(document).ready(function()
 
                 	var $data_e_equipement = JSON.parse(output);
 
-					console.log('try ok');
-					console.log($data_e_equipement);
+                    $('#equipement_ba_ticket_id').val($data_e_equipement.id);
+                    $('#equipement_ba_ticket_siteBA').val($data_e_equipement.siteBA.id);
+                    $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
+                    $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
+                    $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
+                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
+                    var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
+                    $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
+                    $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
 
-/*
-					var $html_equipement = "<td style='cursor:pointer;' onClick=\"creerModifierEquipement('" + $data_e_equipement['id'] + "');\">x</td>" + "<td>" + $data_e_equipement['numeroDeSerie'] + "</td>" + "<td>" + $data_e_equipement['denomination'] + "</td>" + "<td>" + $data_e_equipement['autreDenomination'] + "</td>";
-					$("#tr_equipement_" + $data_e_equipement['id']).html($html_equipement);
-
-					
-					// Modification de la checkbox
-					var new_input = "<input type='checkbox' checked id='equipement_" + $data_e_equipement['id'] + "' name='equipement_" + $data_e_equipement['id'] + "' value='" + $data_e_equipement['id'] + "' style='display:inline-block; border:2px solid gray; cursor:pointer;' onClick=\"deplaceEquipement('" + $data_e_equipement['id'] + "', '" + $data_e_equipement['numeroDeSerie'] + "', '" + $data_e_equipement['denomination'] + "', '" + $data_e_equipement['autreDenomination'] + "')\" />";
-					$('#equipement_' + $data_e_equipement['id']).replaceWith(new_input);
-
-					// Modification du numéro de série
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:first-child').text($data_e_equipement['numeroDeSerie']);
-					// Modification du construit le
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(2)').text(dateTransformeEntiteSerialise($data_e_equipement['anneeDeConstruction']));
-					// Modification de dénomination
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(3)').text($data_e_equipement['denomination']);
-                    // Modification de autre dénomination
-                    $('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(4)').text($data_e_equipement['autreDenomination']);
-					// Modification de site 
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(5)').text($data_e_equipement['siteBA']['intitule']);
-
-
-
-					togglePopUp(popupSelectionEquipement);
-*/
-                        $('#equipement_ba_ticket_id').val($data_e_equipement.id);
-                        $('#equipement_ba_ticket_siteBA').val($data_e_equipement.siteBA.id);
-                        $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
-                        $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
-                        $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
-                        var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
-                        var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
-                        $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
-                        $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
-
-					// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
 					if ($type_action == 'recherche')
 					{
-						console.log('recherche : remove ');
+						// On affiche les informations de l'équipement recherché
 						togglePopUp(popupEquipement2);
 						finAttendreRechargement();
 					} else if ($type_action == 'modification')
 					{
-						console.log('modification');
-						//togglePopUp(popupEquipement2);
-						//finAttendreRechargement();
+						// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
 						$('#bons_attachement_modification_equipementBATicket').remove();
 					}
 				} catch(e)
 				{
-					console.log(output);
 					// Si reception d'un page HTML c'est qu'on recoit le formulaire du bon
 					// On modifie le contenu de la popup de création d'équipement pour lui mettre le contenu de l'équipement à modifier
 					$('#popupEquipement2').html(output);
