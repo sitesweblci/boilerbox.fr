@@ -10,6 +10,9 @@ lci_bons_visualiser:
 lci_bons_rechercher:
     path: /bons/rechercher
     defaults: { _controller: LciBoilerBoxBundle:Bons:rechercher }
+lci_bon_rechecher_reset:
+    path: /bons/rechercher_reset
+    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercherReset }
 lci_ajax_bons_setEnquete:
     path: /bons/ajax/setEnquete
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setEnquete }
@@ -30,7 +33,7 @@ lci_bons_externe_enquete:
     defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
 lci_bons_sitesBA_visualiser:
     path: /bons/sitesBA/visualiser/{idSiteActif}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: 1 }
+    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: null }
 lci_bons_admin_site_index:
     path: /bons/admin/site/index
     defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
@@ -61,9 +64,9 @@ lci_ajax_bon_new_siteBA:
 lci_ajax_siteba_new_contact:
     path: /aj/siteba/new_contact
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerContactsSitesBA }
-lci_ajax_bon_get_infos_contact:
-    path: /bons/ajax/get_infos_contact
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getInfosContact }
+lci_ajax_bon_get_infos_contacts:
+    path: /bons/ajax/get_infos_contacts
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getInfosContacts }
 lci_ajax_siteBA_del_file:
     path: /bons/ajax/siteBA/delete_file
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileSiteBA }

@@ -27,7 +27,7 @@ class BonsAttachement {
     /**
      * @var string
      *
-     * @ORM\Column(type="integer", name="numero_ba", nullable=false)
+     * @ORM\Column(type="string", name="numero_ba", nullable=true)
 	*/
 	protected $numeroBA;
 
@@ -903,6 +903,7 @@ class BonsAttachement {
      */
     public function removeEquipementBATicket(\Lci\BoilerBoxBundle\Entity\EquipementBATicket $equipementBATicket)
     {
+		$equipementBATicket->removeBonsAttachement($this);
         return $this->equipementBATicket->removeElement($equipementBATicket);
     }
 

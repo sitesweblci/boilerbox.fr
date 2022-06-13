@@ -12,26 +12,35 @@
 	<h1 class="sub-header__title">{% if is_granted('ROLE_SECRETERIAT') %}Bons {% else %}Mes bons {% endif %}d'interventions</h1>
 </header>
 <div class='card-wrapper'>
+    {% if is_granted('ROLE_SAISIE_TICKET') %}
+        <div class="card" onClick="attente(); redirection('ticketsSaisie'); return false;">
+            <img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des tickets incidents" >
+            <div class="card__container">
+                <h4 class="card__container__title">Saisie ticket à distance</h4>
+                <p class="card__container__desc">Créer un nouveau ticket d'incident</p>
+            </div>
+        </div>
+    {% endif %}
     {% if is_granted('ROLE_SAISIE_BA') %}
 	    <div class="card" onClick="attente(); redirection('bonsSaisie'); return false;">
 	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des bons d'interventions" >
 	    	<div class="card__container">
-	    		<h4 class="card__container__title">Saisie</h4>
-	    		<p class="card__container__desc">Créer un nouveau bon de saisie en renseignant les infos de site et d'intervention</p>
+	    		<h4 class="card__container__title">Saisie intervention site</h4>
+	    		<p class="card__container__desc">Créer un nouveau bon d'intervention</p>
 	    	</div>
 	    </div>
     {% endif %}
     <div class="card" onClick="attente(); redirection('bonsVisualiser'); return false;">
-    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu.svg') }}" alt="Visualisation des bons d'interventions" >
+    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu.svg') }}" alt="Visualisation des bons et tickets" >
     	<div class="card__container">
-    		<h4 class="card__container__title">Visualiser</h4>
-    		<p class="card__container__desc">Liste des bons d'interventions<p>
+    		<h4 class="card__container__title">Visualiser les bons et tickets</h4>
+    		<p class="card__container__desc">Affichage et recherches des bons et tickets<p>
     	</div>
     </div>
     <div class="card" onClick="attente(); redirection('sitesBAVisualiser'); return false;">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu-site.svg') }}" alt="Visualisation des sites" >
     	<div class="card__container">
-    		<h4 class="card__container__title">Visualiser sites</h4>
+    		<h4 class="card__container__title">Visualiser les sites</h4>
     		<p class="card__container__desc">Synthése d'un site avec adresse, contact, fichiers etc...</p>
     	</div>
     </div>

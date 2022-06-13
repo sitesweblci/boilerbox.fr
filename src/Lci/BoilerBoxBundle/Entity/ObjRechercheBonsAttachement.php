@@ -14,8 +14,6 @@ class ObjRechercheBonsAttachement {
 	 * @var string
 	 *
 	 * @Assert\Type("string")
-	 * @Assert\Length(min=6, max=6, exactMessage= "Le numéro doit contenir 6 chiffres")
-	 * @Assert\Regex("/^\d{6}$/", message="Format incorrect. 6 chiffres attendus")
 	*/
 	protected $numeroBA;
 
@@ -152,6 +150,13 @@ class ObjRechercheBonsAttachement {
      * @var boolean
      *
     */
+    protected $validationPieceFaite;
+
+
+    /**
+     * @var boolean
+     *
+    */
     protected $validationSAV;
 
     /**
@@ -167,6 +172,37 @@ class ObjRechercheBonsAttachement {
 	 *
 	*/
 	protected $sensValidation;
+
+
+	/**
+	 * @var string
+	 *	
+	*/
+	protected $type;
+
+    /**
+     * @var string
+     *
+    */
+    protected $typeIntervention;
+
+    /**
+     * @var string
+     *
+    */
+    protected $service;
+
+    /**
+     * @var string
+     *
+    */
+    protected $numeroDeSerie;
+
+
+	/**
+	 * @var string
+	*/
+	protected $conditionValidation;
 
 
 
@@ -563,6 +599,28 @@ class ObjRechercheBonsAttachement {
 
 
     /**
+     * Get ValidationPieceFaite
+     *
+     * @return boolean
+    */
+    public function getValidationPieceFaite() {
+        return $this->validationPieceFaite;
+    }
+
+    /**
+     * Set ValidationPieceFaite
+     *
+     * param boolean $validation
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setValidationPieceFaite($validation) {
+        $this->validationPieceFaite = $validation;
+        return $this;
+    }
+
+
+
+    /**
      * Get ValidationSAV
      *
      * @return boolean
@@ -616,7 +674,6 @@ class ObjRechercheBonsAttachement {
 		return $this;
 	}
 
-
 	/**
 	 * Get Saisie
 	 * 
@@ -636,7 +693,6 @@ class ObjRechercheBonsAttachement {
     public function getSensValidation() {
         return $this->sensValidation;
     }
-
     /**
      * Set SensValidation
      *
@@ -649,6 +705,103 @@ class ObjRechercheBonsAttachement {
     }
 
 
+
+
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setType($type)
+    {
+        $this->type = ucfirst(strtolower($type));
+
+        return $this;
+    }
+    /**
+     * Get type
+     *
+     * @return string
+    */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+
+    /**
+     * Set typeIntervention
+     *
+     * @param string $typeIntervention
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setTypeIntervention($typeIntervention)
+    {
+        $this->typeIntervention = ucfirst(strtolower($typeIntervention));
+
+        return $this;
+    }
+    /**
+     * Get typeIntervention
+     *
+     * @return string
+    */
+    public function getTypeIntervention()
+    {
+        return $this->typeIntervention;
+    }
+
+
+
+
+    /**
+     * Set service
+     *
+     * @param string $service
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setService($service)
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+    /**
+     * Get service
+     *
+     * @return string
+    */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+
+
+    /**
+     * Set conditionValidation
+     *
+     * @param string $conditionValidation
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setConditionValidation($conditionValidation)
+    {
+        $this->conditionValidation= $conditionValidation;
+
+        return $this;
+    }
+
+    /**
+     * Get conditionValidation
+     *
+     * @return string
+    */
+    public function getConditionValidation()
+    {
+        return $this->conditionValidation;
+    }
 
 
 }

@@ -20,18 +20,19 @@ class BonsAttachementModificationType extends BaseType {
 	public function buildForm(FormBuilderInterface $builder, array $options) 
 	{
 		parent::buildForm($builder, $options);
-/*		$builder->add('numeroBA', TextType::class, array(
+		$builder
+//		->remove('equipementBATicket')
+		->add('numeroBA', TextType::class, array(
             'label'         => 'Numéro du bon',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'required'      => true,
             'trim'          => true,
             'attr'          => array(
                 'placeholder'   => 'XXXXXX',
-                'maxlength'     => 6
+                'maxlength'     => 6,
+				'class'			=> 'centrer'
             )
         ));
-*/
-
 	}
 
 

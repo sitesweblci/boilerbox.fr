@@ -65,7 +65,6 @@ class BonsController extends Controller
         }
     }
 
-
     public function indexAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
@@ -120,7 +119,7 @@ class BonsController extends Controller
                 }
             }
 
-			// Envoyer lors de l'envoi du formulaire de site
+			// Envoyé lors de l'envoi du formulaire de site
 			if (isset($_POST['save_form_bon']))
 			{
 				$enregistrement_html_form_bon = $_POST['save_form_bon'];
@@ -168,11 +167,7 @@ class BonsController extends Controller
 						// On défini le type pour distinguer bon de ticket
 						$e_bons_attachement->setType('bon');
 
-						// On incrémente le numero de BA pour définir le nouveau numéro
-						// Selection des numeroBA avec type=bon
-						$tmp_numeroBa = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('bon');
-						$tmp_numeroBa ++;	
-						$e_bons_attachement->setNumeroBA($tmp_numeroBa);
+						// Le numero BA est remplit par le techniciens
 
 						// Enregistrement du bon
                     	$em->persist($e_bons_attachement);
@@ -212,6 +207,7 @@ class BonsController extends Controller
                     	} else {
                     	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
                     	}
+						// Envoi du mail à l'intervenant uniquement
                     	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
 					}
                 } catch (\Exception $e) {
@@ -435,51 +431,6 @@ class BonsController extends Controller
         return null;
     }
 
-    // Fonction qui permet de modifier une entité de la base pour y ajouter des fichiers
-/* ICI DEV A SUPPP
-    public function ajoutFichiersAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        if ($request->getMethod() == 'GET') {
-            $id_bon = $_GET['id_bon'];
-        } else {
-            $id_bon = $_POST['id_bon'];
-        }
-        $e_bons_attachement = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
-        $e_bons_attachement->setFichiersPdfToNull();
-        $form = $this->createForm(BonsAttachementModificationType::class, $e_bons_attachement);
-
-        if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                // Affichage de la liste des nouveau fichiers
-                foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
-                    if ($fichier->getBonAttachement() == null) {
-                        $fichier->setBonAttachement($e_bons_attachement);
-                        $em->persist($fichier);
-                    }
-                }
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $e_bons_attachement->getNumeroBA() . ' modifié.');
-                return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-                    'entity_bon' => $e_bons_attachement,
-                    'form' => $form->createView()
-                ));
-            } else {
-                echo "non valid";
-                print_r($form->getErrors(true));
-                return new Response();
-            }
-        }
-
-        return $this->render('LciBoilerBoxBundle:Bons:form_ajout_fichiers_bons.html.twig', array(
-            'entity_bon' => $e_bons_attachement,
-            'form' => $form->createView()
-        ));
-    }
-*/
-
     /* Seul l'initiateur du bon ou l'intervenant peuvent modifier un bon */
     public function modifierUnBonAction($idBon, Request $request)
     {
@@ -517,32 +468,44 @@ class BonsController extends Controller
     public function visualiserAction($refresh = null, Request $request)
     {
         $filtre = false;
-        if ($refresh !== null) {
+        if ($refresh !== null) 
+		{
             $request->getSession()->remove('objRechercheBon');
         }
         // Si une recherche existe pour le bon affichage de la recherche
-        if ($request->getSession()->has('objRechercheBon')) {
-            $entity_bon_recherche = $request->getSession()->get('objRechercheBon', null);
-            $filtre = true;
-            $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
+        if ($request->getSession()->has('objRechercheBon')) 
+		{
+            $entity_bon_recherche 	= $request->getSession()->get('objRechercheBon', null);
+
+			// Modification de l'id du contact en nom de contact
+			if ($entity_bon_recherche->getNomDuContact())
+			{
+				$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($entity_bon_recherche->getNomDuContact());
+				$entity_bon_recherche->setNomDuContact($e_contact->getNom());
+			}
+
+            $filtre 				= true;
+            $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
         } else {
             // On vérifie quel est le type du compte.
             // Si il a les droits de gestion ba il peut visualiser tous les bons
             // Sinon il ne peut visualiser que ses bons
-            if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) {
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) 
+			{
                 // Affichage de tous les bons
-                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAll();
+                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAllByDtCreation();
             } else {
                 // Affichage des bons de l'utilisateur courant
-                $e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
-                $entity_bon_recherche = new ObjRechercheBonsAttachement();
+                $e_user_courant 		= $this->get('security.token_storage')->getToken()->getUser();
+                $entity_bon_recherche 	= new ObjRechercheBonsAttachement();
                 $entity_bon_recherche->setUser($e_user_courant);
                 $entity_bon_recherche->setSaisie(false);
-                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
-                //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
 
+                $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
+                //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
             }
         }
+
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_bons.html.twig', array(
             'filtre' => $filtre,
             'entities_bon' => $entities_bons
@@ -590,11 +553,13 @@ class BonsController extends Controller
 			{
                 if ($f_ba_modification->isValid()) 
 				{
+					$tab_des_equipements_modif = array();
                     foreach($_POST as $key => $variable_post)
                     {
                         $pattern_equipement = '/equipement_/';
                         if (preg_match($pattern_equipement, $key))
                         {
+							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
 							if (!$entity_bon->getEquipementBATicket()->contains($e_tmp_equipement))
@@ -618,15 +583,34 @@ class BonsController extends Controller
                             }
                         }
                     }
+
                     $em->flush();
+					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
+					$tab_des_equipements_presents = array();
+					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
+					{
+						array_push($tab_des_equipements_presents, $e_equipement_ba_ticket_modif->getId());
+					}
+
+					foreach($tab_des_equipements_presents as $key => $id_equipement_present)
+					{
+						if (in_array($id_equipement_present, $tab_des_equipements_modif) == false)
+						{
+							$e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement_present);
+							// Gère la relation inverse
+							$entity_bon->removeEquipementBATicket($e_tmp_equipement);
+						}
+					}
+					$em->flush();
+
+					// On recree le formulaire des bons avec la prise en compte des modification sur les équipements
+					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
                 } else {
                     $f_ba_modification->addError(new FormError($form_message_erreur));
                 }
             }
         }
 
-		$commentaires = $entity_bon->getCommentaires();
-		$es_sitesBA = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
 
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
             'entity_bon' 				=> $entity_bon,
@@ -634,8 +618,12 @@ class BonsController extends Controller
             'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
             'max_upload_size' 			=> $max_upload_size,
-			'commentaires'				=> $commentaires,
-			'es_sitesBA'				=> $es_sitesBA
+			'commentaires'				=> $entity_bon->getCommentaires(),
+			'es_sitesBA'				=> $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll(),
+			'latitude'					=> $this->getLatLng('latitude', $entity_bon->getSite()->getLienGoogle()),
+			'longitude'					=> $this->getLatLng('longitude', $entity_bon->getSite()->getLienGoogle()),
+			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
+			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
         ));
     }
 
@@ -659,6 +647,13 @@ class BonsController extends Controller
         }
         return $this->redirectToRoute('lci_bons_afficher_unbon');
     }
+
+	// Action du bouton reset de la recherche
+	public function rechercherResetAction(Request $request)
+	{
+		$request->getSession()->remove('objRechercheBon');
+		return $this->redirectToRoute('lci_bons_rechercher');
+	}
 
     public function rechercherAction(Request $request)
     {
@@ -696,30 +691,43 @@ class BonsController extends Controller
 
         $formulaire_bons_recherche = $this->createForm(ObjRechercheBonsAttachementType::class, $entity_bon_recherche);
         if ($request->getMethod() == 'POST') {
-            if ($formulaire_bons_recherche->handleRequest($request)->isValid()) {
+            if ($formulaire_bons_recherche->handleRequest($request)->isValid()) 
+			{
+				// Indique si lors de la selection de plusieurs Validations nous faisons un AND ou un OR
+				$entity_bon_recherche->setConditionValidation('and');
+
                 // Si un valideur est demandé mais qu'aucun service n'est selectionné, sélection de tous les services
                 // Si la recherche sur la validation est effectuée, on analyse le sens de la validation (bon validé ou bon non validés par un service)
                 // Si la recherche porte sur les bons non validés, on mets les valeurs des validations à false
                 // Paramètre qui indique si la recherche se fait sur les bons validés (valeur par défaut) ou non validés
-                if ($entity_bon_recherche->getSensValidation() === null) {
-                    // Si aucun service de validation n'est selectionné mais qu'un valideur est renseigné, on recherche les bons validés par ce valideur dans tous les services
-                    if ($entity_bon_recherche->getValideur()) {
+                if ($entity_bon_recherche->getSensValidation() === null) 	
+				{
+                    // Si aucun service de validation n'est selectionné mais qu'un valideur est renseigné, on recherche les bons validés par ce valideur dans tous les services (avec un OR)
+                    if ($entity_bon_recherche->getValideur()) 
+					{
                         $entity_bon_recherche->setValidationTechnique(true);
                         $entity_bon_recherche->setValidationPiece(true);
+						$entity_bon_recherche->setValidationPieceFaite(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
+
+						$entity_bon_recherche->setConditionValidation('or');
+						$entity_bon_recherche->setSensValidation(true);
                     } else {
+						// On ne fait pas de recherche sur une validation spécifique
                         $entity_bon_recherche->setValidationTechnique(false);
                         $entity_bon_recherche->setValidationPiece(false);
+						$entity_bon_recherche->setValidationPieceFaite(false);
                         $entity_bon_recherche->setValidationSAV(false);
                         $entity_bon_recherche->setValidationFacturation(false);
                     }
                 } else {
                     // Si une validation par service est demandées
                     // Si aucun service n'est selectionné, on considère qu'on recherche les bons de tous les services
-                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationPiece()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation())) {
+                    if ((!$entity_bon_recherche->getValidationTechnique()) && (!$entity_bon_recherche->getValidationPiece()) && (!$entity_bon_recherche->getValidationSAV()) && (!$entity_bon_recherche->getValidationFacturation()) && (!$entity_bon_recherche->getValidationPieceFaite())) {
                         $entity_bon_recherche->setValidationTechnique(true);
                         $entity_bon_recherche->setValidationPiece(true);
+						$entity_bon_recherche->setValidationPieceFaite(true);
                         $entity_bon_recherche->setValidationSAV(true);
                         $entity_bon_recherche->setValidationFacturation(true);
                     }
@@ -727,11 +735,10 @@ class BonsController extends Controller
 
                 // Sauvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
                 $session->set('objRechercheBon', $entity_bon_recherche);
-
+				
                 return $this->redirectToRoute('lci_bons_visualiser');
             }
         }
-
         return $this->render('LciBoilerBoxBundle:Bons:form_recherche_bons.html.twig', array(
             'form' => $formulaire_bons_recherche->createView()
         ));
@@ -746,14 +753,21 @@ class BonsController extends Controller
     // Fonction qui permet de visualiser les informations d'un site
     public function visualiserSitesAction($idSiteActif)
     {
-        $ents_sitesBA = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
-        $ent_siteBA_actif = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->find($idSiteActif);
+		
+        $ents_sitesBA 		= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+		if ($idSiteActif == null)
+		{
+			$idSiteActif = $ents_sitesBA[0]->getId();
+		}
+        $ent_siteBA_actif 	= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->find($idSiteActif);
 
         $ent_siteBA_actif->setLienGoogle($this->putZoomApi($this->putApiKey($ent_siteBA_actif->getLienGoogle())));
+
+
         //'https://www.google.com/maps/embed/v1/view?key=APIKEY&center='.trim($matches[1]).','.trim($matches[2]).'&zoom=ZOOMAPI&maptype=satellite';
 
-        $latitude = $this->getLatLng('latitude', $ent_siteBA_actif->getLienGoogle());
-        $longitude = $this->getLatLng('longitude', $ent_siteBA_actif->getLienGoogle());
+        $latitude 	= $this->getLatLng('latitude', $ent_siteBA_actif->getLienGoogle());
+        $longitude 	= $this->getLatLng('longitude', $ent_siteBA_actif->getLienGoogle());
 
         return $this->render('LciBoilerBoxBundle:Bons:visualiser_sitesBA.html.twig', array(
             'ents_sitesBA' 		=> $ents_sitesBA,

@@ -70,7 +70,8 @@ class BonsAttachementType extends AbstractType {
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
-                'maxlength'     => 10
+                'maxlength'     => 10,
+				'class'			=> 'centrer'
             )
         ))
 /*
@@ -116,7 +117,8 @@ class BonsAttachementType extends AbstractType {
             'invalid_message' => 'Format de la date incorrect.',
 			'attr' 			=> array(
 				'placeholder' 	=> 'dd/mm/YYYY',
-				'maxlength' 	=> 10
+				'maxlength' 	=> 10,
+                'class'         => 'centrer'
 			),
             'required'      => false
 		))
@@ -129,7 +131,8 @@ class BonsAttachementType extends AbstractType {
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
-                'maxlength'     => 10
+                'maxlength'     => 10,
+                'class'         => 'centrer'
             ),
 			'required'		=> false
         ))
@@ -142,7 +145,8 @@ class BonsAttachementType extends AbstractType {
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
-                'maxlength'     => 10
+                'maxlength'     => 10,
+                'class'         => 'centrer'
             ),
             'required'      => false
         ))

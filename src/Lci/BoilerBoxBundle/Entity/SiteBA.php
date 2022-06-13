@@ -34,7 +34,7 @@ class SiteBA
      *
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotNull(message="Nom du site manquant")
-     * @Groups({"groupContact"})
+     * @Groups({"groupContact", "groupEquipement"})
     */
     protected $intitule;
 
@@ -83,6 +83,7 @@ class SiteBA
 
     /**
      * @ORM\OneToMany(targetEntity="Lci\BoilerBoxBundle\Entity\Contact", mappedBy="siteBA", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"nom" = "ASC"})
      * @Groups({"groupContact"})
      */
     private $contacts;
@@ -309,8 +310,8 @@ class SiteBA
 
 
 	public function setFichiersJointToEmpty() {
-                                    		$this->fichiersJoint = array();
-                                    	}
+    	$this->fichiersJoint = array();
+    }
 
 
 

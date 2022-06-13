@@ -24,34 +24,38 @@ class EquipementBATicket
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"groupContact"})
+     * @Groups({"groupContact", "groupEquipement"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"groupEquipement"})
      */
     private $numeroDeSerie;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupContact"})
+     * @Groups({"groupContact", "groupEquipement"})
      */
     private $denomination;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"groupEquipement"})
      */
     private $autreDenomination;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"groupEquipement"})
      */
     private $anneeDeConstruction;
 
     /**
      * @ORM\ManyToOne(targetEntity="Lci\BoilerBoxBundle\Entity\SiteBA", cascade={"persist"}, inversedBy="equipementBATickets")
      * @ORM\JoinColumn(name="siteBA_id", referencedColumnName="id", nullable=false)
+     * @Groups({"groupEquipement"})
      */
     private $siteBA;
 
@@ -64,6 +68,14 @@ class EquipementBATicket
     {
         return $this->id;
     }
+
+    public function setId($id)
+    {
+       	$this->id = $id;
+
+		return $this;
+    }
+
 
     public function getNumeroDeSerie(): ?string
     {

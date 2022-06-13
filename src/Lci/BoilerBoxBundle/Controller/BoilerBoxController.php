@@ -1,5 +1,4 @@
 <?php
-
 namespace Lci\BoilerBoxBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

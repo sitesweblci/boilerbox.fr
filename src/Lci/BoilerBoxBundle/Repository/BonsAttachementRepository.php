@@ -18,7 +18,7 @@ class BonsAttachementRepository extends EntityRepository
 		$qb	->leftJoin('b.user', 'u')
 			->where('u = :intervenant')
 			->setParameter('intervenant', $User); 
-		$qb->andWhere($qb->expr()->orX( $qb->expr()->like('b.numeroBA',':empty'),
+		$qb->andWhere($qb->expr()->orX( $qb->expr()->eq('b.numeroBA',':empty'),
 										$qb->expr()->isNull('b.numeroBA')))
 			->setParameter(':empty', '');
 
@@ -28,12 +28,14 @@ class BonsAttachementRepository extends EntityRepository
 
 
     // Fonction utilisée pour la recherche des bons
-    public function rechercheDesBons($entity_objRechercheBon) {
+    public function rechercheDesBons($entity_objRechercheBon) 
+	{
 		$critereValidation = false;
         $queryBuilder = $this->createQueryBuilder('b');
 		// Si un choix de service valideur est effectué, la validation s'effectue sur les bons validés, les bons non validés 
 		// ou sur les bon validés dans le cas NULL (cad un valideur a été selectionné mais sans choix de service, on a alors considéré que la recherche s'effectue sur tous les services de la liste
-        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) {
+        if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece() || $entity_objRechercheBon->getValidationPieceFaite()) 
+		{
             if ($entity_objRechercheBon->getSensValidation() === false){
 				$sens_validation = 0;
             } elseif ($entity_objRechercheBon->getSensValidation() === true) {
@@ -71,16 +73,18 @@ class BonsAttachementRepository extends EntityRepository
 
 
 		/************************************************** Recherche sur les validations de bons *********************************************************/
-		$qbExprFacture 	= null;
-		$qbExprPiece 	= null;
-		$qbExprSAV 		= null;
-		$qbExprTechnique= null;
-        $qbExprFactureNull  = null;
-        $qbExprPieceNull  = null;
-        $qbExprSAVNull      = null;
-        $qbExprTechniqueNull= null;
+		$qbExprFacture 			= null;
+		$qbExprPiece 			= null;
+		$qbExprPieceFaite 		= null;
+		$qbExprSAV 				= null;
+		$qbExprTechnique		= null;
+        $qbExprFactureNull  	= null;
+        $qbExprPieceNull  		= null;
+		$qbExprPieceFaiteNull	= null;
+        $qbExprSAVNull      	= null;
+        $qbExprTechniqueNull	= null;
 		$rechercheSurValidation = false;
-		$rechercheSurValideur = false;
+		$rechercheSurValideur 	= false;
 
 									/************************    CREATION DES JOINTURES   ********************************************************/
 
@@ -93,14 +97,25 @@ class BonsAttachementRepository extends EntityRepository
 			}
         }
 
-
-        if ($entity_objRechercheBon->getValidationPiece()) {
+		// On ajoute la jointure lors de la selection de Pieces Faite car si on recherche les bons sur pièces faites
+		// on recherche alors seulement les bons dont une demande de pièces est effectué
+        if ($entity_objRechercheBon->getValidationPiece() || $entity_objRechercheBon->getValidationPieceFaite()) {
 			$rechercheSurValidation = true;
 			$queryBuilder   ->leftJoin('b.validationPiece', 'vp');
 			if ($entity_objRechercheBon->getValideur()) {
 				$rechercheSurValideur = true;
-				$queryBuilder   ->leftJoin('vp.user','vhu');
+				$queryBuilder   ->leftJoin('vp.user','vpu');
 			}
+        }
+
+
+        if ($entity_objRechercheBon->getValidationPieceFaite()) {
+            $rechercheSurValidation = true;
+            $queryBuilder   ->leftJoin('b.validationPieceFaite', 'vpf');
+            if ($entity_objRechercheBon->getValideur()) {
+                $rechercheSurValideur = true;
+                $queryBuilder   ->leftJoin('vpf.user','vpfu');
+            }
         }
 
 
@@ -123,6 +138,8 @@ class BonsAttachementRepository extends EntityRepository
             }
         }
 
+		
+
 								/***********************************    PREPARATION DES OBJETS DE CONDITION DE RECHERCHE SUR LA VALIDATION     *********************************************/
 
         /* Recherche sur les validations de bons (suite)*/
@@ -143,17 +160,46 @@ class BonsAttachementRepository extends EntityRepository
 
         if ($entity_objRechercheBon->getValidationPiece()) {
 			if ($entity_objRechercheBon->getValideur()) {
+				// Pour les pièce validé on ajoute la recherche sur le type = pieces_faite
             	$qbExprPiece =    $queryBuilder->expr()->andX(
-            	                		$queryBuilder->expr()->eq('vh.valide', ':sensValidation'),
-            	                		$queryBuilder->expr()->eq('vfu', ':valideur')
+            	                		$queryBuilder->expr()->eq('vp.valide', ':sensValidation'),
+            	                		$queryBuilder->expr()->eq('vpu', ':valideur')
             						);
             } else {
-				$qbExprPiece =   $queryBuilder->expr()->eq('vh.valide', ':sensValidation');
-				if ($sens_validation === 0){
+				$qbExprPiece =   $queryBuilder->expr()->eq('vp.valide', ':sensValidation');
+				if ($sens_validation === 0)
+				{
 					$qbExprPieceNull =   $queryBuilder->expr()->isNull('b.validationPiece');
-				}
+				} 
 			}
         }
+
+
+
+        if ($entity_objRechercheBon->getValidationPieceFaite()) {
+            if ($entity_objRechercheBon->getValideur()) {
+                // Pour les pièce validé on ajoute la recherche sur le type = pieces_faite
+                $qbExprPieceFaite =    $queryBuilder->expr()->andX(
+										$queryBuilder->expr()->eq('vp.valide', ':oui'),
+                                        $queryBuilder->expr()->eq('vpf.valide', ':sensValidation'),
+                                        $queryBuilder->expr()->eq('vpfu', ':valideur')
+                                    );
+            } else {
+				$qbExprPieceFaite =    $queryBuilder->expr()->andX(
+                                        $queryBuilder->expr()->eq('vp.valide', ':oui'),
+                                        $queryBuilder->expr()->eq('vpf.valide', ':sensValidation')
+                                    );
+                if ($sens_validation === 0)
+                {
+                    $qbExprPieceFaiteNull =  $queryBuilder->expr()->andX(
+                                        $queryBuilder->expr()->eq('vp.valide', ':oui'),
+										$queryBuilder->expr()->isNull('b.validationPieceFaite')
+                                    );
+                }
+            }
+			$queryBuilder->setParameter('oui', true);
+        }
+
 
         if ($entity_objRechercheBon->getValidationSAV()) {
 			if ($entity_objRechercheBon->getValideur()) {
@@ -192,26 +238,40 @@ class BonsAttachementRepository extends EntityRepository
 
 
 								/********************************************************************************/
-		// Si l'un des quatres service de validation est recherché
- 		if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece()) {
-			if ($entity_objRechercheBon->getSensValidation() === false){
+		// Si l'un des service de validation est recherché
+ 		if ($entity_objRechercheBon->getValidationFacturation() || $entity_objRechercheBon->getValidationTechnique() || $entity_objRechercheBon->getValidationSAV() || $entity_objRechercheBon->getValidationPiece() || $entity_objRechercheBon->getValidationPieceFaite()) 
+		{
+			if ($entity_objRechercheBon->getSensValidation() === false)
+			{
 				$queryBuilder   ->andWhere(
 					$queryBuilder->expr()->orX(
-						$queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique),
-						$queryBuilder->expr()->andX($qbExprFactureNull, $qbExprPieceNull, $qbExprSAVNull, $qbExprTechniqueNull)
+						$queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique, $qbExprPieceFaite),
+						$queryBuilder->expr()->andX($qbExprFactureNull, $qbExprPieceNull, $qbExprSAVNull, $qbExprTechniqueNull, $qbExprPieceFaiteNull)
 					)
 				);
-			} elseif ($entity_objRechercheBon->getSensValidation() === true) {
-				$queryBuilder   ->andWhere( $queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique) );
-			} elseif ($entity_objRechercheBon->getSensValidation() === null) {
-				$queryBuilder   ->andWhere( $queryBuilder->expr()->orX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique) );
+			} elseif ($entity_objRechercheBon->getSensValidation() === true) 
+			{
+				if ($entity_objRechercheBon->getConditionValidation() == 'and')
+				{
+					$queryBuilder   ->andWhere( $queryBuilder->expr()->andX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique, $qbExprPieceFaite) );
+				} else if ($entity_objRechercheBon->getConditionValidation() == 'or')
+				{ 
+					$queryBuilder   ->andWhere( $queryBuilder->expr()->orX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique, $qbExprPieceFaite) );
+				}
+			} elseif ($entity_objRechercheBon->getSensValidation() === null) 
+			{
+				$queryBuilder   ->andWhere( $queryBuilder->expr()->orX($qbExprFacture, $qbExprPiece, $qbExprSAV, $qbExprTechnique, $qbExprPiece) );
 			}
         }
 
 		// Si une condition sur le nom du contact est demandée. **************************************************
 		if ($entity_objRechercheBon->getNomDuContact()) {
-			$queryBuilder	->andWhere($queryBuilder->expr()->like('b.nomDuContact', ':nomDuContact'))
+/*
+				$queryBuilder	->andWhere($queryBuilder->expr()->like('b.nomDuContact', ':nomDuContact'))
                             ->setParameter('nomDuContact', '%'.$entity_objRechercheBon->getNomDuContact().'%');
+*/
+				$queryBuilder   ->andWhere($queryBuilder->expr()->eq('b.nomDuContact', ':nomDuContact'))
+                            	->setParameter('nomDuContact', $entity_objRechercheBon->getNomDuContact());
 		}
 
 		// Si une condition sur les dates est demandée ***********************************************************************
@@ -252,28 +312,64 @@ class BonsAttachementRepository extends EntityRepository
                             ->setParameter('dateMinIntervention', $this->convertirDate($entity_objRechercheBon->getDateMinIntervention()));
         }
 
+		// Condition sur le service (Valeur : Bosch, Certus, Export)
+		if ($entity_objRechercheBon->getService())
+		{
+			if ($entity_objRechercheBon->getService() != 'Tous')
+			{
+				$queryBuilder   ->andWhere($queryBuilder->expr()->eq('b.service', ':service'))
+								->setParameter('service', $entity_objRechercheBon->getService());
+			}
+		}
+
+		// Condition sur le type de l'intervention (valeur : MES, SAV, RptMensuel)
+		if ($entity_objRechercheBon->getTypeIntervention())
+        {
+            if ($entity_objRechercheBon->getTypeIntervention() != 'Tous')
+            {
+                $queryBuilder   ->andWhere($queryBuilder->expr()->eq('b.typeIntervention', ':typeIntervention'))
+                                ->setParameter('typeIntervention', $entity_objRechercheBon->getTypeIntervention());
+            }
+        }
+
+
+		// Condition sur le type du bon (valeur : Bon ou Ticket)
+		if ($entity_objRechercheBon->getType())
+        {
+            $queryBuilder   ->andWhere($queryBuilder->expr()->eq('b.type', ':typeBon'))
+               	            ->setParameter('typeBon', $entity_objRechercheBon->getType());
+        }
 
 
 		/*	*********************************************  Si la recherche porte sur un bon saisie, on vérifie qu'un numéro de bon est entré *********************************************/
 
-		if ($entity_objRechercheBon->getSaisie() !== null) {
-			if ($entity_objRechercheBon->getSaisie() == false) {
+		if ($entity_objRechercheBon->getSaisie()) 
+		{
+			if ($entity_objRechercheBon->getSaisie() == 'non') 
+			{
 				$queryBuilder   ->andWhere(
 					$queryBuilder->expr()->orX(
 										$queryBuilder->expr()->isNull('b.numeroBA'),
-										$queryBuilder->expr()->like('b.numeroBA', ':empty')
+										$queryBuilder->expr()->eq('b.numeroBA', ':empty')
 									))
 								->setParameter('empty', '');
-			} elseif ($entity_objRechercheBon->getSaisie() == true) {
+			} elseif ($entity_objRechercheBon->getSaisie() == 'oui') {
 				$queryBuilder   ->andWhere(
         	        $queryBuilder->expr()->andX(
         	                            $queryBuilder->expr()->isNotNull('b.numeroBA'),
-										$queryBuilder->expr()->notLike('b.numeroBA', ':empty')
+										$queryBuilder->expr()->neq('b.numeroBA', ':empty')
         	                        ))
         	                    ->setParameter('empty', '');
 			}
 		}
 
+		// On retourne le resultat ordonné sur la date de création du bon (ou ticket)
+		$queryBuilder   ->orderBy('b.dateInitialisation', 'DESC'); 
+
+		//echo $queryBuilder->getQuery()->getSQL();
+		//echo "<br /> Parametres : <br />";
+		//print_r($queryBuilder->getQuery()->getParameters());
+		//echo "<br />";
         return $queryBuilder->getQuery()->getResult();
     }
 
@@ -295,4 +391,11 @@ class BonsAttachementRepository extends EntityRepository
 		$date = str_replace('/', '-', $date);
 		return date_format(date_create($date), 'Y-m-d');
 	}
+
+
+    public function findAllByDtCreation()
+    {
+        return $this->findBy(array(), array('dateInitialisation' => 'DESC'));
+    }
+
 }

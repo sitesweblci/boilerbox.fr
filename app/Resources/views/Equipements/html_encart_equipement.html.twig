@@ -1,7 +1,17 @@
-    <fieldset class="fieldset">
+<html>
+	<fieldset class="fieldset">
         <h2 class="fieldset__title">Équipement</h2>
         <div class="form__field rel">
             <span id="add-equipBon">Sélection des équipements</span>
-            <button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--round add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+			<div id='infos_equipements'><p>Equipement(s) non défini(s)</p></div>
+            <button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+		</div>
+		<div class="form__field">
+            {% if entity_bon is defined %}
+                    <table id="table_des_equipements" style='border-spacing:10px;'>
+						<tr><td>Modifier l'équipement</td><td>Numéro de série</td><td>Dénomination</td><td>Autre dénomination</td></tr>
+                    </table>
+            {% endif %}
         </div>
     </fieldset>
+</html>
