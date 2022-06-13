@@ -17,6 +17,12 @@ $(document).ready(function()
                         // On ajout l'équipement à la liste des équipements selectionnable si celui ci n'est pas déjà sélectionné (cad présent dans le tableau tabDesEquipementsSelectionnes)
                         if (tabDesEquipementsSelectionnes.indexOf("{{ e_equipement.id }}") == -1)
                         {
+							var tmp_autreDenomination = "{{ e_equipement.autreDenomination }}";
+							tmp_autreDenomination = tmp_autreDenomination.replace("'", "\\\'");
+
+							var tmp_denomination = "{{ e_equipement.denomination }}";
+							tmp_denomination = tmp_denomination.replace("'", "\\\'");
+
                             // Création du contenu html des Equipements
                             html_nouvelles_options += " \
                                 <div id='parent_div_equipement_{{ e_equipement.id }}' onMouseEnter='sourisOver(\"entre\",this.id);' onMouseLeave='sourisOver(\"sort\",this.id);'> \
@@ -28,7 +34,7 @@ $(document).ready(function()
                                                 name='equipement_{{ e_equipement.id }}' \
                                                 value='{{ e_equipement.id }}' \
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
-                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '{{ e_equipement.denomination }}', '{{ e_equipement.autreDenomination }}')\" \
+                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '" + tmp_denomination + "', '" + tmp_autreDenomination + "')\" \
                                             />\
                                         </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
@@ -135,7 +141,15 @@ $(document).ready(function()
     }
 
 
-    function modifierEquipement($id_equipement=null)
+	function modifierEquipement($id_equipement)
+    {
+		$('#titre_nouvel_equipement2').text("Modification de l'équipement");
+		creerModifierEquipement('recherche', $id_equipement);
+	}
+
+
+	//  Accepte pour $type_action : recherche et modification
+    function creerModifierEquipement($type_action, $id_equipement=null)
     {
 		var $data_a_envoyer = $id_equipement;
 		if ($id_equipement == null)
@@ -144,7 +158,7 @@ $(document).ready(function()
 		} else {
 			$data_a_envoyer = {'id_equipement':$id_equipement}
 		}
-        attendreRechargement();
+		attendreRechargement();
 
         // Modification de l'équipement en ajax et
         // Réaffichage de la page pour prendre en compte la suppression
@@ -154,12 +168,19 @@ $(document).ready(function()
             method: "POST",
             success: function(output)
             {
+				console.log('success JSON');
 				try {
-                   	// On recoit une réponse ajax : L'équipement a été enregistré : On recoit l'entité de l'equipement
+                   	// On recoit une réponse ajax : 
+					//					L'équipement a été enregistré : On recoit l'entité de l'equipement
+					// 					Une demande de modification de l'équipement a été envoyé et nous recevons les informations courantes de l'équipement
+
                 	var $data_e_equipement = JSON.parse(output);
 
+					console.log('try ok');
+					console.log($data_e_equipement);
+
 /*
-					var $html_equipement = "<td style='cursor:pointer;' onClick=\"modifierEquipement('" + $data_e_equipement['id'] + "');\">x</td>" + "<td>" + $data_e_equipement['numeroDeSerie'] + "</td>" + "<td>" + $data_e_equipement['denomination'] + "</td>" + "<td>" + $data_e_equipement['autreDenomination'] + "</td>";
+					var $html_equipement = "<td style='cursor:pointer;' onClick=\"creerModifierEquipement('" + $data_e_equipement['id'] + "');\">x</td>" + "<td>" + $data_e_equipement['numeroDeSerie'] + "</td>" + "<td>" + $data_e_equipement['denomination'] + "</td>" + "<td>" + $data_e_equipement['autreDenomination'] + "</td>";
 					$("#tr_equipement_" + $data_e_equipement['id']).html($html_equipement);
 
 					
@@ -182,10 +203,32 @@ $(document).ready(function()
 
 					togglePopUp(popupSelectionEquipement);
 */
+                        $('#equipement_ba_ticket_id').val($data_e_equipement.id);
+                        $('#equipement_ba_ticket_siteBA').val($data_e_equipement.siteBA.id);
+                        $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
+                        $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
+                        $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
+                        var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
+                        var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
+                        $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
+                        $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
+
 					// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
-					$('#bons_attachement_modification_equipementBATicket').remove();
+					if ($type_action == 'recherche')
+					{
+						console.log('recherche : remove ');
+						togglePopUp(popupEquipement2);
+						finAttendreRechargement();
+					} else if ($type_action == 'modification')
+					{
+						console.log('modification');
+						//togglePopUp(popupEquipement2);
+						//finAttendreRechargement();
+						$('#bons_attachement_modification_equipementBATicket').remove();
+					}
 				} catch(e)
 				{
+					console.log(output);
 					// Si reception d'un page HTML c'est qu'on recoit le formulaire du bon
 					// On modifie le contenu de la popup de création d'équipement pour lui mettre le contenu de l'équipement à modifier
 					$('#popupEquipement2').html(output);
@@ -208,15 +251,20 @@ $(document).ready(function()
 
 					return 0;
 				}
-				// Submit du formulaire de bon de la page de saisie de bon
-                if ($('#bons_attachement_site').length != 0)
+
+				if ($type_action == 'modification')
                 {
-                    document.forms['myForm'].submit();
-                } else if ($('#bons_attachement_modification_site').length != 0)
-                {
-					// Submit du formulaire de bon de la page de visu / modification de bon
-                    document.forms['myFormFichiers'].submit();
-                }
+					// Submit du formulaire de bon de la page de saisie de bon
+                	if ($('#bons_attachement_site').length != 0)
+                	{
+                	    document.forms['myForm'].submit();
+                	} else if ($('#bons_attachement_modification_site').length != 0)
+                	{
+						// Submit du formulaire de bon de la page de visu / modification de bon
+                	    document.forms['myFormFichiers'].submit();
+                	}
+				}
+
             },
             error: function(status, msg, tri) {
                 finAttendreRechargement();
@@ -285,33 +333,16 @@ $(document).ready(function()
             $('#parent_' + id_div).append(div_tmp);
 			$('#tr_equipement_' + id_checkbox).remove();
         }
-		// On crée le select des équipements sélectionnés
-		var select_equipement_page_principale = '<select>';
-		var nombre_d_equipements = 0 ;
-		$('#liste_des_equipements_selectionnes > div > label > span:nth-child(4)').each(function()
-		{
-			nombre_d_equipements ++;
-			select_equipement_page_principale += '<option>' + $(this).text() + '</option>';
-		});
-		if (nombre_d_equipements == 0 )
-		{
-			$("#infos_equipements").html('<p>Equipement(s) non défini(s)</p>');
-		} else {
-			select_equipement_page_principale += '</select>';
-			$("#infos_equipements").html(select_equipement_page_principale);
-		}
     }
 
 
 	/**********************************			Fonction pour la création des équipements ************************************/
-	function creerEquipement2()
+	function verificationCreationEquipement()
     {
-
-		// Si on est sur la page de modification d'un équipement : Renvoi à la fonction de modification
-		if ($('#bons_attachement_modification_site').length !=  0)
+		if ($('#titre_nouvel_equipement2').text() ==  "Modification de l'équipement")
 		{
 			togglePopUp(popupEquipement2);
-			return modifierEquipement();
+			return creerModifierEquipement('modification');
 		}
 	
         $send_form = true;
@@ -453,7 +484,7 @@ $(document).ready(function()
 
     function gestionDesEquipements2()
     {
-		// Si on est sur la page de saisie des sites
+		// Si on est sur la page de [ saisie des bons ]
 		if ($('#bons_attachement_site').length != 0)
 		{
         	// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
@@ -480,8 +511,11 @@ $(document).ready(function()
             	$('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
         	}
         } 
-
+		// Fermeture de la popup de selection des équipements
         togglePopUp(popupSelectionEquipement);
+
+		// Ouverture de la popup de création d'équipement
+		$("#titre_nouvel_equipement2").text('Nouvel équipement');
         togglePopUp(popupEquipement2);
     }
 
@@ -494,6 +528,21 @@ $(document).ready(function()
 			$('#' + id_element).css('background-color', 'white');
 		}
 	}
+
+
+
+	function dateTransformeFromEntiteSerializedForPicker(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
+        return new_ch2;
+    }
+	function dateTransformeFromEntiteSerialized(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$1/$2/$3");
+        return new_ch2;
+    }
 
 
 
