@@ -11,38 +11,12 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
 	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
-	.main-content > .form-group{
-		display: none;
-	}
-	#contacts_deja_associes{
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: space-between;
-		margin-top: -16px;
-	}
-	#contacts_deja_associes p{
-		width: 48%;
-		padding: 8px;
-		margin-bottom: 6px;
-		border-radius: 3px;
-		background: var(--light-grey);
-		font-size: 9pt;
-		font-weight: 500;
-		cursor: pointer;
-	}
-	#contacts_deja_associes p:hover{
-		background: var(--grey);
-		color:  var(--black);
-	}
-	#container_new_contact input, #encart_fichiers_siteBA{
-		margin-bottom: 16px;
-	}
-	.erreur_formulaire {
-		border: 2px solid red !important;
-	}
-	form{
-		padding: 8px;
-	}
+		body > form{
+			padding: 8px;
+		}
+		.erreur_formulaire {
+			border: 2px solid red !important;
+		}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -62,19 +36,20 @@
 {{ form_start(form, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm' }) }}
 {{ form_errors(form) }}
 <input type='hidden' value='non' name='enregistrement' id='enregistrement'>
+
 <section class="info">
-	
 	<h1 class="info__title" style="margin-left:0px">Nouveau Bon</h1>
 </section>
-<main class="testMain {# content #}">
-<section class="testSection">
+
+<main class="content">
+<section class="content__brick">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Informations</h2>
 		<div class="form__field rel">
     		{{ form_label(form.site) }}
 			{{ form_widget(form.site) }}
 			{{ form_errors(form.site) }}
-			<button type="button" id="bntBonsSite" class="btn btn--main add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
+			<button type="button" id="bntBonsSite" class="btn btn--main btn--round add tooltip-wrapper" onclick="togglePopUp(bonsSite)"><span class="tooltip">Créer site</span></button>
 		</div>
         <div class="form__field">
 			<div>
@@ -155,30 +130,7 @@
 		</div>
 	</fieldset>
 </section>
-<section class="testSection cacher">
-    <fieldset class="cacher">
-        <div class="form__field form__field--double">
-            <div>
-                {{ form_label(form.typeNouveau) }}
-                {{ form_widget(form.typeNouveau) }}
-                {{ form_errors(form.typeNouveau) }}
-            </div>
-            <div>
-                {{ form_label(form.idNouveau) }}
-                {{ form_widget(form.idNouveau) }}
-                {{ form_errors(form.idNouveau) }}
-            </div>
-        </div>
-		<div class="form__field form__field--double">
-            <div>
-                {{ form_label(form.siteNouveau) }}
-                {{ form_widget(form.siteNouveau) }}
-                {{ form_errors(form.siteNouveau) }}
-            </div>
-        </div>
-    </fieldset>
-</section>
-<section class="testSection">
+<section class="content__brick">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Contact</h2>
 		<div class="form__field rel">
@@ -186,7 +138,7 @@
 			<select id='select_contact'>
 				<option value=''></option>
 			</select>
-			<button type="button" id='btn_contact' class="btn btn--main add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
+			<button type="button" id='btn_contact' class="btn btn--main btn--round add tooltip-wrapper cacher" onClick="gestionDesContacts2();"><span class="tooltip">Créer contact</span></button>
 		</div>
 		<div class="form__field form__field--double">
 			<div>
@@ -209,7 +161,7 @@
 		<h2 class="fieldset__title">Fichier(s)</h2>
 		<div class="form__field rel">
 			<span id="add-fichierBon">Ajouter fichier PDF (20Mo max)</span>
-			<button type="button" class="btn btn--main add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter fichier</span></button>
+			<button type="button" class="btn btn--main btn--round add tooltip-wrapper" onclick="gestionDesFichiers();"><span class="tooltip">Ajouter fichier</span></button>
 		</div>
 		<div id='fichiers_deja_joints2' class="add-list">
 		</div>
@@ -223,15 +175,40 @@
 		</label>
 	</fieldset>
 </section>
-<section class="testSection">
+<section class="content__brick">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
 		<div id='map'></div>
 	</fieldset>
 	<div class="content__btn">
-		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second" style="margin-right:12px">Retour</a>
+		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
 		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer bon</button>
 	</div>
+</section>
+
+<!-- Section cachée -->
+<section class="content__brick cacher">
+    <fieldset class="cacher">
+        <div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.typeNouveau) }}
+                {{ form_widget(form.typeNouveau) }}
+                {{ form_errors(form.typeNouveau) }}
+            </div>
+            <div>
+                {{ form_label(form.idNouveau) }}
+                {{ form_widget(form.idNouveau) }}
+                {{ form_errors(form.idNouveau) }}
+            </div>
+        </div>
+		<div class="form__field form__field--double">
+            <div>
+                {{ form_label(form.siteNouveau) }}
+                {{ form_widget(form.siteNouveau) }}
+                {{ form_errors(form.siteNouveau) }}
+            </div>
+        </div>
+    </fieldset>
 </section>
 	
 	
@@ -259,10 +236,10 @@
        				</div>
 				</div>
 			</div>
-			<div class="main-box__btn" style="margin-top:24px;">
-				<button class="btn btn--main btn--wide" onclick="$('#close_cross_fichier').trigger('click'); return false;" style="margin-left:0;">Enregistrer</button>
-			</div>
 		</div>
+		<div class="popup__action" style="margin-top:24px;">
+			<button class="btn btn--main" onclick="$('#close_cross_fichier').trigger('click'); return false;" style="margin-left:0;">Enregistrer</button>
+		</div
 	</div>
 </section>
 
@@ -1473,13 +1450,6 @@
 	});
 	$("#add-equipBon").on("click", () => {
 		$("#equipBon").click();
-	});
-
-	$(window).on('resize', function(){
-	    $('.main-content').css({'width':'initial'});
-	    setTimeout(function(){
-	    	$('.main-content').css({'width':'fit-content'});
-	    }, 30);
 	});
 
 	// On change l'icône du bouton et le texte de l'infobulle du bouton lié au select

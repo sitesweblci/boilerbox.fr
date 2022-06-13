@@ -1,60 +1,54 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_equipement.html.twig #}
 
-<div class="popup__wrapper">
+<section class="popup__wrapper">
     <header class="popup__header">
         <h1 id='titre_nouvel_equipement2' class="popup__title">Nouvel équipement</h1>
         <div class="close-cross" onclick="fermeturePopupEquipement2();"></div>
     </header>
 
-    <div class="popup__content">
-        <div id="ajout_equipement2">
-			{{ form_start(form_equipement) }}
-            {{ form_errors(form_equipement) }}
-                <div class='ligne_error'></div>
-                <div class='form__field' id='site_equipement'>
-                    <div>
-                        {{ form_label(form_equipement.siteBA) }}
-                        {{ form_widget(form_equipement.siteBA) }}
-                        {{ form_errors(form_equipement.siteBA) }}
-                    </div>
+    <div id="ajout_equipement2" class="popup__content">
+		{{ form_start(form_equipement) }}
+        {{ form_errors(form_equipement) }}
+            <div class='ligne_error'></div>
+            <div class='form__field' id='site_equipement'>
+                <div>
+                    {{ form_label(form_equipement.siteBA) }}
+                    {{ form_widget(form_equipement.siteBA) }}
+                    {{ form_errors(form_equipement.siteBA) }}
                 </div>
-                <div class='form__field'>
-                    <div>
-                        {{ form_label(form_equipement.numeroDeSerie) }}
-                        {{ form_widget(form_equipement.numeroDeSerie) }}
-                        {{ form_errors(form_equipement.numeroDeSerie) }}
-                    </div>
+            </div>
+            <div class='form__field form__field--double'>
+                <div>
+                    {{ form_label(form_equipement.numeroDeSerie) }}
+                    {{ form_widget(form_equipement.numeroDeSerie) }}
+                    {{ form_errors(form_equipement.numeroDeSerie) }}
+                    <div class='ligne_error'></div>
                 </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
-                    <div>
-                        {{ form_label(form_equipement.denomination) }}
-                        {{ form_widget(form_equipement.denomination) }}
-                        {{ form_errors(form_equipement.denomination) }}
-                    </div>
+                <div>
+                    {{ form_label(form_equipement.anneeDeConstruction) }}
+                    <input type='text' placeholder='dd/mm/YYYY' id='date_annee_construction_equipement' name='date_annee_construction_equipement'>
+                    {{ form_widget(form_equipement.anneeDeConstruction) }}
+                    {{ form_errors(form_equipement.anneeDeConstruction) }}
                 </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
-                    <div>
-                        {{ form_label(form_equipement.autreDenomination) }}
-                        {{ form_widget(form_equipement.autreDenomination) }}
-                        {{ form_errors(form_equipement.autreDenomination) }}
-                    </div>
+            </div>
+            <div class='form__field form__field--double'>
+                <div>
+                    {{ form_label(form_equipement.denomination) }}
+                    {{ form_widget(form_equipement.denomination) }}
+                    {{ form_errors(form_equipement.denomination) }}
+                    <div class='ligne_error'></div>
                 </div>
-                <div class='ligne_error'></div>
-                <div class='form__field'>
-                    <div>
-                        {{ form_label(form_equipement.anneeDeConstruction) }}
-                        <input type='text' placeholder='dd/mm/YYYY' id='date_annee_construction_equipement' name='date_annee_construction_equipement'>
-                        {{ form_widget(form_equipement.anneeDeConstruction) }}
-                        {{ form_errors(form_equipement.anneeDeConstruction) }}
-                    </div>
+                <div>
+                    {{ form_label(form_equipement.autreDenomination) }}
+                    {{ form_widget(form_equipement.autreDenomination) }}
+                    {{ form_errors(form_equipement.autreDenomination) }}
+                    <div class='ligne_error'></div>
                 </div>
-			{{ form_end(form_equipement) }}
-        </div>
-        <div class='main-box__btn notToBePrinted'>
-            <button class="btn btn--second" onClick="annulerPopupEquipement2();return false;">Retour</button>
-            <button class="btn_menu btn btn--main" onClick="creerEquipement2(); return false;">Valider</button>
-        </div>
+            </div>
+		{{ form_end(form_equipement) }}
     </div>
-</div>
+    <div class='popup__action notToBePrinted'>
+        <button class="btn btn--second" onClick="annulerPopupEquipement2();return false;">Retour</button>
+        <button class="btn_menu btn btn--main" onClick="creerEquipement2(); return false;">Valider</button>
+    </div>
+</section>

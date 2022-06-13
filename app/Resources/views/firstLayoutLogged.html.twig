@@ -126,9 +126,12 @@
                     <ul class="side-nav__sub-list">
                         {% if is_granted('ROLE_SAISIE_BA') %}
                             <li class="saisie"><a href="{{ path('lci_bons_saisie') }}"> 
-                                <i></i><span>Saisie</span>
+                                <i></i><span>Saisie Bons</span>
                             </a></li>
                         {% endif %}
+                        <li class="saisie"><a href="#"> 
+                            <i></i><span>Saisie Tickets</span>
+                        </a></li>
                         <li class="visu"><a href="{{ path('lci_bons_visualiser') }}">
                             <i></i><span>Visualiser</span>
                         </a></li>

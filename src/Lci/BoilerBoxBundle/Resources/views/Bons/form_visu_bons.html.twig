@@ -13,50 +13,7 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-		.search-bar{
-			width: 250px;
-			margin-right: 16px;
-		}
-		.flex-table{
-			width: 100%;
-		}
-		.flex-table th, .flex-table td{
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
-		.flex-table tr th{
-			padding: 0 3px;
-		}
-		.flex-table__tbody{
-			height: 57vh;
-		}
-		.flex-table tr{
-			cursor: pointer;
-		}
-		.flex-table tr td{
-			padding: 3px;
-			font-size: 10pt;
-		}
-		.flex-table .mini{
-			width: calc(15% - 6px);
-		}
-		.flex-table .small{
-			width: calc(25% - 6px);
-		}
-		.flex-table .medium{
-			width: calc(40% - 6px);
-		}
-		.flex-table .wide{
-			width: calc(100% - 6px);
-		}
-		.flex-table img{
-			width: 16px;
-			height: 14px;
-		}
-		input[type="checkbox"]{
-			margin: 0;
-		}
+		
 	</style>
 {% endblock liens_css %}
 
@@ -92,8 +49,8 @@
 			<span class="search-bar__img"/></span>
 			<input id='js-search-bon' class="search-bar__input" type="text" placeholder="Rechercher">
 		</div>
-    	<span class="tooltip-wrapper tooltip-wrapper--end">
-    		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" onClick="redirection('affinerRechercheBon'); return false;" />
+    	<span class="tooltip-wrapper tooltip-wrapper--end" onClick="redirection('affinerRechercheBon'); return false;">
+    		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" />
     		<span class="tooltip">Affiner recherche</span>
     	</span>
     </div>

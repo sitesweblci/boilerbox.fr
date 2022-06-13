@@ -13,9 +13,6 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-	.main-box__action{
-		top: 32px;
-	}
 	.main-box__content--padding{
 		padding-bottom: 0;
 	}
@@ -66,6 +63,9 @@
 		position: relative;
 		margin-top: 0px;
     }
+    #bloc_body > form{
+    	padding: 8px;
+    }
 	</style>
 {% endblock liens_css %}
 
@@ -76,22 +76,30 @@
 
 <div id='erreur_formulaire_bon'>{{ form_errors(form_modification) }}</div>
 
-<section class="info">
-	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second">Retour</button>
-	<h1 class="info__title">Bon {{ entity_bon.numeroBA }}</h1>
-	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-		<button type="button" class="btn btn--main" onClick="document.forms['myFormFichiers'].submit();">Modifier le bon</button>
-	{% endif %}
-</section>
 
-<main id="grid-visuUnBon" class="testMain grid">
+
 
 {{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
 {# form_start(form_modification) #}
 <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 
-	<section id="sub-grid-visuUnBon" class='grid grid__one'>
-		<div class="testSection grid__one">
+<section class="info">
+	<h1 class="info__title">Bon {{ entity_bon.numeroBA }}</h1>
+	{% if entity_bon.enqueteFaite %}
+		<span class='green'>( Enquête faite )</span>
+	{% elseif entity_bon.enqueteNecessaire %}
+		<span class='blue'>( Enquête demandée )</span>
+	{% else %}
+		<span class='red'>( Pas d'enquête demandée )</span>
+	{% endif %}
+	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
+	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+	{% endif %}
+</section>
+<main id="grid-visuUnBon" class="content">
+	<div id="sub-grid-visuUnBon" class='content__brick'>
+		<section class="content__brick">
    			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Informations</h2>
 
@@ -171,10 +179,10 @@
 				</div>
 				<div id="map"></div>
 			</fieldset>
-		</div>
+		</section>
 
 
-		<div class="testSection grid__two">
+		<section class="content__brick grid__two">
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Contact</h2>
 
@@ -207,21 +215,19 @@
 				</div>
 			</fieldset>
 
-{# ICI DEV inclure le fichier "src/Lci/BoilerBoxBundle/Resources/views/Equipements/html_encart_equipement.html.twig" #}
+			{# ICI DEV inclure le fichier "app/Resources/views/Equipements/html_encart_equipement.html.twig" #}
 			{% include  "Equipements/html_encart_equipement.html.twig" %}
 
 
-            <fieldset class="fieldset">
+            <fieldset class="fieldset fieldset--no-padding">
                 <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
                 {% if is_granted('ROLE_SAISIE_BA') %}
-                    <div class="main-box__content main-box__content--padding">
-                        <div id='label_archive' class="form__field">
-                            <div class="checkbox">
-                                <label>
-                                    <input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
-                                    Afficher les fichiers archivés
-                                </label>
-                            </div>
+                    <div id='label_archive' class="form__field">
+                        <div class="checkbox">
+                            <label>
+                                <input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+                                Afficher les fichiers archivés
+                            </label>
                         </div>
                     </div>
                 {% endif %}
@@ -260,14 +266,17 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div id='formulaire_bons_fichiers' class=''>
-                    <div class="main-box__content main-box__content--padding" style="margin-top:16px;">
-                        <div>
-                            <span id='lien_ajout_fichier'></span>
-                            <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
-                            <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
-                            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-                        </div>
+                <div id='formulaire_bons_fichiers' class='main-box__content main-box__content--padding' style="margin-top:16px;">
+                    <div>
+                        <span id='lien_ajout_fichier'></span>
+                        <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
+                        <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
+                        <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+                    </div>
+                </div>
+                <div class="content__btn">
+                    <div id="js-btn-file" class="main-box__btn--disabled">
+                        <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
                     </div>
                 </div>
             </fieldset>
@@ -279,31 +288,8 @@
                     <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">{{ form_widget(form_modification.cheminDossierPhotos) }}</div>
                 </div>
             </fieldset>
-
-			<fieldset class="fieldset">
-				<h2 class="fieldset__title">Enquête</h2>
-				<div class="form__field">
-					{% if entity_bon.enqueteFaite %}
-						<span class='green'>Enquête faite</span>
-					{% elseif entity_bon.enqueteNecessaire %}
-						<span class='blue'>Enquête demandée</span>
-					{% else %}
-						<span class='red'>Pas d'enquête demandée</span>
-					{% endif %}
-				</div>
-			</fieldset>
-	        <div class="content__btn">
-	            {#
-	            <div id="js-btn-file" class="main-box__btn--disabled">
-	                <button class="btn btn--main btn--disabled" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Ajouter</button>
-	            </div>
-	            #}
-	            <div id="js-btn-file">
-	                <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
-	            </div>
-	        </div>
-		</div>
-	</section>
+		</section>
+	</div>
 
 	{# Popup Equipement #}
 	{% include "Equipements/html_popup_equipement.html.twig" %}
@@ -319,7 +305,7 @@
 
 
 
-	<section class="grid__two testSection">
+	<section class="grid__two content__brick">
 		<!-- Validation -->
 		<fieldset id='validation_des_bons_attachement' class="fieldset">
 		    <h1 class="fieldset__title">Validation</h1>
