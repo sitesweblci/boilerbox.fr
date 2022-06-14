@@ -1115,6 +1115,14 @@
 			$send_form = false;
 		}
 
+		// On vérifie la présence du motif de création du ticket
+		if ($('#ticket_incident_motif').val() === '')
+        {
+            $('#ticket_incident_motif').addClass('erreur_formulaire');
+            $send_form = false;
+        }
+		
+
 		// On vérifie que pour le contact selectionné, il y a soit un email soit un téléphone
 		if (($('#ticket_incident_emailContactClient').val() === '') && ($('#ticket_incident_telephoneContactClient').val() === ''))
 		{
@@ -1142,6 +1150,7 @@
 		$('#select_contact').removeClass('erreur_formulaire');
 		$('#ticket_incident_emailContactClient').removeClass('erreur_formulaire');
 		$('#ticket_incident_telephoneContactClient').removeClass('erreur_formulaire');
+		$('#ticket_incident_motif').removeClass('erreur_formulaire');
 	}
 
 

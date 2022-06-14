@@ -58,6 +58,7 @@ class TicketController extends Controller
 
     public function saisieAction(Request $request)
     {
+		$numero_de_ticket						= null;
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
 		$enregistrement_form_ticket 				= null;
@@ -153,13 +154,15 @@ class TicketController extends Controller
 						// On défini le type pour distinguer ticket d'un bon
 						$e_ticket->setType('ticket');
 						$e_ticket->setTypeIntervention('Incident');
+						$e_ticket->setDateInitialisation(new \Datetime());
+						$e_ticket->setDateDebutIntervention(new \Datetime());
 
 						// Le numero du ticket s'incremente automatiquement
 						// 	recherche du dernier numéro de ticket en base
 						// 	incrémentation du numéro trouvé
-						$dernier_numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
-						$dernier_numero_de_ticket ++;
-						$e_ticket->setNumeroBA($dernier_numero_de_ticket);
+						$numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
+						$numero_de_ticket ++;
+						$e_ticket->setNumeroBA($numero_de_ticket);
 
 						// Enregistrement du ticket
                     	$em->persist($e_ticket);
@@ -201,6 +204,7 @@ class TicketController extends Controller
                     	}
 						// Envoi du mail à l'intervenant uniquement
                     	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+						// ICI DEV : Faire unenvoi de mail au client également
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();
@@ -211,7 +215,7 @@ class TicketController extends Controller
                 if($enregistrement_form_ticket === true)
                 {
                 	// On renvoye à la page d'ajout d'un nouveau ticket avec envoi du message de confirmation d'enregsitrement du ticket
-                	$request->getSession()->getFlashBag()->add('info', "Ticket d'incident enregistré.");
+                	$request->getSession()->getFlashBag()->add('info', "Ticket d'incident $numero_de_ticket enregistré.");
 
                 	// Création d'un nouveau formulaire de création de ticket
                 	$e_ticket = new BonsAttachement();

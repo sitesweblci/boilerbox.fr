@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -179,7 +180,7 @@ class TicketIncidentType extends AbstractType {
 			'allow_delete'	=> true,
 			'required' 		=> true
 		))
-		->add('motif', TextType::class, array(
+		->add('motif', TextareaType::class, array(
             'label'         => 'Motif',
             'required'      => true,
             'trim'          => true,
