@@ -1,0 +1,4 @@
+saisie_ticket:
+    path: /saisie
+    defaults: { _controller: LciBoilerBoxBundle:Ticket:saisie }
+

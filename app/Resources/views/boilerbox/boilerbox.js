@@ -1,4 +1,6 @@
 <script type='text/javascript'>
+// Javascript qui est pris en compte sans devoir repasser la commande asset:dump
+
 $(document).ready(function() {
         // Inhibition du raffraichissement par F5
         $(document).keydown(function(e){
@@ -28,29 +30,33 @@ $(document).ready(function() {
     }
 
 
-    function redirection($from) {
-        var $url;
-        switch($from) {
+    function redirection(from) 
+	{
+        var url;
+        switch(from) {
 			case 'menuGestionParcModules' :
 				if (document.location.pathname.substr(-9) == 'problemes') {
-					$url = $('#liens').attr('data-parcModules');
+					url = $('#liens').attr('data-parcModules');
 				} else {
-					$url = $('#liens').attr('data-retourMenu');
+					url = $('#liens').attr('data-retourMenu');
 				}
 				break;
             case 'menuGestionParcEquipements' :
                 if (document.location.pathname.substr(-9) == 'problemes') {
-                    $url = $('#liens').attr('data-parcEquipements');
+                    url = $('#liens').attr('data-parcEquipements');
                 } else {
-                    $url = $('#liens').attr('data-retourMenu');
+                    url = $('#liens').attr('data-retourMenu');
                 }
                 break;
+			case 'saisie_ticket':
+				url = "{{ path('saisie_ticket') }}";
+				break;
             default:
-                var $lien = 'data-' + $from;
-                $url = $('#liens').attr($lien);
+                var lien = 'data-' + from;
+                url = $('#liens').attr(lien);
                 break;
         }
-        $(location).attr('href', $url);
+        $(location).attr('href', url);
     }
 
     // Affichage de l'image du loader pour indiquer que la page est en cours de chargement

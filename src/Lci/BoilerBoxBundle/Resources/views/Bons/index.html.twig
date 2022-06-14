@@ -13,7 +13,7 @@
 </header>
 <div class='card-wrapper'>
     {% if is_granted('ROLE_SAISIE_TICKET') %}
-        <div class="card" onClick="attente(); redirection('ticketsSaisie'); return false;">
+        <div class="card" onClick="attente(); redirection('saisie_ticket'); return false;">
             <img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des tickets incidents" >
             <div class="card__container">
                 <h4 class="card__container__title">Saisie ticket à distance</h4>
