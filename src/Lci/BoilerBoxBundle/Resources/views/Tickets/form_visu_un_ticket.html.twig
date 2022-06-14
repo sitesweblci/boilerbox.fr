@@ -1,0 +1,1066 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/Tickets/form_visu_un_ticket.html.twig #}
+
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+
+{% block meta_viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.3, shrink-to-fit=no">
+{% endblock meta_viewport %}
+
+{% block title %}{{ parent() }} : Fichiers du ticket{% endblock title %}
+
+{% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
+
+{% block liens_css %}
+	{{ parent() }}
+	<style>
+	.main-box__content--padding{
+		padding-bottom: 0;
+	}
+	.flex-table{
+		width: 100%;
+		min-width: initial;
+	}
+	.flex-table__thead tr{
+		padding-right: initial;
+	}
+	.flex-table__thead tr th{
+		padding-bottom: 4px;
+	}
+	.flex-table__tbody{
+		height: initial;
+		overflow: auto;
+	}
+	.flex-table__tbody tr{
+		height: initial;
+		cursor: initial;
+	}
+	.flex-table__tbody tr:hover{
+		background: #fff;
+	}
+	.flex-table__tbody tr td{
+		padding-top: 4px;
+		padding-bottom: 4px;
+		font-size: 10pt;
+	}
+	#validation_des_bons_attachement .flex-table__tbody tr {
+		border: none;
+	}
+	.flex-table .small{
+		width: calc(30% - 20px);
+	}
+	.flex-table .wide{
+		width: calc(100% - 20px);
+	}
+	#table_des_fichiers tr td.small img{
+		cursor: pointer;
+	}
+	#commentaires{
+		height: 40px !important;
+		margin: 0;
+	}
+    .erreur_formulaire {
+        border: 2px solid red !important;
+		position: relative;
+		margin-top: 0px;
+    }
+    #bloc_body > form{
+    	padding: 8px;
+    }
+	</style>
+{% endblock liens_css %}
+
+{% block fos_user_content %}
+<header class="sub-header sub-header--blue">
+	<h1 class="sub-header__title">Ticket d'incident</h1>
+</header>
+
+<div id='erreur_formulaire_bon'>{{ form_errors(form_modification) }}</div>
+
+
+
+
+{{ form_start(form_modification, {'action':path('lci_bons_afficher_unbon'), 'method':'POST', 'name':'myFormFichiers'}) }}
+<input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+
+<section class="info">
+	<h1 class="info__title">Ticket {{ entity_bon.numeroBA }}</h1>
+	{% if entity_bon.enqueteFaite %}
+		<span class='green'>( Enquête faite )</span>
+	{% elseif entity_bon.enqueteNecessaire %}
+		<span class='blue'>( Enquête demandée )</span>
+	{% else %}
+		<span class='red'>( Pas d'enquête demandée )</span>
+	{% endif %}
+	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
+	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+	{% endif %}
+</section>
+<main id="grid-visuUnBon" class="content">
+	<div id="sub-grid-visuUnBon" class='content__brick'>
+		<section class="content__brick">
+   			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Informations</h2>
+
+				<div class="form__field">
+					<div>
+						<label>Site</label>
+						<span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.site) }}
+							{% else %}
+								{{ entity_bon.site.intitule }}
+							{% endif %}
+						</span>
+					</div>
+				</div>
+				<div class="form__field form__field--double">	
+					<div>
+            	        <label>Affaire</label>
+            	        <span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.numeroAffaire) }}
+                        	{% else %}
+                        	    {{ entity_bon.numeroAffaire }}
+                        	{% endif %}
+						</span>
+					</div>
+				</div>
+
+            	<div class="form__field form__field--double">
+            	    <div>
+            	        <label>Service</label>
+            	     	<span class="data">
+							{% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.service) }}
+							{% else %}
+                            	{{ entity_bon.service }}
+                        	{% endif %}
+						</span>
+            	    </div>
+
+                    <div>
+                        <label>Type d'intervention</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.typeIntervention) }}
+                            {% else %}
+                                {{ entity_bon.typeIntervention }}
+                            {% endif %}
+                        </span>
+                    </div>
+            	</div>
+
+            	<div class="form__field form__field--double">
+            	    <div>
+            	        <label>Initiateur</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.userInitiateur) }}
+                            {% else %}
+                                {{ entity_bon.userInitiateur.label }}
+                            {% endif %}
+                        </span>
+           	     	</div>
+
+	                <div>
+	                    <label>Intervenant</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.user) }}
+                            {% else %}
+                                {{ entity_bon.user.label }}
+                            {% endif %}
+                        </span>
+	                </div>
+	            </div>
+
+				<div class="form__field form__field--double">
+					<div>
+						<label>Date d'initialisation</label>
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                {{ form_widget(form_modification.dateInitialisation) }}
+                            {% else %}
+                                {{ entity_bon.dateInitialisation | date('d/m/Y') }}
+                            {% endif %}
+					</div>
+	                <div>
+	    	            <label>Date de la signature</label>
+	                    <span class="data">{{ form_widget(form_modification.dateSignature) }}</span>
+	                </div>
+				</div>
+            </fieldset>
+
+
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Planning</h2>
+				<div class="form__field form__field--double">
+					<div>
+						<label>Du</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.dateDebutIntervention) }}
+                            {% else %}
+                                {{ entity_bon.dateDebutIntervention | date('d/m/Y') }}
+                            {% endif %}
+                        </span>
+					</div>
+
+					<div>
+						<label>Au</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.dateFinIntervention) }}
+                            {% else %}
+                                {{ entity_bon.dateFinIntervention | date('d/m/Y') }}
+                            {% endif %}
+                        </span>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Site</h2>
+				<div class="form__field">
+					<label>Adresse</label>
+					{% if entity_bon.site %}
+						<div id='site_ba_adresse' class="input input--disabled">{{ entity_bon.site.adresse }}</div>
+					{% else %}
+						&nbsp;
+					{% endif %}
+				</div>
+				<div id="map"></div>
+			</fieldset>
+		</section>
+
+
+		<section class="content__brick grid__two">
+			<fieldset class="fieldset">
+				<h2 class="fieldset__title">Contact</h2>
+
+				<div class="form__field">
+					<label>Nom Contact</label>
+                    <span class="data">
+                        {% if is_granted('ROLE_SAISIE_BA') %}
+							{{ form_widget(form_modification.nomDuContact) }}
+                        {% else %}
+                            {{ entity_bon.nomDuContact }}
+                        {% endif %}
+                    </span>
+				</div>
+
+				<div class="form__field form__field--double">
+					<div>
+						<label>Email</label>
+                       	<span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.emailContactClient) }}
+                            {% else %}
+                                {{ entity_bon.emailContactClient }}
+                            {% endif %}
+                        </span>
+					</div>
+
+					<div>
+						<label>Téléphone</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                {{ form_widget(form_modification.telephoneContactClient) }}
+                            {% else %}
+                                {{ entity_bon.telephoneContactClient }}
+                            {% endif %}
+                        </span>
+					</div>
+				</div>
+			</fieldset>
+
+			{# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/views/Equipements/html_encart_equipement.html.twig" #}
+			{% include  "Equipements/html_encart_equipement.html.twig" %}
+
+
+            <fieldset class="fieldset fieldset--no-padding">
+                <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
+                {% if is_granted('ROLE_SAISIE_BA') %}
+                    <div id='label_archive' class="form__field">
+                        <div class="checkbox">
+                            <label>
+                                <input type='checkbox' id='chk_archive' name='chk_archive' value='chk_archive' onClick="afficheArchives();" />
+                                Afficher les fichiers archivés
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+                <table class='flex-table'>
+                    <thead class="flex-table__thead">
+                        <tr class="flex-table__row">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                <th class='small txt--center'>Archiver</th>
+                            {% endif %}
+                            <th class='wide'>Nom</th>
+                        </tr>
+                    </thead>
+                    <tbody id='table_des_fichiers' class="flex-table__tbody">
+                        {% for fichier in entity_bon.fichiersPdf %}
+                            <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
+                            {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
+                                {% if is_granted('ROLE_SAISIE_BA') %}
+                                    <td class='small txt--center'>
+                                        <img id="image_{{ fichier.id }}"
+                                            {% if fichier.archive == false %}
+                                                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}"
+                                            {% else %}
+                                                src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}"
+                                            {% endif %}
+                                                onClick="archiveUnFichierDuBon('{{ fichier.id }}', '{{ fichier.archive }}');"
+                                        />
+                                    </td>
+                                {% endif %}
+                                <td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+                                    <a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable'
+                                        href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
+                                            {{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id='formulaire_bons_fichiers' class='main-box__content main-box__content--padding' style="margin-top:16px;">
+                    <div>
+                        <span id='lien_ajout_fichier'></span>
+                        <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
+                        <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
+                        <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+                    </div>
+                </div>
+                <div class="content__btn">
+                    <div id="js-btn-file" class="main-box__btn--disabled">
+                        <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <h2 class="fieldset__title">Photos</h2>
+                <div class="form__field">
+					<label>Chemin local vers le répertoire des photos</label>
+                    <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">
+                        <span>
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+								{{ form_widget(form_modification.cheminDossierPhotos) }}
+                            {% else %}
+                                {{ entity_bon.cheminDossierPhotos }}
+                            {% endif %}
+                        </span>
+					</div>
+                </div>
+            </fieldset>
+		</section>
+	</div>
+
+	{# Popup Equipement #}
+	{% include "Equipements/html_popup_equipement.html.twig" %}
+
+	{# Encart qui permet la modification des Equipements #}
+	<section class='cacher'>
+		{{ form_rest(form_modification) }}
+	</section>
+
+	{{ form_end(form_modification) }}
+
+
+	{# Popup Création d'équipement #}
+	<section id="popupEquipement2" class="popup cacher">
+    	{{ render(path('lci_ajax_bon_new_equipement')) }}
+	</section>
+
+
+
+	<section class="grid__two content__brick">
+		<!-- Validation -->
+		<fieldset id='validation_des_bons_attachement' class="fieldset">
+		    <h1 class="fieldset__title">Validation</h1>
+			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
+			{{ form_errors(form_validation) }}
+
+				<table id="table_validation"  class='flex-table'>
+				<thead class="flex-table__thead">
+					<tr class="flex-table__row">
+						<th>Facturation</th>
+					</tr>
+				</thead>
+				<tbody class="flex-table__tbody">
+					<tr class="flex-table__row">
+                        <td>
+                            {% if entity_bon.validationFacturation %}
+                                {% if entity_bon.validationFacturation.valide == true %}
+                                    <span style='color:green;'>{{ entity_bon.validationFacturation.user.label }}<br />Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
+                                {% else %}
+                                    {# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        {{ form_widget(form_validation.validationFacturation) }}
+                                    {% else %}
+                                        {# Service Facturation non validé - On n'a pas les droits de validation #}
+                                        <span style='color:red;'>Non effectuée</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
+                                {# Service Facturation non validé - On a les droits de validation #}
+                                {{ form_widget(form_validation.validationFacturation) }}
+                            {% else %}
+                                {# Service Facturation non validé - On n'a pas les droits de validation #}
+                                <span style='color:red;'>Non effectuée</span>
+                            {% endif %}
+                        </td>
+					</tr>
+
+
+	        		<tr class="flex-table__row">
+                        <td>
+                            {% if entity_bon.validationFacturation %}
+                                {% if entity_bon.validationFacturation.valide == true %}
+                                    {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
+                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+			        </tr>
+				</tbody>
+				</table>
+			{{ form_end(form_validation, {'render_rest': false}) }} 
+		</fieldset>
+
+		<!-- Commentaires -->
+		<fieldset id="commentaire-bons-attachements" class="fieldset">
+			<h1 class="fieldset__title">Commentaires</h1>
+			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
+				<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
+				<div id="my-comment" class='form__field'>
+					<input type='text' id='commentaires'>
+					<div id="js-btn-comm" class="main-box__btn">
+						<div class="main-box__btn--disabled">
+							<button style='width:100px' onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
+						</div>
+					</div>
+				</div>
+	            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
+	    	</div>
+		</fieldset>
+</main>
+
+
+<!-- popup Nouveau Contact -->
+<section id="commentaireSAV" class="popup cacher">
+    <div class="popup__wrapper">
+        <header class="popup__header">
+            <h1 id='titre_commentaire_sav' class="popup__title">Consignes de facturation</h1>
+            <div class="close-cross" onclick="fermeturePopupCommentairesSAV();"></div>
+        </header>
+        <div class="popup__content">
+            <div class="form__field form__field--double">
+				<p id='avertissementConsignesFacturation' style='color:red'></p>
+                <div>
+                    <label>Consignes</label>
+                    <input type='text' name='consignesFacturation' id='consignesFacturation'>
+                </div>
+            </div>
+            <div class='form__btn form__btn--col notToBePrinted'>
+                <button onClick="validationCommentairesSAV();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock fos_user_content %}
+
+
+
+{% block javascript %}
+
+<script type='text/javascript'>
+
+    function attendreRechargement()
+    {
+        $('*').addClass('cursor--wait');
+    }
+
+    function finAttendreRechargement()
+    {
+        $('*').removeClass('cursor--wait');
+    }
+
+
+
+
+	// Affichage de la map du site avec le marqueur
+    function initAutocomplete()
+    {
+
+            if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))
+            {
+                $('#map').removeClass('cacher');
+                var $objPos = {};
+                $objPos.lat = parseFloat("{{ latitude }}");
+                $objPos.lng = parseFloat("{{ longitude }}");
+                var maCarte = new google.maps.Map(document.getElementById('map'), {
+                    center: $objPos,
+                    zoom: parseInt("{{ zoomApi }}"),
+                    mapTypeId: 'satellite'
+                });
+                var monMarqueur = new google.maps.Marker({
+                    position: $objPos,
+                    map: maCarte
+                });
+            }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// Fonction style barre de navigation page active
+    $(window).on('load', function pageActive(){
+    	$('.side-nav .bons-interv').addClass('active');
+    });
+    // Fonction affichage selon l'onglet sélectionné
+    const tabs = document.querySelectorAll('[data-tab-target]')
+    const tabContents = document.querySelectorAll('[data-tab-content]')
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabTarget)
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active')
+            })
+            tabs.forEach(tab => {
+                tab.classList.remove('active')
+            })
+            tab.classList.add('active')
+            target.classList.add('active')
+        })
+    });
+    // Fonction d'activation du bouton 'publier commentaire'
+    $('#commentaires').on('keyup', function enableBtnComm(){
+    	if($('#commentaires').val().length){
+    		$('#js-btn-comm > div').removeClass('main-box__btn--disabled');
+    		$('#js-btn-comm .btn--main').removeClass('btn--disabled');
+    	} else if (!$('#commentaires').val().length){
+    		$('#js-btn-comm > div').addClass('main-box__btn--disabled');
+    		$('#js-btn-comm .btn--main').addClass('btn--disabled');
+    	}
+    });
+
+
+	var $idBon = {{ entity_bon.id }};
+    var $indexFichier;
+    var $container;
+
+	$(document).ready(function() 
+	{
+		/* Débug largeur parent flex col */
+
+		/* Désactivation de la checkbox Archive */
+		$('#chk_archive').attr('checked', false);
+		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationTechnique_valide').is(":checked");
+			$type = 'technique';
+			changeValidation($type, $sens);
+		});
+        $('#bons_attachement_validation_validationPiece_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationPiece_valide').is(":checked");
+			$type = 'pieces';
+			changeValidation($type, $sens);
+        });
+        $('#bons_attachement_validation_validationPieceFaite_valide').click(function(e){
+            e.preventDefault;
+            $sens = $('#bons_attachement_validation_validationPieceFaite_valide').is(":checked");
+            $type = 'pieces_faite';
+            changeValidation($type, $sens);
+        });
+        $('#bons_attachement_validation_validationSAV_valide').click(function(e){
+			//e.preventDefault;
+            $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
+            $type = 'sav';
+			togglePopUp(commentaireSAV);
+        });
+        $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
+			e.preventDefault;
+			$sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
+			$type = 'facturation';
+			changeValidation($type, $sens);
+        });
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
+        $.datepicker.setDefaults({
+            numberOfMonths: 2
+        });
+        $("#bons_attachement_validation_dateSignature" ).datepicker();
+
+
+
+
+
+
+        /* Récupération du container contenant l'attribut data-prototype */
+        $container = $('#bons_attachement_modification_fichiersPdf');
+
+		/* Calcul du nombre de fichiers déjà présent */
+	    // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+    	$indexFichier = $container.find(':input').length;
+
+		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutiles
+
+        /* Lien permettant l'ajout d'un nouveau fichier */
+        var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier ({{ max_upload_size }} max)</a>');
+
+        /* Ajout du lien dans la div du container */
+        $('#lien_ajout_fichier').html($addLink);
+
+        /* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
+        $addLink.click(function(e){
+            ajoutChampFichier();
+			$('#bons_attachement_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
+			$('#js-btn-file > div').removeClass('main-box__btn--disabled');
+    		$('#js-btn-file .btn--main').removeClass('btn--disabled');
+            e.preventDefault();
+            return false;
+        });
+
+		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutils
+		$('#formulaire_bons_fichiers div.form-group').addClass('cacher');
+
+
+		/* Modification des infos bulles indiquant l'affichage des encarts fichiers et commentaires */
+		$('#label_fichier').mouseover(function(e) {
+			$('#info_bulle_fichier').removeClass('cacher');
+			
+		});
+        $('#label_fichier').mouseout(function(e) {
+            $('#info_bulle_fichier').addClass('cacher');
+
+        });
+
+		// $('#label_archive').mouseover(function(e) {
+  //           $('#info_bulle_archive').removeClass('cacher');
+
+  //       });
+  //       $('#label_archive').mouseout(function(e) {
+  //           $('#info_bulle_archive').addClass('cacher');
+
+  //       });
+
+
+
+			// ************************************************************************************ LISTENERS
+			// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
+			$('#cheminDossierPhotos').dblclick(function()
+			{
+				var $id_bon = $('#bons_attachement_modification_id').val();
+
+				var $url_controller_ajax_has_url 	= "{{ path('lci_bons_has_url', {'id_bon': 'identifiantDuBon'}) }}";
+				$url_controller_ajax_has_url 		= $url_controller_ajax_has_url.replace('identifiantDuBon', $id_bon);
+		
+				$.ajax({
+					url: $url_controller_ajax_has_url,
+					method: "GET",
+					success: function(msg){
+						var $retour = $.parseJSON(msg);
+						if ($retour['hasUrl'] == true)
+						{
+    		            	// Appel de la fonction pour télécharment du .bat
+    		            	var $url_controller_fonction_bat 	= "{{ path('lci_get_fichier_bat', {'id_bon': 'identifiantDuBon'}) }}";
+    		            	$url_controller_fonction_bat 		= $url_controller_fonction_bat.replace('identifiantDuBon', $id_bon);
+		                	document.location = $url_controller_fonction_bat;
+						} else {
+							alert("Aucun dossier n'a été enregistré pour le bon");
+						}
+					},
+					error: function(){
+						alert('erreur serveur survenue lors de la recherche du dossier des photos');
+					}
+				});
+			});
+
+		refreshSelectEquipements();
+
+
+
+
+
+    var sauvegarde_select_user = $('#bons_attachement_modification_user').html();
+
+    // Envoi du service selectionné
+    // Récupération des ids des membres du service
+    // Cache les non membre du service du select html
+    $('#bons_attachement_modification_service').change(function()
+    {
+		// On sauvegarde le nom de l'intervenant selectionné
+		var intervenant = $('#bons_attachement_modification_user').val();
+
+        // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
+        $('#bons_attachement_modification_user').html(sauvegarde_select_user);
+
+		var intervenant_identique = false;
+        $.ajax("{{ path('lci_ajax_bons_select_service') }}",
+        {
+            async: false,
+            method: "POST",
+            data: {service:$('#bons_attachement_modification_service option:selected').text() },
+            success: function(data, textStatus, jqXHR) {
+                // Lors du retour de la demande Ajax, soit on récupère un tableau avec les id des membres du service soit on recoit une chaine de caractère vide
+                // Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
+                if (data != '') {
+                    var t_data = JSON.parse(data);
+                    $('#bons_attachement_modification_user option').each(function()
+					{
+                        if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
+                        {
+                            $(this).addClass('cacher');
+                        } else {
+							// On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
+							// Si oui on le reselectionnera
+							if ($(this).val() == intervenant)
+							{
+								intervenant_identique = true;
+							}
+						}
+                    });
+					if (intervenant_identique == true)
+					{
+						$('#bons_attachement_modification_user').val(intervenant);
+					} else {
+                    	// Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
+						$('#bons_attachement_modification_user option[value=""]').prop('selected', true);
+					}
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('error');
+            }
+        });
+    });
+
+
+        /* Mise en place de l'objet datepicker avec 2 mois affichés */
+        $.datepicker.setDefaults({
+            numberOfMonths: 1,
+            dateFormat: 'dd/mm/yy',
+            showWeek: true,
+            gotoCurrent: true,
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+            maxDate: '+2Y'
+        });
+
+		setDatePicker();
+	});	
+
+
+
+	/******************* Fonctions pour les consignes de facturation */
+    function validationCommentairesSAV()
+    {
+        var texte = $('#consignesFacturation').val();
+        if (texte != '')
+        {
+			ajoutCommentaire(texte);
+        } else {
+            $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
+			return 1;
+        }
+    }
+	// Permet la fermeture de la popup sans consigne mais désactive alors la checkbox
+	function fermeturePopupCommentairesSAV()
+	{	
+		$('#bons_attachement_validation_validationSAV_valide').prop('checked', false);
+		$('#avertissementConsignesFacturation').text('');
+		togglePopUp(commentaireSAV);
+	}
+
+
+	function ajoutCommentaire(commentaire=null)
+	{
+		if (commentaire == null)
+		{
+			commentaire  = $('#commentaires').val();
+			$.ajax({
+                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
+                data: {'id_bon':$idBon, 'commentaire':commentaire},
+                method: "POST",
+                success: function(msg){
+					$('#commentaires_bon').prepend(commentaire);
+					$('#commentaires').val('');
+					fin_attente();
+                },
+                error: function(){
+                    alert("Erreur d'envoi de la consigne de facturation");
+                    return 1;
+                }
+            });
+			//Ou document.forms['myFormCommentaires'].submit();
+		} else {
+			// Ajout du commentaire en ajax
+            $.ajax({
+                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
+                data: {'id_bon':$idBon, 'commentaire':commentaire},
+                method: "POST",
+                success: function(msg){
+                    // Modification de la checkbox
+                    changeValidation($type, $sens);
+                },
+                error: function(){
+                    alert("Erreur d'envoi de la consigne de facturation");
+                    return 1;
+                }
+            });
+		}
+	}
+
+
+
+
+	function changeValidation($type, $sens) 
+	{
+        // On n'affiche plus les msgbox - Mettre en commentaire cette ligne pour proposer les msgbox ci dessous
+        return sendAjaxRequest($idBon, $type, $sens);
+
+
+
+
+
+		if($sens === false) {
+			$.msgBox({
+    			title: "Avertissement",
+    			content: "Êtes vous certain de vouloir annuler la validation " + $type + " ? ",
+    			type: "alert",
+    			buttons: [{ value: "Oui" }, { value: "Annuler"}],
+    			opacity: 1,
+    			success: function (result) {
+    			    if (result == "Annuler") {
+						return false;
+        			}
+					if (result == "Oui") {
+						return sendAjaxRequest($idBon, $type, $sens);
+					}
+    			}
+			});
+		} else {
+			var $retourAjax;
+			$.msgBox({
+                title: "Information",
+                content: "Êtes vous certain de vouloir effectuer la validation " + $type + " ? ",
+                type: "confirm",
+                buttons: [{ value: "Oui" }, { value: "Annuler"}],
+                opacity: 1,
+                success: function (result) {
+                    if (result == "Annuler") {
+                        switch($type) {
+                            case 'technique':
+                                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", false);
+                                break;
+                            case 'sav':
+                                $('#bons_attachement_validation_validationSAV_valide').prop("checked", false);
+                                break;
+                            case 'pieces':
+                                $('#bons_attachement_validation_validationPiece_valide').prop("checked", false);
+                                break;
+                            case 'pieces_faite':
+                                $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", false);
+                                break;
+                            case 'facturation':
+								location.reload();
+                                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", false);
+                                break;
+                        }
+                        return false;
+                    }
+                    if (result == "Oui") {
+                     	return sendAjaxRequest($idBon, $type, $sens);
+                    }
+                }
+            });
+		}
+	}
+
+
+
+	function sendAjaxRequest($idBon, $type, $sens) 
+	{
+		attente();
+		setTimeout(function() 
+		{
+			$.ajax({
+        	    url: "{{ path('lci_ajax_bons_setValidation') }}",
+        	    method: "post",
+        	    data: {'identifiant':$idBon, 'type':$type, 'sens':$sens},
+        	    success: function(msg) 
+				{
+					window.location.assign(location.href); 
+					fin_attente();
+					return true;
+        	    },
+        	    error: function(request, $error, $msg) 
+				{
+        	        alert('error ' + $error + $msg);
+        	        fin_attente();
+					switch($type) {
+        	            case 'technique':
+        	                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", true);
+        	                break;
+        	            case 'sav':
+        	                $('#bons_attachement_validation_validationSAV_valide').prop("checked", true);
+        	                break;
+        	            case 'pieces':
+        	                $('#bons_attachement_validation_validationPiece_valide').prop("checked", true);
+        	                break;
+                        case 'pieces_faite':
+                            $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", true);
+                            break;
+        	            case 'facturation':
+        	                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", true);
+        	                break;
+        	        }
+					return false;
+        	    }
+        	});
+		}, 500);
+	}
+
+
+	function afficheFichier($url) {
+		$('#' + $url)[0].click();
+	}
+
+
+    function archiveUnFichierDuBon($idFichier, $archive) {
+        $.ajax({
+       	    url: "{{ path('lci_ajax_bons_archive_fichier') }}",
+      	 	method: "post",
+           	data: {'identifiant_fichier':$idFichier},
+           	success: function($msg) {
+				if ($archive == false) {
+					$('#fichier_' +  $idFichier).addClass('archive');
+					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}");
+					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '1')");
+				} else {
+					$('#fichier_' +  $idFichier).removeClass('archive');
+					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}");
+					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '0')");
+				}
+				afficheArchives();
+           	},
+           	error: function($requete, $error, $msg) {
+           	    alert('Erreur : Archivage non effectué');
+           	}
+       	});
+    }
+
+
+
+    // Fonction qui ajout un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
+    function ajoutChampFichier() {
+        var $nouveauPrototype = $($('#bons_attachement_modification_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
+
+        // Création et ajout d'un lien de suppression en fin de container
+        $deleteLink = $('<a href="#" class="mini_link">Supprimer</a>');
+        $nouveauPrototype.append($deleteLink);
+
+        // Ajout du listener permettant la suppression du champ fichier lors du clic sur le lien
+        $deleteLink.click(function(e){
+            $nouveauPrototype.remove();
+            e.preventDefault();
+            return false;
+        });
+
+        // Ajout du prototype a la fin du container
+        $container.prepend($nouveauPrototype);
+
+        // Incrémentation de l'index des fichiers
+        $indexFichier ++;
+    }
+
+	// Fonction qui renvoie vers la page de modification de bon
+	function updateBon($idBon) {
+        $('#id_bon').val($idBon);
+        document.forms['form_modification_bon'].submit();
+    }
+
+
+	function toggleFiles() {
+		$('#info_bulle_fichier').toggleClass("fichier");
+		$('#formulaire_bons_fichiers').toggleClass("cacher");
+		$('#formulaire_bons_commentaires').toggleClass("cacher");
+		if ($('#formulaire_bons_fichiers').is(':visible')) {
+			$('#img_validation').attr('onClick', "attente(); document.forms['myFormFichiers'].submit(); return false;");
+		} else {
+			$('#img_validation').attr('onClick', "attente(); document.forms['myFormCommentaires'].submit(); return false;");
+		}	
+	}
+
+
+	function afficheArchives() {
+		if ($('#chk_archive').is(":checked")) {
+            $('#table_des_fichiers tr').each(function() {
+               	$(this).removeClass('cacher');
+            });
+		} else if (!$('#chk_archive').is(':checked')){
+			$('#table_des_fichiers tr').each(function() {
+				if ($(this).hasClass('archive')) {
+					$(this).addClass('cacher');
+				}
+			});
+		} 
+	}
+
+
+    // Fonction qui supprime les informations contenues entre les parenthèses des noms de fichiers
+    function definirNomFichier($idLien, $nomDuFichier)
+    {
+        var $regex = /\([a-zA-Z0-9àéèêâ:\/\s]+\)$/;
+        $('#' + $idLien).attr('download', $.trim($nomDuFichier.replace($regex, '')));
+    }
+
+    /* Débug largeur parent flex col sur un resize */
+    $(window).on('resize', function(){
+        $('.main-content').css({'width':'initial'});
+        setTimeout(function(){
+        	$('.main-content').css({'width':'fit-content'});
+        }, 30);
+
+    });
+
+    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
+    function setDatePicker()
+    {
+        $("input[placeholder='dd/mm/YYYY']").datepicker();
+    }
+
+
+
+
+</script>
+
+{# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
+{% include "Equipements/fonction_equipements.js" %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+</script>
+
+{% endblock javascript %}

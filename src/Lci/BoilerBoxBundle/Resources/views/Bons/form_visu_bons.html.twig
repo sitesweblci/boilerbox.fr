@@ -86,7 +86,7 @@
 
 			<tbody id='contenu_tableau_bons' class="flex-table__tbody">
 				{% for ent_bons in entities_bon %}
-				<tr class="flex-table__row" onclick="afficherLeBon({{ ent_bons.id}});" {% if ent_bons.type == "ticket" %}style='background-color:#FAA0A0;'{% endif %}>
+				<tr class="flex-table__row" onclick="afficherBonOuTicket({{ ent_bons.id}}, '{{ent_bons.type }}');" {% if ent_bons.type == "ticket" %}style='background-color:#FAA0A0;'{% endif %}>
 					<td class='medium' data-intitule='nomDuSite'>
 						{{ ent_bons.site.intitule }}
 					</td>
@@ -95,12 +95,20 @@
 					</td>
                     <td class='small' data-intitule='dateDebutIntervention'>
 						{% if ent_bons.dateDebutIntervention is not null  %}
-                        	{{ ent_bons.dateDebutIntervention | date('d/m/Y') }}
+							{% if ent_bons.type == 'bon' %}
+	                        	{{ ent_bons.dateDebutIntervention | date('d/m/Y') }}
+							{% else %}
+								{{ ent_bons.dateDebutIntervention | date('d/m/Y H:i') }}
+							{% endif %}
 						{% endif %}
                     </td>
                     <td class='small' data-intitule='dateFinIntervention'>
 						{% if ent_bons.dateFinIntervention is not null  %}
-                        	{{ ent_bons.dateFinIntervention | date('d/m/Y') }}
+							{% if ent_bons.type == 'bon' %}
+                        		{{ ent_bons.dateFinIntervention | date('d/m/Y') }}
+							{% else %}
+								{{ ent_bons.dateFinIntervention | date('d/m/Y H:i:s') }}
+							{% endif %}
 						{% endif %}
                     </td>
                     <td class='mini centrer' data-intitule='site'>
@@ -114,7 +122,11 @@
 					</td>
                     <td class='small' data-intitule='dateInitialisation'>
 						{% if ent_bons.dateInitialisation is not null  %}
-                        	{{ ent_bons.dateInitialisation | date('d/m/Y') }}
+							{% if ent_bons.type == 'bon' %}
+                        		{{ ent_bons.dateInitialisation | date('d/m/Y') }}
+							{% else %}
+								{{ ent_bons.dateInitialisation | date('d/m/Y H:i') }}
+                            {% endif %}
 						{% endif %}
                     </td>
                     <td class='medium' data-intitule='label'>
@@ -220,6 +232,11 @@
 <form method='post' name='form_affiche_bon' action={{ path('lci_bons_afficher_unbon') }}>
     <input type='hidden' id='id_bon' name='id_bon' />
 </form>
+
+<form method='post' name='form_affiche_ticket' action={{ path('affiche_ticket') }}>
+    <input type='hidden' id='id_ticket' name='id_ticket' />
+</form>
+
 
 {% endblock fos_user_content %}
 
@@ -559,7 +576,7 @@
 
 		/* Création du nouveau tableau */
 		$.each(tableau, function(index, value){
-			nouveauTableau += "<tr class='flex-table__row' onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
+			nouveauTableau += "<tr class='flex-table__row' onclick='afficherBonOuTicket(" + tableau[index]['id'] + ",\'" + tableau[index]['type'] + "\');'>";
 
 			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
 			nouveauTableau += tableau[index]['nomDuSite'];
@@ -613,11 +630,6 @@
 			nouveauTableau += "</div>";
             nouveauTableau += "</td>";
 	
-			// nouveauTableau += "<td class='small cesure selectionnable txt--center'>";
-			// nouveauTableau += "<div onclick='afficherLeBon(" + tableau[index]['id'] + ");'>";
-			// nouveauTableau += "<img class='visu-bon-img' src='" + $srcImgVisualiser + "'>";
-			// nouveauTableau += "</div>";
-			// nouveauTableau += "</td>";
 
 			nouveauTableau += "<td class='small txt--center' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
 			{% if is_granted('ROLE_SECRETERIAT') %}
@@ -656,11 +668,25 @@
 	}
 
 
+	function afficherBonOuTicket($idBonTicket, $type) {
+		if ($type == 'bon')
+		{
+			afficherLeBon($idBonTicket, $type);
+		} else {
+			afficherLeTicket($idBonTicket, $type);
+		}
+	}
 
-	function afficherLeBon($idBon) {
+	function afficherLeBon($idBon, $type) {
 		$('#id_bon').val($idBon);
 		document.forms['form_affiche_bon'].submit();
 	}
+
+    function afficherLeTicket($idTicket, $type) {
+        $('#id_ticket').val($idTicket);
+        document.forms['form_affiche_ticket'].submit();
+    }
+
 
 	/* Fonction qui réinitialise les filtres de recherches */
 	function refeshResearch() {

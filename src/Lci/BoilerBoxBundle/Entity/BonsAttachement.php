@@ -77,7 +77,7 @@ class BonsAttachement {
      * @Assert\Date(message="Format incorrect. Format jj/mm/AAAA attendu.")
      * @Assert\NotBlank(message="Veuillez indiquer la date d'initiation du bon")
      *
-     * @ORM\Column(type="date", name="date_initialisation")
+     * @ORM\Column(type="datetime", name="date_initialisation")
     */
     protected $dateInitialisation;
 
@@ -96,7 +96,7 @@ class BonsAttachement {
      *
      * @Assert\Date(message="Format incorrect. Format jj/mm/AAAA attendu.")
      *
-     * @ORM\Column(type="date", name="date_debut_intervention", nullable=true)
+     * @ORM\Column(type="datetime", name="date_debut_intervention", nullable=true)
     */
     protected $dateDebutIntervention;
 
@@ -106,7 +106,7 @@ class BonsAttachement {
      *
      * @Assert\Date(message="Format incorrect. Format jj/mm/AAAA attendu.")
      *
-     * @ORM\Column(type="date", name="date_fin_intervention", nullable=true)
+     * @ORM\Column(type="datetime", name="date_fin_intervention", nullable=true)
     */
     protected $dateFinIntervention;
 
@@ -248,7 +248,7 @@ class BonsAttachement {
     /**
      * @var string
      *
-     * @ORM\Column(type="string", name="motif")
+     * @ORM\Column(type="string", name="motif", nullable=true)
     */
     protected $motif;
 
