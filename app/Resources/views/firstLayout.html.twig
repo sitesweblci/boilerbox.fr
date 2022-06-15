@@ -138,7 +138,7 @@
                         {% endif %}
                     </ul>
                     <li class="bons-interv button-wrapper"><a href="{{ path('lci_bons_attachements') }}">
-                        <i></i><span>Bons d'interventions</span></a>
+                        <i></i><span>Interventions et tickets</span></a>
                         <button><span></span></button>
                     </li>
                     <ul class="side-nav__sub-list">
@@ -306,6 +306,11 @@
     $('.logged').on('mouseleave', function(){
         $('.logged').addClass('cacher');
     });
+    // Fermeture popup
+    function togglePopUp(id){
+        ($(id)).toggleClass('cacher');
+        $('html').removeClass('no-scroll');
+    }; 
 </script>
 {% block javascript %}
 {% endblock javascript %}

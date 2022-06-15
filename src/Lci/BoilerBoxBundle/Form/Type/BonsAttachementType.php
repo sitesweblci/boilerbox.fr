@@ -71,7 +71,7 @@ class BonsAttachementType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-				'class'			=> 'centrer'
+				'class'			=> ''
             )
         ))
 /*
@@ -92,7 +92,7 @@ class BonsAttachementType extends AbstractType {
 			'required' 		=> true,
             'trim' 			=> true,
             'attr' 			=> array(
-				'class' 		=> 'biginput upper centrer',
+				'class' 		=> 'biginput upper ',
 				'maxlength' 	=> 7
             )
         ))
@@ -118,7 +118,7 @@ class BonsAttachementType extends AbstractType {
 			'attr' 			=> array(
 				'placeholder' 	=> 'dd/mm/YYYY',
 				'maxlength' 	=> 10,
-                'class'         => 'centrer'
+                'class'         => ''
 			),
             'required'      => false
 		))
@@ -132,7 +132,7 @@ class BonsAttachementType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => ''
             ),
 			'required'		=> false
         ))
@@ -146,7 +146,7 @@ class BonsAttachementType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => ''
             ),
             'required'      => false
         ))
@@ -231,7 +231,7 @@ class BonsAttachementType extends AbstractType {
                 'class'         => 'label_smalltext'
             ),
             'attr'          => array(
-                'class'         => 'biginput centrer',
+                'class'         => 'biginput ',
                 'placeholder'   => "Chemin vers le repertoire local des photos",
                 'style'         => 'width:100%;'
             ),

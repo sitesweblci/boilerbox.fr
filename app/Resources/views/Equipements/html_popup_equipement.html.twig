@@ -7,20 +7,6 @@
             <button type="button" id="btn_ajout_equipement2" class="btn btn--main btn--round add tooltip-wrapper" onclick="gestionDesEquipements2();"><span class="tooltip">Créer nouvel équipement</span></button>
         </header>
         <div class="popup__content">
-            {# <div class="choice">
-                <div class="choice__actionner">
-                    <label class="required checked" for="ajoutEquipement">
-                        <input type="radio" id="ajoutEquipement" name="ajoutEquipement">
-                        Sélection équipement
-                    </label>
-                </div>
-                <div class="choice__actionner">
-                    <label class="required" for="creationEquipement">
-                        <input type="radio" id="creationEquipement" name="creationEquipement">
-                        Créer équipement
-                    </label>
-                </div>
-            </div> #}
             <div class="form__field form__field--double align-end">
                 <div>
                     <label>Site</label>
@@ -31,37 +17,23 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div>
-                    <div class="search-bar">
-                        <span class="search-bar__img"></span>
-                        <input class="search-bar__input" type='text' id='recherche_equipement' placeholder="Rechercher" />
-                    </div>
+                <div class="search-bar">
+                    <span class="search-bar__img"></span>
+                    <input class="search-bar__input" type='text' id='recherche_equipement' placeholder="Rechercher" />
                 </div>
             </div>
             <div class="form__field">
-                <div>
-                    <div id="liste_des_equipements_selectionnes" style='border-bottom:1px dashed black; padding-bottom:10px; max-height:200px; overflow:auto;'>
-                        <div class='form_field rel'><label>Equipements sélectionnés pour le bon</label></div>
-                            <span  style='display:inline-block; width:20px; font-size:10px;'></span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Autre dénomination</span>
-                            <span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-                    </div>
-
-                    <div id="liste_des_equipements" style='padding-top:10px; max-height:500px; overflow:auto;'>
-                        <div class='form_field rel'><label>Liste des équipements du site sélectionné</label></div>
-                            <span  style='display:inline-block; width:20px; font-size:10px;'></span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>N° de série</span>
-                            <span  style='display:inline-block; width:60px; font-size:10px;'>Construit le</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Dénomination</span>
-                            <span  style='display:inline-block; width:150px; font-size:10px;'>Autre dénomination</span>
-                            <span  style='display:inline-block; width:200px; font-size:10px;'>Equipement situé sur</span>
-                        <div id='insert_equipement'>
-                        </div>
-                    </div>
+                <h3 class="list__title">Équipements sélectionnées pour le bon</h3>
+                <div class="list__legend">
+                    <label style='width:30px;'></label>
+                    <label class="serie" style='width:60px;'>N° de série</label>
+                    <label class="built" style='width:60px;'>Construit le</label>
+                    <label class="name-1" style='width:150px;'>Dénomination</label>
+                    <label class="name-2" style='width:150px;'>Autre dénomination</label>
+                    <label class="location" style='width:200px;'>Equipement situé sur</label>
                 </div>
+                <div id="liste_des_equipements_selectionnes" class="list scroll"></div>
+                <h3 class='list__title'>Liste des équipements du site sélectionné</h3>
                 <div id='insert_equipement' class="list scroll"></div>
             </div>
         </div>

@@ -13,38 +13,22 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-	.main-box__content--padding{
+/*	.main-box__content--padding{
 		padding-bottom: 0;
-	}
+	}*/
 	.flex-table{
 		width: 100%;
 		min-width: initial;
 	}
-	.flex-table__thead tr{
-		padding-right: initial;
-	}
-	.flex-table__thead tr th{
-		padding-bottom: 4px;
-	}
-	.flex-table__tbody{
+/*	.flex-table__tbody{
 		height: initial;
-		overflow: auto;
-	}
-	.flex-table__tbody tr{
-		height: initial;
-		cursor: initial;
 	}
 	.flex-table__tbody tr:hover{
 		background: #fff;
 	}
-	.flex-table__tbody tr td{
-		padding-top: 4px;
-		padding-bottom: 4px;
-		font-size: 10pt;
-	}
 	#validation_des_bons_attachement .flex-table__tbody tr {
 		border: none;
-	}
+	}*/
 	.flex-table .small{
 		width: calc(30% - 20px);
 	}
@@ -53,10 +37,6 @@
 	}
 	#table_des_fichiers tr td.small img{
 		cursor: pointer;
-	}
-	#commentaires{
-		height: 40px !important;
-		margin: 0;
 	}
     .erreur_formulaire {
         border: 2px solid red !important;
@@ -93,7 +73,7 @@
 	{% endif %}
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
 	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit(); return false"><span class="tooltip">Enregistrer modif</span></button>
 	{% endif %}
 </section>
 <main id="grid-visuUnBon" class="content">
@@ -287,7 +267,7 @@
 			{% include  "Equipements/html_encart_equipement.html.twig" %}
 
 
-            <fieldset class="fieldset fieldset--no-padding">
+            <fieldset id="encart_fichier" class="fieldset fieldset--no-padding">
                 <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
                 {% if is_granted('ROLE_SAISIE_BA') %}
                     <div id='label_archive' class="form__field">
@@ -308,7 +288,7 @@
                             <th class='wide'>Nom</th>
                         </tr>
                     </thead>
-                    <tbody id='table_des_fichiers' class="flex-table__tbody">
+                    <tbody id='table_des_fichiers' class="flex-table__tbody scroll">
                         {% for fichier in entity_bon.fichiersPdf %}
                             <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
                             {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
@@ -340,11 +320,6 @@
                         <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
                         <div>{{ form_errors(form_modification.fichiersPdf) }}</div>
                         <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-                    </div>
-                </div>
-                <div class="content__btn">
-                    <div id="js-btn-file" class="main-box__btn--disabled">
-                        <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
                     </div>
                 </div>
             </fieldset>
@@ -392,17 +367,17 @@
 			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
 			{{ form_errors(form_validation) }}
 
-				<table id="table_validation"  class='flex-table'>
-				<thead class="flex-table__thead">
-					<tr class="flex-table__row">
+				<table id="table_validation">
+				<thead>
+					<tr>
 						<th>Technique</th>
 						<th>Pièces</th>
 						<th>SAV</th>
 						<th>Facturation</th>
 					</tr>
 				</thead>
-				<tbody class="flex-table__tbody">
-					<tr class="flex-table__row">
+				<tbody>
+					<tr>
                         <td>
                             {% if entity_bon.validationTechnique %}
                                 {% if entity_bon.validationTechnique.valide == true %}
@@ -503,7 +478,7 @@
 					</tr>
 
 
-	        		<tr class="flex-table__row">
+	        		<tr>
 	            		<td>
                             {% if entity_bon.validationTechnique %}
                                 {% if entity_bon.validationTechnique.valide == true %}
@@ -573,18 +548,16 @@
 		<!-- Commentaires -->
 		<fieldset id="commentaire-bons-attachements" class="fieldset">
 			<h1 class="fieldset__title">Commentaires</h1>
-			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
-				<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
-				<div id="my-comment" class='form__field'>
-					<input type='text' id='commentaires'>
-					<div id="js-btn-comm" class="main-box__btn">
-						<div class="main-box__btn--disabled">
-							<button style='width:100px' onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
-						</div>
+			<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
+			<div id="my-comment" class='form__field'>
+				<textarea type='text' id='commentaires'></textarea>
+				<div id="js-btn-comm" class="main-box__btn">
+					<div class="main-box__btn--disabled">
+						<button class="btn btn--main btn--disabled" onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
 					</div>
 				</div>
-	            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-	    	</div>
+			</div>
+            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 		</fieldset>
 </main>
 

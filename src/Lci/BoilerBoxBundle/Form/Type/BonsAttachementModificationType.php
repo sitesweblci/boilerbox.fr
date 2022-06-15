@@ -29,8 +29,7 @@ class BonsAttachementModificationType extends BaseType {
             'trim'          => true,
             'attr'          => array(
                 'placeholder'   => 'XXXXXX',
-                'maxlength'     => 6,
-				'class'			=> 'centrer'
+                'maxlength'     => 6
             )
         ));
 	}

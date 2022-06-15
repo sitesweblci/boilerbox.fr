@@ -419,9 +419,9 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-.ligne_error {
+/*.ligne_error {
   height: 15px;
-}
+}*/
 .nouveau_probleme_ligne {
   display: flex;
   justify-content: start;
@@ -1347,11 +1347,6 @@ th div.champs_validation_bon > div > div:first-child {
 #legende_sites .feuTricolor_4 {
   	margin: 0 !important;
 	border: 1px solid black;
-}
-#commentaires_bon {
-	max-height: 160px;
-  overflow-y: auto;
-  margin-bottom: 12px;
 }
 .bons_commentaires_titre {
 	color: var(--dark-grey);

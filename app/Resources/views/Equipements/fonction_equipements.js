@@ -271,8 +271,8 @@ $(document).ready(function()
             $('#liste_des_equipements_selectionnes').append(div_tmp);
 
 			// Ajout de l'élément sur la page HTML
-			$html = "<tr id='tr_equipement_" + id_checkbox + "'><td style='cursor:pointer;' onClick=\"modifierEquipement('" + id_checkbox + "');\">x</td>" + "<td>" + numeroDeSerie + "</td>" + "<td>" + denomination + "</td>" + "<td>" + autreDenomination+ "</td></tr>";
-			$('#table_des_equipements').append($html);
+			$html = "<tr id='tr_equipement_" + id_checkbox + "' class='flex-table__row' onClick=\"modifierEquipement('" + id_checkbox + "');\">" + "<td class='txt--center'>" + numeroDeSerie + "</td>" + "<td>" + denomination + "</td>" + "<td>" + autreDenomination+ "</td></tr>";
+			$('#table_des_equipements tbody').append($html);
         } else {
             // On retire l'id de l'équipement du tableau des équipement selectionnés
             var indexARetirer = tabDesEquipementsSelectionnes.indexOf(id_checkbox);
