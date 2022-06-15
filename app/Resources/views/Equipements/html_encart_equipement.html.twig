@@ -1,33 +1,17 @@
-{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
-{% block liens_css %}
-    {{ parent() }}
-    <style>
-		#table_des_equipements {
-			width: 100%;
-			min-width: initial;
-		}
-	</style>
-{% endblock liens_css %}
-
-{% block fos_user_content %}
-	{{ parent() }}
-	<fieldset class="fieldset fieldset--no-padding">
-        <h2 class="fieldset__title">Équipement</h2>
-        <div class="form__field rel">
-			<div id='infos_equipements'><p>Equipement(s) non défini(s)</p></div>
-			{% if is_granted('ROLE_SAISIE_BA') %}
-            	<button type="button" id="btn_ajout_equipement2" class="btn btn--round btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
-			{% endif %}
-		</div>
-        <table id="table_des_equipements" class="flex-table">
-            <thead class="flex-table__thead">
-				<tr class="flex-table__row">
-                    <th class="txt--center">N° de série</th><th>Dénomination</th><th>Autre dénomination</th>
-                </tr>
-            </thead>
-            <tbody class="flex-table__tbody scroll"></tbody>
-        </table>
-    </fieldset>
-
-{% endblock fos_user_content %}
-
+<fieldset class="fieldset fieldset--no-padding">
+    <h2 class="fieldset__title">Équipement</h2>
+    <div class="form__field rel">
+		<div id='infos_equipements'><p>Equipement(s) non défini(s)</p></div>
+		{% if is_granted('ROLE_SAISIE_BA') %}
+           	<button type="button" id="btn_ajout_equipement2" class="btn btn--round btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+		{% endif %}
+	</div>
+    <table id="table_des_equipements" class="flex-table">
+    	<thead class="flex-table__thead">
+			<tr class="flex-table__row">
+            	<th class="txt--center">N° de série</th><th>Dénomination</th><th>Autre dénomination</th>
+            </tr>
+        </thead>
+        <tbody class="flex-table__tbody scroll"></tbody>
+    </table>
+</fieldset>
