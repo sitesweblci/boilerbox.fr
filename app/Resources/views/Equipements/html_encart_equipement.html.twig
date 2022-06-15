@@ -15,5 +15,21 @@
                     <tbody class="flex-table__tbody scroll"></tbody>
                 </table>
         {% endif %}
+{#
+	<fieldset class="fieldset">
+        <h2 class="fieldset__title">Équipement(s)</h2>
+        <div class="form__field rel">
+            <span id="add-equipBon">Sélection des équipements</span>
+
+			{% if is_granted('ROLE_SAISIE_BA') %}
+            	<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+			{% endif %}
+		</div>
+		<div class="form__field">
+            <table id="table_des_equipements" style='border-spacing:10px;'>
+				<tr><td>Modifier l'équipement</td><td>Numéro de série</td><td>Dénomination</td><td>Autre dénomination</td></tr>
+            </table>
+        </div>
+#}
     </fieldset>
 </html>

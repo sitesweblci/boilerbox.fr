@@ -16,6 +16,11 @@ fos_js_routing:
 lci_boiler_box:
     resource: "@LciBoilerBoxBundle/Resources/config/routing.yml"
     prefix:   /lci
+
+lci_boiler_box_tickets:
+    resource: "@LciBoilerBoxBundle/Resources/config/routing_tickets.yml"
+    prefix:   /lci/tickets
+
 lci_boilerbox_index:
     path: /
     defaults: { _controller: LciBoilerBoxBundle:BoilerBox:accesSite }

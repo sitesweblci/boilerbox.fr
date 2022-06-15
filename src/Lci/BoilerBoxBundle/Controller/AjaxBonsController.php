@@ -638,8 +638,15 @@ class AjaxBonsController extends Controller
                     'id'                => $e_equipement->getId()
                 ]);
             }
-        }
+			// On retourne le fichier serialize
+                    $serializer = $this->get('serializer');
+                    $jsonContent = $serializer->serialize(
+                        $e_equipement,
+                        'json', array('groups' => array('groupEquipement'))
+                    );
+                    return new Response($jsonContent);
 
+        }
         return $this->render('LciBoilerBoxBundle:Bons:creer_equipement.html.twig', array(
             'form_equipement'   => $f_equipement->createView(),
             'id'                => $e_equipement->getId()

@@ -244,6 +244,15 @@ class BonsAttachement {
     */
     protected $type;
 
+    // Motif de création d'un ticket d'incident
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="motif", nullable=true)
+    */
+    protected $motif;
+
+
     /**
      * @var string
      *
@@ -877,6 +886,32 @@ class BonsAttachement {
     {
         return $this->type;
     }
+
+
+    /**
+     * Set motif.
+     *
+     * @param string $motif
+     *
+     * @return BonsAttachement
+     */
+    public function setMotif($motif)
+    {
+        $this->motif= $motif;
+
+        return $this;
+    }
+
+    /**
+     * Get motif.
+     *
+     * @return string
+     */
+    public function getMotif()
+    {
+        return $this->motif;
+    }
+
 
 
     /**

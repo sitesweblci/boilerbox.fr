@@ -1,0 +1,8 @@
+saisie_ticket:
+    path: /saisie
+    defaults: { _controller: LciBoilerBoxBundle:Ticket:saisie }
+affiche_ticket:
+    path: /affiche
+    defaults: { _controller: LciBoilerBoxBundle:Ticket:afficherUnTicket }
+
+

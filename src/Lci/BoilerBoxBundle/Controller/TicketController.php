@@ -4,15 +4,27 @@ namespace Lci\BoilerBoxBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-
-
 use Lci\BoilerBoxBundle\Entity\BonsAttachement;
+use Lci\BoilerBoxBundle\Entity\Contact;
+use Lci\BoilerBoxBundle\Entity\Configuration;
+use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
+use Lci\BoilerBoxBundle\Entity\Fichier;
 use Lci\BoilerBoxBundle\Entity\SiteBA;
+use Lci\BoilerBoxBundle\Entity\Validation;
 
+
+use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
+use Lci\BoilerBoxBundle\Form\Type\FichierType;
 use Lci\BoilerBoxBundle\Form\Type\SiteBAType;
+use Lci\BoilerBoxBundle\Form\Type\TicketIncidentType;
+use Lci\BoilerBoxBundle\Form\Type\TicketIncidentCommentairesType;
+use Lci\BoilerBoxBundle\Form\Type\TicketIncidentModificationType;
+use Lci\BoilerBoxBundle\Form\Type\TicketIncidentValidationType;
+use Lci\BoilerBoxBundle\Form\Type\ValidationType;
+
+
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementType;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementCommentairesType;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementModificationType;
@@ -20,27 +32,13 @@ use Lci\BoilerBoxBundle\Form\Type\BonsAttachementValidationType;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementModification1Type;
 use Lci\BoilerBoxBundle\Form\Type\BonsAttachementModification2Type;
 
-
-use Lci\BoilerBoxBundle\Entity\Fichier;
-use Lci\BoilerBoxBundle\Form\Type\FichierType;
-
-use Lci\BoilerBoxBundle\Entity\Validation;
-use Lci\BoilerBoxBundle\Form\Type\ValidationType;
-
 use Lci\BoilerBoxBundle\Entity\ObjRechercheBonsAttachement;
 use Lci\BoilerBoxBundle\Form\Type\ObjRechercheBonsAttachementType;
-
-use Lci\BoilerBoxBundle\Entity\Contact;
-
-use Lci\BoilerBoxBundle\Entity\Configuration;
-
-use Lci\BoilerBoxBundle\Entity\EquipementBATicket;
-use Lci\BoilerBoxBundle\Form\Type\EquipementBATicketType;
 
 
 use Symfony\Component\Form\FormError;
 
-class BonsController extends Controller
+class TicketController extends Controller
 {
     /**
      * Récupérer la véritable adresse IP d'un visiteur
@@ -59,47 +57,45 @@ class BonsController extends Controller
         }
     }
 
-    public function indexAction(Request $request)
-    {
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
-            return $this->render('LciBoilerBoxBundle:Bons:index.html.twig');
-        } else {
-            return $this->visualiserAction(null, $request);
-        }
-    }
+
 
     public function saisieAction(Request $request)
     {
+		$numero_de_ticket						= null;
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
-		$enregistrement_form_bon 				= null;
-		// Html du formulaire du bon - permet de renvoyer les bonnes informations lors de la modification du site / des contacs d'un site
-		$enregistrement_html_form_bon			= null;
+		$enregistrement_form_ticket 				= null;
+
+		// Html du formulaire du ticket - permet de renvoyer les bonnes informations lors de la modification du site / des contacs d'un site
+		$enregistrement_html_form_ticket		= null;
 		$tab_des_id_equipements_selectionnes 	= array();
+
 		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
 		$echec_creation_equipement 				= false;
         $apiKey 								= $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
         $es_sitesBA 							= $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
-		$e_user_courant 						= $this->get('security.token_storage')->getToken()->getUser();
 
-        // Création d'un formulaire de bon d'attachement +  Récupération de l'utilisateur courant pour définir l'initiateur d'un nouveau bon
-        $e_bons_attachement = new BonsAttachement();
-        $e_bons_attachement->setUserInitiateur($e_user_courant);
-        $f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+        // Création de l'entité du ticket + Récupération de l'utilisateur courant pour en définir l'initiateur
+        $e_ticket 		= new BonsAttachement();
+		$e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
+        $e_ticket->setUserInitiateur($e_user_courant);
+
+		// Création du formulaire de ticket 
+        $f_ticket = $this->createForm(TicketIncidentType::class, $e_ticket);
 
 		// Création du formulaire des SitesBA
         $e_siteBA 			= new SiteBA();
         $e_siteBA_update 	= null;
         $id_last_site	 	= null;
         $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
-            'action' => $this->generateUrl('lci_bons_saisie'),
+            'action' => $this->generateUrl('saisie_ticket'),
             'method' => 'POST'
         ));
 
 		// Recherche de l'ensemble des équipements
 		$es_equipements = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->findAll();		
 
-        // Si un formulaire : création de bon ou création / modification de site, de bon a été soumis (retour de type POST)
+        // Si un formulaire : création de ticket ou création / modification de site, de ticket a été soumis (retour de type POST)
         if ($request->getMethod() == 'POST') 
 		{
             // Sauvegarde des id des équipements selectionnés pour les re sélectionner
@@ -116,34 +112,34 @@ class BonsController extends Controller
 			// Envoyé lors de l'envoi du formulaire de site
 			if (isset($_POST['save_form_bon']))
 			{
-				$enregistrement_html_form_bon = $_POST['save_form_bon'];
+				$enregistrement_html_form_ticket = $_POST['save_form_bon'];
 			}
 
-            // Si le formulaire de création de bon a été soumis (retour de type POST)
-			$f_bons_attachement->handleRequest($request);
+            // Si le formulaire de création de ticket a été soumis (retour de type POST)
+			$f_ticket->handleRequest($request);
 
 			// Si on ne doit pas sauvegarder (dans le cas ou le formulaire est envoyé pour raffraichir la liste de équipements)
-			// On instancie la variable $id_last_site pour réafficher le bon en cours de création (et reselectionner le site choisi dans le bon pour déclancher son trigger change()
-			if ($f_bons_attachement->isSubmitted())
+			// On instancie la variable $id_last_site pour réafficher le ticket en cours de création (et reselectionner le site choisi dans le ticket pour déclancher son trigger change()
+			if ($f_ticket->isSubmitted())
 			{
 				if ($_POST['enregistrement'] == 'non')
 				{
-					$enregistrement_form_bon = false;
-					if ($e_bons_attachement->getSite())
+					$enregistrement_form_ticket = false;
+					if ($e_ticket->getSite())
 					{
-						$id_last_site = $e_bons_attachement->getSite()->getId();
+						$id_last_site = $e_ticket->getSite()->getId();
 					}
 				} else {
-					$enregistrement_form_bon = true;
+					$enregistrement_form_ticket = true;
 				}
 			}
 
-            if ($f_bons_attachement->isValid()) 
+            if ($f_ticket->isValid()) 
 			{
-                // On persist l'entité "Bon d'attachement" et par cascade l'entité" "Fichier"
+                // On persist l'entité "Ticket" et par cascade l'entité" "Fichier"
                 // On enregistre le tout en base
                 try {
-                    // Sauvegarde du bon
+                    // Sauvegarde du ticket
 					// Gestion des équipements
                 	foreach($_POST as $key => $variable_post)
                 	{
@@ -151,58 +147,67 @@ class BonsController extends Controller
                 	    if (preg_match($pattern_equipement, $key))
                 	    {
                 	        $tmp_e_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
-                	        $tmp_e_equipement->setSiteBA($e_bons_attachement->getSite());
-							// L'assignation se fait du coté du bon : Il gère l'assignation inverse
-							$e_bons_attachement->addEquipementBATicket($tmp_e_equipement);
+                	        $tmp_e_equipement->setSiteBA($e_ticket->getSite());
+							// L'assignation se fait du coté du ticket : Il gère l'assignation inverse
+							$e_ticket->addEquipementBATicket($tmp_e_equipement);
                 	    }
                 	}
-					if($enregistrement_form_bon === true)
+					if($enregistrement_form_ticket === true)
 					{
-						// On défini le type pour distinguer bon de ticket
-						$e_bons_attachement->setType('bon');
+						// On défini le type pour distinguer ticket d'un bon
+						$e_ticket->setType('ticket');
+						$e_ticket->setTypeIntervention('Incident');
+						$e_ticket->setDateInitialisation(new \Datetime());
+						$e_ticket->setDateDebutIntervention(new \Datetime());
 
-						// Le numero BA est remplit par le techniciens
+						// Le numero du ticket s'incremente automatiquement
+						// 	recherche du dernier numéro de ticket en base
+						// 	incrémentation du numéro trouvé
+						$numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
+						$numero_de_ticket ++;
+						$e_ticket->setNumeroBA($numero_de_ticket);
 
-						// Enregistrement du bon
-                    	$em->persist($e_bons_attachement);
+						// Enregistrement du ticket
+                    	$em->persist($e_ticket);
                     	$em->flush();
 
-						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
+						// Si tout c'est bien passé pour l'enregistrement du nouveau ticket on réinitialise le tableau de id des équipements
 						$tab_des_id_equipements_selectionnes    = array();
 
                     	// Envoi d'un mail à l'intervenant
                     	$service_mailling 		= $this->get('lci_boilerbox.mailing');
-                    	$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
-                    	$destinataire 			= $e_bons_attachement->getUser()->getEmail();
-                    	$sujet 					= "Affectation d'un nouveau bon d'attachement";
+                    	$emetteur 				= $e_ticket->getUserInitiateur()->getEmail();
+                    	$destinataire 			= $e_ticket->getUser()->getEmail();
+                    	$sujet 					= "Affectation d'un nouveau ticket d'incident";
                     	$tab_message 			= array();
-                    	$tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
-                    	$tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
+                    	$tab_message['titre'] 	= "Un nouveau ticket d'incident vous est affectée";
+                    	$tab_message['site'] 	= $e_ticket->getSite()->getIntitule() . " ( " . $e_ticket->getNumeroAffaire() . " ) ";
                     	$messages_contact 		= "";
-                    	if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
-                    	    if ($e_bons_attachement->getNomDuContact() != null) {
-                    	        $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
-                    	        if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	            $messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
+                    	if (($e_ticket->getNomDuContact() != null) || ($e_ticket->getEmailContactClient() != null)) {
+                    	    if ($e_ticket->getNomDuContact() != null) {
+                    	        $messages_contact = "Votre contact sur site est : " . $e_ticket->getNomDuContact();
+                    	        if ($e_ticket->getEmailContactClient() != null) {
+                    	            $messages_contact .= " ( " . $e_ticket->getEmailContactClient() . " ) ";
                     	        }
-                    	    } else if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	        $messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
+                    	    } else if ($e_ticket->getEmailContactClient() != null) {
+                    	        $messages_contact .= "Le mail du contact sur site est : " . $e_ticket->getEmailContactClient();
                     	    }
                     	} else {
                     	    $messages_contact = "Aucun contact sur site n'a été renseigné";
                     	}
                     	$tab_message['contact'] = $messages_contact;
                     	$liste_fichiers = "";
-                    	foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
+                    	foreach ($e_ticket->getFichiersPdf() as $fichier) {
                     	    $liste_fichiers .= $fichier->getAlt() . ' ';
                     	}
                     	if ($liste_fichiers != "") {
-                    	    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
+                    	    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le ticket d'incident sur le site boilerbox.fr : $liste_fichiers";
                     	} else {
-                    	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
+                    	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce ticket";
                     	}
 						// Envoi du mail à l'intervenant uniquement
                     	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+						// ICI DEV : Faire unenvoi de mail au client également
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();
@@ -210,22 +215,22 @@ class BonsController extends Controller
                 }
 
 
-                if($enregistrement_form_bon === true)
+                if($enregistrement_form_ticket === true)
                 {
-                	// On renvoye à la page d'ajout d'un nouveau bon d'attachement avec envoi du message de confirmation d'enregsitrement du bon
-                	$request->getSession()->getFlashBag()->add('info', 'Bon enregistré.');
+                	// On renvoye à la page d'ajout d'un nouveau ticket avec envoi du message de confirmation d'enregsitrement du ticket
+                	$request->getSession()->getFlashBag()->add('info', "Ticket d'incident $numero_de_ticket enregistré.");
 
-                	// Création d'un nouveau formulaire de création de bon d'attachement
-                	$e_bons_attachement = new BonsAttachement();
-                	$e_bons_attachement->setUserInitiateur($e_user_courant);
-                	$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+                	// Création d'un nouveau formulaire de création de ticket
+                	$e_ticket = new BonsAttachement();
+                	$e_ticket->setUserInitiateur($e_user_courant);
+                	$f_ticket = $this->createForm(TicketIncidentType::class, $e_ticket);
 				} else {
-					// Si l'enregistrement du bon ne doit pas être faite on enregistre l'entité en session 
-					$_SESSION['e_bon'] = $e_bons_attachement;
+					// Si l'enregistrement du ticket ne doit pas être faite on enregistre l'entité en session 
+					$_SESSION['e_ticket'] = $e_ticket;
 				}
 
-                return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' 						=> $f_bons_attachement->createView(),
+                return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+                    'form' 						=> $f_ticket->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
                     'es_sitesBA' 				=> $es_sitesBA,
@@ -234,22 +239,22 @@ class BonsController extends Controller
                 	'es_equipements'    		=> $es_equipements,
                     'echec_creation_equipement' => $echec_creation_equipement,
 					'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
-					'enregistrement_html_form_bon'	=> $enregistrement_html_form_bon
+					'enregistrement_html_form_bon'	=> $enregistrement_html_form_ticket
                 ));
             } else {
-                // Soit le formulaire de création d'un bon n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_bon === false)
-                if (($f_bons_attachement->isSubmitted()) || ($enregistrement_form_bon === false))
+                // Soit le formulaire de création d'un ticket n'est pas valide soit c'est un autre formulaire qui est envoyé, Soit c'est un rappel de la page aprés suppression d'equipement ($enregistrement_form_ticket === false)
+                if (($f_ticket->isSubmitted()) || ($enregistrement_form_ticket === false))
 				{
 					// On récupère les champs des nouveaux objet crées (contact/ équipement)
-					$nouveau_type_creation =  $f_bons_attachement->get('typeNouveau')->getData();
-					$nouvel_id_creation = $f_bons_attachement->get('idNouveau')->getData();
-					$site_nouvelle_creation = $f_bons_attachement->get('siteNouveau')->getData();
+					$nouveau_type_creation =  $f_ticket->get('typeNouveau')->getData();
+					$nouvel_id_creation = $f_ticket->get('idNouveau')->getData();
+					$site_nouvelle_creation = $f_ticket->get('siteNouveau')->getData();
 
-					// Si le bon devait être enregsitré on affiche les erreurs du formulaire
-					if($enregistrement_form_bon === true)
+					// Si le ticket devait être enregistré on affiche les erreurs du formulaire
+					if($enregistrement_form_ticket === true)
 					{
-						// Le formulaire de nouveau bon est donc soumis mais n'est pas valide
-						$obj_erreurs = $f_bons_attachement->getErrors(true, false);
+						// Le formulaire de nouveau ticket est donc soumis mais n'est pas valide
+						$obj_erreurs = $f_ticket->getErrors(true, false);
 						$message_erreur = '';
 						foreach($obj_erreurs as $obj => $error)
 						{
@@ -259,17 +264,17 @@ class BonsController extends Controller
 					}
 
 					// On recrée le formulaire avec les données récues
-					$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
-					$f_bons_attachement->get('typeNouveau')->setData($nouveau_type_creation);
-					$f_bons_attachement->get('idNouveau')->setData($nouvel_id_creation);
-					$f_bons_attachement->get('siteNouveau')->setData($site_nouvelle_creation);
+					$f_ticket= $this->createForm(TicketIncidentType::class, $e_ticket);
+					$f_ticket->get('typeNouveau')->setData($nouveau_type_creation);
+					$f_ticket->get('idNouveau')->setData($nouvel_id_creation);
+					$f_ticket->get('siteNouveau')->setData($site_nouvelle_creation);
 
 					// On récupère l'id du site pour le réafficher
-					if ($e_bons_attachement->getSite())
+					if ($e_ticket->getSite())
 					{
-						if ($e_bons_attachement->getSite()->getId())
+						if ($e_ticket->getSite()->getId())
 						{
-							$id_last_site = $e_bons_attachement->getSite()->getId();
+							$id_last_site = $e_ticket->getSite()->getId();
 						}
 					}
                 } else {
@@ -283,7 +288,7 @@ class BonsController extends Controller
 							{
                     	        $e_siteBA_update = new SiteBA();
                     	        $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA_update, array(
-                    	            'action' => $this->generateUrl('lci_bons_saisie'),
+                    	            'action' => $this->generateUrl('saisie_ticket'),
                     	            'method' => 'POST'
                     	        ));
 								// Enregistrement de l'id du site modifié pour le ré selectionner dans la page HTML après modification
@@ -360,20 +365,20 @@ class BonsController extends Controller
 							// Mise en commentaire pour réafficher le site nouvellement créé
                     	    //$e_siteBA = new SiteBA();
                     	    $f_siteBA = $this->createForm(SiteBAType::class, $e_siteBA, array(
-                    	        'action' => $this->generateUrl('lci_bons_saisie'),
+                    	        'action' => $this->generateUrl('saisie_ticket'),
                     	        'method' => 'POST'
                     	    ));
                     	} else {
-							// on affiche l'erreur qui empeche la validation du formulaire de bon si la demande d'enregistrement du formulaire est faite
-							if ($enregistrement_form_bon === true)
+							// on affiche l'erreur qui empeche la validation du formulaire de ticket si la demande d'enregistrement du formulaire est faite
+							if ($enregistrement_form_ticket === true)
 							{
                     	    	$request->getSession()->getFlashBag()->add('info', $retourTest);
 							}
                     	}
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
-                return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                    'form' 						=> $f_bons_attachement->createView(),
+                return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+                    'form' 						=> $f_ticket->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
                     'es_sitesBA' 				=> $es_sitesBA,
@@ -382,13 +387,13 @@ class BonsController extends Controller
                 	'es_equipements'    		=> $es_equipements,
                     'echec_creation_equipement' => $echec_creation_equipement,
                     'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
-                    'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
+                    'enregistrement_html_form_bon'  => $enregistrement_html_form_ticket
                 ));
             }
         } else {
             // Si le formulaire n'a pas encore été affiché
-            return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
-                'form' 						=> $f_bons_attachement->createView(),
+            return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+                'form' 						=> $f_ticket->createView(),
                 'form_site' 				=> $f_siteBA->createView(),
                 'max_upload_size' 			=> $max_upload_size,
                 'es_sitesBA' 				=> $es_sitesBA,
@@ -397,7 +402,7 @@ class BonsController extends Controller
 				'es_equipements'			=> $es_equipements,
 				'echec_creation_equipement' => $echec_creation_equipement,
                 'tab_des_id_equipements_selectionnes' => $tab_des_id_equipements_selectionnes,
-                'enregistrement_html_form_bon'  => $enregistrement_html_form_bon
+                'enregistrement_html_form_bon'  => $enregistrement_html_form_ticket
             ));
         }
     }
@@ -425,7 +430,7 @@ class BonsController extends Controller
         return null;
     }
 
-    /* Seul l'initiateur du bon ou l'intervenant peuvent modifier un bon */
+    /* Seul l'initiateur du ticket ou l'intervenant peuvent modifier un ticket */
     public function modifierUnBonAction($idBon, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -447,7 +452,7 @@ class BonsController extends Controller
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('info', 'Bon ' . $entity_bon->getNumeroBA() . ' modifié.');
                 $_POST['id_bon'] = $entity_bon->getId();
-                // Retour vers la visualisation du bon
+                // Retour vers la visualisation du ticket
                 return $this->afficherUnBonAction($request);
             } else {
                 $request->getSession()->getFlashBag()->add('info', $form->getErrors(true));
@@ -459,56 +464,10 @@ class BonsController extends Controller
         ));
     }
 
-    public function visualiserAction($refresh = null, Request $request)
-    {
-        $filtre = false;
-        if ($refresh !== null) 
-		{
-            $request->getSession()->remove('objRechercheBon');
-        }
-        // Si une recherche existe pour le bon affichage de la recherche
-        if ($request->getSession()->has('objRechercheBon')) 
-		{
-            $entity_bon_recherche 	= $request->getSession()->get('objRechercheBon', null);
 
-			// Modification de l'id du contact en nom de contact
-			if ($entity_bon_recherche->getNomDuContact())
-			{
-				$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($entity_bon_recherche->getNomDuContact());
-				$entity_bon_recherche->setNomDuContact($e_contact->getNom());
-			}
-
-            $filtre 				= true;
-            $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
-        } else {
-            // On vérifie quel est le type du compte.
-            // Si il a les droits de gestion ba il peut visualiser tous les bons
-            // Sinon il ne peut visualiser que ses bons
-            if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) 
-			{
-                // Affichage de tous les bons
-                $entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->findAllByDtCreation();
-            } else {
-                // Affichage des bons de l'utilisateur courant
-                $e_user_courant 		= $this->get('security.token_storage')->getToken()->getUser();
-                $entity_bon_recherche 	= new ObjRechercheBonsAttachement();
-                $entity_bon_recherche->setUser($e_user_courant);
-                $entity_bon_recherche->setSaisie(false);
-
-                $entities_bons 			= $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->rechercheDesBons($entity_bon_recherche);
-                //$entities_bons = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindByUser($e_user_courant);
-            }
-        }
-
-        return $this->render('LciBoilerBoxBundle:Bons:form_visu_bons.html.twig', array(
-            'filtre' => $filtre,
-            'entities_bon' => $entities_bons
-        ));
-    }
-
-    // Affichage d'un bon pour la page d'affichage de la liste des fichiers du bon
-    // Dans la page du bon on affiche également le forumlaire de validation du bon
-    public function afficherUnBonAction(Request $request)
+    // Affichage d'un ticket pour la page d'affichage de la liste des fichiers du ticket
+    // Dans la page du ticket on affiche également le forumlaire de validation du ticket
+    public function afficherUnTicketAction(Request $request)
     {
         $em 					= $this->getDoctrine()->getManager();
         $form_message_erreur 	= "";
@@ -517,27 +476,27 @@ class BonsController extends Controller
         // Si la requete est de type GET : Un rafraichissement de page est demandé. Récupération des anciennes informations
         if ($request->getMethod() == 'POST') 
 		{
-            if (isset($_POST['id_bon'])) 
+            if (isset($_POST['id_ticket'])) 
 			{
-                $id_bon = $_POST['id_bon'];
-                $request->getSession()->set('idBonAttachement', $id_bon);
+                $id_ticket = $_POST['id_ticket'];
+                $request->getSession()->set('idTicketIncident', $id_ticket);
             } else {
                 // Si un fichier trop volumineux est envoyé :  Information APACHE : PHP.ini
                 $form_message_erreur = 'Taille maximum du fichier autorisé : ' . ini_get('upload_max_filesize') . ' - ' . 'Taille maximum tous fichier compris : ' . ini_get('post_max_size');
-                $id_bon = $request->getSession()->get('idBonAttachement', null);
+                $id_ticket= $request->getSession()->get('idTicketIncident', null);
             }
         } else {
-            $id_bon = $request->getSession()->get('idBonAttachement', null);
+            $id_ticket= $request->getSession()->get('idTicketIncident', null);
         }
-        if (!isset($id_bon)) {
+        if (!isset($id_ticket)) {
             // Si la page est appelée sans passer par boilerbox
             return 'Page non disponible';
         }
-        $entity_bon 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+        $e_ticket 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_ticket);
 
-        $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
-        $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
-        $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+        $f_validation 		= $this->createForm(TicketIncidentValidationType::class, $e_ticket);
+        $f_ba_commentaires 	= $this->createForm(TicketIncidentCommentairesType::class, $e_ticket);
+        $f_ba_modification	= $this->createForm(TicketIncidentModificationType::class, $e_ticket);
 
         // Gestion de l'ajout de fichiers à un bon
         if ($request->getMethod() == 'POST') 
@@ -556,23 +515,23 @@ class BonsController extends Controller
 							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
-							if (!$entity_bon->getEquipementBATicket()->contains($e_tmp_equipement))
+							if (!$e_ticket->getEquipementBATicket()->contains($e_tmp_equipement))
 							{
-								$e_tmp_equipement->setSiteBA($entity_bon->getSite());
-								$entity_bon->addEquipementBATicket($e_tmp_equipement);
+								$e_tmp_equipement->setSiteBA($e_ticket->getSite());
+								$e_ticket->addEquipementBATicket($e_tmp_equipement);
 							}
                         }
                     }
 
-                    foreach ($entity_bon->getFichiersPdf() as $fichier) 
+                    foreach ($e_ticket->getFichiersPdf() as $fichier) 
 					{
                         if ($fichier->getBonAttachement() == null) 
 						{
-                            $fichier->setBonAttachement($entity_bon);
+                            $fichier->setBonAttachement($e_ticket);
                             $em->persist($fichier);
                             $fichier->setAlt($fichier->getAlt() . " ( " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i') . " )");
                             if ($fichier->getUrl() == null) {
-                                $entity_bon->removeFichiersPdf($fichier);
+                                $e_ticket->removeFichiersPdf($fichier);
                                 $em->detach($fichier);
                             }
                         }
@@ -581,7 +540,7 @@ class BonsController extends Controller
                     $em->flush();
 					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
 					$tab_des_equipements_presents = array();
-					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
+					foreach($e_ticket->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
 					{
 						array_push($tab_des_equipements_presents, $e_equipement_ba_ticket_modif->getId());
 					}
@@ -592,13 +551,13 @@ class BonsController extends Controller
 						{
 							$e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement_present);
 							// Gère la relation inverse
-							$entity_bon->removeEquipementBATicket($e_tmp_equipement);
+							$e_ticket->removeEquipementBATicket($e_tmp_equipement);
 						}
 					}
 					$em->flush();
 
 					// On recree le formulaire des bons avec la prise en compte des modification sur les équipements
-					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $e_ticket);
                 } else {
                     $f_ba_modification->addError(new FormError($form_message_erreur));
                 }
@@ -606,16 +565,16 @@ class BonsController extends Controller
         }
 
 
-        return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
-            'entity_bon' 				=> $entity_bon,
+        return $this->render('LciBoilerBoxBundle:Tickets:form_visu_un_ticket.html.twig', array(
+            'entity_bon' 				=> $e_ticket,
             'form_validation' 			=> $f_validation->createView(),
             'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
             'max_upload_size' 			=> $max_upload_size,
-			'commentaires'				=> $entity_bon->getCommentaires(),
+			'commentaires'				=> $e_ticket->getCommentaires(),
 			'es_sitesBA'				=> $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll(),
-			'latitude'					=> $this->getLatLng('latitude', $entity_bon->getSite()->getLienGoogle()),
-			'longitude'					=> $this->getLatLng('longitude', $entity_bon->getSite()->getLienGoogle()),
+			'latitude'					=> $this->getLatLng('latitude', $e_ticket->getSite()->getLienGoogle()),
+			'longitude'					=> $this->getLatLng('longitude', $e_ticket->getSite()->getLienGoogle()),
 			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
 			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
         ));
@@ -727,7 +686,7 @@ class BonsController extends Controller
                     }
                 }
 
-                // Sauvegarde de l'objet recherche de bon d'attachement pour réaffichage des données lors de la prochaine requête
+                // Sauvegarde de l'objet recherche de ticket pour réaffichage des données lors de la prochaine requête
                 $session->set('objRechercheBon', $entity_bon_recherche);
 				
                 return $this->redirectToRoute('lci_bons_visualiser');

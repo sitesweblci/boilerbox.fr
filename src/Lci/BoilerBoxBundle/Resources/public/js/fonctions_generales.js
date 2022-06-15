@@ -23,34 +23,36 @@ function fin_attente() {
      			routes_to_expose: [
 */
 // Exemple de route avec passage de paramètre : Routing.generate('lci_site_update', {idSite: $id_site});
-function redirection($destination, $tab_parametre = null) {
-	var $url_destination;
-	switch($destination) {
+function redirection(destination, tab_parametre = null) 
+{
+	var url_destination;
+	switch(destination) {
  		case 'retourAccueil' :
 			// Le paramètre qui peut être passé correspond à l'identifiant du site à afficher dans la popup au lancement de la page d'accueil (page d'accueil = Liste des sites)
 			// Retour sur la page d'accueil : Liste des sites
-			$url_destination = Routing.generate('lci_boilerbox_accesSite');
-			if ($tab_parametre) {
-				$url_destination += '/' + $tab_parametre[0];
+			url_destination = Routing.generate('lci_boilerbox_accesSite');
+			if (tab_parametre) {
+				url_destination += '/' + tab_parametre[0];
 			}
 			break;
 		case 'modificationSite' :
-			$url_destination = Routing.generate('lci_site_update', {idSite: $tab_parametre['id_site']});
+			url_destination = Routing.generate('lci_site_update', {idSite: tab_parametre['id_site']});
 			break;
 		case 'creationSite' :
-			$url_destination = Routing.generate('lci_register_site');
+			url_destination = Routing.generate('lci_register_site');
 			break;
 		case 'accueilConf' :
 			// Retour sur la page des Paramètres BoilerBox
-			$url_destination = Routing.generate('lci_gestion_admin');
+			url_destination = Routing.generate('lci_gestion_admin');
 			break;
 		case 'accueilConfUtilisateur' :
 			// Retour sur la page de Gestion des utilisateurs
-			$url_destination = Routing.generate('lci_accueil_register_user');
+			url_destination = Routing.generate('lci_accueil_register_user');
 			break;
 	}
-	window.location = $url_destination;
+	window.location = url_destination;
 }
+
 
 
 // Fonction qui retourne un texte avec un nombre de caractères max

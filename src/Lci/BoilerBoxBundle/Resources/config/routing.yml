@@ -1,5 +1,5 @@
 lci_bons_attachements:
-    path: /bons/accueil
+    path: /BonsEtTickets/accueil
     defaults: { _controller: LciBoilerBoxBundle:Bons:index }
 lci_bons_saisie:
     path: /bons_saisie

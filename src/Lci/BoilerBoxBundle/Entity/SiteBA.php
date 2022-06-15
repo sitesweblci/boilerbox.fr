@@ -25,7 +25,7 @@ class SiteBA
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"groupContact"})
+     * @Groups({"groupContact", "groupEquipement"})
      */
     protected $id;
 

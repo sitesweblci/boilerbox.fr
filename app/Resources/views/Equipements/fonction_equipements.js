@@ -17,6 +17,12 @@ $(document).ready(function()
                         // On ajout l'équipement à la liste des équipements selectionnable si celui ci n'est pas déjà sélectionné (cad présent dans le tableau tabDesEquipementsSelectionnes)
                         if (tabDesEquipementsSelectionnes.indexOf("{{ e_equipement.id }}") == -1)
                         {
+							var tmp_autreDenomination = "{{ e_equipement.autreDenomination }}";
+							tmp_autreDenomination = tmp_autreDenomination.replace("'", "\\\'");
+
+							var tmp_denomination = "{{ e_equipement.denomination }}";
+							tmp_denomination = tmp_denomination.replace("'", "\\\'");
+
                             // Création du contenu html des Equipements
                             html_nouvelles_options += " \
                                 <div id='parent_div_equipement_{{ e_equipement.id }}' onMouseEnter='sourisOver(\"entre\",this.id);' onMouseLeave='sourisOver(\"sort\",this.id);'> \
@@ -28,7 +34,7 @@ $(document).ready(function()
                                                 name='equipement_{{ e_equipement.id }}' \
                                                 value='{{ e_equipement.id }}' \
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
-                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '{{ e_equipement.denomination }}', '{{ e_equipement.autreDenomination }}')\" \
+                                                onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '" + tmp_denomination + "', '" + tmp_autreDenomination + "')\" \
                                             />\
                                         </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
@@ -89,10 +95,10 @@ $(document).ready(function()
 
     function gestionDesSelectionEquipements()
     {
-		// Si on est sur la page de saisie de bons
 		if ($('#bons_attachement_site').length != 0)
 		{
-        	// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+			// Si on est sur la page de saisie de bons
+        	// et Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
         	if ($('#bons_attachement_site').val() != '')
         	{
         	    $("#select_equipement").val($('#bons_attachement_site').val());
@@ -104,7 +110,14 @@ $(document).ready(function()
             {
                 $("#select_equipement").val($('#bons_attachement_modification_site').val());
             }
-		} else {
+		}  else if ($('#ticket_incident_site').length != 0)
+        {
+            // Si on est sur la page de saisie d'un ticket
+            if ($('#ticket_incident_site').val() != '')
+            {
+                $("#select_equipement").val($('#ticket_incident_site').val());
+            }
+        } else {
 			alert('page parent incorrecte');
 			return -1;
 		}
@@ -129,13 +142,25 @@ $(document).ready(function()
         {
         	// On défini le même site sur le select des équipements que le site sélectionné
         	$('#select_equipement').val($('#bons_attachement_modification_site').val());
-		}
+		} else if ($('#ticket_incident_site').length != 0)
+        {
+            // On défini le même site sur le select des équipements que le site sélectionné
+            $('#select_equipement').val($('#ticket_incident_site').val());
+        }
         // On affiche la liste des équipements associés au nouveau site sélectionné
         $('#select_equipement').change();
     }
 
 
-    function modifierEquipement($id_equipement=null)
+	function modifierEquipement($id_equipement)
+    {
+		$('#titre_nouvel_equipement2').text("Modification de l'équipement");
+		creerModifierEquipement('recherche', $id_equipement);
+	}
+
+
+	//  Accepte pour $type_action : recherche et modification
+    function creerModifierEquipement($type_action, $id_equipement=null)
     {
 		var $data_a_envoyer = $id_equipement;
 		if ($id_equipement == null)
@@ -144,7 +169,7 @@ $(document).ready(function()
 		} else {
 			$data_a_envoyer = {'id_equipement':$id_equipement}
 		}
-        attendreRechargement();
+		attendreRechargement();
 
         // Modification de l'équipement en ajax et
         // Réaffichage de la page pour prendre en compte la suppression
@@ -155,35 +180,32 @@ $(document).ready(function()
             success: function(output)
             {
 				try {
-                   	// On recoit une réponse ajax : L'équipement a été enregistré : On recoit l'entité de l'equipement
+                   	// On recoit une réponse ajax : 
+					//					L'équipement a été enregistré : On recoit l'entité de l'equipement
+					// 					Une demande de modification de l'équipement a été envoyé et nous recevons les informations courantes de l'équipement
+
                 	var $data_e_equipement = JSON.parse(output);
 
-/*
-					var $html_equipement = "<td style='cursor:pointer;' onClick=\"modifierEquipement('" + $data_e_equipement['id'] + "');\">x</td>" + "<td>" + $data_e_equipement['numeroDeSerie'] + "</td>" + "<td>" + $data_e_equipement['denomination'] + "</td>" + "<td>" + $data_e_equipement['autreDenomination'] + "</td>";
-					$("#tr_equipement_" + $data_e_equipement['id']).html($html_equipement);
+                    $('#equipement_ba_ticket_id').val($data_e_equipement.id);
+                    $('#equipement_ba_ticket_siteBA').val($data_e_equipement.siteBA.id);
+                    $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
+                    $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
+                    $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
+                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
+                    var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
+                    $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
+                    $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
 
-					
-					// Modification de la checkbox
-					var new_input = "<input type='checkbox' checked id='equipement_" + $data_e_equipement['id'] + "' name='equipement_" + $data_e_equipement['id'] + "' value='" + $data_e_equipement['id'] + "' style='display:inline-block; border:2px solid gray; cursor:pointer;' onClick=\"deplaceEquipement('" + $data_e_equipement['id'] + "', '" + $data_e_equipement['numeroDeSerie'] + "', '" + $data_e_equipement['denomination'] + "', '" + $data_e_equipement['autreDenomination'] + "')\" />";
-					$('#equipement_' + $data_e_equipement['id']).replaceWith(new_input);
-
-					// Modification du numéro de série
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:first-child').text($data_e_equipement['numeroDeSerie']);
-					// Modification du construit le
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(2)').text(dateTransformeEntiteSerialise($data_e_equipement['anneeDeConstruction']));
-					// Modification de dénomination
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(3)').text($data_e_equipement['denomination']);
-                    // Modification de autre dénomination
-                    $('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(4)').text($data_e_equipement['autreDenomination']);
-					// Modification de site 
-					$('#div_equipement_' + $data_e_equipement['id'] + ' label span:nth-child(5)').text($data_e_equipement['siteBA']['intitule']);
-
-
-
-					togglePopUp(popupSelectionEquipement);
-*/
-					// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
-					$('#bons_attachement_modification_equipementBATicket').remove();
+					if ($type_action == 'recherche')
+					{
+						// On affiche les informations de l'équipement recherché
+						togglePopUp(popupEquipement2);
+						finAttendreRechargement();
+					} else if ($type_action == 'modification')
+					{
+						// On retire le champs des équipements pour ne pas enregistrer les anciennes valeurs
+						$('#bons_attachement_modification_equipementBATicket').remove();
+					}
 				} catch(e)
 				{
 					// Si reception d'un page HTML c'est qu'on recoit le formulaire du bon
@@ -208,15 +230,20 @@ $(document).ready(function()
 
 					return 0;
 				}
-				// Submit du formulaire de bon de la page de saisie de bon
-                if ($('#bons_attachement_site').length != 0)
+
+				if ($type_action == 'modification')
                 {
-                    document.forms['myForm'].submit();
-                } else if ($('#bons_attachement_modification_site').length != 0)
-                {
-					// Submit du formulaire de bon de la page de visu / modification de bon
-                    document.forms['myFormFichiers'].submit();
-                }
+					// Submit du formulaire de bon de la page de saisie de bon
+                	if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
+                	{
+                	    document.forms['myForm'].submit();
+                	} else if ($('#bons_attachement_modification_site').length != 0)
+                	{
+						// Submit du formulaire de bon de la page de visu / modification de bon
+                	    document.forms['myFormFichiers'].submit();
+                	}
+				}
+
             },
             error: function(status, msg, tri) {
                 finAttendreRechargement();
@@ -239,13 +266,13 @@ $(document).ready(function()
             method: "POST",
             success: function(msg)
             {
-				if ($('#bons_attachement_site').length != 0)
+				if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
 				{
                 	document.forms['myForm'].submit();
 				} else if ($('#bons_attachement_modification_site').length != 0)
                 {
 					document.forms['myFormFichiers'].submit();
-				}
+				} 
             },
             error: function(status, msg, tri) {
                 finAttendreRechargement();
@@ -285,33 +312,16 @@ $(document).ready(function()
             $('#parent_' + id_div).append(div_tmp);
 			$('#tr_equipement_' + id_checkbox).remove();
         }
-		// On crée le select des équipements sélectionnés
-		var select_equipement_page_principale = '<select>';
-		var nombre_d_equipements = 0 ;
-		$('#liste_des_equipements_selectionnes > div > label > span:nth-child(4)').each(function()
-		{
-			nombre_d_equipements ++;
-			select_equipement_page_principale += '<option>' + $(this).text() + '</option>';
-		});
-		if (nombre_d_equipements == 0 )
-		{
-			$("#infos_equipements").html('<p>Equipement(s) non défini(s)</p>');
-		} else {
-			select_equipement_page_principale += '</select>';
-			$("#infos_equipements").html(select_equipement_page_principale);
-		}
     }
 
 
 	/**********************************			Fonction pour la création des équipements ************************************/
-	function creerEquipement2()
+	function verificationCreationEquipement()
     {
-
-		// Si on est sur la page de modification d'un équipement : Renvoi à la fonction de modification
-		if ($('#bons_attachement_modification_site').length !=  0)
+		if ($('#titre_nouvel_equipement2').text() ==  "Modification de l'équipement")
 		{
 			togglePopUp(popupEquipement2);
-			return modifierEquipement();
+			return creerModifierEquipement('modification');
 		}
 	
         $send_form = true;
@@ -373,7 +383,12 @@ $(document).ready(function()
                         $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
 
 						// Assignation de l'équipement au bon si on est sur la page de visu (modification de bon)
-						if ($('#bons_attachement_modification_site').length != 0)
+						if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
+                        {
+                            // Si on est su la page de saisie d'un bon on raffraichit la page
+                            // Rechargement de la page de saisie
+                            document.forms['myForm'].submit();
+                        } else if ($('#bons_attachement_modification_site').length != 0)
 						{
 							$.ajax({
 								url : "{{ path('lci_ajax_bon_assign_equipement_to_bon') }}",
@@ -390,11 +405,6 @@ $(document).ready(function()
 									return -1;
 								}
 							});
-						} else if ($('#bons_attachement_site').length != 0)
-                        {
-							// Si on est su la page de saisie d'un bon on raffraichit la page
-                        	// Rechargement de la page de saisie
-                        	document.forms['myForm'].submit();
 						}
                     } catch(e) {
                         // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
@@ -453,7 +463,7 @@ $(document).ready(function()
 
     function gestionDesEquipements2()
     {
-		// Si on est sur la page de saisie des sites
+		// Si on est sur la page de [ saisie des bons ]
 		if ($('#bons_attachement_site').length != 0)
 		{
         	// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
@@ -479,9 +489,24 @@ $(document).ready(function()
             	// On définit le site selectionné comme site selectionnée dans le select nouvel Equipement
             	$('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
         	}
-        } 
-
+        } else if ($('#ticket_incident_site').length != 0)
+        {
+            // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+            if ($('#ticket_incident_site').val() != '')
+            {
+                // On définit le site selectionné comme site selectionnée dans le select du site
+                $('#equipement_ba_ticket_siteBA').val($('#ticket_incident_site').val());
+            } else if ($('#select_equipement').val() != '')
+            {
+                // On définit le site selectionné comme site selectionnée dans le select nouvel Equipement
+                $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
+            }
+        }
+		// Fermeture de la popup de selection des équipements
         togglePopUp(popupSelectionEquipement);
+
+		// Ouverture de la popup de création d'équipement
+		$("#titre_nouvel_equipement2").text('Nouvel équipement');
         togglePopUp(popupEquipement2);
     }
 
@@ -494,6 +519,21 @@ $(document).ready(function()
 			$('#' + id_element).css('background-color', 'white');
 		}
 	}
+
+
+
+	function dateTransformeFromEntiteSerializedForPicker(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
+        return new_ch2;
+    }
+	function dateTransformeFromEntiteSerialized(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$1/$2/$3");
+        return new_ch2;
+    }
 
 
 
