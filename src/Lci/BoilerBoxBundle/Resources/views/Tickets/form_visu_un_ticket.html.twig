@@ -114,7 +114,7 @@
 						</span>
 					</div>
 				</div>
-				<div class="form__field form__field--double">	
+				<div class="form__field">	
 					<div>
             	        <label>Affaire</label>
             	        <span class="data">
@@ -126,30 +126,6 @@
 						</span>
 					</div>
 				</div>
-
-            	<div class="form__field form__field--double">
-            	    <div>
-            	        <label>Service</label>
-            	     	<span class="data">
-							{% if is_granted('ROLE_SAISIE_BA') %}
-								{{ form_widget(form_modification.service) }}
-							{% else %}
-                            	{{ entity_bon.service }}
-                        	{% endif %}
-						</span>
-            	    </div>
-
-                    <div>
-                        <label>Type d'intervention</label>
-                        <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
-								{{ form_widget(form_modification.typeIntervention) }}
-                            {% else %}
-                                {{ entity_bon.typeIntervention }}
-                            {% endif %}
-                        </span>
-                    </div>
-            	</div>
 
             	<div class="form__field form__field--double">
             	    <div>
@@ -184,10 +160,6 @@
                                 {{ entity_bon.dateInitialisation | date('d/m/Y') }}
                             {% endif %}
 					</div>
-	                <div>
-	    	            <label>Date de la signature</label>
-	                    <span class="data">{{ form_widget(form_modification.dateSignature) }}</span>
-	                </div>
 				</div>
             </fieldset>
 

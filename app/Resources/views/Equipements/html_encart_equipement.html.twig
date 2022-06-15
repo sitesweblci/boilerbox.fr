@@ -3,33 +3,17 @@
         <h2 class="fieldset__title">Équipement</h2>
         <div class="form__field rel">
 			<div id='infos_equipements'><p>Equipement(s) non défini(s)</p></div>
-            <button type="button" id="btn_ajout_equipement2" class="btn btn--round btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
-		</div>
-        {% if entity_bon is defined %}
-                <table id="table_des_equipements" class="flex-table">
-                    <thead class="flex-table__thead">
-					  <tr class="flex-table__row">
-                        <th class="txt--center">N° de série</th><th>Dénomination</th><th>Autre dénomination</th>
-                    </tr>
-                    </thead>
-                    <tbody class="flex-table__tbody scroll"></tbody>
-                </table>
-        {% endif %}
-{#
-	<fieldset class="fieldset">
-        <h2 class="fieldset__title">Équipement(s)</h2>
-        <div class="form__field rel">
-            <span id="add-equipBon">Sélection des équipements</span>
-
 			{% if is_granted('ROLE_SAISIE_BA') %}
-            	<button type="button" id="btn_ajout_equipement2" class="btn btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
+            	<button type="button" id="btn_ajout_equipement2" class="btn btn--round btn--main add tooltip-wrapper" onclick="gestionDesSelectionEquipements();"><span class="tooltip">Ajouter équipement</span></button>
 			{% endif %}
 		</div>
-		<div class="form__field">
-            <table id="table_des_equipements" style='border-spacing:10px;'>
-				<tr><td>Modifier l'équipement</td><td>Numéro de série</td><td>Dénomination</td><td>Autre dénomination</td></tr>
-            </table>
-        </div>
-#}
+        <table id="table_des_equipements" class="flex-table">
+            <thead class="flex-table__thead">
+				<tr class="flex-table__row">
+                    <th class="txt--center">N° de série</th><th>Dénomination</th><th>Autre dénomination</th>
+                </tr>
+            </thead>
+            <tbody class="flex-table__tbody scroll"></tbody>
+        </table>
     </fieldset>
 </html>

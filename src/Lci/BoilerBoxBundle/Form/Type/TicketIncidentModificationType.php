@@ -23,6 +23,9 @@ class TicketIncidentModificationType extends BaseType {
 	{
 		parent::buildForm($builder, $options);
 		$builder
+		->remove('service')
+		->remove('typeIntervention')	
+		->remove('dateSignature')
         ->add('dateFinIntervention', DateType::class, array(
             'label'         => 'Date de fin d\'intervention',
             'label_attr'    => array ('class' => 'label_smalltext'),
