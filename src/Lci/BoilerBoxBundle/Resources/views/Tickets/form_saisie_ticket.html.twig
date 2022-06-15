@@ -517,7 +517,6 @@
         });
 
 
-
 		// Gestion du select intervenant
         $('#ticket_incident_user').change(function() 
 		{
@@ -641,14 +640,19 @@
         					{% if tab_des_id_equipements_selectionnes | length != 0 %}
             					// On affiche tous les équipements pour re sélectionner les équipements sélectionnés avant l'envoi du formulaire
             					$('#select_equipement').val('');
+
+								// Remplissage du html de la popup equipement
             					$('#select_equipement').change();
+
 					            {% for id_equipement in tab_des_id_equipements_selectionnes %}
-                					// On check les checkbox des equipements
-                					$('#equipement_' + "{{ id_equipement }}").prop('checked', true);
-                					deplaceEquipement("{{ id_equipement }}");
+                                    // On check les checkbox des equipements
+                                    $('#equipement_' + "{{ id_equipement }}").prop('checked', 'checked');
+
+									// Déplacement des équipements selectionnés
+									setTimeout(function() {
+                                    	$('#equipement_' + "{{ id_equipement }}").trigger('click');
+									}, 2);
             					{% endfor %}
-            					// Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
-            					$('#select_equipement').val($('#ticket_incident_site').val());
         					{% endif %}
 
         					// On affiche les équipements du site selectionné au chargement de la page

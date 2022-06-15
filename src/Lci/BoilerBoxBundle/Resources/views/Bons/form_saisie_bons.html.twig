@@ -667,11 +667,12 @@
             					$('#select_equipement').change();
 					            {% for id_equipement in tab_des_id_equipements_selectionnes %}
                 					// On check les checkbox des equipements
-                					$('#equipement_' + "{{ id_equipement }}").prop('checked', true);
-                					deplaceEquipement("{{ id_equipement }}");
+                					$('#equipement_' + "{{ id_equipement }}").prop('checked', 'checked');
+									// Déplacement des équipements selectionnés
+									setTimeout(function() {
+										$('#equipement_' + "{{ id_equipement }}").trigger('click');
+									}, 2);
             					{% endfor %}
-            					// Puis on reselectionne le site du bon pour le select equipement afin d'afficher les équipements de ce site par défaut
-            					$('#select_equipement').val($('#bons_attachement_site').val());
         					{% endif %}
 
         					// On affiche les équipements du site selectionné au chargement de la page

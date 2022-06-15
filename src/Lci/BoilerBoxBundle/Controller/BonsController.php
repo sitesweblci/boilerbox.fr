@@ -225,6 +225,7 @@ class BonsController extends Controller
 				}
 
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
+					'page'						=> 'bon',
                     'form' 						=> $f_bons_attachement->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
@@ -373,6 +374,7 @@ class BonsController extends Controller
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
+					'page'						=> 'bon',
                     'form' 						=> $f_bons_attachement->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
@@ -388,6 +390,7 @@ class BonsController extends Controller
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Bons:form_saisie_bons.html.twig', array(
+				'page'						=> 'bon',
                 'form' 						=> $f_bons_attachement->createView(),
                 'form_site' 				=> $f_siteBA->createView(),
                 'max_upload_size' 			=> $max_upload_size,

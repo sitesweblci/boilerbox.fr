@@ -230,6 +230,7 @@ class TicketController extends Controller
 				}
 
                 return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+					'page'						=> 'ticket',
                     'form' 						=> $f_ticket->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
@@ -378,6 +379,7 @@ class TicketController extends Controller
                 }
                 // On renvoi sur la page en indiquant le nom du site pour réaffichage de la page précédente
                 return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+                    'page'                      => 'ticket',
                     'form' 						=> $f_ticket->createView(),
                     'form_site' 				=> $f_siteBA->createView(),
                     'max_upload_size' 			=> $max_upload_size,
@@ -393,6 +395,7 @@ class TicketController extends Controller
         } else {
             // Si le formulaire n'a pas encore été affiché
             return $this->render('LciBoilerBoxBundle:Tickets:form_saisie_ticket.html.twig', array(
+                'page'                      => 'ticket',
                 'form' 						=> $f_ticket->createView(),
                 'form_site' 				=> $f_siteBA->createView(),
                 'max_upload_size' 			=> $max_upload_size,

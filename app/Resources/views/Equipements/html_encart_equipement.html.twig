@@ -1,4 +1,16 @@
-<html>
+{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{% block liens_css %}
+    {{ parent() }}
+    <style>
+		#table_des_equipements {
+			width: 100%;
+			min-width: initial;
+		}
+	</style>
+{% endblock liens_css %}
+
+{% block fos_user_content %}
+	{{ parent() }}
 	<fieldset class="fieldset fieldset--no-padding">
         <h2 class="fieldset__title">Équipement</h2>
         <div class="form__field rel">
@@ -16,4 +28,6 @@
             <tbody class="flex-table__tbody scroll"></tbody>
         </table>
     </fieldset>
-</html>
+
+{% endblock fos_user_content %}
+

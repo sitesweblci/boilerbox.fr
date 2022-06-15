@@ -84,13 +84,6 @@
 
 <section class="info">
 	<h1 class="info__title">Ticket {{ entity_bon.numeroBA }}</h1>
-	{% if entity_bon.enqueteFaite %}
-		<span class='green'>( Enquête faite )</span>
-	{% elseif entity_bon.enqueteNecessaire %}
-		<span class='blue'>( Enquête demandée )</span>
-	{% else %}
-		<span class='red'>( Pas d'enquête demandée )</span>
-	{% endif %}
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
 	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
 		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
