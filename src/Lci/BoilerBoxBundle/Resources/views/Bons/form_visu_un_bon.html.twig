@@ -544,8 +544,15 @@
 		</fieldset>
 		<div class="content__btn">
 			<button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
-			{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-				<button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+			{# Si le bon à un intervenant de définit : L'intervenant peut ouvri le bon #}
+			{% if entity_bon.user %}
+				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+					<button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+				{% endif %}
+			{% else %}
+				{% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                    <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+                {% endif %}
 			{% endif %}
 		</div>
 	</section>
