@@ -403,13 +403,6 @@
             $send_form = false;
         }
 
-        // On vérifie qu'un intervenant est selectionné
-        if ($('#' + id_select_intervenant).val() === '')
-        {
-            $('#' + id_select_intervenant).addClass('erreur_formulaire');
-            $send_form = false;
-        }
-
         // On vérifie la selection d'un contact
         if ($('#select_contact').val() === '')
         {
@@ -448,7 +441,6 @@
     {
         $('#' + id_select_site).removeClass('erreur_formulaire');
         $('#ticket_incident_numeroAffaire').removeClass('erreur_formulaire');
-        $('#' + id_select_intervenant).removeClass('erreur_formulaire');
         $('#select_contact').removeClass('erreur_formulaire');
         $('#ticket_incident_emailContactClient').removeClass('erreur_formulaire');
         $('#ticket_incident_telephoneContactClient').removeClass('erreur_formulaire');

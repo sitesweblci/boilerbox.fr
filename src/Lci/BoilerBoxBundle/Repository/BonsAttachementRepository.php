@@ -43,11 +43,17 @@ class BonsAttachementRepository extends EntityRepository
             }
         }
 
-        if ($entity_objRechercheBon->getUser()) {
-            $queryBuilder   ->leftJoin('b.user', 'u')
-                            ->andWhere('u = :intervenant')
-                            ->setParameter('intervenant', $entity_objRechercheBon->getUser());
-        }
+		if ($entity_objRechercheBon->getSansIntervenant())
+		{
+			$queryBuilder 	->andWhere('b.user is NULL');
+		} else {
+        	if ($entity_objRechercheBon->getUser()) {
+        	    $queryBuilder   ->leftJoin('b.user', 'u')
+        	                    ->andWhere('u = :intervenant')
+        	                    ->setParameter('intervenant', $entity_objRechercheBon->getUser());
+        	}
+		}
+
 
         if ($entity_objRechercheBon->getUserInitiateur()) {
             $queryBuilder   ->leftJoin('b.userInitiateur', 'ui')
@@ -366,10 +372,12 @@ class BonsAttachementRepository extends EntityRepository
 		// On retourne le resultat ordonné sur la date de création du bon (ou ticket)
 		$queryBuilder   ->orderBy('b.dateInitialisation', 'DESC'); 
 
-		//echo $queryBuilder->getQuery()->getSQL();
-		//echo "<br /> Parametres : <br />";
-		//print_r($queryBuilder->getQuery()->getParameters());
-		//echo "<br />";
+	/*
+		echo $queryBuilder->getQuery()->getSQL();
+		echo "<br /> Parametres : <br />";
+		print_r($queryBuilder->getQuery()->getParameters());
+		echo "<br />";
+	*/
         return $queryBuilder->getQuery()->getResult();
     }
 

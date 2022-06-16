@@ -364,6 +364,10 @@ $(document).ready(function()
 
         if ($send_form == true)
         {
+			// On s'assure que la dénomination et autre Dénomination sont en capitalize
+			$('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
+			$('#equipement_ba_ticket_autreDenomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_autreDenomination').val()));
+
             attendreRechargement();
 
             // Appel ajax
@@ -549,5 +553,14 @@ $(document).ready(function()
 	{
 		var new_ch2 = date_enter.replace(/(....)\/(..)\/(..)/,"$3/$2/$1");
         return new_ch2;
+	}
+
+	function capitalizeFirstLetter(string) {
+		var string_sortie = '';
+		var tab_string = string.split(/(\s+)/);
+		$.each(tab_string, function(e){
+			string_sortie += tab_string[e].charAt(0).toUpperCase() + tab_string[e].slice(1).toLowerCase();
+		});	
+  		return string_sortie;
 	}
 </script>

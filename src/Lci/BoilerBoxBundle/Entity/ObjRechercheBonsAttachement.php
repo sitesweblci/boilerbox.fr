@@ -49,6 +49,14 @@ class ObjRechercheBonsAttachement {
     */
     protected $user;
 
+
+    /**
+     * @var boolean
+     *
+    */
+    protected $sansIntervenant;
+
+
 	/**
      * Plusieurs bons d'attachements peuvent cibler un initiateur
      *
@@ -354,6 +362,28 @@ class ObjRechercheBonsAttachement {
     {
         return $this->user;
     }
+
+    /**
+     * Get SansIntervenant
+     *
+     * @return boolean
+    */
+    public function getSansIntervenant() {
+        return $this->sansIntervenant;
+    }
+
+
+    /**
+     * Set SansIntervenant
+     *
+     * param boolean $sans_intervenant
+     * @return ObjRechercheBonsAttachement
+    */
+    public function setSansIntervenant($sans_intervenant) {
+        $this->sansIntervenant = $sans_intervenant;
+        return $this;
+    }
+
 
 
     /**

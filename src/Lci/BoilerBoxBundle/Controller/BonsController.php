@@ -170,39 +170,11 @@ class BonsController extends Controller
 						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
 						$tab_des_id_equipements_selectionnes    = array();
 
-                    	// Envoi d'un mail à l'intervenant
-                    	$service_mailling 		= $this->get('lci_boilerbox.mailing');
-                    	$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
-                    	$destinataire 			= $e_bons_attachement->getUser()->getEmail();
-                    	$sujet 					= "Affectation d'un nouveau bon d'attachement";
-                    	$tab_message 			= array();
-                    	$tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
-                    	$tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
-                    	$messages_contact 		= "";
-                    	if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
-                    	    if ($e_bons_attachement->getNomDuContact() != null) {
-                    	        $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
-                    	        if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	            $messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
-                    	        }
-                    	    } else if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	        $messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
-                    	    }
-                    	} else {
-                    	    $messages_contact = "Aucun contact sur site n'a été renseigné";
-                    	}
-                    	$tab_message['contact'] = $messages_contact;
-                    	$liste_fichiers = "";
-                    	foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
-                    	    $liste_fichiers .= $fichier->getAlt() . ' ';
-                    	}
-                    	if ($liste_fichiers != "") {
-                    	    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
-                    	} else {
-                    	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
-                    	}
-						// Envoi du mail à l'intervenant uniquement
-                    	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+                    	// Envoi d'un mail à l'intervenant si il est définit
+						if ($e_bons_attachement->getUser())
+						{
+							$this->envoiMailIntervention($e_bons_attachement);
+						}
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();
@@ -536,11 +508,15 @@ class BonsController extends Controller
             // Si la page est appelée sans passer par boilerbox
             return 'Page non disponible';
         }
-        $entity_bon 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
+        $e_bons_attachement 		= $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($id_bon);
 
-        $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $entity_bon);
-        $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $entity_bon);
-        $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+		// On récupère l'intervenant avec modification du bon pour l'envoi de mail en cas de modification d'intervenant
+		$e_tmp_intervenant = $e_bons_attachement->getUser();
+
+
+        $f_validation 		= $this->createForm(BonsAttachementValidationType::class, $e_bons_attachement);
+        $f_ba_commentaires 	= $this->createForm(BonsAttachementCommentairesType::class, $e_bons_attachement);
+        $f_ba_modification	= $this->createForm(BonsAttachementModificationType::class, $e_bons_attachement);
 
         // Gestion de l'ajout de fichiers à un bon
         if ($request->getMethod() == 'POST') 
@@ -550,6 +526,13 @@ class BonsController extends Controller
 			{
                 if ($f_ba_modification->isValid()) 
 				{
+					if ($e_bons_attachement->getUser() != $e_tmp_intervenant)
+					{
+						if ($e_bons_attachement->getUser())
+						{
+							$this->envoiMailIntervention($e_bons_attachement);
+						}
+					}
 					$tab_des_equipements_modif = array();
                     foreach($_POST as $key => $variable_post)
                     {
@@ -559,23 +542,23 @@ class BonsController extends Controller
 							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
-							if (!$entity_bon->getEquipementBATicket()->contains($e_tmp_equipement))
+							if (!$e_bons_attachement->getEquipementBATicket()->contains($e_tmp_equipement))
 							{
-								$e_tmp_equipement->setSiteBA($entity_bon->getSite());
-								$entity_bon->addEquipementBATicket($e_tmp_equipement);
+								$e_tmp_equipement->setSiteBA($e_bons_attachement->getSite());
+								$e_bons_attachement->addEquipementBATicket($e_tmp_equipement);
 							}
                         }
                     }
 
-                    foreach ($entity_bon->getFichiersPdf() as $fichier) 
+                    foreach ($e_bons_attachement->getFichiersPdf() as $fichier) 
 					{
                         if ($fichier->getBonAttachement() == null) 
 						{
-                            $fichier->setBonAttachement($entity_bon);
+                            $fichier->setBonAttachement($e_bons_attachement);
                             $em->persist($fichier);
                             $fichier->setAlt($fichier->getAlt() . " ( " . $this->get('security.token_storage')->getToken()->getUser()->getLabel() . " le " . date('d/m/Y à H:i') . " )");
                             if ($fichier->getUrl() == null) {
-                                $entity_bon->removeFichiersPdf($fichier);
+                                $e_bons_attachement->removeFichiersPdf($fichier);
                                 $em->detach($fichier);
                             }
                         }
@@ -584,7 +567,7 @@ class BonsController extends Controller
                     $em->flush();
 					// On récupères tous les équipements associés au bon et on vérifie qu'ils correspondent à ceux passés dans le formulaire
 					$tab_des_equipements_presents = array();
-					foreach($entity_bon->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
+					foreach($e_bons_attachement->getEquipementBATicket() as $e_equipement_ba_ticket_modif)
 					{
 						array_push($tab_des_equipements_presents, $e_equipement_ba_ticket_modif->getId());
 					}
@@ -595,13 +578,13 @@ class BonsController extends Controller
 						{
 							$e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($id_equipement_present);
 							// Gère la relation inverse
-							$entity_bon->removeEquipementBATicket($e_tmp_equipement);
+							$e_bons_attachement->removeEquipementBATicket($e_tmp_equipement);
 						}
 					}
 					$em->flush();
 
 					// On recree le formulaire des bons avec la prise en compte des modification sur les équipements
-					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $entity_bon);
+					$f_ba_modification  = $this->createForm(BonsAttachementModificationType::class, $e_bons_attachement);
                 } else {
                     $f_ba_modification->addError(new FormError($form_message_erreur));
                 }
@@ -610,15 +593,15 @@ class BonsController extends Controller
 
 
         return $this->render('LciBoilerBoxBundle:Bons:form_visu_un_bon.html.twig', array(
-            'entity_bon' 				=> $entity_bon,
+            'entity_bon' 				=> $e_bons_attachement,
             'form_validation' 			=> $f_validation->createView(),
             'form_modification' 		=> $f_ba_modification->createView(),
             'form_ajout_commentaires' 	=> $f_ba_commentaires->createView(),
             'max_upload_size' 			=> $max_upload_size,
-			'commentaires'				=> $entity_bon->getCommentaires(),
+			'commentaires'				=> $e_bons_attachement->getCommentaires(),
 			'es_sitesBA'				=> $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:SiteBA')->findAll(),
-			'latitude'					=> $this->getLatLng('latitude', $entity_bon->getSite()->getLienGoogle()),
-			'longitude'					=> $this->getLatLng('longitude', $entity_bon->getSite()->getLienGoogle()),
+			'latitude'					=> $this->getLatLng('latitude', $e_bons_attachement->getSite()->getLienGoogle()),
+			'longitude'					=> $this->getLatLng('longitude', $e_bons_attachement->getSite()->getLienGoogle()),
 			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
 			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
         ));
@@ -861,5 +844,42 @@ class BonsController extends Controller
         // Dispatch request
         return $response;
     }
+
+
+	private function envoiMailIntervention($e_bons_attachement)
+	{
+        $service_mailling       = $this->get('lci_boilerbox.mailing');
+        $emetteur               = $e_bons_attachement->getUserInitiateur()->getEmail();
+        $destinataire           = $e_bons_attachement->getUser()->getEmail();
+        $sujet                  = "Affectation d'un nouveau bon d'attachement";
+        $tab_message            = array();
+        $tab_message['titre']   = "Une nouvelle intervention vous est affectée";
+        $tab_message['site']    = $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
+        $messages_contact       = "";
+        if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
+        	if ($e_bons_attachement->getNomDuContact() != null) {
+        		$messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
+        		if ($e_bons_attachement->getEmailContactClient() != null) {
+        			$messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
+        		}
+        	} else if ($e_bons_attachement->getEmailContactClient() != null) {
+        		$messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
+        	}
+        } else {
+        	$messages_contact = "Aucun contact sur site n'a été renseigné";
+        }
+        $tab_message['contact'] = $messages_contact;
+        $liste_fichiers = "";
+        foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
+        	$liste_fichiers .= $fichier->getAlt() . ' ';
+        }
+        if ($liste_fichiers != "") {
+        	$tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
+        } else {
+        	$tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
+        }
+        // Envoi du mail à l'intervenant uniquement
+        $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+	}
 
 }

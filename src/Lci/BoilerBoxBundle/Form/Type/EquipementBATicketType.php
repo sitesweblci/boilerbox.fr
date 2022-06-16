@@ -42,12 +42,18 @@ class EquipementBATicketType extends AbstractType
         	    'label_attr'    => array ('class' => 'label_smalltext'),
         	    'required'      => true,
         	    'trim'          => true,
+				'attr'			=> array(
+					'style'		=> 'text-transform:capitalize;'
+				)
         	))
             ->add('autreDenomination', TextType::class, array(
         	    'label'         => 'Autre dénomination',
         	    'label_attr'    => array ('class' => 'label_smalltext'),
         	    'required'      => true,
         	    'trim'          => true,
+				'attr'          => array(
+                    'style'     => 'text-transform:capitalize;'
+                )
         	))
             ->add('anneeDeConstruction', DateType::class, array(
             	'label'         => 'Année de construction',

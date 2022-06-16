@@ -91,6 +91,15 @@
 					{{ form_errors(form.user) }}
 				</div>
 			</div>
+            <div class="form__field form__field--double champs_pour_bons">
+                <div>
+                </div>
+                <div>
+                    {{ form_label(form.sansIntervenant) }}
+                    {{ form_widget(form.sansIntervenant) }}
+                    {{ form_errors(form.sansIntervenant) }}
+                </div>
+            </div>
 			<div class="form__field form__field--double">
 				<div>
 					{{ form_label(form.dateMinInitialisation) }}
@@ -318,6 +327,20 @@ $(window).on('load', function pageActive(){
 					}
 				});	
 			}	
+		});
+
+
+		// Lors de la selection de la case à cocher Sans Intervenant 
+		$('#obj_recherche_bons_attachement_sansIntervenant').click(function() 
+		{
+			if ($(this).prop('checked') === true)
+			{
+				$('#obj_recherche_bons_attachement_user').val('');
+				$('#obj_recherche_bons_attachement_user').prop('disabled', 'disabled');	
+				
+			} else {
+				$('#obj_recherche_bons_attachement_user').prop('disabled', false);
+			}
 		});
 
 		// On active le listener au chargement de la page html

@@ -141,7 +141,11 @@
 						{% endif %}
                     </td>
                     <td class='medium' data-intitule='label'>
-                    	{{ ent_bons.user.label }}
+						{% if ent_bons.user %}
+                    		{{ ent_bons.user.label }}
+						{% else %}
+							<span style='color: red'>A définir</span>
+						{% endif %}
                     </td>
                     {# <td class='small' data-intitule='dateSignature'>
 						{% if ent_bons.dateSignature is not null  %}

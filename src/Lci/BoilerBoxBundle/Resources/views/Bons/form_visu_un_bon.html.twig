@@ -544,15 +544,21 @@
 		</fieldset>
 		<div class="content__btn">
 			<button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
-			{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-				<button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+			{# Si le bon à un intervenant de définit : L'intervenant peut ouvri le bon #}
+			{% if entity_bon.user %}
+				{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+					<button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+				{% endif %}
+			{% else %}
+				{% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                    <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+                {% endif %}
 			{% endif %}
 		</div>
 	</section>
 </main>
 
 
-<!-- popup Nouveau Contact -->
 <section id="commentaireSAV" class="popup cacher">
     <div class="popup__wrapper">
         <header class="popup__header">
@@ -569,6 +575,31 @@
             </div>
             <div class='form__btn form__btn--col notToBePrinted'>
                 <button onClick="validationCommentairesSAV();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- popup Changement d'intervenant -->
+<section id="commentaireChangeIntervenant" class="popup cacher">
+    <div class="popup__wrapper">
+		<input type='hidden' id='last_id_intervenant' name='last_id_intervenant' />
+        <header class="popup__header">
+            <h1 id='titre_commentaire_change_intervenant' class="popup__title">Motif du changement d'intervenant</h1>
+            <div class="close-cross" onclick="fermeturePopupCommentaireChangeIntervenant();"></div>
+        </header>
+        <div class="popup__content">
+            <div class="form__field form__field--double">
+                <p id='avertissementChangeIntervenant' style='color:red'></p>
+                <div>
+                    <label>Motif</label>
+                    <input type='text' name='motifChangeIntervenant' id='motifChangeIntervenant'>
+                </div>
+            </div>
+            <div class='form__btn form__btn--col notToBePrinted'>
+                <button onClick="validationCommentaireChangeIntervenant();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -670,9 +701,12 @@
 	var $idBon = {{ entity_bon.id }};
     var $indexFichier;
     var $container;
-
+	var $id_last_intervenant;
 	$(document).ready(function() 
 	{
+		// On définit l'id de l'intervenant pour le retour arrière lorsqu'aucun message de motif de changement d'intervenant n'est indiqué
+		$('#last_id_intervenant').val($('#bons_attachement_modification_user').val());
+
 		/* Débug largeur parent flex col */
 
 		/* Désactivation de la checkbox Archive */
@@ -701,6 +735,9 @@
             $type = 'sav';
 			togglePopUp(commentaireSAV);
         });
+		$('#bons_attachement_modification_user').change(function(e) {
+			togglePopUp(commentaireChangeIntervenant);
+		});
         $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
 			e.preventDefault;
 			$sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
@@ -881,7 +918,8 @@
         var texte = $('#consignesFacturation').val();
         if (texte != '')
         {
-			ajoutCommentaire(texte);
+			texte = 'Consigne SAV : ' + texte;
+			ajoutCommentaire('sav', texte);
         } else {
             $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
 			return 1;
@@ -895,8 +933,42 @@
 		togglePopUp(commentaireSAV);
 	}
 
+	
 
-	function ajoutCommentaire(commentaire=null)
+
+    /******************* Fonctions pour le motif de changement d'intervenant */
+    function validationCommentaireChangeIntervenant()
+    {
+        var texte = $('#motifChangeIntervenant').val();
+        if (texte != '')
+        {
+			var texte_auto = "Changement d'intervenant effectué par {{ app.user.label }} - Ancien intervenant : ";
+			texte_auto += $('#bons_attachement_modification_user option[value=' + $("#last_id_intervenant").val() + ']').text();
+			texte_auto += " - Nouvel intervenant : " + $('#bons_attachement_modification_user option:selected').text();
+
+			// On indique le changement effectué
+			ajoutCommentaire('autoNoSave', texte_auto);
+
+			texte = "Motif de changement d'intervenant : " + texte;
+            ajoutCommentaire('motif', texte);
+			// On remplace l'indication du dernier intervenant 
+			$("#last_id_intervenant").val($('#bons_attachement_modification_user').val());
+        } else {
+            $('#avertissementChangeIntervenant').text("Merci d'indiquer le motif de changement d'intervenant");
+            return 1;
+        }
+    }
+	// Permet la fermeture de la popup sans consigne mais désactive alors ne modifie pas l'intervenant (garder en memoire id last intervenant)
+	function fermeturePopupCommentaireChangeIntervenant()
+    {
+        $('#bons_attachement_modification_user').val($("#last_id_intervenant").val());
+        $('#avertissementChangeIntervenant').text('');
+        togglePopUp(commentaireChangeIntervenant);
+    }
+
+
+	// type = autoNoSave, sav ou motif -> ce sont les cas ou le paramètre passé : commentaire n'est pas null
+	function ajoutCommentaire(type=null, commentaire=null)
 	{
 		if (commentaire == null)
 		{
@@ -906,16 +978,13 @@
                 data: {'id_bon':$idBon, 'commentaire':commentaire},
                 method: "POST",
                 success: function(msg){
-					$('#commentaires_bon').prepend(commentaire);
-					$('#commentaires').val('');
-					fin_attente();
+					document.forms['myFormFichiers'].submit();
                 },
                 error: function(){
-                    alert("Erreur d'envoi de la consigne de facturation");
+                    alert("Erreur d'envoi du message");
                     return 1;
                 }
             });
-			//Ou document.forms['myFormCommentaires'].submit();
 		} else {
 			// Ajout du commentaire en ajax
             $.ajax({
@@ -923,11 +992,24 @@
                 data: {'id_bon':$idBon, 'commentaire':commentaire},
                 method: "POST",
                 success: function(msg){
-                    // Modification de la checkbox
-                    changeValidation($type, $sens);
+					if (type == 'sav')
+					{
+                    	// Modification de la checkbox
+                    	changeValidation($type, $sens);
+					}
+					if (type != 'autoNoSave')
+					{
+						document.forms['myFormFichiers'].submit();
+					}
                 },
                 error: function(){
-                    alert("Erreur d'envoi de la consigne de facturation");
+					if (type == 'sav')
+                    {
+                    	alert("Erreur d'envoi de la consigne de facturation");
+					} else if (type == 'motif')
+                    {
+                        alert("Erreur d'envoi du motif de modification d'intervenant");
+					}
                     return 1;
                 }
             });
