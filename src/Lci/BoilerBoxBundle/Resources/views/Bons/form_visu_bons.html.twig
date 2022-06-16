@@ -13,7 +13,18 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-		
+		.main-box--table__legend{
+			justify-content: flex-start;
+		}
+		.main-box--table__legend > div:first-child::before{
+			background: #FF5733;
+		}
+		.main-box--table__legend > div:last-child::before{
+			background: var(--main-col);
+		}
+		.main-box .search-bar{
+			width: 250px;
+		}
 	</style>
 {% endblock liens_css %}
 
@@ -28,7 +39,7 @@
 	<h1>{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
 </div> #}
 <header class="sub-header sub-header--blue">
-	<h1 class="sub-header__title">Bons d'interventions</h1>
+	<h1 class="sub-header__title">Inteventions et tickets</h1>
 </header>
 
 
@@ -43,7 +54,7 @@
 	</div>
 {% endif %}
 <main class='main-box main-box--table main-box--visuBons'>
-	<h1 class="main-box__title main-box--table__title">{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
+	<h1 class="main-box__title main-box--table__title">{# {% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions #}Liste bons d'interventions et tickets</h1>
     <div class='main-box__action main-box__action--wide'>
     	<div class="search-bar">
 			<span class="search-bar__img"/></span>
@@ -86,7 +97,7 @@
 
 			<tbody id='contenu_tableau_bons' class="flex-table__tbody scroll">
 				{% for ent_bons in entities_bon %}
-				<tr class="flex-table__row" onclick="afficherBonOuTicket({{ ent_bons.id}}, '{{ent_bons.type }}');" {% if ent_bons.type == "ticket" %}style='background-color:#FAA0A0;'{% endif %}>
+				<tr {% if ent_bons.type == "ticket" %}class='flex-table__row row-ticket' {% else %} class='flex-table__row row-bon' {% endif %} onclick="afficherBonOuTicket({{ ent_bons.id}}, '{{ent_bons.type }}');">
 					<td class='medium' data-intitule='nomDuSite'>
 						{{ ent_bons.site.intitule }}
 					</td>
@@ -221,6 +232,10 @@
 				{% endfor %}
 			</tbody>
 		</table>
+	</div>
+	<div class="main-box--table__legend">
+		<div>Bons d'interventions</div>
+		<div>Tickets</div>
 	</div>
 	{% if is_granted('ROLE_SAISIE_BA') %}
 		<div class="main-box__btn main-box--table__btn">

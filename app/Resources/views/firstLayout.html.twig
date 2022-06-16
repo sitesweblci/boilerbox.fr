@@ -143,11 +143,11 @@
                     </li>
                     <ul class="side-nav__sub-list">
                         {% if is_granted('ROLE_SAISIE_BA') %}
-                            <li class="saisie"><a href="{{ path('lci_bons_saisie') }}"> 
+                            <li class="saisie-bon"><a href="{{ path('lci_bons_saisie') }}"> 
                                 <i></i><span>Saisie bons</span>
                             </a></li>
                         {% endif %}
-                        <li class="saisie"><a href="#"> 
+                        <li class="saisie-ticket"><a href="#"> 
                             <i></i><span>Saisie tickets</span>
                         </a></li>
                         <li class="visu"><a href="{{ path('lci_bons_visualiser') }}">
