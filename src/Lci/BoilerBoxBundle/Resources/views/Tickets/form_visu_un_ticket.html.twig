@@ -85,8 +85,15 @@
 <section class="info">
 	<h1 class="info__title">Ticket {{ entity_bon.numeroBA }}</h1>
 	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
-	{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-		<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+
+	{% if entity_bon.user %}
+		{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+			<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+		{% endif %}
+	{% else %}
+		{% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+			<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
+        {% endif %}
 	{% endif %}
 </section>
 <main id="grid-visuUnBon" class="content">
@@ -138,7 +145,11 @@
                             {% if is_granted('ROLE_SAISIE_BA') %}
 								{{ form_widget(form_modification.user) }}
                             {% else %}
-                                {{ entity_bon.user.label }}
+								{% if entity_bon.user %}
+	                                {{ entity_bon.user.label }}
+								{% else %}
+									<span style='color:red;'>A définir</span>
+								{% endif %}
                             {% endif %}
                         </span>
 	                </div>
