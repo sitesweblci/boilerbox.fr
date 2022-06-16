@@ -248,7 +248,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
 		->add('sensValidation', ChoiceType::class, array(
 			'label'		=> 'Validation',
 			'choices'	=> array(
-                ' '  				=> null,
+                'Tous' 				=> null,
                 'Bons validés'  	=> true,
                 'Bons non validés' 	=> false
 			),
