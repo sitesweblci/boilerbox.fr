@@ -285,6 +285,14 @@ class ObjRechercheBonsAttachementType extends AbstractType {
                 'Export'    => 'export'
             ],
             'required' => false
+        ))
+		->add('sansIntervenant', CheckboxType::class, array(
+            'label'       => 'Sans intervenant définit',
+            'label_attr'  => array('class' => 'label_smalltext'),
+            'attr'        => array(
+                'class'       => 'input_checkbox'
+            ),
+            'required'	=> false
         ));
 	}
 

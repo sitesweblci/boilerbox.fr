@@ -47,7 +47,6 @@ class BonsAttachementType extends AbstractType {
         ))
         ->add('user', EntityType::class, array (
             'class'           => 'LciBoilerBoxBundle:User',
-            'required'        => true,
             'label'           => 'Intervenant',
             'label_attr'      => array ('class' => 'label_smalltext'),
 			'choice_label'    => 'label',
@@ -59,7 +58,7 @@ class BonsAttachementType extends AbstractType {
 					->setParameter('enabled', true)
 					->orderBy('u.label', 'ASC');
 			},
-			'placeholder'		=> "Choix de l'intervenant"
+			'placeholder'		=> "A définir"
         ))
         ->add('dateInitialisation', DateType::class, array(
             'label'         => 'Date d\'initialisation',

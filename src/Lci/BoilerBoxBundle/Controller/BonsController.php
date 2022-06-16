@@ -170,39 +170,42 @@ class BonsController extends Controller
 						// Si tout c'est bien passé pour l'enregistrement du nouveau bon on réinitialise le tableau de id des équipements
 						$tab_des_id_equipements_selectionnes    = array();
 
-                    	// Envoi d'un mail à l'intervenant
-                    	$service_mailling 		= $this->get('lci_boilerbox.mailing');
-                    	$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
-                    	$destinataire 			= $e_bons_attachement->getUser()->getEmail();
-                    	$sujet 					= "Affectation d'un nouveau bon d'attachement";
-                    	$tab_message 			= array();
-                    	$tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
-                    	$tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
-                    	$messages_contact 		= "";
-                    	if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
-                    	    if ($e_bons_attachement->getNomDuContact() != null) {
-                    	        $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
-                    	        if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	            $messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
-                    	        }
-                    	    } else if ($e_bons_attachement->getEmailContactClient() != null) {
-                    	        $messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
-                    	    }
-                    	} else {
-                    	    $messages_contact = "Aucun contact sur site n'a été renseigné";
-                    	}
-                    	$tab_message['contact'] = $messages_contact;
-                    	$liste_fichiers = "";
-                    	foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
-                    	    $liste_fichiers .= $fichier->getAlt() . ' ';
-                    	}
-                    	if ($liste_fichiers != "") {
-                    	    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
-                    	} else {
-                    	    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
-                    	}
-						// Envoi du mail à l'intervenant uniquement
-                    	$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+                    	// Envoi d'un mail à l'intervenant si il est définit
+						if ($e_bons_attachement->getUser())
+						{
+                    		$service_mailling 		= $this->get('lci_boilerbox.mailing');
+                    		$emetteur 				= $e_bons_attachement->getUserInitiateur()->getEmail();
+                    		$destinataire 			= $e_bons_attachement->getUser()->getEmail();
+                    		$sujet 					= "Affectation d'un nouveau bon d'attachement";
+                    		$tab_message 			= array();
+                    		$tab_message['titre'] 	= "Une nouvelle intervention vous est affectée";
+                    		$tab_message['site'] 	= $e_bons_attachement->getSite()->getIntitule() . " ( " . $e_bons_attachement->getNumeroAffaire() . " ) ";
+                    		$messages_contact 		= "";
+                    		if (($e_bons_attachement->getNomDuContact() != null) || ($e_bons_attachement->getEmailContactClient() != null)) {
+                    		    if ($e_bons_attachement->getNomDuContact() != null) {
+                    		        $messages_contact = "Votre contact sur site est : " . $e_bons_attachement->getNomDuContact();
+                    		        if ($e_bons_attachement->getEmailContactClient() != null) {
+                    		            $messages_contact .= " ( " . $e_bons_attachement->getEmailContactClient() . " ) ";
+                    		        }
+                    		    } else if ($e_bons_attachement->getEmailContactClient() != null) {
+                    		        $messages_contact .= "Le mail du contact sur site est : " . $e_bons_attachement->getEmailContactClient();
+                    		    }
+                    		} else {
+                    		    $messages_contact = "Aucun contact sur site n'a été renseigné";
+                    		}
+                    		$tab_message['contact'] = $messages_contact;
+                    		$liste_fichiers = "";
+                    		foreach ($e_bons_attachement->getFichiersPdf() as $fichier) {
+                    		    $liste_fichiers .= $fichier->getAlt() . ' ';
+                    		}
+                    		if ($liste_fichiers != "") {
+                    		    $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le bon d'attachement sur le site boilerbox.fr : $liste_fichiers";
+                    		} else {
+                    		    $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce bon";
+                    		}
+							// Envoi du mail à l'intervenant uniquement
+                    		$service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+						}
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();

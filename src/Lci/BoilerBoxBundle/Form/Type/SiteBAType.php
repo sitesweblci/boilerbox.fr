@@ -44,7 +44,7 @@ class SiteBAType extends AbstractType
 						'class' 		=> 'label_smalltext',
 					),
 					'attr'          => array(
-                		'class'         => 'biginput centrer',
+                		'class'         => 'biginput centrer uppercase',
                 		'placeholder'   => 'Nom du site',
 						'style'         => 'width:100%'
             		),
