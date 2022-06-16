@@ -36,7 +36,7 @@ $(document).ready(function()
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
                                                 onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '" + tmp_denomination + "', '" + tmp_autreDenomination + "')\" \
                                             />\
-                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:60px;'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:60px;'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:150px;'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
+                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:80px;margin-right:10px'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:80px;margin-right:10px'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
                                 </div>";
                         } else {
@@ -55,7 +55,7 @@ $(document).ready(function()
         // Fonction de recherche dans la liste des équipements
         $('#recherche_equipement').keyup(function()
         {
-            $('#liste_des_equipements span').each(function()
+            $('#liste_des_equipements label').each(function()
             {
                 $('#insert_equipement > div').each(function()
                 {
@@ -298,7 +298,7 @@ $(document).ready(function()
             $('#liste_des_equipements_selectionnes').append(div_tmp);
 
 			// Ajout de l'élément sur la page HTML
-			$html = "<tr id='tr_equipement_" + id_checkbox + "' class='flex-table__row' onClick=\"modifierEquipement('" + id_checkbox + "');\">" + "<td class='txt--center'>" + numeroDeSerie + "</td>" + "<td>" + denomination + "</td>" + "<td>" + autreDenomination+ "</td></tr>";
+			$html = "<tr id='tr_equipement_" + id_checkbox + "' class='flex-table__row' onClick=\"modifierEquipement('" + id_checkbox + "');\">" + "<td>" + numeroDeSerie + "</td>" + "<td>" + denomination + "</td>" + "<td>" + autreDenomination+ "</td></tr>";
 			$('#table_des_equipements tbody').append($html);
         } else {
             // On retire l'id de l'équipement du tableau des équipement selectionnés
