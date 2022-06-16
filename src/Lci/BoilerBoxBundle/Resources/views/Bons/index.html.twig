@@ -14,7 +14,7 @@
 <div class='card-wrapper'>
     {% if is_granted('ROLE_SAISIE_TICKET') %}
         <div class="card" onClick="attente(); redirection('saisie_ticket'); return false;">
-            <img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des tickets incidents" >
+            <img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisieTicket.svg') }}" alt="Saisie des tickets incidents" >
             <div class="card__container">
                 <h4 class="card__container__title">Saisie ticket à distance</h4>
                 <p class="card__container__desc">Créer un nouveau ticket d'incident</p>
@@ -23,7 +23,7 @@
     {% endif %}
     {% if is_granted('ROLE_SAISIE_BA') %}
 	    <div class="card" onClick="attente(); redirection('bonsSaisie'); return false;">
-	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisie.svg') }}" alt="Saisie des bons d'interventions" >
+	    	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/saisieBon.svg') }}" alt="Saisie des bons d'interventions" >
 	    	<div class="card__container">
 	    		<h4 class="card__container__title">Saisie intervention site</h4>
 	    		<p class="card__container__desc">Créer un nouveau bon d'intervention</p>
