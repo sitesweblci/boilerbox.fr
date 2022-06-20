@@ -519,6 +519,8 @@
 		var contact_nom = $('#contact_nom').val().toUpperCase();
 		var contact_prenom = capitalizeFirstLetter($('#contact_prenom').val());
 		$('#contact_prenom').val(contact_prenom);
+		var contact_fonction = capitalize($('#contact_fonction').val().toLowerCase());
+		$('#contact_fonction').val(contact_fonction);
 
         // Vérification des champs du contact
         if(contact_nom === '')
