@@ -34,12 +34,12 @@ class Validation {
 
 
 	/**
-     * @var date
+     * @var datetime
 	 *
 	 * @Assert\Date(message="Format incorrect. Format jj/mm/AAAA attendu.")
 	 * @Assert\NotBlank()
 	 *
-	 * @ORM\Column(type="date", name="date_de_validation")
+	 * @ORM\Column(type="datetime", name="date_de_validation")
 	*/
 	protected $dateDeValidation;
 

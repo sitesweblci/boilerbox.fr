@@ -17,11 +17,16 @@ class TicketIncidentValidationType extends AbstractType {
     */
 	public function buildForm(FormBuilderInterface $builder, array $option) {
 		$builder
-		->add('validationFacturation', ValidationType::class, array(
-            'label' => 'Validation Facturation',
+		->add('validationIntervention', ValidationType::class, array(
+            'label' => 'Intervention demandée',
+            'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'
+        ))
+        ->add('validationCloture', ValidationType::class, array(
+            'label' => 'Cloture',
             'data_class' => 'Lci\BoilerBoxBundle\Entity\Validation'
         ));
 	}
+
 
 
     /*
@@ -38,7 +43,7 @@ class TicketIncidentValidationType extends AbstractType {
      * @return string
     */
     public function getName(){
-        return 'lci_boilerboxbundle_ticketIncident';
+        return 'lci_boilerboxbundle_bonsAttachement';
     }
 
 }

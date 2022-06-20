@@ -359,42 +359,67 @@
 				<table id="table_validation"  class='flex-table'>
 				<thead class="flex-table__thead">
 					<tr class="flex-table__row">
-						<th>Facturation</th>
+						<th>Intervention demandée</th>
+						<th>Clôture</th>
 					</tr>
 				</thead>
 				<tbody class="flex-table__tbody">
 					<tr class="flex-table__row">
                         <td>
-                            {% if entity_bon.validationFacturation %}
-                                {% if entity_bon.validationFacturation.valide == true %}
-                                    <span style='color:green;'>{{ entity_bon.validationFacturation.user.label }}<br />Le {{ entity_bon.validationFacturation.dateDeValidation | date('d-m-Y') }}</span>
-                                {% else %}
-                                    {# Service Facturation dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
-                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-                                        {{ form_widget(form_validation.validationFacturation) }}
-                                    {% else %}
-                                        {# Service Facturation non validé - On n'a pas les droits de validation #}
-                                        <span style='color:red;'>Non effectuée</span>
-                                    {% endif %}
+                            {% if entity_bon.validationIntervention %}
+                                {% if entity_bon.validationIntervention.valide == true %}
+                                    <span style='color:green;'>Intervention demandée par {{ entity_bon.validationIntervention.user.label }} ({{ entity_bon.validationIntervention.dateDeValidation | date('d-m-Y') }})</span>
+                                {% elseif entity_bon.validationIntervention.user == app.user %}
+                                    {# Service Intervention dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
+                                    <div style='display:flex'>
+										{{ form_widget(form_validation.validationIntervention) }}
+										Attente d'intervention <br/>
+									</div>
+									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
+								{% else %}
+									<span style='color:red;>Non demandée</span>
                                 {% endif %}
-                            {% elseif is_granted('ROLE_SERVICE_FACTURATION') %}
-                                {# Service Facturation non validé - On a les droits de validation #}
-                                {{ form_widget(form_validation.validationFacturation) }}
-                            {% else %}
-                                {# Service Facturation non validé - On n'a pas les droits de validation #}
-                                <span style='color:red;'>Non effectuée</span>
+                            {% elseif is_granted('ROLE_SERVICE_TECHNIQUE')  %}
+								{# Service Intervention non validé - On a les droits de validation #}
+                                {{ form_widget(form_validation.validationIntervention) }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entity_bon.validationCloture %}
+                                {% if entity_bon.validationCloture.valide == true %}
+                                    <span style='color:green;'>Cloturé par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
+                                {% elseif entity_bon.validationCloture.user == app.user %}
+                                    <div style='display:flex'>
+										{{ form_widget(form_validation.validationCloture) }} 
+										Clôturer
+									</div>
+									<span style='color:red'>Réouvert par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
+								{% else %}
+                                    <span style='color:red;>Non clos</span>
+                                {% endif %}
+                            {% elseif is_granted('ROLE_SERVICE_TECHNIQUE')  %}
+                                {# Service Cloture non validé - On a les droits de validation #}
+                                {{ form_widget(form_validation.validationCloture) }}
                             {% endif %}
                         </td>
 					</tr>
 
-
 	        		<tr class="flex-table__row">
                         <td>
-                            {% if entity_bon.validationFacturation %}
-                                {% if entity_bon.validationFacturation.valide == true %}
-                                    {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
-                                    {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
+                            {% if entity_bon.validationIntervention %}
+                                {% if entity_bon.validationIntervention.valide == true %}
+                                    {# Service Intervention validé : On affiche l'icone pour le dévalider si on a les droits #}
+                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('intervention', false);">Annuler</span>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entity_bon.validationCloture %}
+                                {% if entity_bon.validationCloture.valide == true %}
+                                    {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
+                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('cloture', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -441,22 +466,22 @@
 
 
 <!-- popup Nouveau Contact -->
-<section id="commentaireSAV" class="popup cacher">
+<section id="commentaireCloture" class="popup cacher">
     <div class="popup__wrapper">
         <header class="popup__header">
-            <h1 id='titre_commentaire_sav' class="popup__title">Consignes de facturation</h1>
-            <div class="close-cross" onclick="fermeturePopupCommentairesSAV();"></div>
+            <h1 id='titre_commentaire_sav' class="popup__title">Informations client de cloture</h1>
+            <div class="close-cross" onclick="fermeturePopupCommentairesCloture();"></div>
         </header>
         <div class="popup__content">
             <div class="form__field form__field--double">
-				<p id='avertissementConsignesFacturation' style='color:red'></p>
+				<p id='avertissementConsignesCloture' style='color:red'></p>
                 <div>
-                    <label>Consignes</label>
-                    <input type='text' name='consignesFacturation' id='consignesFacturation'>
+                    <label>Informations client de cloture</label>
+                    <input type='text' name='consignesClientCloture' id='consignesClientCloture'>
                 </div>
             </div>
             <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentairesSAV();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+                <button onClick="validationCommentairesCloture();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -605,35 +630,17 @@
 
 		/* Désactivation de la checkbox Archive */
 		$('#chk_archive').attr('checked', false);
-		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
+		$('#ticket_incident_validation_validationIntervention_valide').click(function(e){
 			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationTechnique_valide').is(":checked");
-			$type = 'technique';
+			$sens = $('#ticket_incident_validation_validationIntervention_valide').is(":checked");
+			$type = 'intervention';
 			changeValidation($type, $sens);
 		});
-        $('#bons_attachement_validation_validationPiece_valide').click(function(e){
+        $('#ticket_incident_validation_validationCloture_valide').click(function(e){
 			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationPiece_valide').is(":checked");
-			$type = 'pieces';
-			changeValidation($type, $sens);
-        });
-        $('#bons_attachement_validation_validationPieceFaite_valide').click(function(e){
-            e.preventDefault;
-            $sens = $('#bons_attachement_validation_validationPieceFaite_valide').is(":checked");
-            $type = 'pieces_faite';
-            changeValidation($type, $sens);
-        });
-        $('#bons_attachement_validation_validationSAV_valide').click(function(e){
-			//e.preventDefault;
-            $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
-            $type = 'sav';
-			togglePopUp(commentaireSAV);
-        });
-        $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
-			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
-			$type = 'facturation';
-			changeValidation($type, $sens);
+			$sens = $('#ticket_incident_validation_validationCloture_valide').is(":checked");
+			$type = 'cloture';
+			togglePopUp(commentaireCloture);
         });
         $("#bons_attachement_validation_dateSignature" ).datepicker();
 
@@ -643,7 +650,7 @@
 
 
         /* Récupération du container contenant l'attribut data-prototype */
-        $container = $('#bons_attachement_modification_fichiersPdf');
+        $container = $('#ticket_incident_modification_fichiersPdf');
 
 		/* Calcul du nombre de fichiers déjà présent */
 	    // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
@@ -660,7 +667,7 @@
         /* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
         $addLink.click(function(e){
             ajoutChampFichier();
-			$('#bons_attachement_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
+			$('#ticket_incident_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
 			$('#js-btn-file > div').removeClass('main-box__btn--disabled');
     		$('#js-btn-file .btn--main').removeClass('btn--disabled');
             e.preventDefault();
@@ -697,7 +704,7 @@
 		// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
 		$('#cheminDossierPhotos').dblclick(function()
 		{
-			var $id_bon = $('#bons_attachement_modification_id').val();
+			var $id_bon = $('#ticket_incident_modification_id').val();
 
 			var $url_controller_ajax_has_url 	= "{{ path('lci_bons_has_url', {'id_bon': 'identifiantDuBon'}) }}";
 			$url_controller_ajax_has_url 		= $url_controller_ajax_has_url.replace('identifiantDuBon', $id_bon);
@@ -725,31 +732,31 @@
 
 		refreshSelectEquipements();
 
-    	var sauvegarde_select_user = $('#bons_attachement_modification_user').html();
+    	var sauvegarde_select_user = $('#ticket_incident_modification_user').html();
 	
     	// Envoi du service selectionné
     	// Récupération des ids des membres du service
     	// Cache les non membre du service du select html
-    	$('#bons_attachement_modification_service').change(function()
+    	$('#ticket_incident_modification_service').change(function()
     	{
 			// On sauvegarde le nom de l'intervenant selectionné
-			var intervenant = $('#bons_attachement_modification_user').val();
+			var intervenant = $('#ticket_incident_modification_user').val();
 
     	    // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
-    	    $('#bons_attachement_modification_user').html(sauvegarde_select_user);
+    	    $('#ticket_incident_modification_user').html(sauvegarde_select_user);
 
 			var intervenant_identique = false;
     	    $.ajax("{{ path('lci_ajax_bons_select_service') }}",
     	    {
     	        async: false,
     	        method: "POST",
-    	        data: {service:$('#bons_attachement_modification_service option:selected').text() },
+    	        data: {service:$('#ticket_incident_modification_service option:selected').text() },
     	        success: function(data, textStatus, jqXHR) {
     	            // Lors du retour de la demande Ajax, soit on récupère un tableau avec les id des membres du service soit on recoit une chaine de caractère vide
     	            // Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
     	            if (data != '') {
     	                var t_data = JSON.parse(data);
-    	                $('#bons_attachement_modification_user option').each(function()
+    	                $('#ticket_incident_modification_user option').each(function()
 						{
         	                if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
         	                {
@@ -765,10 +772,10 @@
         	            });
 						if (intervenant_identique == true)
 						{
-							$('#bons_attachement_modification_user').val(intervenant);
+							$('#ticket_incident_modification_user').val(intervenant);
 						} else {
         	            	// Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
-							$('#bons_attachement_modification_user option[value=""]').prop('selected', true);
+							$('#ticket_incident_modification_user option[value=""]').prop('selected', true);
 						}
         	        }
         	    },
@@ -784,23 +791,24 @@
 
 
 	/******************* Fonctions pour les consignes de facturation */
-    function validationCommentairesSAV()
+    function validationCommentairesCloture()
     {
-        var texte = $('#consignesFacturation').val();
+        var texte = $('#consignesClientCloture').val();
         if (texte != '')
         {
 			ajoutCommentaire(texte);
+			// ICI DEV Envoyer le mail au client
         } else {
-            $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
+            $('#avertissementConsignesCloture').text("Merci d'indiquer les informations client de cloture");
 			return 1;
         }
     }
 	// Permet la fermeture de la popup sans consigne mais désactive alors la checkbox
-	function fermeturePopupCommentairesSAV()
+	function fermeturePopupCommentairesCloture()
 	{	
-		$('#bons_attachement_validation_validationSAV_valide').prop('checked', false);
-		$('#avertissementConsignesFacturation').text('');
-		togglePopUp(commentaireSAV);
+		$('#ticket_incident_validation_validationCloture_valide').prop('checked', false);
+		$('#avertissementConsignesCloture').text('');
+		togglePopUp(commentaireCloture);
 	}
 
 
@@ -825,7 +833,7 @@
             });
 			//Ou document.forms['myFormCommentaires'].submit();
 		} else {
-			// Ajout du commentaire en ajax
+			// Ajout du commentaire de cloture client en ajax
             $.ajax({
                 url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
                 data: {'id_bon':$idBon, 'commentaire':commentaire},
@@ -847,65 +855,7 @@
 
 	function changeValidation($type, $sens) 
 	{
-        // On n'affiche plus les msgbox - Mettre en commentaire cette ligne pour proposer les msgbox ci dessous
         return sendAjaxRequest($idBon, $type, $sens);
-
-
-
-
-
-		if($sens === false) {
-			$.msgBox({
-    			title: "Avertissement",
-    			content: "Êtes vous certain de vouloir annuler la validation " + $type + " ? ",
-    			type: "alert",
-    			buttons: [{ value: "Oui" }, { value: "Annuler"}],
-    			opacity: 1,
-    			success: function (result) {
-    			    if (result == "Annuler") {
-						return false;
-        			}
-					if (result == "Oui") {
-						return sendAjaxRequest($idBon, $type, $sens);
-					}
-    			}
-			});
-		} else {
-			var $retourAjax;
-			$.msgBox({
-                title: "Information",
-                content: "Êtes vous certain de vouloir effectuer la validation " + $type + " ? ",
-                type: "confirm",
-                buttons: [{ value: "Oui" }, { value: "Annuler"}],
-                opacity: 1,
-                success: function (result) {
-                    if (result == "Annuler") {
-                        switch($type) {
-                            case 'technique':
-                                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", false);
-                                break;
-                            case 'sav':
-                                $('#bons_attachement_validation_validationSAV_valide').prop("checked", false);
-                                break;
-                            case 'pieces':
-                                $('#bons_attachement_validation_validationPiece_valide').prop("checked", false);
-                                break;
-                            case 'pieces_faite':
-                                $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", false);
-                                break;
-                            case 'facturation':
-								location.reload();
-                                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", false);
-                                break;
-                        }
-                        return false;
-                    }
-                    if (result == "Oui") {
-                     	return sendAjaxRequest($idBon, $type, $sens);
-                    }
-                }
-            });
-		}
 	}
 
 
@@ -930,20 +880,11 @@
         	        alert('error ' + $error + $msg);
         	        fin_attente();
 					switch($type) {
-        	            case 'technique':
-        	                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", true);
+        	            case 'intervention':
+        	                $('#ticket_incident_validation_validationIntervention_valide').prop("checked", true);
         	                break;
-        	            case 'sav':
-        	                $('#bons_attachement_validation_validationSAV_valide').prop("checked", true);
-        	                break;
-        	            case 'pieces':
-        	                $('#bons_attachement_validation_validationPiece_valide').prop("checked", true);
-        	                break;
-                        case 'pieces_faite':
-                            $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", true);
-                            break;
-        	            case 'facturation':
-        	                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", true);
+        	            case 'cloture':
+        	                $('#ticket_incident_validation_validationCloture_valide').prop("checked", true);
         	                break;
         	        }
 					return false;
@@ -985,7 +926,7 @@
 
     // Fonction qui ajout un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
     function ajoutChampFichier() {
-        var $nouveauPrototype = $($('#bons_attachement_modification_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
+        var $nouveauPrototype = $($('#ticket_incident_modification_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
 
         // Création et ajout d'un lien de suppression en fin de container
         $deleteLink = $('<a href="#" class="mini_link">Supprimer</a>');
