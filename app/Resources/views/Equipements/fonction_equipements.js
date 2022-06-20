@@ -163,6 +163,10 @@ $(document).ready(function()
     function creerModifierEquipement($type_action, $id_equipement=null)
     {
 		var $data_a_envoyer = $id_equipement;
+
+        // On s'assure que la dénomination et autre Dénomination sont en capitalize
+		gestionCaracteresEquipement();
+
 		if ($id_equipement == null)
 		{
 			$data_a_envoyer = $('form[name="equipement_ba_ticket"]').serialize()
@@ -364,9 +368,10 @@ $(document).ready(function()
 
         if ($send_form == true)
         {
-			// On s'assure que la dénomination et autre Dénomination sont en capitalize
-			$('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
-			$('#equipement_ba_ticket_autreDenomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_autreDenomination').val()));
+
+			
+        	// On s'assure que la dénomination et autre Dénomination sont en capitalize
+        	gestionCaracteresEquipement();
 
             attendreRechargement();
 
@@ -522,5 +527,17 @@ $(document).ready(function()
 		} else {
 			$('#' + id_element).css('background-color', 'white');
 		}
+	}
+
+	function gestionCaracteresEquipement()
+	{
+
+        // On s'assure que la dénomination et autre Dénomination sont en capitalize
+		/*
+        $('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
+        $('#equipement_ba_ticket_autreDenomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_autreDenomination').val()));
+		*/
+		$('#equipement_ba_ticket_denomination').val(capitalize($('#equipement_ba_ticket_denomination').val().toLowerCase()));
+		$('#equipement_ba_ticket_autreDenomination').val(capitalize($('#equipement_ba_ticket_autreDenomination').val().toLowerCase()));
 	}
 </script>
