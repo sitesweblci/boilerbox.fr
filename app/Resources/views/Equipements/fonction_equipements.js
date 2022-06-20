@@ -316,6 +316,14 @@ $(document).ready(function()
             $('#parent_' + id_div).append(div_tmp);
 			$('#tr_equipement_' + id_checkbox).remove();
         }
+
+		// Si des équipements sont selectionnés on supprime l'indication Equipement(s) non défini(s)
+		if ($('#table_des_equipements tbody').html() != '')
+		{
+			$('p#infos_equipements').text('');	
+		} else {
+			$('p#infos_equipements').text('Equipement(s) non défini(s)');
+		}
     }
 
 
