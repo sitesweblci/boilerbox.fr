@@ -516,20 +516,14 @@
     {
         var $send_form = true;
 
-		var contact_nom = $('#contact_nom').val().toUpperCase();
-		var contact_prenom = capitalizeFirstLetter($('#contact_prenom').val());
-		$('#contact_prenom').val(contact_prenom);
-		var contact_fonction = capitalize($('#contact_fonction').val().toLowerCase());
-		$('#contact_fonction').val(contact_fonction);
+		gestionCaracteresContact();
 
         // Vérification des champs du contact
-        if(contact_nom === '')
+        if($('#contact_nom').val() === '')
         {
             $('#contact_nom').addClass('erreur_formulaire');
             $send_form = false;
-        } else {
-			$('#contact_nom').val(contact_nom.toUpperCase());
-		}
+        }
         if( ($('#contact_telephone').val() === '') && ($('#contact_mail').val() === '') )
         {
             $('#contact_telephone').addClass('erreur_formulaire');
@@ -792,5 +786,16 @@
             $(this).parents(".search-bar").removeClass("search-bar--focus");
         }
     });
+
+
+
+
+    function gestionCaracteresContact()
+    {
+		$('#contact_nom').val($('#contact_nom').val().toUpperCase());
+        $('#contact_prenom').val(capitalize($('#contact_prenom').val().toLowerCase()));
+        $('#contact_fonction').val(capitalize($('#contact_fonction').val().toLowerCase()));
+    }
+
 
 </script>
