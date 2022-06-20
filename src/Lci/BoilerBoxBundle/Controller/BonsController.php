@@ -70,6 +70,8 @@ class BonsController extends Controller
 
     public function saisieAction(Request $request)
     {
+		date_default_timezone_set('Europe/Paris');
+
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
 		$enregistrement_form_bon 				= null;
@@ -319,7 +321,6 @@ class BonsController extends Controller
 								{
                     	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
 									{
-return new Response();
                     	                $ent_contact = new Contact();
                     	                $ent_contact->setNom(strtoupper($tab_contact['nom']));
                     	                $ent_contact->setPrenom($service_utilitaire->capitalizeFirstLetter($tab_contact['prenom']));

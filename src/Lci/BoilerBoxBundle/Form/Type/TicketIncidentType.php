@@ -62,21 +62,20 @@ class TicketIncidentType extends AbstractType {
 			},
 			'placeholder'		=> "A définir"
         ))
-/*
         ->add('dateInitialisation', DateType::class, array(
             'label'         => 'Date d\'initialisation',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-				'class'			=> 'centrer'
+				'class'			=> 'centrer',
+				'disabled'		=> 'disabled'
             )
         ))
-*/
 /*
 		->add('numeroBA', TextType::class, array(
 			'label' 		=> 'Numéro du bon',
@@ -111,36 +110,48 @@ class TicketIncidentType extends AbstractType {
 			'required'		=> true,
             'label_attr'    => array ('class' => 'label_smalltext'),
         ))
-/*
+
+        ->add('service', ChoiceType::class, array(
+            'label'         => 'Service',
+            'placeholder'   => 'Tous',
+            'choices'       => [
+                'Bosch'     => 'bosch',
+                'Certus'    => 'certus',
+                'Export'    => 'export'
+            ],
+            'required' => false
+        ))
+
         ->add('dateDebutIntervention', DateType::class, array(
-            'label'         => 'Date de début d\'intervention',
+            'label'         => 'Date d\'initialisation',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => 'centrer',
+                'disabled'      => 'disabled'
             ),
 			'required'		=> false
         ))
         ->add('dateFinIntervention', DateType::class, array(
-            'label'         => 'Date de fin d\'intervention',
+            'label'         => 'Date de clôture',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => 'centrer',
+                'disabled'      => 'disabled'
             ),
             'required'      => false
         ))
-*/
 		->add('nomDuContact', TextType::class, array(
 			'label'			=> 'Nom du contact',
 			'label_attr'    => array ('class' => 'label_smalltext'),

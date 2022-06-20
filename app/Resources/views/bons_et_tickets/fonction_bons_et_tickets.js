@@ -359,7 +359,8 @@
                     {
                         if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
                         {
-                            $(this).addClass('cacher');
+                            $(this).prop('disabled', 'disabled');
+							$(this).addClass('disabled');
                         } else {
                             // On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
                             // Si oui on le reselectionnera

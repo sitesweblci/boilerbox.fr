@@ -61,6 +61,7 @@ class TicketController extends Controller
 
     public function saisieAction(Request $request)
     {
+		date_default_timezone_set('Europe/Paris');
 		$numero_de_ticket						= null;
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
@@ -77,6 +78,10 @@ class TicketController extends Controller
 
         // Création de l'entité du ticket + Récupération de l'utilisateur courant pour en définir l'initiateur
         $e_ticket 		= new BonsAttachement();
+        $e_ticket->setDateInitialisation(new \Datetime());
+        $e_ticket->setDateDebutIntervention(new \Datetime());
+
+
 		$e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
         $e_ticket->setUserInitiateur($e_user_courant);
 
@@ -157,8 +162,6 @@ class TicketController extends Controller
 						// On défini le type pour distinguer ticket d'un bon
 						$e_ticket->setType('ticket');
 						$e_ticket->setTypeIntervention('Incident');
-						$e_ticket->setDateInitialisation(new \Datetime());
-						$e_ticket->setDateDebutIntervention(new \Datetime());
 
 						// Le numero du ticket s'incremente automatiquement
 						// 	recherche du dernier numéro de ticket en base
