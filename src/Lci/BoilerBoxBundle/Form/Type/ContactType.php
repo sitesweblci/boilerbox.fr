@@ -47,7 +47,7 @@ class ContactType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer',
+                        'class'         => 'biginput centrer uppercase',
                         'placeholder'   => 'Nom',
                         'style'         => 'width:100%;'
                     )

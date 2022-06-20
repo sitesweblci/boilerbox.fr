@@ -238,15 +238,21 @@
 {% block mainBody %}
 {% endblock mainBody%}
 
+
     <script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.js') }}"></script>
+
 	{# Définit les valeurs par défauts pour le datePicker #}
 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>
+
+   <script type="text/javascript">
+
+</script>
+
 
 	<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 	<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 	<script src="{{ asset('bundles/lciboilerbox/js/fonctions_generales.js') }}"></script>
-
 
     <script type="text/javascript">
 		// Variable indiquant le mode publique /ou privé actif */
@@ -256,6 +262,7 @@
 		var $tech_granted = "{{ is_granted('ROLE_TECHNICIEN') }}";
 		// Variable indiquant si la page doit être rafraichie ou non dans certaines fonctions
 		var $Refresh_page = true;
+
 
         // Fonctions barre de navigation latérale
         function showMenuLateral(){
@@ -268,6 +275,8 @@
             $(".side-nav li").removeClass("active");
             $(this).addClass("active");
         });
+
+
         // affichage sous-menu
         $(".side-nav button").on("click", function displaySubNav(){
             $(this).parents("li").next(".side-nav__sub-list").toggleClass("displayed");
@@ -275,6 +284,8 @@
         $('.side-nav').on('mouseleave', function(){
             $('.side-nav .side-nav__sub-list').removeClass('displayed');
         });
+
+
         // Fonction pour afficher la petite popup "mon compte" au survol du bouton mon compte
         $('.header__nav--account').bind('click mouseenter', function(){
             $('.logged').toggleClass('cacher');
@@ -283,7 +294,10 @@
             $('.logged').addClass('cacher');
         });
 
-    	$(document).ready(function() {
+
+
+    	$(document).ready(function() 
+		{
     	    if("{{popup_error}}") {
     	        $('#popUpError').removeClass('cacher')
     	        $('#cartonBlack').removeClass('cacher')

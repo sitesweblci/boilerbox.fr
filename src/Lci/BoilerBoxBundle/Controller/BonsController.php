@@ -73,19 +73,26 @@ class BonsController extends Controller
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
 		$enregistrement_form_bon 				= null;
+
 		// Html du formulaire du bon - permet de renvoyer les bonnes informations lors de la modification du site / des contacs d'un site
 		$enregistrement_html_form_bon			= null;
 		$tab_des_id_equipements_selectionnes 	= array();
+
 		// Lors de la validation du formulaire de création d'équipement : La mise à true permet de réafficher automatiquement le formulaire de création d'équipement pour voir l'erreur
 		$echec_creation_equipement 				= false;
         $apiKey 								= $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
         $es_sitesBA 							= $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
-		$e_user_courant 						= $this->get('security.token_storage')->getToken()->getUser();
 
         // Création d'un formulaire de bon d'attachement +  Récupération de l'utilisateur courant pour définir l'initiateur d'un nouveau bon
         $e_bons_attachement = new BonsAttachement();
+		$e_user_courant 						= $this->get('security.token_storage')->getToken()->getUser();
         $e_bons_attachement->setUserInitiateur($e_user_courant);
-        $f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+
+        // Création du formulaire de bon
+		$f_bons_attachement = $this->createForm(BonsAttachementType::class, $e_bons_attachement);
+
+		//Service utilitaire pour appel des fonctions capitalise ...
+		$service_utilitaire						= $this->container->get('lci_boilerbox.utilitaires');
 
 		// Création du formulaire des SitesBA
         $e_siteBA 			= new SiteBA();
@@ -312,9 +319,10 @@ class BonsController extends Controller
 								{
                     	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
 									{
+return new Response();
                     	                $ent_contact = new Contact();
-                    	                $ent_contact->setNom($tab_contact['nom']);
-                    	                $ent_contact->setPrenom($tab_contact['prenom']);
+                    	                $ent_contact->setNom(strtoupper($tab_contact['nom']));
+                    	                $ent_contact->setPrenom($service_utilitaire->capitalizeFirstLetter($tab_contact['prenom']));
                     	                $ent_contact->setTelephone($tab_contact['telephone']);
                     	                $ent_contact->setMail($tab_contact['mail']);
                     	                $ent_contact->setFonction($tab_contact['fonction']);

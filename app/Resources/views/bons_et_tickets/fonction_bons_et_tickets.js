@@ -516,13 +516,18 @@
     {
         var $send_form = true;
 
+		var contact_nom = $('#contact_nom').val().toUpperCase();
+		var contact_prenom = capitalizeFirstLetter($('#contact_prenom').val());
+		$('#contact_prenom').val(contact_prenom);
 
-        // Vérification des chmaps du contact
-        if($('#contact_nom').val() === '')
+        // Vérification des champs du contact
+        if(contact_nom === '')
         {
             $('#contact_nom').addClass('erreur_formulaire');
             $send_form = false;
-        }
+        } else {
+			$('#contact_nom').val(contact_nom.toUpperCase());
+		}
         if( ($('#contact_telephone').val() === '') && ($('#contact_mail').val() === '') )
         {
             $('#contact_telephone').addClass('erreur_formulaire');
@@ -534,6 +539,7 @@
             $('#contact_fonction').addClass('erreur_formulaire');
             $send_form = false;
         }
+		
 
         // Si la vérification est ok (pas de champs obligatoire vides) : Envoi du formulaire
         if ($send_form === true)

@@ -1154,4 +1154,16 @@ class ServiceUtilitaires
     }
 
 
+	public function capitalizeFirstLetter($phrase) {
+        $phrase_sortie = '';
+		$tab_mots_phrase = explode(' ', $phrase);
+		
+		foreach($tab_mots_phrase as $mot)
+		{
+			$phrase_sortie .= $ucfirst(strtolower($mot)).' ';
+		}
+
+        return $phrase_sortie;
+	}
+
 }

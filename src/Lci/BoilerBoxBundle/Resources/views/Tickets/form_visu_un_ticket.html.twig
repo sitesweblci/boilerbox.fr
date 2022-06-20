@@ -582,9 +582,6 @@
 			$type = 'facturation';
 			changeValidation($type, $sens);
         });
-        $.datepicker.setDefaults({
-            numberOfMonths: 2
-        });
         $("#bons_attachement_validation_dateSignature" ).datepicker();
 
 
@@ -728,18 +725,6 @@
         	});
     	});
 
-
-        /* Mise en place de l'objet datepicker avec 2 mois affichés */
-        $.datepicker.setDefaults({
-            numberOfMonths: 1,
-            dateFormat: 'dd/mm/yy',
-            showWeek: true,
-            gotoCurrent: true,
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-            maxDate: '+2Y'
-        });
 
 		setDatePicker();
 	});	
@@ -1017,15 +1002,6 @@
         }, 30);
 
     });
-
-    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
-    function setDatePicker()
-    {
-        $("input[placeholder='dd/mm/YYYY']").datepicker();
-    }
-
-
-
 
 </script>
 

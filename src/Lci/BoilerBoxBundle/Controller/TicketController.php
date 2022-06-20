@@ -346,8 +346,8 @@ class TicketController extends Controller
                     	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
 									{
                     	                $ent_contact = new Contact();
-                    	                $ent_contact->setNom($tab_contact['nom']);
-                    	                $ent_contact->setPrenom($tab_contact['prenom']);
+                    	                $ent_contact->setNom(strtoupper($tab_contact['nom']));
+                                        $ent_contact->setPrenom($service_utilitaire->capitalizeFirstLetter($tab_contact['prenom']));
                     	                $ent_contact->setTelephone($tab_contact['telephone']);
                     	                $ent_contact->setMail($tab_contact['mail']);
                     	                $ent_contact->setFonction($tab_contact['fonction']);
