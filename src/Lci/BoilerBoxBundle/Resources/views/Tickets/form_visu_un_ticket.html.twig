@@ -114,7 +114,13 @@
 						</span>
 					</div>
 				</div>
-				<div class="form__field">	
+				<div class="form__field form__field--double">	
+                    <div>
+                        <label>Numéro du ticket</label>
+                        <span class="data">
+							<input type='text' class='disabled' value='{{ entity_bon.numeroBA}}'>
+                        </span>
+                    </div>
 					<div>
             	        <label>Affaire</label>
             	        <span class="data">
@@ -126,6 +132,21 @@
 						</span>
 					</div>
 				</div>
+
+
+                <div class="form__field">
+                    <div>
+                        <label>Service</label>
+                        <span class="data">
+                            {% if is_granted('ROLE_SAISIE_BA') %}
+                                {{ form_widget(form_modification.service) }}
+                            {% else %}
+                                {{ entity_bon.service }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
 
             	<div class="form__field form__field--double">
             	    <div>
@@ -159,41 +180,23 @@
 					<div>
 						<label>Date d'initialisation</label>
                             {% if is_granted('ROLE_SAISIE_BA') %}
-                                {{ form_widget(form_modification.dateInitialisation) }}
+                                {{ form_widget(form_modification.dateDebutIntervention) }}
                             {% else %}
-                                {{ entity_bon.dateInitialisation | date('d/m/Y') }}
+                                <input type='text' class='disabled' value="{{ entity_bon.dateDebutIntervention | date('d/m/Y H:i') }}" />
                             {% endif %}
 					</div>
+
+                    <div>
+                        <label>Date de clôture</label>
+                            {% if is_granted('ROLE_SAISIE_BA') or (app.user == entity_bon.user) %}
+                                {{ form_widget(form_modification.dateFinIntervention) }}
+                            {% else %}
+                                <input type='text' class='disabled' value="{{ entity_bon.dateFinIntervention | date('d/m/Y H:i') }}" />
+                            {% endif %}
+                    </div>
 				</div>
             </fieldset>
 
-
-			<fieldset class="fieldset">
-				<h2 class="fieldset__title">Planning</h2>
-				<div class="form__field form__field--double">
-					<div>
-						<label>Du</label>
-                        <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
-								{{ form_widget(form_modification.dateDebutIntervention) }}
-                            {% else %}
-                                {{ entity_bon.dateDebutIntervention | date('d/m/Y') }}
-                            {% endif %}
-                        </span>
-					</div>
-
-					<div>
-						<label>Au</label>
-                        <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
-								{{ form_widget(form_modification.dateFinIntervention) }}
-                            {% else %}
-                                {{ entity_bon.dateFinIntervention | date('d/m/Y') }}
-                            {% endif %}
-                        </span>
-					</div>
-				</div>
-			</fieldset>
 
 			<fieldset class="fieldset">
 				<h2 class="fieldset__title">Site</h2>
@@ -217,11 +220,11 @@
 				<div class="form__field">
 					<label>Nom Contact</label>
                     <span class="data">
-                        {% if is_granted('ROLE_SAISIE_BA') %}
+						{% if is_granted('ROLE_SAISIE_BA') %}
 							{{ form_widget(form_modification.nomDuContact) }}
-                        {% else %}
-                            {{ entity_bon.nomDuContact }}
-                        {% endif %}
+						{% else %}
+                    	    <input type='text' class='disabled' value="{{ entity_bon.nomDuContact }}" />
+						{% endif %}
                     </span>
 				</div>
 
@@ -229,11 +232,11 @@
 					<div>
 						<label>Email</label>
                        	<span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+							{% if is_granted('ROLE_SAISIE_BA') %}
 								{{ form_widget(form_modification.emailContactClient) }}
-                            {% else %}
-                                {{ entity_bon.emailContactClient }}
-                            {% endif %}
+							{% else %}
+								<input type='text' class='disabled' value="{{ entity_bon.emailContactClient }}" />
+                        	{% endif %}
                         </span>
 					</div>
 
@@ -241,10 +244,10 @@
 						<label>Téléphone</label>
                         <span class="data">
                             {% if is_granted('ROLE_SAISIE_BA') %}
-                                {{ form_widget(form_modification.telephoneContactClient) }}
+                               {{ form_widget(form_modification.telephoneContactClient) }} 
                             {% else %}
-                                {{ entity_bon.telephoneContactClient }}
-                            {% endif %}
+                            	<input type='text' class='disabled' value="{{ entity_bon.telephoneContactClient }}" />
+							{% endif %}
                         </span>
 					</div>
 				</div>
@@ -309,11 +312,6 @@
                         <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
                     </div>
                 </div>
-                <div class="content__btn">
-                    <div id="js-btn-file" class="main-box__btn--disabled">
-                        <button class="btn btn--main" onclick="attente(); document.forms['myFormFichiers'].submit(); return false;">Enregistrer</button>
-                    </div>
-                </div>
             </fieldset>
 
             <fieldset class="fieldset">
@@ -341,7 +339,6 @@
 	<section class='cacher'>
 		{{ form_rest(form_modification) }}
 	</section>
-
 	{{ form_end(form_modification) }}
 
 
@@ -424,6 +421,22 @@
 	            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 	    	</div>
 		</fieldset>
+
+
+
+        <div class="content__btn">
+            <button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
+            {# Si le bon à un intervenant de définit : L'intervenant peut ouvrir le bon #}
+            {% if entity_bon.user %}
+                {% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                    <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+                {% endif %}
+            {% else %}
+                {% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                    <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
+                {% endif %}
+            {% endif %}
+        </div>
 </main>
 
 
@@ -458,21 +471,61 @@
 
 <script type='text/javascript'>
 
-    function attendreRechargement()
-    {
-        $('*').addClass('cursor--wait');
-    }
 
-    function finAttendreRechargement()
-    {
-        $('*').removeClass('cursor--wait');
-    }
+    var $page_html = "{{ page }}";
+    var $indexFichier = 1;
+    var $indexFichierSiteBA = 1;
+    var $indexContactSiteBA = 1;
+    var $container_fichiers_bon;
+    var $container_fichiers_site;
+    var $container_contacts_site;
+    var $tab_contact = new Array();
+    var id_lien_fichiersPdf, id_select_intervenant, id_select_service,  id_select_site, id_champs_nouveau_id_site, id_champs_nouveau_nom_site, id_champs_nouveau_type, id_champs_nom_du_contact, id_champs_tel_du_contact, id_champs_mail_du_contact;
 
+
+
+    if ($page_html == 'ticket')
+    {
+        // Récupération du container des fichiers des bons
+        $container_fichiers_bon     = $('#ticket_incident_modification_fichiersPdf');
+        // id du lien 'Parcourir' pour afficher la fenetre de recherche du fichier
+        id_lien_fichiersPdf         = 'ticket_incident_modification_fichiersPdf';
+        // id du select intervenant
+        id_select_intervenant       = 'ticket_incident_modification_user';
+        // id du select site
+        id_select_site              = 'ticket_incident_modification_site';
+        // id du champs id d'un nouveau site
+        id_champs_nouveau_id_site   = 'ticket_incident_modification_idNouveau';
+        // id du nom d'un site qui vient d'être crée
+        id_champs_nouveau_nom_site  = 'ticket_incident_modification_siteNouveau';
+        // id du type (bon ou ticket)
+        id_champs_nouveau_type      = 'ticket_incident_modification_typeNouveau';
+
+        id_champs_nom_du_contact    = 'ticket_incident_modification_nomDuContact';
+        id_champs_tel_du_contact    = 'ticket_incident_modification_telephoneContactClient';
+        id_champs_mail_du_contact   = 'ticket_incident_modification_emailContactClient';
+
+        // id du select service
+        id_select_service           = 'ticket_incident_modification_service';
+    } else if ($page_html == 'bon')
+    {
+        $container_fichiers_bon     = $('#bons_attachement_fichiersPdf');
+        id_lien_fichiersPdf         = 'bons_attachement_modification_fichiersPdf';
+        id_select_intervenant       = 'bons_attachement_modification_user';
+        id_select_site              = 'bons_attachement_modification_site';
+        id_champs_nouveau_id_site   = 'bons_attachement_modification_idNouveau';
+        id_champs_nouveau_nom_site  = 'bons_attachement_modification_siteNouveau';
+        id_champs_nouveau_type      = 'bons_attachement_modification_typeNouveau';
+        id_champs_nom_du_contact    = 'bons_attachement_modification_nomDuContact';
+        id_champs_tel_du_contact    = 'bons_attachement_modification_telephoneContactClient';
+        id_champs_mail_du_contact   = 'bons_attachement_modification_emailContactClient';
+        id_select_service           = 'bons_attachement_modification_service';
+    }
 
 
 
 	// Affichage de la map du site avec le marqueur
-    function initAutocomplete()
+    function initAutocompleteVisu()
     {
 
             if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))
@@ -724,7 +777,6 @@
         	    }
         	});
     	});
-
 
 		setDatePicker();
 	});	
@@ -1006,9 +1058,10 @@
 </script>
 
 {# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
+{% include "bons_et_tickets/fonction_bons_et_tickets.js" %}
 {% include "Equipements/fonction_equipements.js" %}
 
-<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
+<script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocompleteVisu">
 </script>
 
 {% endblock javascript %}

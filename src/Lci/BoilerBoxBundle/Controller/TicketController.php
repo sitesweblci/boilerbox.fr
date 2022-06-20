@@ -582,7 +582,8 @@ class TicketController extends Controller
 			'latitude'					=> $this->getLatLng('latitude', $e_ticket->getSite()->getLienGoogle()),
 			'longitude'					=> $this->getLatLng('longitude', $e_ticket->getSite()->getLienGoogle()),
 			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
-			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
+			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur(),
+			'page'						=> 'ticket'
         ));
     }
 

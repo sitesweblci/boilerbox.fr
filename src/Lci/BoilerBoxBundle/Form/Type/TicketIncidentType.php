@@ -72,7 +72,7 @@ class TicketIncidentType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-				'class'			=> 'centrer',
+				'class'			=> 'disabled',
 				'disabled'		=> 'disabled'
             )
         ))
@@ -132,7 +132,7 @@ class TicketIncidentType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer',
+                'class'         => 'disabled',
                 'disabled'      => 'disabled'
             ),
 			'required'		=> false
@@ -147,7 +147,7 @@ class TicketIncidentType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer',
+                'class'         => 'disabled',
                 'disabled'      => 'disabled'
             ),
             'required'      => false
