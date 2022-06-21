@@ -91,7 +91,8 @@ class BonsAttachementType extends AbstractType {
 			'required' 		=> true,
             'trim' 			=> true,
             'attr' 			=> array(
-				'class' 		=> 'biginput upper ',
+				'placeholder'	=> '(C | D | G | V | PL | PC | SAL | SAC | COL |  COC)XXX',
+				'class' 		=> 'biginput upper uppercase',
 				'maxlength' 	=> 7
             )
         ))

@@ -94,7 +94,7 @@ class TicketIncidentType extends AbstractType {
 			'required' 		=> true,
             'trim' 			=> true,
             'attr' 			=> array(
-				'class' 		=> 'biginput upper centrer',
+				'class' 		=> 'biginput upper centrer uppercase',
 				'maxlength' 	=> 7
             )
         ))

@@ -388,6 +388,8 @@
 
     function checkValidationBeforeSend()
     {
+		resetCheck();
+
         var $send_form = true;
 
         // On vérifie la selection d'un site
@@ -395,7 +397,9 @@
         {
             $('#' + id_select_site).addClass('erreur_formulaire');
             $send_form = false;
-        }
+        } else {
+			
+		}
 
         // On vérifie l'ajout du numero d'affaire
         if ($('#' + id_text_numeroAffaire).val() === '')
@@ -425,7 +429,7 @@
        	 	if ($is_ok == null)
         	{
 				$('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
-//				$('#' + id_text_numeroAffaire).val('Formats acceptés : CXXX, DXXX, GXXX, VXXX, PLXXX, PCXXX, SALXXX, SACXXX, COLXXX, COCXXX').toLowerCase();
+			//	$('#' + id_text_numeroAffaire).val('Formats acceptés : CXXX, DXXX, GXXX, VXXX, PLXXX, PCXXX, SALXXX, SACXXX, COLXXX, COCXXX').toLowerCase();
             	$send_form = false;
 			} 
 				
@@ -468,10 +472,10 @@
     function resetCheck()
     {
         $('#' + id_select_site).removeClass('erreur_formulaire');
-        $('#ticket_incident_numeroAffaire').removeClass('erreur_formulaire');
+        $('#' + id_text_numeroAffaire).removeClass('erreur_formulaire');
         $('#select_contact').removeClass('erreur_formulaire');
-        $('#ticket_incident_emailContactClient').removeClass('erreur_formulaire');
-        $('#ticket_incident_telephoneContactClient').removeClass('erreur_formulaire');
+        $('#' + id_champs_mail_du_contact).removeClass('erreur_formulaire');
+        $('#' + id_champs_tel_du_contact).removeClass('erreur_formulaire');
         $('#ticket_incident_motif').removeClass('erreur_formulaire');
     }
 
