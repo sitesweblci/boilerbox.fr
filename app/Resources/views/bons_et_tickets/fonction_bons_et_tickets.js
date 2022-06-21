@@ -402,7 +402,34 @@
         {
             $('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
             $send_form = false;
-        }
+        } else {
+            /*
+                Valeures acceptées
+            	CXXX
+            	DXXX
+            	VXXX
+            	PLXXX
+            	PCXXX
+            	SALXXX
+            	SACXXX
+            	COLXXX
+            	COCXXX
+            	GXXX
+            */
+			// Mise en majuscule de l'affaire 
+			var $tmp_numero_affaire = $('#' + id_text_numeroAffaire).val().toUpperCase();
+			$('#' + id_text_numeroAffaire).val($tmp_numero_affaire);
+
+			// Vérification des caractères autorisés
+			var $is_ok =  $tmp_numero_affaire.match(/^([CDGV]|PL|PC|SAL|SAC|COL|COC)\d\d\d$/);
+       	 	if ($is_ok == null)
+        	{
+				$('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
+//				$('#' + id_text_numeroAffaire).val('Formats acceptés : CXXX, DXXX, GXXX, VXXX, PLXXX, PCXXX, SALXXX, SACXXX, COLXXX, COCXXX').toLowerCase();
+            	$send_form = false;
+			} 
+				
+		}
 
         // On vérifie la selection d'un contact
         if ($('#select_contact').val() === '')
