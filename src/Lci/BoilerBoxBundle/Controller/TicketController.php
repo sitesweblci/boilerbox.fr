@@ -61,6 +61,7 @@ class TicketController extends Controller
 
     public function saisieAction(Request $request)
     {
+		date_default_timezone_set('Europe/Paris');
 		$numero_de_ticket						= null;
         $em 									= $this->getDoctrine()->getManager();
         $max_upload_size 						= ini_get('upload_max_filesize');
@@ -77,6 +78,10 @@ class TicketController extends Controller
 
         // Création de l'entité du ticket + Récupération de l'utilisateur courant pour en définir l'initiateur
         $e_ticket 		= new BonsAttachement();
+        $e_ticket->setDateInitialisation(new \Datetime());
+        $e_ticket->setDateDebutIntervention(new \Datetime());
+
+
 		$e_user_courant = $this->get('security.token_storage')->getToken()->getUser();
         $e_ticket->setUserInitiateur($e_user_courant);
 
@@ -157,8 +162,6 @@ class TicketController extends Controller
 						// On défini le type pour distinguer ticket d'un bon
 						$e_ticket->setType('ticket');
 						$e_ticket->setTypeIntervention('Incident');
-						$e_ticket->setDateInitialisation(new \Datetime());
-						$e_ticket->setDateDebutIntervention(new \Datetime());
 
 						// Le numero du ticket s'incremente automatiquement
 						// 	recherche du dernier numéro de ticket en base
@@ -346,8 +349,8 @@ class TicketController extends Controller
                     	            foreach ($_POST['site_ba']['contacts'] as $tab_contact) 
 									{
                     	                $ent_contact = new Contact();
-                    	                $ent_contact->setNom($tab_contact['nom']);
-                    	                $ent_contact->setPrenom($tab_contact['prenom']);
+                    	                $ent_contact->setNom(strtoupper($tab_contact['nom']));
+                                        $ent_contact->setPrenom($service_utilitaire->capitalizeFirstLetter($tab_contact['prenom']));
                     	                $ent_contact->setTelephone($tab_contact['telephone']);
                     	                $ent_contact->setMail($tab_contact['mail']);
                     	                $ent_contact->setFonction($tab_contact['fonction']);
@@ -579,7 +582,8 @@ class TicketController extends Controller
 			'latitude'					=> $this->getLatLng('latitude', $e_ticket->getSite()->getLienGoogle()),
 			'longitude'					=> $this->getLatLng('longitude', $e_ticket->getSite()->getLienGoogle()),
 			'apiKey'                    => $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur(),
-			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur()
+			'zoomApi'           		=> $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('zoom_api')->getValeur(),
+			'page'						=> 'ticket'
         ));
     }
 

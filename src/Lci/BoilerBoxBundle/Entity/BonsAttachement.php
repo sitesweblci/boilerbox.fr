@@ -182,6 +182,18 @@ class BonsAttachement {
     */
     protected $validationFacturation;
 
+    /**
+     *
+     * @ORM\OneToOne(targetEntity="Validation", cascade={"persist", "remove"})
+    */
+    protected $validationIntervention;
+
+    /**
+     *
+     * @ORM\OneToOne(targetEntity="Validation", cascade={"persist", "remove"})
+    */
+    protected $validationCloture;
+
 
 
 	/**
@@ -640,6 +652,56 @@ class BonsAttachement {
     {
         return $this->validationFacturation;
     }
+
+
+    /**
+     * Set validationIntervention
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\Validation $validationIntervention
+     * @return BonsAttachement
+     */
+    public function setValidationIntervention(\Lci\BoilerBoxBundle\Entity\Validation $validationIntervention = null)
+    {
+        $this->validationIntervention = $validationIntervention;
+
+        return $this;
+    }
+
+    /**
+     * Get validationIntervention
+     *
+     * @return \Lci\BoilerBoxBundle\Entity\Validation
+     */
+    public function getValidationIntervention()
+    {
+        return $this->validationIntervention;
+    }
+
+
+
+    /**
+     * Set validationCloture
+     *
+     * @param \Lci\BoilerBoxBundle\Entity\Validation $validationCloture
+     * @return BonsAttachement
+     */
+    public function setValidationCloture(\Lci\BoilerBoxBundle\Entity\Validation $validationCloture= null)
+    {
+        $this->validationCloture = $validationCloture;
+
+        return $this;
+    }
+
+    /**
+     * Get validationCloture
+     *
+     * @return \Lci\BoilerBoxBundle\Entity\Validation
+     */
+    public function getValidationCloture()
+    {
+        return $this->validationCloture;
+    }
+
 
     /**
      * Set nomDuClient

@@ -4,5 +4,7 @@ saisie_ticket:
 affiche_ticket:
     path: /affiche
     defaults: { _controller: LciBoilerBoxBundle:Ticket:afficherUnTicket }
-
+envoi_mail_cloture:
+    path: /envoi_mail_cloture
+    defaults: { _controller: LciBoilerBoxBundle:AjaxTicket:envoiMailCloture }
 

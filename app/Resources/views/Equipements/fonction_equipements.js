@@ -163,6 +163,10 @@ $(document).ready(function()
     function creerModifierEquipement($type_action, $id_equipement=null)
     {
 		var $data_a_envoyer = $id_equipement;
+
+        // On s'assure que la dénomination et autre Dénomination sont en capitalize
+		gestionCaracteresEquipement();
+
 		if ($id_equipement == null)
 		{
 			$data_a_envoyer = $('form[name="equipement_ba_ticket"]').serialize()
@@ -312,6 +316,14 @@ $(document).ready(function()
             $('#parent_' + id_div).append(div_tmp);
 			$('#tr_equipement_' + id_checkbox).remove();
         }
+
+		// Si des équipements sont selectionnés on supprime l'indication Equipement(s) non défini(s)
+		if ($('#table_des_equipements tbody').html() != '')
+		{
+			$('p#infos_equipements').text('');	
+		} else {
+			$('p#infos_equipements').text('Equipement(s) non défini(s)');
+		}
     }
 
 
@@ -364,9 +376,10 @@ $(document).ready(function()
 
         if ($send_form == true)
         {
-			// On s'assure que la dénomination et autre Dénomination sont en capitalize
-			$('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
-			$('#equipement_ba_ticket_autreDenomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_autreDenomination').val()));
+
+			
+        	// On s'assure que la dénomination et autre Dénomination sont en capitalize
+        	gestionCaracteresEquipement();
 
             attendreRechargement();
 
@@ -524,43 +537,15 @@ $(document).ready(function()
 		}
 	}
 
-
-
-	function dateTransformeFromEntiteSerializedForPicker(str_date)
-    {
-        var new_ch = str_date.substr(0,10);
-        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
-        return new_ch2;
-    }
-	function dateTransformeFromEntiteSerialized(str_date)
-    {
-        var new_ch = str_date.substr(0,10);
-        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$1/$2/$3");
-        return new_ch2;
-    }
-
-
-
-	function dateTransformeEntiteSerialise(str_date)
-	{	
-		var new_ch = str_date.substr(0,10);
-		var new_ch2 = new_ch.replace(/..(..)-(..)-(..)/,"$3/$2/$1");
-		return new_ch2;
-	}
-
-
-	function dateReverseForPicker(date_enter)
+	function gestionCaracteresEquipement()
 	{
-		var new_ch2 = date_enter.replace(/(....)\/(..)\/(..)/,"$3/$2/$1");
-        return new_ch2;
-	}
 
-	function capitalizeFirstLetter(string) {
-		var string_sortie = '';
-		var tab_string = string.split(/(\s+)/);
-		$.each(tab_string, function(e){
-			string_sortie += tab_string[e].charAt(0).toUpperCase() + tab_string[e].slice(1).toLowerCase();
-		});	
-  		return string_sortie;
+        // On s'assure que la dénomination et autre Dénomination sont en capitalize
+		/*
+        $('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
+        $('#equipement_ba_ticket_autreDenomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_autreDenomination').val()));
+		*/
+		$('#equipement_ba_ticket_denomination').val(capitalize($('#equipement_ba_ticket_denomination').val().toLowerCase()));
+		$('#equipement_ba_ticket_autreDenomination').val(capitalize($('#equipement_ba_ticket_autreDenomination').val().toLowerCase()));
 	}
 </script>

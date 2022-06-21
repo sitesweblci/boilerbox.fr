@@ -48,7 +48,7 @@ class TicketIncidentType extends AbstractType {
         ))
         ->add('user', EntityType::class, array (
             'class'           => 'LciBoilerBoxBundle:User',
-            'required'        => true,
+            //'required'        => true,
             'label'           => 'Intervenant',
             'label_attr'      => array ('class' => 'label_smalltext'),
 			'choice_label'    => 'label',
@@ -60,23 +60,22 @@ class TicketIncidentType extends AbstractType {
 					->setParameter('enabled', true)
 					->orderBy('u.label', 'ASC');
 			},
-			'placeholder'		=> "Choix de l'intervenant"
+			'placeholder'		=> "A définir"
         ))
-/*
         ->add('dateInitialisation', DateType::class, array(
             'label'         => 'Date d\'initialisation',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-				'class'			=> 'centrer'
-            )
+				'class'			=> 'disabled',
+            ),
+			'required'      => false
         ))
-*/
 /*
 		->add('numeroBA', TextType::class, array(
 			'label' 		=> 'Numéro du bon',
@@ -111,36 +110,46 @@ class TicketIncidentType extends AbstractType {
 			'required'		=> true,
             'label_attr'    => array ('class' => 'label_smalltext'),
         ))
-/*
+
+        ->add('service', ChoiceType::class, array(
+            'label'         => 'Service',
+            'placeholder'   => 'Tous',
+            'choices'       => [
+                'Bosch'     => 'bosch',
+                'Certus'    => 'certus',
+                'Export'    => 'export'
+            ],
+            'required' => false
+        ))
+
         ->add('dateDebutIntervention', DateType::class, array(
-            'label'         => 'Date de début d\'intervention',
+            'label'         => 'Date d\'initialisation',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => 'disabled',
             ),
 			'required'		=> false
         ))
         ->add('dateFinIntervention', DateType::class, array(
-            'label'         => 'Date de fin d\'intervention',
+            'label'         => 'Date de clôture',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-                'class'         => 'centrer'
+                'class'         => 'disabled',
             ),
             'required'      => false
         ))
-*/
 		->add('nomDuContact', TextType::class, array(
 			'label'			=> 'Nom du contact',
 			'label_attr'    => array ('class' => 'label_smalltext'),

@@ -359,7 +359,8 @@
                     {
                         if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
                         {
-                            $(this).addClass('cacher');
+                            $(this).prop('disabled', 'disabled');
+							$(this).addClass('disabled');
                         } else {
                             // On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
                             // Si oui on le reselectionnera
@@ -516,8 +517,9 @@
     {
         var $send_form = true;
 
+		gestionCaracteresContact();
 
-        // Vérification des chmaps du contact
+        // Vérification des champs du contact
         if($('#contact_nom').val() === '')
         {
             $('#contact_nom').addClass('erreur_formulaire');
@@ -534,6 +536,7 @@
             $('#contact_fonction').addClass('erreur_formulaire');
             $send_form = false;
         }
+		
 
         // Si la vérification est ok (pas de champs obligatoire vides) : Envoi du formulaire
         if ($send_form === true)
@@ -784,5 +787,16 @@
             $(this).parents(".search-bar").removeClass("search-bar--focus");
         }
     });
+
+
+
+
+    function gestionCaracteresContact()
+    {
+		$('#contact_nom').val($('#contact_nom').val().toUpperCase());
+        $('#contact_prenom').val(capitalize($('#contact_prenom').val().toLowerCase()));
+        $('#contact_fonction').val(capitalize($('#contact_fonction').val().toLowerCase()));
+    }
+
 
 </script>

@@ -246,4 +246,35 @@ protected $url_boilerbox;
         return (0);
     }
 
+
+
+
+
+
+
+
+
+    // Mail de cloture de ticket envoyé au Client
+    public function sendMailClotureTicketIncident($nom_site, $code_affaire, $numero_ticket, $label_technicien, $nom_client, $email_client, $commentaire)
+    {
+        $message = \Swift_Message::newInstance()
+                ->setSubject("Cloture du ticket d'incident $numero_ticket pour l'affaire $code_affaire ( $nom_site )")
+                ->setFrom('Assistance_IBC@lci-group.fr')
+                ->setTo([$email_client]);
+        $image_link = $message->embed(\Swift_Image::fromPath($this->logo));
+        $message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_cloture_ticket.html.twig', array('nom_site' => $nom_site, 'code_affaire' => $code_affaire, 'numero_ticket' => $numero_ticket, 'label_technicien' => $label_technicien, 'commentaire' => $commentaire,   'image_link' => $image_link)));
+
+
+        $message->setContentType('text/html');
+        $nb_delivery = $this->mailer->send($message);
+        if ($nb_delivery == 0) {
+            $this->log->setLog("[ERROR] [MAIL];Echec de l'envoi de l'email : [Offre de pièce BA] à $email_client", $this->fichier_log);
+            return(1);
+        } else {
+            $this->log->setLog("[MAIL];Mail d'offre de pièce envoyé à $email_client", $this->fichier_log);
+            return(0);
+        }
+    }
+
+
 }

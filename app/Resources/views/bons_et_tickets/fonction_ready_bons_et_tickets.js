@@ -1,23 +1,7 @@
 <script 'type=text/javascript'>
-
     $(document).ready(function()
     {
         attendreRechargement();
-
-        /* Mise en place de l'objet datepicker avec 2 mois affichés */
-        $.datepicker.setDefaults({
-            numberOfMonths: 1,
-            dateFormat: 'dd/mm/yy',
-            showWeek: true,
-            gotoCurrent: true,
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-            maxDate: '+2Y'
-        });
-
-        setDatePicker();
-		
 
         // Récupération du container des fichiers des SitesBA
         $container_fichiers_site = $('#encart_fichiers_siteBA'); //$('#site_ba_fichiersJoint');
@@ -261,7 +245,6 @@
             }
         });
 
-
         /* Lors du clic sur reset on réautorise l'écriture du nom du site et on supprime la valeur de l'identifiant du site  pour éviter une mise à jour */
         $('#site_ba_reset').click(function()
         {
@@ -364,11 +347,14 @@
             $('#' + id_champs_mail_du_contact).val(save_mail_contact);
         {% endif %}
 
-
         // Si la création d'un équipement est en erreur : affichage du formulaire
-        {% if echec_creation_equipement == true %}
-            $('#btn_ajout_equipement2').trigger('click');
-        {% endif %}
+       	{% if echec_creation_equipement == true %}
+       	    $('#btn_ajout_equipement2').trigger('click');
+       	{% endif %}
+
+		// Se trouve dans la fonction setDatePicker
+		$("input[placeholder='dd/mm/YYYY']").datepicker();
+        setDatePicker();
     });
 
 </script>

@@ -23,20 +23,35 @@ class TicketIncidentModificationType extends BaseType {
 	{
 		parent::buildForm($builder, $options);
 		$builder
-		->remove('service')
 		->remove('typeIntervention')	
 		->remove('dateSignature')
+		->remove('dateDebutIntervention')
+		->remove('dateFinIntervention')
+		->remove('dateInitialisation')
+		->add('dateDebutIntervention', DateType::class, array(
+            'label'         => 'Date d\'initialisation',
+            'label_attr'    => array ('class' => 'label_smalltext'),
+            'widget'        => 'single_text',
+            'html5'         => false,
+            'format'        => 'dd/MM/yyyy HH:mm',
+            'invalid_message' => 'Format de la date incorrect.',
+            'attr'          => array(
+                'placeholder'   => 'dd/mm/YYYY',
+                'maxlength'     => 10,
+                'class'         => 'disabled'
+            ),
+            'required'      => false
+        ))
         ->add('dateFinIntervention', DateType::class, array(
             'label'         => 'Date de fin d\'intervention',
             'label_attr'    => array ('class' => 'label_smalltext'),
             'widget'        => 'single_text',
             'html5'         => false,
-            'format'        => 'dd/MM/yyyy',
+            'format'        => 'dd/MM/yyyy HH:mm',
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
-                'maxlength'     => 10,
-                'class'         => 'centrer'
+                'maxlength'     => 10
             ),
             'required'      => false
         ));

@@ -129,3 +129,51 @@ function getTodayDate()
 }
 
 
+
+
+    function dateTransformeFromEntiteSerializedForPicker(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
+        return new_ch2;
+    }
+    function dateTransformeFromEntiteSerialized(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$1/$2/$3");
+        return new_ch2;
+    }
+
+
+
+    function dateTransformeEntiteSerialise(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/..(..)-(..)-(..)/,"$3/$2/$1");
+        return new_ch2;
+    }
+
+
+    function dateReverseForPicker(date_enter)
+    {
+        var new_ch2 = date_enter.replace(/(....)\/(..)\/(..)/,"$3/$2/$1");
+        return new_ch2;
+    }
+
+    function capitalizeFirstLetter(string) {
+        var string_sortie = '';
+        var tab_string = string.split(/(\s+)/);
+        $.each(tab_string, function(e){
+            string_sortie += tab_string[e].charAt(0).toUpperCase() + tab_string[e].slice(1).toLowerCase();
+        });
+        return string_sortie;
+    }
+
+    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
+    function setDatePicker()
+    {
+        alert('set datepicker');
+        $("input[placeholder='dd/mm/YYYY']").datepicker();
+    }
+
+

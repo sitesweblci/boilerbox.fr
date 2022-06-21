@@ -37,6 +37,8 @@ class AjaxBonsController extends Controller
     // Fonction qui effectue la validation ou la suppression d'une ancienne validation d'une catégorie d'un bon
     public function setValidationAction()
     {
+		date_default_timezone_set('Europe/Paris');
+
 		$em 		= $this->getDoctrine()->getManager();
         $idBon 		= $_POST['identifiant'];
         $type 		= $_POST['type'];
@@ -81,6 +83,14 @@ class AjaxBonsController extends Controller
 					$entity_validation = $entity_bon->getValidationFacturation();
                     $entities_users_validation = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_FACTURATION');
                     break;
+				case 'intervention':
+                    $entity_validation          = $entity_bon->getValidationIntervention();
+                    $entities_users_validation  = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
+                    break;
+                case 'cloture':
+                    $entity_validation          = $entity_bon->getValidationCloture();
+                    $entities_users_validation  = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
+                    break;
                 default:
                     break;
             }
@@ -101,15 +111,54 @@ class AjaxBonsController extends Controller
             	$this->sendMailDevalidation($titre_titre_pour_mail, $entity_bon->getSite()->getIntitule(), $entity_bon->getNumeroAffaire(), $entity_bon->getNumeroBA(), $entities_users_validation, $e_user_actif, $entity_user_emetteur_du_bon);
 			}
         } else {
+			// Si l'entité existe on la récupère sinon on l'a créée	
             // Une Validation sur un bon d'intervention est effectuée
-            $entity_validation = new Validation();
+
+			$entity_validation = null;
+            switch ($type) {
+                case 'technique':
+                    $entity_validation = $entity_bon->getValidationTechnique();
+                    break;
+                case 'sav':
+					$entity_validation = $entity_bon->getValidationSAV();
+                    break;
+                case 'pieces':
+					$entity_validation = $entity_bon->getValidationPiece();
+                    break;
+                case 'pieces_faite':
+					$entity_validation = $entity_bon->getValidationPieceFaite();
+                    break;
+                case 'facturation':
+                    $entity_validation = $entity_bon->getValidationFacturation();
+                    break;
+                case 'intervention':
+                    $entity_validation = $entity_bon->getValidationIntervention();
+                    break;
+                case 'cloture':
+                    $entity_validation = $entity_bon->getValidationCloture();
+                    break;
+                default:
+                    break;
+            }
+
+			if ($entity_validation == null)
+			{
+            	$entity_validation = new Validation();
+			} 
             $entity_validation->setValide(true)
                 ->setDateDeValidation(new \Datetime())
                 ->setType($type)
                 ->setUser($e_user_actif)
             ;
+
+
             switch ($type) {
                 case 'technique':
+					if ($entity_bon->getValidationTechnique() != null)
+					{
+						$entity_validation = $entity_bon->getValidationTechnique();
+						
+					}
                     $entity_bon->setValidationTechnique($entity_validation);
                     break;
                 case 'sav':
@@ -137,6 +186,12 @@ class AjaxBonsController extends Controller
                 case 'facturation':
                     $entity_bon->setValidationFacturation($entity_validation);
                     break;
+                case 'intervention':
+                    $entity_bon->setValidationIntervention($entity_validation);
+                    break;
+                case 'cloture':
+                    $entity_bon->setValidationCloture($entity_validation);
+                    break;
                 default:
                     break;
             }
@@ -149,6 +204,8 @@ class AjaxBonsController extends Controller
     // Fonction qui enregistre les informations de dévalidation
     private function devalidation($entity_validation, $entity_user)
     {
+		date_default_timezone_set('Europe/Paris');
+
         $entity_validation->setValide(false);
         $entity_validation->setDateDeValidation(new \Datetime());
         $entity_validation->setUser($entity_user);
@@ -467,6 +524,8 @@ class AjaxBonsController extends Controller
 	// Gestion des CONTACTS	************************************
     public function creerContactsSitesBAAction(Request $request)
     {
+		date_default_timezone_set('Europe/Paris'); 
+
         $em         = $this->getDoctrine()->getManager();
         $e_contact  = new Contact();
         $f_contact  = $this->createForm(ContactType::class, $e_contact);
@@ -523,6 +582,8 @@ class AjaxBonsController extends Controller
 
     public function modifierContactAction()
     {
+		date_default_timezone_set('Europe/Paris'); 
+
         $em = $this->getDoctrine()->getManager();
 
         if (isset($_POST['id_contact_modif']))

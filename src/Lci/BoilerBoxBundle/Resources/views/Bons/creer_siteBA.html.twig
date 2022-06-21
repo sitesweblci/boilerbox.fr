@@ -187,8 +187,15 @@
 
 		if (send_form_site == true) 
 		{
+			gestionCaracteresSiteBA();
 			attendreRechargement();
 			document.forms['site_ba'].submit(); 
 		}
 	}
+
+    function gestionCaracteresSiteBA()
+    {
+		$('#site_ba_intitule').val($('#site_ba_intitule').val().toUpperCase());
+    }
+
 </script>
