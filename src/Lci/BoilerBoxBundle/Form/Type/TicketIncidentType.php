@@ -73,8 +73,8 @@ class TicketIncidentType extends AbstractType {
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
 				'class'			=> 'disabled',
-				'disabled'		=> 'disabled'
-            )
+            ),
+			'required'      => false
         ))
 /*
 		->add('numeroBA', TextType::class, array(
@@ -133,7 +133,6 @@ class TicketIncidentType extends AbstractType {
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
                 'class'         => 'disabled',
-                'disabled'      => 'disabled'
             ),
 			'required'		=> false
         ))
@@ -148,7 +147,6 @@ class TicketIncidentType extends AbstractType {
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
                 'class'         => 'disabled',
-                'disabled'      => 'disabled'
             ),
             'required'      => false
         ))

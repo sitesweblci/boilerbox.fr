@@ -796,8 +796,21 @@
         var texte = $('#consignesClientCloture').val();
         if (texte != '')
         {
-			ajoutCommentaire(texte);
-			// ICI DEV Envoyer le mail au client
+			// Envoi du mail de cloture au client
+			$.ajax({
+				url: "{{ path('envoi_mail_cloture') }}",
+				data:  {'id_entity':$idBon, 'commentaire':texte},
+				method: "POST",
+				success: function(msg)
+				{
+					console.log('envoi du mail de cloture effectué');
+					console.log(msg);
+					ajoutCommentaire(texte);
+				},
+				error: function(){
+					alert("Echec de l'envoi du mail client de cloture incident");
+				}
+			});
         } else {
             $('#avertissementConsignesCloture').text("Merci d'indiquer les informations client de cloture");
 			return 1;
