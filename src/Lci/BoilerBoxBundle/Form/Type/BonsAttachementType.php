@@ -86,7 +86,7 @@ class BonsAttachementType extends AbstractType {
 		))
 */
 		->add('numeroAffaire', TextType::class, array(
-            'label' 		=> 'Numéro d\'affaire',
+            'label' 		=> 'Affectation comptable',
 			'label_attr'    => array ('class' => 'label_smalltext'),
 			'required' 		=> true,
             'trim' 			=> true,

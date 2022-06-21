@@ -267,9 +267,9 @@
                     <thead class="flex-table__thead">
                         <tr class="flex-table__row">
                             {% if is_granted('ROLE_SAISIE_BA') %}
-                                <th class='small txt--center'>Archiver</th>
+                                <th class='{# small #}'>Archiver</th>
                             {% endif %}
-                            <th class='wide'>Nom</th>
+                            <th class='{# wide #}'>Nom</th>
                         </tr>
                     </thead>
                     <tbody id='table_des_fichiers' class="flex-table__tbody scroll">
@@ -277,7 +277,7 @@
                             <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
                             {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
                                 {% if is_granted('ROLE_SAISIE_BA') %}
-                                    <td class='small txt--center'>
+                                    <td class='{# small #}'>
                                         <img id="image_{{ fichier.id }}"
                                             {% if fichier.archive == false %}
                                                 src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}"
@@ -288,7 +288,7 @@
                                         />
                                     </td>
                                 {% endif %}
-                                <td class='wide selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
+                                <td class='{# wide #} selectionnable' onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');">
                                     <a id="{{ fichier.bonAttachement.id }}_{{ fichier.id }}" class='btn-disable'
                                         href="{{ asset(prefix_image ~ '/uploads/bonsAttachement/fichiersDesBons/' ~ fichier.bonAttachement.id ~ '_' ~  fichier.url) }}" download='{{ fichier.alt }}' onClick="definirNomFichier(this.id, this.download);">
                                             {{ fichier.alt }} {% if fichier.informations is not null %}<br /><span class='informations_archivage'>{{ fichier.informations }}</span>{% endif %}
@@ -298,7 +298,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div id='formulaire_bons_fichiers' class='main-box__content main-box__content--padding' style="margin-top:16px;">
+                <div id='formulaire_bons_fichiers' style="margin-top:16px;">
                     <div>
                         <span id='lien_ajout_fichier'></span>
                         <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
