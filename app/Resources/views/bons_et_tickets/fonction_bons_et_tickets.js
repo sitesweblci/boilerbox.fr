@@ -398,9 +398,9 @@
         }
 
         // On vérifie l'ajout du numero d'affaire
-        if ($('#ticket_incident_numeroAffaire').val() === '')
+        if ($('#' + id_text_numeroAffaire).val() === '')
         {
-            $('#ticket_incident_numeroAffaire').addClass('erreur_formulaire');
+            $('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
             $send_form = false;
         }
 
