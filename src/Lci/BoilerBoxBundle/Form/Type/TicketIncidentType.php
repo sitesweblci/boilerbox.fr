@@ -72,7 +72,7 @@ class TicketIncidentType extends AbstractType {
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
                 'maxlength'     => 10,
-				'class'			=> 'disabled',
+				'class'			=> 'disabled cacher',
             ),
 			'required'      => false
         ))
@@ -190,7 +190,7 @@ class TicketIncidentType extends AbstractType {
 			'required' 		=> true
 		))
 		->add('motif', TextareaType::class, array(
-            'label'         => 'Motif',
+            'label'         => false,
             'required'      => true,
             'trim'          => true,
             'attr'          => array (

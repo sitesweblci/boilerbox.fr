@@ -2,7 +2,7 @@
     $(document).ready(function()
     {
         // On définit l'id de l'intervenant pour le retour arrière lorsqu'aucun message de motif de changement d'intervenant n'est indiqué
-        $('#last_id_intervenant').val($('#bons_attachement_modification_user').val());
+        $('#last_id_intervenant').val($('#' + id_select_intervenant).val());
 
 		/* Désactivation de la checkbox Archive */
         $('#chk_archive').attr('checked', false);
@@ -57,7 +57,7 @@
 
 
         /* Récupération du container contenant l'attribut data-prototype */
-        $container = $('#bons_attachement_modification_fichiersPdf');
+        $container = $('#' + id_lien_fichiersPdf);
 
         /* Calcul du nombre de fichiers déjà présent */
         // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement

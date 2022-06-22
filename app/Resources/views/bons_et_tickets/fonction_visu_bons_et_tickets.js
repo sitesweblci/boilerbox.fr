@@ -118,13 +118,19 @@
        	 		}
 			break;
 			case 'changeIntervenant':
-				alert('change');
         		var texte = $('#motifChangeIntervenant').val();
         		if (texte != '')
         		{
-        		    var texte_auto = "Changement d'intervenant effectué par {{ app.user.label }} - Ancien intervenant : ";
-        		    texte_auto += $('#' + id_select_intervenant + ' option[value=' + $("#last_id_intervenant").val() + ']').text();
-        		    texte_auto += " - Nouvel intervenant : " + $('#' + id_select_intervenant + ' option:selected').text();
+					var texte_auto;
+					if ($("#last_id_intervenant").val() != '')
+					{
+        		    	texte_auto = "Changement d'intervenant effectué par {{ app.user.label }} - Ancien intervenant : ";
+        		    	texte_auto += $('#' + id_select_intervenant + ' option[value=' + $("#last_id_intervenant").val() + ']').text();
+        		    	texte_auto += " - Nouvel intervenant : " + $('#' + id_select_intervenant + ' option:selected').text();
+					} else {
+						texte_auto = "Changement d'intervenant effectué par {{ app.user.label }}";
+						texte_auto += " - Nouvel intervenant : " + $('#' + id_select_intervenant + ' option:selected').text();
+					}
 
         		    // On indique le changement effectué
         		    ajoutCommentaire('autoNoSave', texte_auto);

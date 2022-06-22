@@ -117,6 +117,7 @@ class AjaxBonsEtTicketsController extends Controller
                 case 'cloture':
                     $entity_validation          = $entity_bon->getValidationCloture();
                     $entities_users_validation  = $em->getRepository('LciBoilerBoxBundle:User')->myfindByRole('ROLE_SERVICE_TECHNIQUE');
+					// ICI DEV envoi de mail de dé cloture
                     break;
                 default:
                     break;
@@ -163,6 +164,7 @@ class AjaxBonsEtTicketsController extends Controller
                     break;
                 case 'cloture':
                     $entity_validation = $entity_bon->getValidationCloture();
+					// ICI DEV envoi du mail de cloture
                     break;
                 default:
                     break;

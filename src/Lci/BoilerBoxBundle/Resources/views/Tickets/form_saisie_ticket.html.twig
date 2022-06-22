@@ -27,7 +27,7 @@
 	</style>
 {% endblock boilerBoxCSS %}
 
-{% block title %}{{ parent() }} : Bons d'interventions{% endblock title %}
+{% block title %}{{ parent() }} : Ticket d'incident{% endblock title %}
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 {% form_theme form 'templates/form/fields.html.twig' %}
 
@@ -188,7 +188,7 @@
 	<div class="content__btn">
 		{# Retour à la page d'accueil #}
 		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
-		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer bon</button>
+		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer le ticket</button>
 	</div>
 </section>
 

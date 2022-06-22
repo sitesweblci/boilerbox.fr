@@ -446,7 +446,7 @@ class BonsController extends Controller
 	*/
 
 
-    // Affichage d'un bon pour la page d'affichage de la liste des fichiers du bon
+    // Affichage et Modification d'un bon pour la page d'affichage de la liste des fichiers du bon
     // Dans la page du bon on affiche également le forumlaire de validation du bon
     public function afficherUnBonAction(Request $request)
     {
