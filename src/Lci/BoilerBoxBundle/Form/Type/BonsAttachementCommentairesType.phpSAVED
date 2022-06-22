@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 
-class BonsAttachementCommentairesType extends AbstractType {
+class BonsAttachementCommentairesType extends BaseType {
 	/**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -18,7 +18,27 @@ class BonsAttachementCommentairesType extends AbstractType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		parent::buildForm($builder, $options);
 		
-		$builder
+		$builder->remove('numeroBA')
+                ->remove('nomDuContact')
+                ->remove('numeroAffaire')
+                ->remove('cheminDossierPhotos')
+				->remove('dateSignature')
+                ->remove('dateInitialisation')
+                ->remove('dateDebutIntervention')
+                ->remove('dateFinIntervention')
+				->remove('emailContactClient')
+        		->remove('userInitiateur')
+        		->remove('user')
+        		->remove('site')
+                ->remove('siteNouveau')
+                ->remove('service')
+        		->remove('fichiersPdf')
+				->remove('idNouveau')
+				->remove('equipementBATicket')
+				->remove('telephoneContactClient')
+				->remove('typeIntervention')
+                ->remove('typeNouveau')
+                ->remove('type')
 				->add('commentaires', TextareaType::class, array(
             		'label'         => 'Commentaires ...',
             		'label_attr'    => array ('class' => 'label_bigtext'),

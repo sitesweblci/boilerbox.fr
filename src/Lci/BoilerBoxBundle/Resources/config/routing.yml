@@ -1,24 +1,9 @@
-lci_bons_attachements:
-    path: /BonsEtTickets/accueil
-    defaults: { _controller: LciBoilerBoxBundle:Bons:index }
 lci_bons_saisie:
     path: /bons_saisie
     defaults: { _controller: LciBoilerBoxBundle:Bons:saisie }
-lci_bons_visualiser:
-    path: /bons/visualiser/{refresh}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiser, refresh: null }
-lci_bons_rechercher:
-    path: /bons/rechercher
-    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercher }
-lci_bon_rechecher_reset:
-    path: /bons/rechercher_reset
-    defaults: { _controller: LciBoilerBoxBundle:Bons:rechercherReset }
 lci_ajax_bons_setEnquete:
     path: /bons/ajax/setEnquete
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setEnquete }
-lci_ajax_bons_setValidation:
-    path: /bons/ajax/setValidation
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setValidation }
 lci_ajax_bons_archive_fichier:
     path: /bons/ajax/archiveUnFichierDeBon
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:archiveUnFichierDeBon }
@@ -31,24 +16,15 @@ lci_bons_modifier_unbon:
 lci_bons_externe_enquete:
     path: /bons/externe/enquetes
     defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
-lci_bons_sitesBA_visualiser:
-    path: /bons/sitesBA/visualiser/{idSiteActif}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:visualiserSites, idSiteActif: null }
 lci_bons_admin_site_index:
     path: /bons/admin/site/index
     defaults: { _controller: LciBoilerBoxBundle:Bons:indexSite }
 lci_bons_admin_site_creer:
     path: /bons/admin/site/creer
     defaults: { _controller: LciBoilerBoxBundle:Bons:creerSite }
-lci_bons_commentaires:
-    path: /bons/modification/unbon/commentaires/{idBon}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:ajoutCommentaires }
 lci_rapport_disponibilite:
     path: /rapport/disponibilite
     defaults: { _controller: LciBoilerBoxBundle:Rapport:rapportDisponibilite }
-lci_ajax_bons_select_service:
-    path: /aj/bons/choix_service
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:choixService }
 lci_ajax_bon_del_equipement:
     path: /aj/bons/del_equipement
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delEquipement }
@@ -58,9 +34,6 @@ lci_ajax_bon_new_equipement:
 lci_ajax_bon_assign_equipement_to_bon:
     path: /aj/bons/assign_equipement_to_bon
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:assignEquipementToBon }
-lci_ajax_bon_new_siteBA:
-    path: /aj/bons/new_siteBA
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerSiteBA }
 lci_ajax_siteba_new_contact:
     path: /aj/siteba/new_contact
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:creerContactsSitesBA }
@@ -70,9 +43,6 @@ lci_ajax_bon_get_infos_contacts:
 lci_ajax_siteBA_del_file:
     path: /bons/ajax/siteBA/delete_file
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFileSiteBA }
-lci_ajax_bons_get_siteBA:
-    path: /bons/sitesBA/get
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getSiteBAEntity }
 lci_ajax_bon_contact_supp:
     path: /bons/ajax/contact/supp
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:supprimerContact }
@@ -85,15 +55,6 @@ lci_ajax_archivage_fichier_siteBA:
 lci_ajax_bons_del_file:
     path: /bons/ajax/delete_file
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:delFile }
-lci_ajax_bon_get_googlemap:
-    path: /bon/ajax/get_google_map
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:getGoogleMap }
-lci_bons_has_url:
-    path: /bon/has_url/{id_bon}
-    defaults: { _controller: LciBoilerBoxBundle:AjaxBons:hasUrl }
-lci_get_fichier_bat:
-    path: /bon/get_bat/{id_bon}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:creationFichierBat }
 lci_bon_commentaire_consigne_facturation:
     path: /bon/ajax/set_commentaire_facturation
     defaults: { _controller: LciBoilerBoxBundle:AjaxBons:setComFact }

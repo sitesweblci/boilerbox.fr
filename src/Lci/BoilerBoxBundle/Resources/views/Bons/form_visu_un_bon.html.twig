@@ -563,7 +563,7 @@
     <div class="popup__wrapper">
         <header class="popup__header">
             <h1 id='titre_commentaire_sav' class="popup__title">Consignes de facturation</h1>
-            <div class="close-cross" onclick="fermeturePopupCommentairesSAV();"></div>
+            <div class="close-cross" onclick="fermeturePopupCommentaire('sav');"></div>
         </header>
         <div class="popup__content">
             <div class="form__field form__field--double">
@@ -574,7 +574,7 @@
                 </div>
             </div>
             <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentairesSAV();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+                <button onClick="validationCommentaire('sav');" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -588,7 +588,7 @@
 		<input type='hidden' id='last_id_intervenant' name='last_id_intervenant' />
         <header class="popup__header">
             <h1 id='titre_commentaire_change_intervenant' class="popup__title">Motif du changement d'intervenant</h1>
-            <div class="close-cross" onclick="fermeturePopupCommentaireChangeIntervenant();"></div>
+            <div class="close-cross" onclick="fermeturePopupCommentaire('changeIntervenant');"></div>
         </header>
         <div class="popup__content">
             <div class="form__field form__field--double">
@@ -599,7 +599,7 @@
                 </div>
             </div>
             <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentaireChangeIntervenant();" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
+                <button onClick="validationCommentaire('changeIntervenant);" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -614,607 +614,70 @@
 
 <script type='text/javascript'>
 
-    function attendreRechargement()
+    var $page_html = "{{ page }}";
+    var $indexFichier = 1;
+    var $indexFichierSiteBA = 1;
+    var $indexContactSiteBA = 1;
+    var $container_fichiers_bon;
+    var $container_fichiers_site;
+    var $container_contacts_site;
+    var $tab_contact = new Array();
+    var id_lien_fichiersPdf, id_select_intervenant, id_select_service,  id_select_site, id_champs_nouveau_id_site, id_champs_nouveau_nom_site, id_champs_nouveau_type, id_champs_nom_du_contact, id_champs_tel_du_contact, id_champs_mail_du_contact;
+
+    if ($page_html == 'ticket')
     {
-        $('*').addClass('cursor--wait');
+        // Récupération du container des fichiers des bons
+        $container_fichiers_bon     = $('#ticket_incident_modification_fichiersPdf');
+        // id du lien 'Parcourir' pour afficher la fenetre de recherche du fichier
+        id_lien_fichiersPdf         = 'ticket_incident_modification_fichiersPdf';
+        // id du select intervenant
+        id_select_intervenant       = 'ticket_incident_modification_user';
+        // id du select site
+        id_select_site              = 'ticket_incident_modification_site';
+        // id du champs id d'un nouveau site
+        id_champs_nouveau_id_site   = 'ticket_incident_modification_idNouveau';
+		// id du site précédemment selectionné
+		id_champs_last_id_site		= 'ticket_incident_modification_id';
+        // id du nom d'un site qui vient d'être crée
+        id_champs_nouveau_nom_site  = 'ticket_incident_modification_siteNouveau';
+        // id du type (bon ou ticket)
+        id_champs_nouveau_type      = 'ticket_incident_modification_typeNouveau';
+
+        id_champs_nom_du_contact    = 'ticket_incident_modification_nomDuContact';
+        id_champs_tel_du_contact    = 'ticket_incident_modification_telephoneContactClient';
+        id_champs_mail_du_contact   = 'ticket_incident_modification_emailContactClient';
+
+        // id du select service
+        id_select_service           = 'ticket_incident_modification_service';
+    } else if ($page_html == 'bon')
+    {
+        $container_fichiers_bon     = $('#bons_attachement_fichiersPdf');
+        id_lien_fichiersPdf         = 'bons_attachement_modification_fichiersPdf';
+        id_select_intervenant       = 'bons_attachement_modification_user';
+        id_select_site              = 'bons_attachement_modification_site';
+        id_champs_nouveau_id_site   = 'bons_attachement_modification_idNouveau';
+		id_champs_last_id_site		= 'bons_attachement_modification_id';
+        id_champs_nouveau_nom_site  = 'bons_attachement_modification_siteNouveau';
+        id_champs_nouveau_type      = 'bons_attachement_modification_typeNouveau';
+        id_champs_nom_du_contact    = 'bons_attachement_modification_nomDuContact';
+        id_champs_tel_du_contact    = 'bons_attachement_modification_telephoneContactClient';
+        id_champs_mail_du_contact   = 'bons_attachement_modification_emailContactClient';
+        id_select_service           = 'bons_attachement_modification_service';
     }
 
-    function finAttendreRechargement()
-    {
-        $('*').removeClass('cursor--wait');
-    }
-
-
-
-
-	// Affichage de la map du site avec le marqueur
-    function initAutocomplete()
-    {
-
-            if (("{{ latitude }}" != "") && ("{{ longitude }}" != ""))
-            {
-                $('#map').removeClass('cacher');
-                var $objPos = {};
-                $objPos.lat = parseFloat("{{ latitude }}");
-                $objPos.lng = parseFloat("{{ longitude }}");
-                var maCarte = new google.maps.Map(document.getElementById('map'), {
-                    center: $objPos,
-                    zoom: parseInt("{{ zoomApi }}"),
-                    mapTypeId: 'satellite'
-                });
-                var monMarqueur = new google.maps.Marker({
-                    position: $objPos,
-                    map: maCarte
-                });
-            }
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// Fonction style barre de navigation page active
-    $(window).on('load', function pageActive(){
-    	$('.side-nav .bons-interv').addClass('active');
-    });
-    // Fonction affichage selon l'onglet sélectionné
-    const tabs = document.querySelectorAll('[data-tab-target]')
-    const tabContents = document.querySelectorAll('[data-tab-content]')
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = document.querySelector(tab.dataset.tabTarget)
-            tabContents.forEach(tabContent => {
-                tabContent.classList.remove('active')
-            })
-            tabs.forEach(tab => {
-                tab.classList.remove('active')
-            })
-            tab.classList.add('active')
-            target.classList.add('active')
-        })
-    });
-    // Fonction d'activation du bouton 'publier commentaire'
-    $('#commentaires').on('keyup', function enableBtnComm(){
-    	if($('#commentaires').val().length){
-    		$('#js-btn-comm > div').removeClass('main-box__btn--disabled');
-    		$('#js-btn-comm .btn--main').removeClass('btn--disabled');
-    	} else if (!$('#commentaires').val().length){
-    		$('#js-btn-comm > div').addClass('main-box__btn--disabled');
-    		$('#js-btn-comm .btn--main').addClass('btn--disabled');
-    	}
-    });
 
 
 	var $idBon = {{ entity_bon.id }};
     var $indexFichier;
     var $container;
 	var $id_last_intervenant;
-	$(document).ready(function() 
-	{
-		// On définit l'id de l'intervenant pour le retour arrière lorsqu'aucun message de motif de changement d'intervenant n'est indiqué
-		$('#last_id_intervenant').val($('#bons_attachement_modification_user').val());
-
-		/* Débug largeur parent flex col */
-
-		/* Désactivation de la checkbox Archive */
-		$('#chk_archive').attr('checked', false);
-		$('#bons_attachement_validation_validationTechnique_valide').click(function(e){
-			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationTechnique_valide').is(":checked");
-			$type = 'technique';
-			changeValidation($type, $sens);
-		});
-        $('#bons_attachement_validation_validationPiece_valide').click(function(e){
-			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationPiece_valide').is(":checked");
-			$type = 'pieces';
-			changeValidation($type, $sens);
-        });
-        $('#bons_attachement_validation_validationPieceFaite_valide').click(function(e){
-            e.preventDefault;
-            $sens = $('#bons_attachement_validation_validationPieceFaite_valide').is(":checked");
-            $type = 'pieces_faite';
-            changeValidation($type, $sens);
-        });
-        $('#bons_attachement_validation_validationSAV_valide').click(function(e){
-			//e.preventDefault;
-            $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
-            $type = 'sav';
-			togglePopUp(commentaireSAV);
-        });
-		$('#bons_attachement_modification_user').change(function(e) {
-			togglePopUp(commentaireChangeIntervenant);
-		});
-        $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
-			e.preventDefault;
-			$sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
-			$type = 'facturation';
-			changeValidation($type, $sens);
-        });
-        $("#bons_attachement_validation_dateSignature" ).datepicker();
-
-
-
-
-
-
-        /* Récupération du container contenant l'attribut data-prototype */
-        $container = $('#bons_attachement_modification_fichiersPdf');
-
-		/* Calcul du nombre de fichiers déjà présent */
-	    // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
-    	$indexFichier = $container.find(':input').length;
-
-		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutiles
-
-        /* Lien permettant l'ajout d'un nouveau fichier */
-        var $addLink = $('<a href="#" id="add_fichier" class="small_link">Ajouter un fichier ({{ max_upload_size }} max)</a>');
-
-        /* Ajout du lien dans la div du container */
-        $('#lien_ajout_fichier').html($addLink);
-
-        /* Ajout d'un listener pour créer un nouveau champs lors du clic sur le lien */
-        $addLink.click(function(e){
-            ajoutChampFichier();
-			$('#bons_attachement_modification_fichiersPdf_' + ( $indexFichier - 1 ) + '_file').trigger("click");
-			$('#js-btn-file > div').removeClass('main-box__btn--disabled');
-    		$('#js-btn-file .btn--main').removeClass('btn--disabled');
-            e.preventDefault();
-            return false;
-        });
-
-		// Si le nombre de fichier est >= 1 on enlève les champs Parcourir inutils
-		$('#formulaire_bons_fichiers div.form-group').addClass('cacher');
-
-
-		/* Modification des infos bulles indiquant l'affichage des encarts fichiers et commentaires */
-		$('#label_fichier').mouseover(function(e) {
-			$('#info_bulle_fichier').removeClass('cacher');
-			
-		});
-        $('#label_fichier').mouseout(function(e) {
-            $('#info_bulle_fichier').addClass('cacher');
-
-        });
-
-		// $('#label_archive').mouseover(function(e) {
-  //           $('#info_bulle_archive').removeClass('cacher');
-
-  //       });
-  //       $('#label_archive').mouseout(function(e) {
-  //           $('#info_bulle_archive').addClass('cacher');
-
-  //       });
-
-
-
-			// ************************************************************************************ LISTENERS
-			// Lors du click sur Chemin des photos / Récupération d'un fichier bat avec l'acces vers le dossier des photos du bon 
-			$('#cheminDossierPhotos').dblclick(function()
-			{
-				var $id_bon = $('#bons_attachement_modification_id').val();
-
-				var $url_controller_ajax_has_url 	= "{{ path('lci_bons_has_url', {'id_bon': 'identifiantDuBon'}) }}";
-				$url_controller_ajax_has_url 		= $url_controller_ajax_has_url.replace('identifiantDuBon', $id_bon);
-		
-				$.ajax({
-					url: $url_controller_ajax_has_url,
-					method: "GET",
-					success: function(msg){
-						var $retour = $.parseJSON(msg);
-						if ($retour['hasUrl'] == true)
-						{
-    		            	// Appel de la fonction pour télécharment du .bat
-    		            	var $url_controller_fonction_bat 	= "{{ path('lci_get_fichier_bat', {'id_bon': 'identifiantDuBon'}) }}";
-    		            	$url_controller_fonction_bat 		= $url_controller_fonction_bat.replace('identifiantDuBon', $id_bon);
-		                	document.location = $url_controller_fonction_bat;
-						} else {
-							alert("Aucun dossier n'a été enregistré pour le bon");
-						}
-					},
-					error: function(){
-						alert('erreur serveur survenue lors de la recherche du dossier des photos');
-					}
-				});
-			});
-
-		refreshSelectEquipements();
-
-
-
-
-
-    var sauvegarde_select_user = $('#bons_attachement_modification_user').html();
-
-    // Envoi du service selectionné
-    // Récupération des ids des membres du service
-    // Cache les non membre du service du select html
-    $('#bons_attachement_modification_service').change(function()
-    {
-		// On sauvegarde le nom de l'intervenant selectionné
-		var intervenant = $('#bons_attachement_modification_user').val();
-
-        // Lors d'un changement de choix de service : On redéfini le select d'origin pour supprimer toutes les classes cacher
-        $('#bons_attachement_modification_user').html(sauvegarde_select_user);
-
-		var intervenant_identique = false;
-        $.ajax("{{ path('lci_ajax_bons_select_service') }}",
-        {
-            async: false,
-            method: "POST",
-            data: {service:$('#bons_attachement_modification_service option:selected').text() },
-            success: function(data, textStatus, jqXHR) {
-                // Lors du retour de la demande Ajax, soit on récupère un tableau avec les id des membres du service soit on recoit une chaine de caractère vide
-                // Si on recoit la chaine de c. on ne fait pas de changement au tableau des intervenants
-                if (data != '') {
-                    var t_data = JSON.parse(data);
-                    $('#bons_attachement_modification_user option').each(function()
-					{
-                        if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
-                        {
-                            $(this).addClass('cacher');
-                        } else {
-							// On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
-							// Si oui on le reselectionnera
-							if ($(this).val() == intervenant)
-							{
-								intervenant_identique = true;
-							}
-						}
-                    });
-					if (intervenant_identique == true)
-					{
-						$('#bons_attachement_modification_user').val(intervenant);
-					} else {
-                    	// Selection de l'option par défaut pour l'intervenant (Choix de l'intervenant)
-						$('#bons_attachement_modification_user option[value=""]').prop('selected', true);
-					}
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('error');
-            }
-        });
-    });
-
-
-	});	
-
-
-
-	/******************* Fonctions pour les consignes de facturation */
-    function validationCommentairesSAV()
-    {
-        var texte = $('#consignesFacturation').val();
-        if (texte != '')
-        {
-			texte = 'Consigne SAV : ' + texte;
-			ajoutCommentaire('sav', texte);
-        } else {
-            $('#avertissementConsignesFacturation').text("Merci d'indiquer les consignes de facturations");
-			return 1;
-        }
-    }
-	// Permet la fermeture de la popup sans consigne mais désactive alors la checkbox
-	function fermeturePopupCommentairesSAV()
-	{	
-		$('#bons_attachement_validation_validationSAV_valide').prop('checked', false);
-		$('#avertissementConsignesFacturation').text('');
-		togglePopUp(commentaireSAV);
-	}
-
-	
-
-
-    /******************* Fonctions pour le motif de changement d'intervenant */
-    function validationCommentaireChangeIntervenant()
-    {
-        var texte = $('#motifChangeIntervenant').val();
-        if (texte != '')
-        {
-			var texte_auto = "Changement d'intervenant effectué par {{ app.user.label }} - Ancien intervenant : ";
-			texte_auto += $('#bons_attachement_modification_user option[value=' + $("#last_id_intervenant").val() + ']').text();
-			texte_auto += " - Nouvel intervenant : " + $('#bons_attachement_modification_user option:selected').text();
-
-			// On indique le changement effectué
-			ajoutCommentaire('autoNoSave', texte_auto);
-
-			texte = "Motif de changement d'intervenant : " + texte;
-            ajoutCommentaire('motif', texte);
-			// On remplace l'indication du dernier intervenant 
-			$("#last_id_intervenant").val($('#bons_attachement_modification_user').val());
-        } else {
-            $('#avertissementChangeIntervenant').text("Merci d'indiquer le motif de changement d'intervenant");
-            return 1;
-        }
-    }
-	// Permet la fermeture de la popup sans consigne mais désactive alors ne modifie pas l'intervenant (garder en memoire id last intervenant)
-	function fermeturePopupCommentaireChangeIntervenant()
-    {
-        $('#bons_attachement_modification_user').val($("#last_id_intervenant").val());
-        $('#avertissementChangeIntervenant').text('');
-        togglePopUp(commentaireChangeIntervenant);
-    }
-
-
-	// type = autoNoSave, sav ou motif -> ce sont les cas ou le paramètre passé : commentaire n'est pas null
-	function ajoutCommentaire(type=null, commentaire=null)
-	{
-		if (commentaire == null)
-		{
-			commentaire  = $('#commentaires').val();
-			$.ajax({
-                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
-                data: {'id_bon':$idBon, 'commentaire':commentaire},
-                method: "POST",
-                success: function(msg){
-					document.forms['myFormFichiers'].submit();
-                },
-                error: function(){
-                    alert("Erreur d'envoi du message");
-                    return 1;
-                }
-            });
-		} else {
-			// Ajout du commentaire en ajax
-            $.ajax({
-                url: "{{ path('lci_bon_commentaire_consigne_facturation') }}",
-                data: {'id_bon':$idBon, 'commentaire':commentaire},
-                method: "POST",
-                success: function(msg){
-					if (type == 'sav')
-					{
-                    	// Modification de la checkbox
-                    	changeValidation($type, $sens);
-					}
-					if (type != 'autoNoSave')
-					{
-						document.forms['myFormFichiers'].submit();
-					}
-                },
-                error: function(){
-					if (type == 'sav')
-                    {
-                    	alert("Erreur d'envoi de la consigne de facturation");
-					} else if (type == 'motif')
-                    {
-                        alert("Erreur d'envoi du motif de modification d'intervenant");
-					}
-                    return 1;
-                }
-            });
-		}
-	}
-
-
-
-
-	function changeValidation($type, $sens) 
-	{
-        // On n'affiche plus les msgbox - Mettre en commentaire cette ligne pour proposer les msgbox ci dessous
-        return sendAjaxRequest($idBon, $type, $sens);
-
-
-
-
-
-		if($sens === false) {
-			$.msgBox({
-    			title: "Avertissement",
-    			content: "Êtes vous certain de vouloir annuler la validation " + $type + " ? ",
-    			type: "alert",
-    			buttons: [{ value: "Oui" }, { value: "Annuler"}],
-    			opacity: 1,
-    			success: function (result) {
-    			    if (result == "Annuler") {
-						return false;
-        			}
-					if (result == "Oui") {
-						return sendAjaxRequest($idBon, $type, $sens);
-					}
-    			}
-			});
-		} else {
-			var $retourAjax;
-			$.msgBox({
-                title: "Information",
-                content: "Êtes vous certain de vouloir effectuer la validation " + $type + " ? ",
-                type: "confirm",
-                buttons: [{ value: "Oui" }, { value: "Annuler"}],
-                opacity: 1,
-                success: function (result) {
-                    if (result == "Annuler") {
-                        switch($type) {
-                            case 'technique':
-                                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", false);
-                                break;
-                            case 'sav':
-                                $('#bons_attachement_validation_validationSAV_valide').prop("checked", false);
-                                break;
-                            case 'pieces':
-                                $('#bons_attachement_validation_validationPiece_valide').prop("checked", false);
-                                break;
-                            case 'pieces_faite':
-                                $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", false);
-                                break;
-                            case 'facturation':
-								location.reload();
-                                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", false);
-                                break;
-                        }
-                        return false;
-                    }
-                    if (result == "Oui") {
-                     	return sendAjaxRequest($idBon, $type, $sens);
-                    }
-                }
-            });
-		}
-	}
-
-
-
-	function sendAjaxRequest($idBon, $type, $sens) 
-	{
-		attente();
-		setTimeout(function() 
-		{
-			$.ajax({
-        	    url: "{{ path('lci_ajax_bons_setValidation') }}",
-        	    method: "post",
-        	    data: {'identifiant':$idBon, 'type':$type, 'sens':$sens},
-        	    success: function(msg) 
-				{
-					window.location.assign(location.href); 
-					fin_attente();
-					return true;
-        	    },
-        	    error: function(request, $error, $msg) 
-				{
-        	        alert('error ' + $error + $msg);
-        	        fin_attente();
-					switch($type) {
-        	            case 'technique':
-        	                $('#bons_attachement_validation_validationTechnique_valide').prop("checked", true);
-        	                break;
-        	            case 'sav':
-        	                $('#bons_attachement_validation_validationSAV_valide').prop("checked", true);
-        	                break;
-        	            case 'pieces':
-        	                $('#bons_attachement_validation_validationPiece_valide').prop("checked", true);
-        	                break;
-                        case 'pieces_faite':
-                            $('#bons_attachement_validation_validationPieceFaite_valide').prop("checked", true);
-                            break;
-        	            case 'facturation':
-        	                $('#bons_attachement_validation_validationFacturation_valide').prop("checked", true);
-        	                break;
-        	        }
-					return false;
-        	    }
-        	});
-		}, 500);
-	}
-
-
-	function afficheFichier($url) {
-		$('#' + $url)[0].click();
-	}
-
-
-    function archiveUnFichierDuBon($idFichier, $archive) {
-        $.ajax({
-       	    url: "{{ path('lci_ajax_bons_archive_fichier') }}",
-      	 	method: "post",
-           	data: {'identifiant_fichier':$idFichier},
-           	success: function($msg) {
-				if ($archive == false) {
-					$('#fichier_' +  $idFichier).addClass('archive');
-					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-suppression.png') }}");
-					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '1')");
-				} else {
-					$('#fichier_' +  $idFichier).removeClass('archive');
-					$('#image_' + $idFichier).attr('src', "{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}");
-					$('#image_' + $idFichier).attr('onClick',"archiveUnFichierDuBon('" + $idFichier + "', '0')");
-				}
-				afficheArchives();
-           	},
-           	error: function($requete, $error, $msg) {
-           	    alert('Erreur : Archivage non effectué');
-           	}
-       	});
-    }
-
-
-
-    // Fonction qui ajout un champs 'Nouveau fichier' en remplacant le label et le nom par l'index du fichier
-    function ajoutChampFichier() {
-        var $nouveauPrototype = $($('#bons_attachement_modification_fichiersPdf').data('prototype').replace(/__name__label__/g, '').replace(/__name__/g, $indexFichier));
-
-        // Création et ajout d'un lien de suppression en fin de container
-        $deleteLink = $('<a href="#" class="mini_link">Supprimer</a>');
-        $nouveauPrototype.append($deleteLink);
-
-        // Ajout du listener permettant la suppression du champ fichier lors du clic sur le lien
-        $deleteLink.click(function(e){
-            $nouveauPrototype.remove();
-            e.preventDefault();
-            return false;
-        });
-
-        // Ajout du prototype a la fin du container
-        $container.prepend($nouveauPrototype);
-
-        // Incrémentation de l'index des fichiers
-        $indexFichier ++;
-    }
-
-	// Fonction qui renvoie vers la page de modification de bon
-	function updateBon($idBon) {
-        $('#id_bon').val($idBon);
-        document.forms['form_modification_bon'].submit();
-    }
-
-
-	function toggleFiles() {
-		$('#info_bulle_fichier').toggleClass("fichier");
-		$('#formulaire_bons_fichiers').toggleClass("cacher");
-		$('#formulaire_bons_commentaires').toggleClass("cacher");
-		if ($('#formulaire_bons_fichiers').is(':visible')) {
-			$('#img_validation').attr('onClick', "attente(); document.forms['myFormFichiers'].submit(); return false;");
-		} else {
-			$('#img_validation').attr('onClick', "attente(); document.forms['myFormCommentaires'].submit(); return false;");
-		}	
-	}
-
-
-	function afficheArchives() {
-		if ($('#chk_archive').is(":checked")) {
-            $('#table_des_fichiers tr').each(function() {
-               	$(this).removeClass('cacher');
-            });
-		} else if (!$('#chk_archive').is(':checked')){
-			$('#table_des_fichiers tr').each(function() {
-				if ($(this).hasClass('archive')) {
-					$(this).addClass('cacher');
-				}
-			});
-		} 
-	}
-
-
-    // Fonction qui supprime les informations contenues entre les parenthèses des noms de fichiers
-    function definirNomFichier($idLien, $nomDuFichier)
-    {
-        var $regex = /\([a-zA-Z0-9àéèêâ:\/\s]+\)$/;
-        $('#' + $idLien).attr('download', $.trim($nomDuFichier.replace($regex, '')));
-    }
-
-    /* Débug largeur parent flex col sur un resize */
-    $(window).on('resize', function(){
-        $('.main-content').css({'width':'initial'});
-        setTimeout(function(){
-        	$('.main-content').css({'width':'fit-content'});
-        }, 30);
-
-    });
 </script>
 
 {# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}
 {% include "Equipements/fonction_equipements.js" %}
+{% include "bons_et_tickets/fonction_visu_bons_et_tickets.js" %}
+{% include "bons_et_tickets/fonction_visu_ready_bons_et_tickets.js" %}
+
 
 <script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&libraries=places&callback=initAutocomplete">
 </script>

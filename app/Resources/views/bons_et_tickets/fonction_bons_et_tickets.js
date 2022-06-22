@@ -892,4 +892,9 @@
     }
 
 
+
+    $('#bons_attachement_modification_user').change(function(e) {
+        togglePopUp(commentaireChangeIntervenant);
+    });
+
 </script>

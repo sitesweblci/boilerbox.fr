@@ -1,0 +1,41 @@
+ajout_commentaire_bons_et_tickets:
+    path: /ajout_commentaire
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:ajoutCommentaire }
+lci_bons_visualiser:
+    path: /visualiser/{refresh}
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:visualiser, refresh: null }
+lci_bons_sitesBA_visualiser:
+    path: /visualiser_site/{idSiteActif}
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:visualiserSites, idSiteActif: null }
+lci_bon_rechecher_reset:
+    path: /reset_recherche
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:rechercherReset }
+lci_bons_rechercher:
+    path: /recherche
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:rechercher }
+lci_bons_attachements:
+    path: /accueil
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:index }
+lci_get_fichier_bat:
+    path: /get_bat/{id_bon}
+    defaults: { _controller: LciBoilerBoxBundle:BonsEtTickets:creationFichierBat }
+
+lci_ajax_bons_setValidation:
+    path: /ajax/setValidation
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:setValidation }
+lci_ajax_bons_get_siteBA:
+    path: /ajax/get_sites
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:getSiteBAEntity }
+lci_ajax_bon_get_googlemap:
+    path: /ajax/get_google_map
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:getGoogleMap }
+lci_ajax_bons_select_service:
+    path: /ajax/choix_service
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:choixService }
+lci_ajax_bon_new_siteBA:
+    path: /ajax/creer_site
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:creerSiteBA }
+lci_bons_has_url:
+    path: /ajax/has_url/{id_bon}
+    defaults: { _controller: LciBoilerBoxBundle:AjaxBonsEtTickets:hasUrl }
+
