@@ -22,6 +22,9 @@
             width: 100%;
             min-width: initial;
         }
+		#mapVisualisation {
+			height: 400px;
+		}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -180,7 +183,7 @@
 <section class="content__brick">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
-		<div id='map'></div>
+		<div id='mapVisualisation'></div>
 	</fieldset>
 	<div class="content__btn">
 		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
