@@ -63,8 +63,7 @@ class TicketIncidentType extends AbstractType {
 			'placeholder'		=> "A définir"
         ))
         ->add('dateInitialisation', DateType::class, array(
-            'label'         => 'Date d\'initialisation',
-            'label_attr'    => array ('class' => 'label_smalltext'),
+            'label'         => false,
             'widget'        => 'single_text',
             'html5'         => false,
             'format'        => 'dd/MM/yyyy HH:mm',
@@ -94,7 +93,7 @@ class TicketIncidentType extends AbstractType {
 			'required' 		=> true,
             'trim' 			=> true,
             'attr' 			=> array(
-				'class' 		=> 'biginput upper centrer uppercase',
+				'class' 		=> 'upper uppercase',
 				'maxlength' 	=> 7
             )
         ))
@@ -221,7 +220,6 @@ class TicketIncidentType extends AbstractType {
                 'class'         => 'label_smalltext'
             ),
             'attr'          => array(
-                'class'         => 'biginput centrer',
                 'placeholder'   => "Chemin vers le repertoire local des photos",
                 'style'         => 'width:100%;'
             ),

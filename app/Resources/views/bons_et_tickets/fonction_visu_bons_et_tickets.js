@@ -210,11 +210,13 @@
                     if (type == 'sav')
                     {
                         // Modification de la checkbox
-                        changeValidation($type, $sens);
+                        changeValidation(type, true);
+						return 0;
                     }
                     if (type != 'autoNoSave')
                     {
                         document.forms['myFormFichiers'].submit();
+						return 0;
                     }
                 },
                 error: function(){

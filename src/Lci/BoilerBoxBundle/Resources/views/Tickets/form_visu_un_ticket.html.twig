@@ -1,6 +1,6 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Tickets/form_visu_un_ticket.html.twig #}
 
-{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{% extends "LciBoilerBoxBundle::secondBonsLayoutLogged.html.twig" %}
 
 {% block meta_viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=0.3, shrink-to-fit=no">
@@ -10,7 +10,7 @@
 
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 
-{% block liens_css %}
+{% block boilerBoxCSS %}
 	{{ parent() }}
 	<style>
 	.flex-table{
@@ -44,9 +44,9 @@
     	display: table !important;
     }
 	</style>
-{% endblock liens_css %}
+{% endblock boilerBoxCSS %}
 
-{% block fos_user_content %}
+{% block mainBody %}
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Ticket d'incident</h1>
 </header>
@@ -476,7 +476,7 @@
 </section>
 
 
-{% endblock fos_user_content %}
+{% endblock mainBody %}
 
 
 
@@ -493,6 +493,11 @@
     var $container_contacts_site;
     var $tab_contact = new Array();
     var id_lien_fichiersPdf, id_select_intervenant, id_select_service,  id_select_site, id_champs_nouveau_id_site, id_champs_nouveau_nom_site, id_champs_nouveau_type, id_champs_nom_du_contact, id_champs_tel_du_contact, id_champs_mail_du_contact;
+    var $idBon = {{ entity_bon.id }};
+    var $indexFichier;
+    var $container;
+    var $id_last_intervenant;
+    var $type_page_html = "{{ type_page }}";
 
     if ($page_html == 'ticket')
     {
@@ -534,11 +539,6 @@
         id_champs_mail_du_contact   = 'bons_attachement_modification_emailContactClient';
         id_select_service           = 'bons_attachement_modification_service';
     }
-
-	var $idBon = {{ entity_bon.id }};
-    var $indexFichier;
-    var $container;
-    var $id_last_intervenant;
 </script>
 
 {# Inclusion du fichier "src/Lci/BoilerBoxBundle/Resources/public/js/fonction_equipements.js" #}

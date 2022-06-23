@@ -88,51 +88,29 @@ $(document).ready(function()
 		}
 
         // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
-        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
-        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+        $("#date_annee_construction_equipement").datepicker({
+			altField: "#equipement_ba_ticket_anneeDeConstruction",
+			altFormat: "yy/mm/dd" 
+		});
 });
 
 
     function gestionDesSelectionEquipements()
     {
-		if ($('#bons_attachement_site').length != 0)
-		{
-			// Si on est sur la page de saisie de bons
-        	// et Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-        	if ($('#bons_attachement_site').val() != '')
-        	{
-        	    $("#select_equipement").val($('#bons_attachement_site').val());
-        	}
-		} else if ($('#bons_attachement_modification_site').length != 0)
+		 // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
+		if ($('#' + id_select_site).val() != '')
         {
-			// Si on est sur la page de visualisation des bons (= page de modification)
-            if ($('#bons_attachement_modification_site').val() != '')
-            {
-                $("#select_equipement").val($('#bons_attachement_modification_site').val());
-            }
-		}  else if ($('#ticket_incident_site').length != 0)
-        {
-            // Si on est sur la page de saisie d'un ticket
-            if ($('#ticket_incident_site').val() != '')
-            {
-                $("#select_equipement").val($('#ticket_incident_site').val());
-            }
-        }else if ($('#ticket_incident_modification_site').length != 0)
-        {
-            // Si on est sur la page de visualisation des bons (= page de modification)
-            if ($('#ticket_incident_modification_site').val() != '')
-            {
-                $("#select_equipement").val($('#ticket_incident_modification_site').val());
-            }
-        } else {
-			alert('page parent incorrecte');
-			return -1;
+			$("#select_equipement").val($('#bons_attachement_site').val());
+		} else {
+			alert('Veuillez selectionner un site');
+            return -1;
 		}
 		// On vide le champs de recherche 
 		$('#recherche_equipement').val('');
         $('#select_equipement').trigger('change');
         togglePopUp(popupSelectionEquipement);
     }
+
     // Gestion du click sur la croix de fermeture de la popup Sélection des équipements :
     // Fermeture de la popup
     function fermeturePopupSelectionEquipement()
@@ -140,21 +118,14 @@ $(document).ready(function()
         togglePopUp(popupSelectionEquipement);
         $('#table_des_equipements').removeClass('cacher');
     }
+
     function refreshSelectEquipements()
     {
 		// Si on est sur la page de saisie de bons
-        if ($('#bons_attachement_site').length != 0)
+        if ($('#' + id_select_site).length != 0)
         {
-			$('#select_equipement').val($('#bons_attachement_site').val());
-		} else if ($('#bons_attachement_modification_site').length != 0)
-        {
-        	// On défini le même site sur le select des équipements que le site sélectionné
-        	$('#select_equipement').val($('#bons_attachement_modification_site').val());
-		} else if ($('#ticket_incident_site').length != 0)
-        {
-            // On défini le même site sur le select des équipements que le site sélectionné
-            $('#select_equipement').val($('#ticket_incident_site').val());
-        }
+			$('#select_equipement').val($('#' + id_select_site).val());
+		} 
         // On affiche la liste des équipements associés au nouveau site sélectionné
         $('#select_equipement').change();
     }
@@ -246,10 +217,10 @@ $(document).ready(function()
 				if ($type_action == 'modification')
                 {
 					// Submit du formulaire de bon de la page de saisie de bon
-                	if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
+                	if ($type_page_html == 'saisie')
                 	{
                 	    document.forms['myForm'].submit();
-                	} else if ($('#bons_attachement_modification_site').length != 0)
+                	} else if ($type_page_html == 'modification')
                 	{
 						// Submit du formulaire de bon de la page de visu / modification de bon
                 	    document.forms['myFormFichiers'].submit();
@@ -384,8 +355,6 @@ $(document).ready(function()
 
         if ($send_form == true)
         {
-
-			
         	// On s'assure que la dénomination et autre Dénomination sont en capitalize
         	gestionCaracteresEquipement();
 
@@ -438,15 +407,17 @@ $(document).ready(function()
                         // Activation du datepicker pour le nouveau formulaire
                         setDatePicker();
                         // On défini l'input affiché comme source pour l'input du formulaire : Permet d'afficher un format fr et d'envoyer un format  pour la date
-                        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
-                        $("#date_annee_construction_equipement").datepicker( "option", "altField", "#equipement_ba_ticket_anneeDeConstruction" );
-                        $("#date_annee_construction_equipement").datepicker( "option", "altFormat", "yy/mm/dd" );
+				        // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+        				$("#date_annee_construction_equipement").datepicker({
+            				altField: "#equipement_ba_ticket_anneeDeConstruction",
+            				altFormat: "yy/mm/dd"
+        				});
                         finAttendreRechargement();
                     }
                 },
                 error: function (xhr, status, st_text)
                 {
-                    finAttendreRechargement
+                    finAttendreRechargement();
                     alert('error');
                 }
             });
@@ -547,7 +518,6 @@ $(document).ready(function()
 
 	function gestionCaracteresEquipement()
 	{
-
         // On s'assure que la dénomination et autre Dénomination sont en capitalize
 		/*
         $('#equipement_ba_ticket_denomination').val(capitalizeFirstLetter($('#equipement_ba_ticket_denomination').val()));
