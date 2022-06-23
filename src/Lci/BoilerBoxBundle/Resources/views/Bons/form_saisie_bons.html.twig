@@ -22,9 +22,11 @@
             width: 100%;
             min-width: initial;
         }
+{#
         form > .form-group{
         	display: none;
         }
+#}
 		#mapVisualisation {
 			height: 400px;
 		}
@@ -338,6 +340,7 @@
     var $container_contacts_site;
     var $tab_contact = new Array();
     var id_lien_fichiersPdf, id_select_intervenant, id_select_service, id_select_site, id_champs_nouveau_id_site, id_champs_nouveau_nom_site, id_champs_nouveau_type, id_champs_nom_du_contact, id_champs_tel_du_contact, id_champs_mail_du_contact;
+    var $type_page_html = "{{ type_page }}";
 
     if ($page_html == 'ticket')
     {

@@ -14,6 +14,8 @@
     {% endblock boilerBoxCSS %}
 	<link rel="stylesheet" type="text/css"  href="{{ asset('bundles/lciboilerbox/css/jquery-ui-1.12.1.css') }}" />
 
+ 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
+
 	<title> {% block title %}Boiler-Box Cloud{% endblock title %}</title>
 </head>
 
@@ -235,24 +237,19 @@
         <input type='hidden' name='variables_globales_twig' id='variables_globales_twig' data-prefixImage="{{ prefix_image }}">
     {% endblock liens_url %}
 
-{% block mainBody %}
-{% endblock mainBody%}
+	{% block mainBody %}
+	{% endblock mainBody%}
 
+	{% include "boilerbox/boilerbox.js" %}
 
-    <script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery-ui-1.12.1.js') }}"></script>
 
 	{# Définit les valeurs par défauts pour le datePicker #}
 	<script type="text/javascript" src="{{ asset('bundles/lciboilerbox/js/jquery.ui.datepicker-fr.js') }}"></script>
 
-   <script type="text/javascript">
-
-</script>
-
 
 	<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 	<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-	<script src="{{ asset('bundles/lciboilerbox/js/fonctions_generales.js') }}"></script>
 
     <script type="text/javascript">
 		// Variable indiquant le mode publique /ou privé actif */

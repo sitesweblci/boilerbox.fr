@@ -1,6 +1,6 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_recherche_bons.html.twig #}
 
-{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{% extends "LciBoilerBoxBundle::secondBonsLayoutLogged.html.twig" %}
 
 {% block title %}{{ parent() }} Recherche de bons d'interventions{% endblock title %}
 
@@ -10,16 +10,16 @@
 {# Thème personnel utilisé pour l'affichage des messages d'erreurs #}
 {% form_theme form 'templates/form/fields.html.twig' %}
 
-{% block liens_css %}
+{% block boilerBoxCSS %}
 	{{ parent() }}
 	<style>
 		#bloc_body > form{
 			padding: 8px;
 		}
 	</style>
-{% endblock liens_css %}
+{% endblock boilerBoxCSS %}
 
-{% block fos_user_content %}
+{% block mainBody %}
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Bon d'inteventions</h1>
 </header>
@@ -192,7 +192,7 @@
 </main>
 {{ form_rest(form) }}
 {{ form_end(form) }}
-{% endblock fos_user_content %}
+{% endblock mainBody %}
 
 {% block javascript %}
 <script type='text/javascript'>

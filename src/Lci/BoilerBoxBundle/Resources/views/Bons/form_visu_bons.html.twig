@@ -1,6 +1,6 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/form_visu_bons.html.twig #}
 
-{% extends "LciBoilerBoxBundle::secondBonsLayout.html.twig" %}
+{% extends "LciBoilerBoxBundle::secondBonsLayoutLogged.html.twig" %}
 
 {% block meta_viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=0.39, shrink-to-fit=no">
@@ -10,7 +10,7 @@
 
 {% block class_menu_boiler %} elargir {% endblock class_menu_boiler %}
 
-{% block liens_css %}
+{% block boilerBoxCSS %}
 	{{ parent() }}
 	<style>
 		.main-box--table__legend{
@@ -26,9 +26,9 @@
 			width: 250px;
 		}
 	</style>
-{% endblock liens_css %}
+{% endblock boilerBoxCSS %}
 
-{% block fos_user_content %}
+{% block mainBody %}
 	{#
 	# Pour un utlisateur lambda, seul ses bons sont visualisables.
 	# Pour le service adsmallstration, tous les bons sont visualisables.
@@ -276,8 +276,7 @@
     <input type='hidden' id='id_ticket' name='id_bon' />
 </form>
 
-
-{% endblock fos_user_content %}
+{% endblock mainBody %}
 
 {% block javascript %}
 <script type='text/javascript'>

@@ -109,8 +109,7 @@ class BonsAttachementType extends AbstractType {
             'label_attr'    => array ('class' => 'label_smalltext'),
         ))
 		->add('dateSignature', DateType::class, array(
-			'label' 		=> 'Date de la signature',
-			'label_attr'    => array ('class' => 'label_smalltext'),
+			'label' 		=> false,
 			'widget' 		=> 'single_text',
 			'html5'			=> false,
 			'format'        => 'dd/MM/yyyy',
@@ -118,7 +117,7 @@ class BonsAttachementType extends AbstractType {
 			'attr' 			=> array(
 				'placeholder' 	=> 'dd/mm/YYYY',
 				'maxlength' 	=> 10,
-                'class'         => ''
+                'class'         => 'cacher'
 			),
             'required'      => false
 		))

@@ -63,8 +63,7 @@ class TicketIncidentType extends AbstractType {
 			'placeholder'		=> "A définir"
         ))
         ->add('dateInitialisation', DateType::class, array(
-            'label'         => 'Date d\'initialisation',
-            'label_attr'    => array ('class' => 'label_smalltext'),
+            'label'         => false,
             'widget'        => 'single_text',
             'html5'         => false,
             'format'        => 'dd/MM/yyyy HH:mm',

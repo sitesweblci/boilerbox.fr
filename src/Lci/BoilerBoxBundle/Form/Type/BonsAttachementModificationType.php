@@ -6,6 +6,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+
 
 use Doctrine\ORM\EntityRepository;
 use Lci\BoilerBoxBundle\Form\Type\FichierType;
@@ -21,7 +23,7 @@ class BonsAttachementModificationType extends BaseType {
 	{
 		parent::buildForm($builder, $options);
 		$builder
-//		->remove('equipementBATicket')
+		->remove('dateSignature')
 		->add('numeroBA', TextType::class, array(
             'label'         => 'Numéro du bon',
             'label_attr'    => array ('class' => 'label_smalltext'),
@@ -31,6 +33,19 @@ class BonsAttachementModificationType extends BaseType {
                 'placeholder'   => 'XXXXXX',
                 'maxlength'     => 6
             )
+        ))
+        ->add('dateSignature', DateType::class, array(
+            'label'         => false,
+            'widget'        => 'single_text',
+            'html5'         => false,
+            'format'        => 'dd/MM/yyyy',
+            'invalid_message' => 'Format de la date incorrect.',
+            'attr'          => array(
+                'placeholder'   => 'dd/mm/YYYY',
+                'maxlength'     => 10,
+                'class'         => ''
+            ),
+            'required'      => false
         ));
 	}
 

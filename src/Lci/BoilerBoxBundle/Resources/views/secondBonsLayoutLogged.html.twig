@@ -1,10 +1,14 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/secondBonsLayoutLogged.html.twig #}
 {% extends "::firstLayoutLogged.html.twig" %}
 
-{% block liens_css %}
-{{ parent() }}
-<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/lightbox.css') }}" media='screen' />
-{% endblock liens_css %}
+{% block boilerBoxCSS %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/lightbox.css') }}" media='screen' />
+{% endblock boilerBoxCSS %}
+
+
+
+
 
 {% block liens_url %}
 {{ parent() }}
