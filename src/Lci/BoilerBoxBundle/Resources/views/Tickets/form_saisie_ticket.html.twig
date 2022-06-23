@@ -21,6 +21,9 @@
             width: 100%;
             min-width: initial;
         }
+        form > .form-group{
+            display: none;
+        }
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -177,7 +180,7 @@
         <div class="form__field">
             <div>
                 {{ form_errors(form.motif) }}
-                {{ form_label(form.motif) }}
+                {# {{ form_label(form.motif) }} #}
                 {{ form_widget(form.motif) }}
             </div>
         </div>
@@ -185,7 +188,7 @@
 	<div class="content__btn">
 		{# Retour à la page d'accueil #}
 		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
-		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer bon</button>
+		<button class="btn_menu btn btn--main" onClick="checkValidationBeforeSend(); return false;">Créer ticket</button>
 	</div>
 </section>
 
@@ -231,7 +234,6 @@
         </header>
 
         <div class="popup__content">
-			<span id='lien_ajout_fichier'></span>
             <div>
                 <div class="form__field rel">
        				<div>
@@ -240,6 +242,7 @@
            				{{ form_widget(form.fichiersPdf) }}
        				</div>
 				</div>
+                <span id='lien_ajout_fichier'></span>
 			</div>
 		</div>
 		<div class="popup__action" style="margin-top:24px;">

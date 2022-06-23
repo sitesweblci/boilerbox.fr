@@ -199,7 +199,7 @@
 
     <div id='popUpError' class='message-box cacher'>
 		{% set popup_error = false %}
-        <div class="close-cross close-cross--light" onClick="clotureMessageErreur();"></div>
+        <div class="close-cross" onClick="clotureMessageErreur();"></div>
         {% if app.session.flashbag.peek('erreur') | length  > 0 %}
 			{% set popup_error = true %}
 			<h1 class="message-box__title message-box__title--error">Erreur rencontrée</h1>
@@ -224,7 +224,7 @@
                 </p>
             </div>
         {% endif %}
-        <p class="btn btn--main btn--wide" onClick="clotureMessageErreur();">compris</p>
+        <p class="btn btn--main" onClick="clotureMessageErreur();">compris</p>
     </div>
 
     <div id="cartonBlack" class='cacher'></div>

@@ -13,37 +13,9 @@
 {% block liens_css %}
 	{{ parent() }}
 	<style>
-	.main-box__content--padding{
-		padding-bottom: 0;
-	}
 	.flex-table{
 		width: 100%;
 		min-width: initial;
-	}
-	.flex-table__thead tr{
-		padding-right: initial;
-	}
-	.flex-table__thead tr th{
-		padding-bottom: 4px;
-	}
-	.flex-table__tbody{
-		height: initial;
-		overflow: auto;
-	}
-	.flex-table__tbody tr{
-		height: initial;
-		cursor: initial;
-	}
-	.flex-table__tbody tr:hover{
-		background: #fff;
-	}
-	.flex-table__tbody tr td{
-		padding-top: 4px;
-		padding-bottom: 4px;
-		font-size: 10pt;
-	}
-	#validation_des_bons_attachement .flex-table__tbody tr {
-		border: none;
 	}
 	.flex-table .small{
 		width: calc(30% - 20px);
@@ -54,10 +26,6 @@
 	#table_des_fichiers tr td.small img{
 		cursor: pointer;
 	}
-	#commentaires{
-		height: 40px !important;
-		margin: 0;
-	}
     .erreur_formulaire {
         border: 2px solid red !important;
 		position: relative;
@@ -65,6 +33,12 @@
     }
     #bloc_body > form{
     	padding: 8px;
+    }
+    #table_validation thead tr th{
+    	width: 50%;
+    }
+    #map{
+    	height: 160px;
     }
 	</style>
 {% endblock liens_css %}
@@ -84,17 +58,6 @@
 
 <section class="info">
 	<h1 class="info__title">Ticket {{ entity_bon.numeroBA }}</h1>
-	<button onClick="attente(); redirection('bonsVisualiser'); return false;" class="btn_menu btn btn--second btn--round back tooltip-wrapper"><span class="tooltip">Retour</span></button>
-
-	{% if entity_bon.user %}
-		{% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-			<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
-		{% endif %}
-	{% else %}
-		{% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
-			<button type="button" class="btn btn--main btn--round edit tooltip-wrapper" onClick="document.forms['myFormFichiers'].submit();"><span class="tooltip">Modifier le bon</span></button>
-        {% endif %}
-	{% endif %}
 </section>
 <main id="grid-visuUnBon" class="content">
 	<div id="sub-grid-visuUnBon" class='content__brick'>
@@ -273,17 +236,17 @@
                     <thead class="flex-table__thead">
                         <tr class="flex-table__row">
                             {% if is_granted('ROLE_SAISIE_BA') %}
-                                <th class='small txt--center'>Archiver</th>
+                                <th class='small'>Archiver</th>
                             {% endif %}
                             <th class='wide'>Nom</th>
                         </tr>
                     </thead>
-                    <tbody id='table_des_fichiers' class="flex-table__tbody">
+                    <tbody id='table_des_fichiers' class="flex-table__tbody scroll">
                         {% for fichier in entity_bon.fichiersPdf %}
                             <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
                             {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
                                 {% if is_granted('ROLE_SAISIE_BA') %}
-                                    <td class='small txt--center'>
+                                    <td class='small'>
                                         <img id="image_{{ fichier.id }}"
                                             {% if fichier.archive == false %}
                                                 src="{{ asset('bundles/lciboilerbox/images/bons/boutonsMenu/croix-ajout.png') }}"
@@ -304,7 +267,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <div id='formulaire_bons_fichiers' class='main-box__content main-box__content--padding' style="margin-top:16px;">
+                <div id='formulaire_bons_fichiers' style="margin-top:16px;">
                     <div>
                         <span id='lien_ajout_fichier'></span>
                         <div id='champ_ajout_fichiers_bon'>{{ form_widget(form_modification.fichiersPdf) }}</div>
@@ -356,15 +319,15 @@
 			{{ form_start(form_validation, {'action':path('lci_bons_saisie'), 'method':'POST', 'name':'myForm'}) }}
 			{{ form_errors(form_validation) }}
 
-				<table id="table_validation"  class='flex-table'>
-				<thead class="flex-table__thead">
-					<tr class="flex-table__row">
+				<table id="table_validation">
+				<thead>
+					<tr>
 						<th>Intervention demandée</th>
 						<th>Clôture</th>
 					</tr>
 				</thead>
-				<tbody class="flex-table__tbody">
-					<tr class="flex-table__row">
+				<tbody>
+					<tr>
                         <td>
                             {% if entity_bon.validationIntervention %}
                                 {% if entity_bon.validationIntervention.valide == true %}
@@ -404,7 +367,7 @@
                         </td>
 					</tr>
 
-	        		<tr class="flex-table__row">
+	        		<tr>
                         <td>
                             {% if entity_bon.validationIntervention %}
                                 {% if entity_bon.validationIntervention.valide == true %}
@@ -433,21 +396,17 @@
 		<!-- Commentaires -->
 		<fieldset id="commentaire-bons-attachements" class="fieldset">
 			<h1 class="fieldset__title">Commentaires</h1>
-			<div id='formulaire_bons_commentaires' class="main-box__content main-content__content--padding">
-				<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
-				<div id="my-comment" class='form__field'>
-					<input type='text' id='commentaires'>
-					<div id="js-btn-comm" class="main-box__btn">
-						<div class="main-box__btn--disabled">
-							<button style='width:100px' onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
-						</div>
+			<div id='commentaires_bon' class="scroll">{{ commentaires | raw | nl2br }}</div>
+			<div id="my-comment" class='form__field'>
+				<textarea id='commentaires'></textarea>
+				<div id="js-btn-comm" class="main-box__btn">
+					<div class="main-box__btn--disabled">
+						<button class="btn btn--main btn--disabled" onClick="attente(); ajoutCommentaire(); return false;">Publier</button>
 					</div>
 				</div>
-	            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
-	    	</div>
+			</div>
+            <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 		</fieldset>
-
-
 
         <div class="content__btn">
             <button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
@@ -462,6 +421,7 @@
                 {% endif %}
             {% endif %}
         </div>
+    </section>
 </main>
 
 
@@ -587,10 +547,21 @@
 
 
 
-	// Fonction style barre de navigation page active
-    $(window).on('load', function pageActive(){
-    	$('.side-nav .bons-interv').addClass('active');
-    });
+	// Fonction style barre de navigation latérale page active
+	function pageActive() {
+		$('.side-nav .bons-interv').addClass('active');
+	}
+	// On force le scroll tout en bas des commentaires pour afficher le plus récent
+	function scrollCommentaire() {
+		scrollComm = document.getElementById('commentaires_bon');
+		scrollComm.scrollTop = scrollComm.scrollHeight;
+		console.log(scrollComm.scrollHeight);
+		console.log(scrollComm.scrollTop);
+	}
+	$(window).on('load', function(){
+		pageActive();
+		scrollCommentaire();
+	})
     // Fonction affichage selon l'onglet sélectionné
     const tabs = document.querySelectorAll('[data-tab-target]')
     const tabContents = document.querySelectorAll('[data-tab-content]')

@@ -131,6 +131,7 @@ $(document).ready(function()
     function fermeturePopupSelectionEquipement()
     {
         togglePopUp(popupSelectionEquipement);
+        $('#table_des_equipements').removeClass('cacher');
     }
     function refreshSelectEquipements()
     {

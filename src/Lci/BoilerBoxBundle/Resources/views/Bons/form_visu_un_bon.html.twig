@@ -34,6 +34,12 @@
     #bloc_body > form{
     	padding: 8px;
     }
+    #table_validation thead tr th{
+    	width: 25%;
+    }
+    #map{
+    	height: 160px;
+    }
 	</style>
 {% endblock liens_css %}
 
@@ -203,6 +209,9 @@
 					{% endif %}
 				</div>
 				<div id="map"></div>
+				<a href='https://goo.gl/maps/RG2zoSZrbis8vsqj6' target='google'>
+					Accès Google Map
+				</a>
 			</fieldset>
 		</section>
 
@@ -542,6 +551,7 @@
 			</div>
             <input type='hidden' name='id_bon' value="{{ entity_bon.id }}" />
 		</fieldset>
+
 		<div class="content__btn">
 			<button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
 			{# Si le bon à un intervenant de définit : L'intervenant peut ouvrir le bon #}
@@ -662,13 +672,25 @@
 
 
 
-
-
-
+	// Fonction style barre de navigation latérale page active
+	function pageActive() {
+		$('.side-nav .bons-interv').addClass('active');
+	}
+	// On force le scroll tout en bas des commentaires pour afficher le plus récent
+	function scrollCommentaire() {
+		scrollComm = document.getElementById('commentaires_bon');
+		scrollComm.scrollTop = scrollComm.scrollHeight;
+		console.log(scrollComm.scrollHeight);
+		console.log(scrollComm.scrollTop);
+	}
 	// Fonction style barre de navigation page active
-    $(window).on('load', function pageActive(){
-    	$('.side-nav .bons-interv').addClass('active');
-    });
+    // $(window).on('load', function pageActive(){
+    // 	$('.side-nav .bons-interv').addClass('active');
+    // });
+    $(window).on('load', function(){
+    	pageActive();
+    	scrollCommentaire();
+    })
     // Fonction affichage selon l'onglet sélectionné
     const tabs = document.querySelectorAll('[data-tab-target]')
     const tabContents = document.querySelectorAll('[data-tab-content]')
