@@ -299,7 +299,7 @@ class AjaxBonsEtTicketsController extends Controller
         $entity_validation->setValide(false);
         $entity_validation->setDateDeValidation(new \Datetime());
         $entity_validation->setUser($entity_user);
-        return $entity;
+        return $entity_validation;
 	}
 
 

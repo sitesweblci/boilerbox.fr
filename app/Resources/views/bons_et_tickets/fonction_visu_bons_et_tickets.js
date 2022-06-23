@@ -1,9 +1,19 @@
 <script 'type=text/javascript'>
     // Fonction style barre de navigation page active
-    $(window).on('load', function pageActive(){
+    function pageActive() {
         $('.side-nav .bons-interv').addClass('active');
-    });
-
+    }
+    // On force le scroll tout en bas des commentaires pour afficher le plus récent
+    function scrollCommentaire() {
+        scrollComm = document.getElementById('commentaires_bon');
+        scrollComm.scrollTop = scrollComm.scrollHeight;
+        console.log(scrollComm.scrollHeight);
+        console.log(scrollComm.scrollTop);
+    }
+    $(window).on('load', function(){
+        pageActive();
+        scrollCommentaire();
+    })
 
     /* Débug largeur parent flex col sur un resize */
     $(window).on('resize', function(){

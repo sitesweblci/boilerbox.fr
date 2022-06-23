@@ -156,7 +156,7 @@
 						<div class='champs_validation_bon'>
 							<div class='sous_champs_validation_bon'>
 							  {% if ent_bons.type == 'bon' %}
-                                <div data-intitule='validationTechnique' style='border-left:1px dashed black'>
+                                <div data-intitule='validationTechnique' >
                                 	{% if ent_bons.validationTechnique %}
                                 		{% if ent_bons.validationTechnique.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation"/>
@@ -165,7 +165,7 @@
                                 		&nbsp
                                 	{% endif %}
                                 </div>
-                                <div data-intitule='validationPiece' style='border-left:1px dashed black'>
+                                <div data-intitule='validationPiece' >
                                 	{% if ent_bons.validationPieceFaite %}
                                 		{% if ent_bons.validationPieceFaite.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation piece"/>
@@ -188,7 +188,7 @@
 										{% endif %}
                                 	{% endif %}
                                 </div>
-                                <div data-intitule='validationSav' style='border-left:1px dashed black'>
+                                <div data-intitule='validationSav' >
                                 	{% if ent_bons.validationSAV %}
                                 		{% if ent_bons.validationSAV.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation sav"/>
@@ -197,7 +197,7 @@
                                 		&nbsp
                                 	{% endif %}
                                 </div>
-                                <div data-intitule='validationFacturation' style='border-left:1px dashed black; border-right:1px dashed black;'>
+                                <div data-intitule='validationFacturation'>
                                 	{% if ent_bons.validationFacturation %}
                                 		{% if  ent_bons.validationFacturation.valide %}
                                 			<img src="/bundles/lciboilerbox/images/picto/coche.svg" alt="coche validation facturation"/>
@@ -207,7 +207,7 @@
                                 	{% endif %}
                                 </div>
 							  {% else %}
-								<div data-intitule='validationTicket' style='border-left:1px dashed black; border-right:1px dashed black;'>
+								<div data-intitule='validationTicket'>
                                     {% if ent_bons.validationIntervention %} 
 										{% if ent_bons.validationIntervention.valide %}
 											{% if ent_bons.validationCloture %}

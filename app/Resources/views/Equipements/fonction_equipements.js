@@ -77,7 +77,7 @@ $(document).ready(function()
         refreshSelectEquipements();
 
 		// On lance la reSelection des équipements du bon si on est sur la page de visu (modification) de bon
-		if ($('#bons_attachement_modification_site').length != 0)
+		if ($('#' + id_select_site).length != 0)
 		{
 			{% if entity_bon is defined %}
             	{% for e_equipement in entity_bon.equipementBATicket  %}
@@ -116,6 +116,13 @@ $(document).ready(function()
             if ($('#ticket_incident_site').val() != '')
             {
                 $("#select_equipement").val($('#ticket_incident_site').val());
+            }
+        }else if ($('#ticket_incident_modification_site').length != 0)
+        {
+            // Si on est sur la page de visualisation des bons (= page de modification)
+            if ($('#ticket_incident_modification_site').val() != '')
+            {
+                $("#select_equipement").val($('#ticket_incident_modification_site').val());
             }
         } else {
 			alert('page parent incorrecte');

@@ -40,6 +40,9 @@
     #map{
     	height: 160px;
     }
+    #map ~ a{
+    	display: none;
+    }
 	</style>
 {% endblock liens_css %}
 
@@ -576,16 +579,16 @@
             <div class="close-cross" onclick="fermeturePopupCommentaire('sav');"></div>
         </header>
         <div class="popup__content">
-            <div class="form__field form__field--double">
+            <div class="form__field">
 				<p id='avertissementConsignesFacturation' style='color:red'></p>
                 <div>
-                    <label>Consignes</label>
-                    <input type='text' name='consignesFacturation' id='consignesFacturation'>
+                    <label for="consignesFacturation">Consignes</label>
+                    <textarea name='consignesFacturation' id='consignesFacturation'></textarea>
                 </div>
             </div>
-            <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentaire('sav');" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
-            </div>
+        </div>
+        <div class='popup__action'>
+            <button onClick="validationCommentaire('sav');" class="btn_menu btn btn--main">Enregistrer</button>
         </div>
     </div>
 </section>
@@ -601,16 +604,16 @@
             <div class="close-cross" onclick="fermeturePopupCommentaire('changeIntervenant');"></div>
         </header>
         <div class="popup__content">
-            <div class="form__field form__field--double">
+            <div class="form__field">
                 <p id='avertissementChangeIntervenant' style='color:red'></p>
                 <div>
-                    <label>Motif</label>
-                    <input type='text' name='motifChangeIntervenant' id='motifChangeIntervenant'>
+                    <label for="motifChangeIntervenant">Motif</label>
+                    <textarea id='motifChangeIntervenant'></textarea>
                 </div>
             </div>
-            <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentaire('changeIntervenant);" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
-            </div>
+        </div>
+        <div class='popup__action'>
+            <button onClick="validationCommentaire('changeIntervenant);" class="btn_menu btn btn--main">Enregistrer</button>
         </div>
     </div>
 </section>

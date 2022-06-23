@@ -433,16 +433,16 @@
             <div class="close-cross" onclick="fermeturePopupCommentaire('cloture');"></div>
         </header>
         <div class="popup__content">
-            <div class="form__field form__field--double">
+            <div class="form__field">
 				<p id='avertissementConsignesCloture' style='color:red'></p>
                 <div>
-                    <label>Informations client de cloture</label>
-                    <input type='text' name='consignesClientCloture' id='consignesClientCloture'>
+                    <label for="consignesClientCloture">Informations client de cloture</label>
+                    <textarea name='consignesClientCloture' id='consignesClientCloture'></textarea>
                 </div>
             </div>
-            <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentaire('cloture');" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
-            </div>
+        </div>
+        <div class='popup__action'>
+            <button onClick="validationCommentaire('cloture');" class="btn_menu btn btn--main">Enregistrer</button>
         </div>
     </div>
 </section>
@@ -458,16 +458,16 @@
             <div class="close-cross" onclick="fermeturePopupCommentaire('changeIntervenant');"></div>
         </header>
         <div class="popup__content">
-            <div class="form__field form__field--double">
+            <div class="form__field">
                 <p id='avertissementChangeIntervenant' style='color:red'></p>
                 <div>
-                    <label>Motif</label>
-                    <input type='text' name='motifChangeIntervenant' id='motifChangeIntervenant'>
+                    <label for="motifChangeIntervenant">Motif</label>
+                    <textarea name='motifChangeIntervenant' id='motifChangeIntervenant'></textarea>
                 </div>
             </div>
-            <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="validationCommentaire('changeIntervenant');" class="btn_menu btn btn--main btn--wide">Enregistrer</button>
-            </div>
+        </div>
+        <div class='popup__action'>
+            <button onClick="validationCommentaire('changeIntervenant');" class="btn_menu btn btn--main">Enregistrer</button>
         </div>
     </div>
 </section>
