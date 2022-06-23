@@ -54,6 +54,7 @@
 
                 <div id="bloc_contact_pour_impression" class="print"></div>
             </div>
+			<div id='map'></div>
         </div>
         <div class='popup__action notToBePrinted'>
             <button class="btn btn--second" onclick="retourPopupSiteBA();">Retour</button>
@@ -66,110 +67,6 @@
 <script type='text/javascript'>
     var maCarte;
     var $changeEnCours;
-
-    function initAutocomplete()
-    {
-        var monMarqueur;
-
-        maCarte = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 50.474, lng: 2.97118},
-            zoom: 4,
-            mapTypeId: 'roadmap'
-        });
-
-        /* Placement du marqueur sur l'emplacement selectionné */
-        maCarte.addListener('click', function(e)
-        {
-            if (monMarqueur != null) {
-                monMarqueur.setMap(null);
-            }
-            monMarqueur = new google.maps.Marker({
-                position: e.latLng,
-                map: maCarte,
-                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
-            });
-            maCarte.setZoom(19);
-            maCarte.setCenter(monMarqueur.getPosition());
-            maCarte.setMapTypeId('satellite');
-
-
-            /* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
-            /* On ne modifie que l'url en fonction du marqueur */
-            geocoder = new google.maps.Geocoder();
-            geocoder.geocode({'location':monMarqueur.getPosition()}, function(results, status) 
-			{
-                if (status == 'OK') {
-                    $('#site_ba_lienGoogle').val('latLng' + monMarqueur.getPosition());
-                    $('#site_ba_lienGoogle').attr('readonly', true);
-                } else {
-                    alert('Aucune adresse trouvée pour le lieu selectionné');
-                }
-            });
-        });
-
-
-        /* Mise en place du textbox dans la carte */
-        const input = document.getElementById('site_ba_adresse');
-
-        /* Activation de l'auto complete de google dans l'encart Adresse du formulaire */
-        const autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.setFields(['place_id', 'geometry']);
-
-
-        autocomplete.addListener('place_changed', function() {
-			alert('change');
-            var place = autocomplete.getPlace();
-            if (place.geometry) {
-                maCarte.panTo(place.geometry.location);
-                maCarte.setZoom(19);
-                maCarte.setMapTypeId('satellite');
-                monMarqueur = new google.maps.Marker({
-                    position: place.geometry.location,
-                    map: maCarte
-                });
-            }
-            $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
-            $('#site_ba_lienGoogle').attr('readonly', true)
-        });
-
-
-        $('#site_ba_lienGoogle').on('change', function() {
-            var $objPos = {};
-
-            var $position = $('#site_ba_lienGoogle').val();
-            // Si la coordonnée est retournée par l'outil de google map On zoom sur le lieu de l'adresse selectionnée
-            // Sinon si l'adresse provient du site web google map, on extrait les coordonnées
-            var $coordonnees = $position.match(/latLng\((.+?),(.+?)\)/);
-            if ($coordonnees == null)
-            {
-                geocoder = new google.maps.Geocoder();
-                var $adresse = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + $('#site_ba_lienGoogle').val() + '&key=' + "{{ apiKey }}";
-                $.ajax({
-                    url: $adresse,
-                    method: "get",
-                    success: function(msg) {
-                        $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
-                        $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
-                        maCarte.setCenter($objPos);
-                        maCarte.setZoom(19);
-                        maCarte.setMapTypeId('satellite');
-                        monMarqueur = new google.maps.Marker({
-                            position: $objPos,
-                            map: maCarte
-                        });
-                        $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
-                        $('#site_ba_lienGoogle').val($latLng);
-                    }
-                });
-            } else {
-                $objPos.lat = parseFloat($coordonnees[1]);
-                $objPos.lng = parseFloat($coordonnees[2]);
-                maCarte.setCenter($objPos);
-                maCarte.setZoom(19);
-                maCarte.setMapTypeId('satellite');
-            }
-        });
-    }
 
 	function verificationBeforeSendFormSite()
 	{

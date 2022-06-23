@@ -51,7 +51,8 @@ class TicketIncidentModificationType extends BaseType {
             'invalid_message' => 'Format de la date incorrect.',
             'attr'          => array(
                 'placeholder'   => 'dd/mm/YYYY',
-                'maxlength'     => 10
+                'maxlength'     => 10,
+				'class'			=> 'disabled'
             ),
             'required'      => false
         ));

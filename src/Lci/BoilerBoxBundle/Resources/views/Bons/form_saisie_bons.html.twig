@@ -25,6 +25,9 @@
         form > .form-group{
         	display: none;
         }
+		#mapVisualisation {
+			height: 400px;
+		}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -183,7 +186,7 @@
 <section class="content__brick">
 	<fieldset class="fieldset">
 		<h2 class="fieldset__title">Localisation</h2>
-		<div id='map'></div>
+		<div id='mapVisualisation'></div>
 	</fieldset>
 	<div class="content__btn">
 		<a href="{{ path('lci_bons_attachements') }}" class="btn_menu btn btn--second">Retour</a>
@@ -340,16 +343,22 @@
     {
         // Récupération du container des fichiers des bons
         $container_fichiers_bon     = $('#ticket_incident_fichiersPdf');
+
         // id du lien 'Parcourir' pour afficher la fenetre de recherche du fichier
         id_lien_fichiersPdf         = 'ticket_incident_fichiersPdf';
+
         // id du select intervenant
         id_select_intervenant       = 'ticket_incident_user';
+
         // id du select site
         id_select_site              = 'ticket_incident_site';
+
         // id du champs id d'un nouveau site
         id_champs_nouveau_id_site   = 'ticket_incident_idNouveau';
+
         // id du nom d'un site qui vient d'être crée
         id_champs_nouveau_nom_site  = 'ticket_incident_siteNouveau';
+
         // id du type (bon ou ticket)
         id_champs_nouveau_type      = 'ticket_incident_typeNouveau';
 
@@ -359,6 +368,8 @@
 
 		// id du select service
 		id_select_service 			= 'ticket_incident_service';
+
+		id_text_numeroAffaire		= 'ticket_incident_numeroAffaire';
     } else if ($page_html == 'bon')
     {
         $container_fichiers_bon     = $('#bons_attachement_fichiersPdf');
@@ -372,6 +383,7 @@
         id_champs_tel_du_contact    = 'bons_attachement_telephoneContactClient';
         id_champs_mail_du_contact   = 'bons_attachement_emailContactClient';
 		id_select_service			= 'bons_attachement_service';
+        id_text_numeroAffaire       = 'bons_attachement_numeroAffaire';
     }
 </script>
 

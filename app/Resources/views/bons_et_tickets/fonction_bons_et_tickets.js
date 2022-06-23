@@ -4,7 +4,8 @@
         $('.side-nav .bons-interv').addClass('active');
     });
 
-    var maCarte;
+    var maCarte, maCarteVisualisation;
+	var monMarqueur, monMarqueurVisualisation;
 
     function attendreRechargement()
     {
@@ -19,13 +20,20 @@
 
     function initAutocomplete()
     {
-        var monMarqueur;
 
+		/* Création des cartes google */
         maCarte = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 50.474, lng: 2.97118},
             zoom: 4,
-            mapTypeId: 'roadmap'
+            mapTypeId: 'satellite'
         });
+
+		maCarteVisualisation = new google.maps.Map(document.getElementById('mapVisualisation'), {
+            center: {lat: 50.474, lng: 2.97118},
+            zoom: 4,
+            mapTypeId: 'satellite'
+        });
+
 
         /* Mise en place du textbox dans la carte */
         var input = document.getElementById('site_ba_adresse');
@@ -42,11 +50,28 @@
             monMarqueur = new google.maps.Marker({
                 position: e.latLng,
                 map: maCarte,
-                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png'
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png',
+				title: 'Entrée'
             });
             maCarte.setZoom(19);
             maCarte.setCenter(monMarqueur.getPosition());
             maCarte.setMapTypeId('satellite');
+
+
+			if (monMarqueurVisualisation != null) {
+                monMarqueurVisualisation.setMap(null);
+            }
+            monMarqueurVisualisation = new google.maps.Marker({
+                position: e.latLng,
+                map: maCarteVisualisation,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png',
+                title: 'Entrée'
+            });
+            maCarteVisualisation.setZoom(19);
+            maCarteVisualisation.setCenter(monMarqueurVisualisation.getPosition());
+            maCarteVisualisation.setMapTypeId('satellite');
+
+
 
             /* Service de geocoding pour récupérer l'adresse du lieu selectionné par la souris */
             /* On ne modifie que l'url en fonction du marqueur */
@@ -62,7 +87,6 @@
                 }
             });
         });
-
         autocomplete.addListener('place_changed', function()
         {
             var place = autocomplete.getPlace();
@@ -74,6 +98,15 @@
                     position: place.geometry.location,
                     map: maCarte
                 });
+
+				maCarteVisualisation.panTo(place.geometry.location);
+                maCarteVisualisation.setZoom(19);
+                maCarteVisualisation.setMapTypeId('satellite');
+                monMarqueurVisualisation = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: maCarteVisualisation
+                });
+
             }
             $('#site_ba_lienGoogle').val('latLng' + place.geometry.location);
             $('#site_ba_lienGoogle').attr('readonly', true)
@@ -104,6 +137,7 @@
                 success: function(msg) {
                     $objPos.lat = msg['results'][0]['geometry']['location']['lat'];
                     $objPos.lng = msg['results'][0]['geometry']['location']['lng'];
+
                     maCarte.setCenter($objPos);
                     maCarte.setZoom(19);
                     maCarte.setMapTypeId('satellite');
@@ -111,6 +145,15 @@
                         position: $objPos,
                         map: maCarte
                     });
+
+                    maCarteVisualisation.setCenter($objPos);
+                    maCarteVisualisation.setZoom(19);
+                    maCarteVisualisation.setMapTypeId('satellite');
+                    monMarqueurVisualisation = new google.maps.Marker({
+                        position: $objPos,
+                        map: maCarteVisualisation
+                    });
+
                     $latLng = 'latLng(' + $objPos.lat + ',' + $objPos.lng + ')';
                     $('#site_ba_lienGoogle').val($latLng);
                 }
@@ -118,9 +161,15 @@
         } else {
             $objPos.lat = parseFloat($coordonnees[1]);
             $objPos.lng = parseFloat($coordonnees[2]);
+
             maCarte.setCenter($objPos);
             maCarte.setZoom(19);
             maCarte.setMapTypeId('satellite');
+
+
+            maCarteVisualisation.setCenter($objPos);
+            maCarteVisualisation.setZoom(19);
+            maCarteVisualisation.setMapTypeId('satellite');
         }
     });
 
@@ -182,12 +231,25 @@
             /* Création du marqueur */
             monMarqueur = new google.maps.Marker({
                 position: $objPos,
+				map: maCarte,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png',
+                title: 'Entrée'
             });
-
             /* Placement du marqueur sur la carte */
             maCarte.setZoom(19);
             maCarte.setCenter(monMarqueur.getPosition());
             maCarte.setMapTypeId('satellite');
+
+
+			monMarqueurVisualisation = new google.maps.Marker({
+                position: $objPos,
+                map: maCarteVisualisation,
+                icon: 'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png',
+                title: 'Entrée'
+            });
+            maCarteVisualisation.setZoom(19);
+            maCarteVisualisation.setCenter(monMarqueurVisualisation.getPosition());
+            maCarteVisualisation.setMapTypeId('satellite');
         }
     }
 
@@ -388,6 +450,8 @@
 
     function checkValidationBeforeSend()
     {
+		resetCheck();
+
         var $send_form = true;
 
         // On vérifie la selection d'un site
@@ -395,14 +459,43 @@
         {
             $('#' + id_select_site).addClass('erreur_formulaire');
             $send_form = false;
-        }
+        } else {
+			
+		}
 
         // On vérifie l'ajout du numero d'affaire
-        if ($('#ticket_incident_numeroAffaire').val() === '')
+        if ($('#' + id_text_numeroAffaire).val() === '')
         {
-            $('#ticket_incident_numeroAffaire').addClass('erreur_formulaire');
+            $('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
             $send_form = false;
-        }
+        } else {
+            /*
+                Valeures acceptées
+            	CXXX
+            	DXXX
+            	VXXX
+            	PLXXX
+            	PCXXX
+            	SALXXX
+            	SACXXX
+            	COLXXX
+            	COCXXX
+            	GXXX
+            */
+			// Mise en majuscule de l'affaire 
+			var $tmp_numero_affaire = $('#' + id_text_numeroAffaire).val().toUpperCase();
+			$('#' + id_text_numeroAffaire).val($tmp_numero_affaire);
+
+			// Vérification des caractères autorisés
+			var $is_ok =  $tmp_numero_affaire.match(/^([CDGV]|PL|PC|SAL|SAC|COL|COC)\d\d\d$/);
+       	 	if ($is_ok == null)
+        	{
+				$('#' + id_text_numeroAffaire).addClass('erreur_formulaire');
+			//	$('#' + id_text_numeroAffaire).val('Formats acceptés : CXXX, DXXX, GXXX, VXXX, PLXXX, PCXXX, SALXXX, SACXXX, COLXXX, COCXXX').toLowerCase();
+            	$send_form = false;
+			} 
+				
+		}
 
         // On vérifie la selection d'un contact
         if ($('#select_contact').val() === '')
@@ -420,10 +513,10 @@
 
 
         // On vérifie que pour le contact selectionné, il y a soit un email soit un téléphone
-        if (($('#ticket_incident_emailContactClient').val() === '') && ($('#ticket_incident_telephoneContactClient').val() === ''))
+        if (($('#' + id_champs_mail_du_contact).val() === '') && ($('#' + id_champs_tel_du_contact).val() === ''))
         {
-            $('#ticket_incident_emailContactClient').addClass('erreur_formulaire');
-            $('#ticket_incident_telephoneContactClient').addClass('erreur_formulaire');
+            $('#' + id_champs_mail_du_contact).addClass('erreur_formulaire');
+            $('#' + id_champs_tel_du_contact).addClass('erreur_formulaire');
             $send_form = false;
         }
 
@@ -441,10 +534,10 @@
     function resetCheck()
     {
         $('#' + id_select_site).removeClass('erreur_formulaire');
-        $('#ticket_incident_numeroAffaire').removeClass('erreur_formulaire');
+        $('#' + id_text_numeroAffaire).removeClass('erreur_formulaire');
         $('#select_contact').removeClass('erreur_formulaire');
-        $('#ticket_incident_emailContactClient').removeClass('erreur_formulaire');
-        $('#ticket_incident_telephoneContactClient').removeClass('erreur_formulaire');
+        $('#' + id_champs_mail_du_contact).removeClass('erreur_formulaire');
+        $('#' + id_champs_tel_du_contact).removeClass('erreur_formulaire');
         $('#ticket_incident_motif').removeClass('erreur_formulaire');
     }
 
@@ -798,5 +891,10 @@
         $('#contact_fonction').val(capitalize($('#contact_fonction').val().toLowerCase()));
     }
 
+
+
+    $('#bons_attachement_modification_user').change(function(e) {
+        togglePopUp(commentaireChangeIntervenant);
+    });
 
 </script>

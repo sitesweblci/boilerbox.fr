@@ -21,6 +21,10 @@ lci_boiler_box_tickets:
     resource: "@LciBoilerBoxBundle/Resources/config/routing_tickets.yml"
     prefix:   /lci/tickets
 
+lci_boiler_box_bon_et_tickets:
+    resource: "@LciBoilerBoxBundle/Resources/config/routing_bons_et_tickets.yml"
+    prefix:   /lci/bons_et_ticket
+
 lci_boilerbox_index:
     path: /
     defaults: { _controller: LciBoilerBoxBundle:BoilerBox:accesSite }
