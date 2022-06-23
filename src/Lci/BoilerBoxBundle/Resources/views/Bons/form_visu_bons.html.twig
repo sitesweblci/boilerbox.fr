@@ -25,6 +25,11 @@
 		.main-box .search-bar{
 			width: 250px;
 		}
+		/**{
+			box-sizing: border-box;
+			outline: 1px solid limegreen !important;
+			background: rgb(0 100 0 / 0.1) !important;
+		}*/
 	</style>
 {% endblock liens_css %}
 
@@ -39,7 +44,7 @@
 	<h1>{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
 </div> #}
 <header class="sub-header sub-header--blue">
-	<h1 class="sub-header__title">Inteventions et tickets</h1>
+	<h1 class="sub-header__title">Interventions et tickets</h1>
 </header>
 
 
@@ -90,7 +95,7 @@
 							</div>
 						</div>
 					</th>
-					<th class="small txt--center">Enquête</th>
+					<th class="mini txt--center">Enquête</th>
 					{# <th scope='col' class='small txt--center'>Voir</th> #}
 				</tr>
 			</thead>
@@ -212,9 +217,9 @@
 										{% if ent_bons.validationIntervention.valide %}
 											{% if ent_bons.validationCloture %}
 												{% if ent_bons.validationCloture.valide %}
-													<span style='color:green'>Clôturé</span>
+													<span>Clôturé</span>
 												{% else %}
-													<span style='color:red'>Intervention</span>
+													<span>Intervention</span>
 												{% endif %}
 											{% endif %}
 										{% else %}
@@ -231,7 +236,7 @@
 					{# <td class='small cesure selectionnable centrer txt--center'>
 						<img class="visu-bon-img" src="{{ asset('bundles/lciboilerbox/images/actions/visualiser.svg') }}"  >
                     </td> #}
-                    <td class='small txt--center' data-intitule='enquete' data-identifiant="{{ ent_bons.id }}">
+                    <td class='mini txt--center' data-intitule='enquete' data-identifiant="{{ ent_bons.id }}">
                     	{# Pour le secreteriat : Si aucune enquete n'est faite : Affichage d'une checkbox pour demander l'envoi d'une enquete
                     							 Si une enquete est déjà faite affichage de l'information : EnqueteFaite
                     	   Pour les autres : Affichage de l'information EnqueteFaite ou EnqueteNecessaire
@@ -670,7 +675,7 @@
             nouveauTableau += "</td>";
 	
 
-			nouveauTableau += "<td class='small txt--center' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
+			nouveauTableau += "<td class='mini txt--center' data-intitule='enquete' data-identifiant='" + tableau[index]['id'] + "'>";
 			{% if is_granted('ROLE_SECRETERIAT') %}
 				if (tableau[index]['enqueteFaite']) {
 					nouveauTableau += "x";

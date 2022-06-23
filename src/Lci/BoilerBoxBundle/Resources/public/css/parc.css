@@ -1307,12 +1307,6 @@ div.ajout_fichier_joint {
 	height: 130px;
 	overflow: auto;
 }
-th div.champs_validation_bon > div > div {
-	border-right: 1px dashed black;
-}
-th div.champs_validation_bon > div > div:first-child {
- 	border-left: 1px dashed black;
-}
 #legende_sites {
     display: flex;
 	flex-direction: column;
