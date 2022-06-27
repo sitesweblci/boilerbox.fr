@@ -68,8 +68,11 @@ class BonsEtTicketsController extends Controller
 			// Modification de l'id du contact en nom de contact
 			if ($entity_bon_recherche->getNomDuContact())
 			{
-				$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($entity_bon_recherche->getNomDuContact());
-				$entity_bon_recherche->setNomDuContact($e_contact->getNom());
+				if (is_int($entity_bon_recherche->getNomDuContact()))
+				{
+					$e_contact = $this->getDoctrine()->getRepository('LciBoilerBoxBundle:Contact')->find($entity_bon_recherche->getNomDuContact());
+					$entity_bon_recherche->setNomDuContact($e_contact->getNom());
+				 }
 			}
 
             $filtre 				= true;

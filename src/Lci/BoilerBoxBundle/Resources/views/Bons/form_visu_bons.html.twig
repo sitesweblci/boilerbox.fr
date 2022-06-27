@@ -34,30 +34,22 @@
 {% endblock boilerBoxCSS %}
 
 {% block mainBody %}
-	{#
-	# Pour un utlisateur lambda, seul ses bons sont visualisables.
-	# Pour le service adsmallstration, tous les bons sont visualisables.
-	#}
+
+{#
+# Pour un utlisateur lambda, seul ses bons sont visualisables.
+# Pour le service administration, tous les bons sont visualisables.
+#}
 
 
 {# <div id='entete_de_page' data-src="{{ asset('bundles/lciboilerbox/images/parc/boutons/btnPicto_visualiser.png') }}">
 	<h1>{% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions</h1>
 </div> #}
+
 <header class="sub-header sub-header--blue">
 	<h1 class="sub-header__title">Interventions et tickets</h1>
 </header>
 
 
-{# <div class='listing notToBePrinted'> #}
-{% if filtre %}
-	<div class='texte_refresh_liste_ba' onClick='refeshResearch();'>
-		<div>Réinitialiser les filtres</div>
-		<div class='refresh_liste_ba'>
-			<span class='horizontal'></span>
-			<span class='vertical'></span>
-		</div>
-	</div>
-{% endif %}
 <main class='main-box main-box--table main-box--visuBons'>
 	<h1 class="main-box__title main-box--table__title">{# {% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions #}Liste bons d'interventions et tickets</h1>
     <div class='main-box__action main-box__action--wide'>
@@ -69,6 +61,9 @@
     		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" />
     		<span class="tooltip">Affiner recherche</span>
     	</span>
+		{% if filtre %}
+			<span style='color:red' onClick='refeshResearch();'>&nbsp;&nbsp;R&nbsp;&nbsp;</span>
+		{% endif %}
     </div>
     <div class="main-box__content">
         <table id="js-liste-bon" class='flex-table'>
