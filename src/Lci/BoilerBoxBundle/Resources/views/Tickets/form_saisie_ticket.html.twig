@@ -8,8 +8,6 @@
 
 {% block boilerBoxCSS %}
     {{ parent() }}
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
 		body > form{
 			padding: 8px;
@@ -32,6 +30,14 @@
         .notIntoService {
             background: gray;
         }
+
+		{# Fonction pour n'afficher que l'annee de construction equipement  #}
+		.ui-datepicker-calendar {
+			display: none;
+		}
+		.ui-datepicker-month{
+    		display :none;
+		}
 	</style>
 {% endblock boilerBoxCSS %}
 

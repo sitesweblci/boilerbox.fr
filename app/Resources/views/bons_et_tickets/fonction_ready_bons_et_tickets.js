@@ -353,7 +353,6 @@
        	{% endif %}
 
 		// Se trouve dans la fonction setDatePicker
-		$("input[placeholder='dd/mm/YYYY']").datepicker();
         setDatePicker();
     });
 

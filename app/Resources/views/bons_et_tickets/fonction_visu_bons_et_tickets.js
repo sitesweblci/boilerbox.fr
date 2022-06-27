@@ -390,12 +390,6 @@
 
 
 
-    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
-    function setDatePicker()
-    {
-        $("input[placeholder='dd/mm/YYYY']").datepicker();
-    }
-
 
     $('#' + id_select_intervenant).change(function(e) {
         togglePopUp(commentaireChangeIntervenant);

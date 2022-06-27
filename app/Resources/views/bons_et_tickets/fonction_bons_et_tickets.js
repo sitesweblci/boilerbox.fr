@@ -255,13 +255,6 @@
 
 
 
-    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
-    function setDatePicker()
-    {
-        $("input[placeholder='dd/mm/YYYY']").datepicker();
-    }
-
-
     function resetInfosSite()
     {
         $('#site_ba_intitule').attr('readonly', false);

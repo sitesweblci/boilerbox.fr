@@ -3,6 +3,7 @@
 
 	$(document).ready(function() 
 	{
+		console.log('ready generale : app/Resources/views/boilerbox/boilerbox.js');
         // Inhibition du raffraichissement par F5
         $(document).keydown(function(e){
             if (e.which == 116) {
@@ -271,7 +272,7 @@
     // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
     function setDatePicker()
     {
-        alert('set datepicker');
+		console.log('set date picker for placeholder fonction generale.js');
         $("input[placeholder='dd/mm/YYYY']").datepicker();
     }
 

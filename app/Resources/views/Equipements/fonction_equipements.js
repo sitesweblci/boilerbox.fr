@@ -36,7 +36,7 @@ $(document).ready(function()
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
                                                 onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '" + tmp_denomination + "', '" + tmp_autreDenomination + "')\" \
                                             />\
-                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:80px;margin-right:10px'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:80px;margin-right:10px'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
+                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:80px;margin-right:10px'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:80px;margin-right:10px'>{{ e_equipement.anneeDeConstruction | date('Y') }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
                                 </div>";
                         } else {
@@ -88,9 +88,17 @@ $(document).ready(function()
 		}
 
         // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+		// On n'affiche que l'année pour les équipement donc on crée nous même la date au 1 janvier de l'année sélectionnée
         $("#date_annee_construction_equipement").datepicker({
 			altField: "#equipement_ba_ticket_anneeDeConstruction",
-			altFormat: "yy/mm/dd" 
+			altFormat: "yy/mm/dd" ,
+            dateFormat: "yy",
+			onClose : function(dateText, inst) {
+				// var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, 0, 1));
+                $(".ui-datepicker-calendar").hide();
+            }
 		});
 });
 
