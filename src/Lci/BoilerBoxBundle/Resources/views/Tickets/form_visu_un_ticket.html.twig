@@ -43,6 +43,9 @@
     #table_des_equipements{
     	display: table !important;
     }
+	.info_system {
+		background: lightgray;
+	}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -441,6 +444,15 @@
                 <div>
                     <label for="consignesClientCloture">Informations client de cloture</label>
                     <textarea name='consignesClientCloture' id='consignesClientCloture'></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="popup__content">
+            <div class="form__field">
+                <p id='avertissementConsignesClotureTechnicien' style='color:red'></p>
+                <div>
+                    <label for="consignesTechnicienCloture">Informations technicien de cloture</label>
+                    <textarea name='consignesTechnicienCloture' id='consignesTechnicienCloture'></textarea>
                 </div>
             </div>
         </div>

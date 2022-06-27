@@ -104,7 +104,7 @@
         		}	
 			break;
 			case 'cloture':
-		        var texte = $('#consignesClientCloture').val();
+		        var texte 				= $('#consignesClientCloture').val();
         		if (texte != '')
         		{
             		// Envoi du mail de cloture au client
@@ -115,8 +115,11 @@
             		    success: function(msg)
             		    {
             		        console.log('envoi du mail de cloture effectué');
-            		        console.log(msg);
-            		        ajoutCommentaire('cloture',texte);
+							console.log(msg);
+            		        ajoutCommentaire('cloture',"<span class='info_system'>Informations de clôture client</span> : " + texte);
+
+							var texte_technicien    = $('#consignesTechnicienCloture').val();
+							ajoutCommentaire('cloture_technicien', "<span class='info_system'>Informations de clôture technicien</span> : " + texte_technicien);
             		    },
             		    error: function(){
             		        alert("Echec de l'envoi du mail client de cloture incident");
