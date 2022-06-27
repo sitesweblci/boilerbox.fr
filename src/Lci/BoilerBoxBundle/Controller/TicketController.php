@@ -162,13 +162,28 @@ class TicketController extends Controller
 						// On défini le type pour distinguer ticket d'un bon
 						$e_ticket->setType('ticket');
 						$e_ticket->setTypeIntervention('Incident');
-
+			
 						// Le numero du ticket s'incremente automatiquement
 						// 	recherche du dernier numéro de ticket en base
 						// 	incrémentation du numéro trouvé
 						$numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
 						$numero_de_ticket ++;
 						$e_ticket->setNumeroBA($numero_de_ticket);
+
+
+						// Ajout des commentaires d'ouverture
+						$e_user_courant         = $this->get('security.token_storage')->getToken()->getUser();
+						$commentaires_ouverture = "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'><span class='info_system'>Informations clients d'ouverture de ticket</span> : " . $f_ticket->get('motif')->getData() . "</div>";
+
+						$e_ticket->setCommentaires($commentaires_ouverture);	
+							
+						if ($f_ticket->get('motifTechnicien')->getData())
+						{
+							$commentaires_ouverture_technicien = "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'><span class='info_system'>Informations complémentaires d'ouverture de ticket</span> : " . $f_ticket->get('motifTechnicien')->getData() . "</div>";
+							$e_ticket->setCommentaires($commentaires_ouverture . $commentaires_ouverture_technicien);
+						}
+
+						
 
 						// Enregistrement du ticket
                     	$em->persist($e_ticket);

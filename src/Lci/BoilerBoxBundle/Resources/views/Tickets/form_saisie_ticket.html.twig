@@ -184,12 +184,22 @@
 		<div id='mapVisualisation'></div>
 	</fieldset>
     <fieldset class="fieldset">
-        <h2 class="fieldset__title">Motif</h2>
+        <h2 class="fieldset__title">Informations reçues par le client</h2>
         <div class="form__field">
             <div>
                 {{ form_errors(form.motif) }}
                 {# {{ form_label(form.motif) }} #}
                 {{ form_widget(form.motif) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="fieldset">
+        <h2 class="fieldset__title">Informations complémentaires</h2>
+        <div class="form__field">
+            <div>
+                {{ form_errors(form.motifTechnicien) }}
+                {# {{ form_label(form.motifTechncien) }} #}
+                {{ form_widget(form.motifTechnicien) }}
             </div>
         </div>
     </fieldset>

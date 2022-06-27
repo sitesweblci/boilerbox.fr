@@ -196,6 +196,15 @@ class TicketIncidentType extends AbstractType {
                 'placeholder'   => "Motif de création du ticket"
             )
         ))
+		 ->add('motifTechnicien', TextareaType::class, array(
+            'label'         => false,
+            'required'      => false,
+            'trim'          => true,
+            'attr'          => array (
+                'placeholder'   => "Informations complémentaire pour les techniciens"
+            ),
+			'mapped'		=> false
+        ))
 		->add('type', TextType::class, array(
             'label'         => false,
             'required'      => true,
