@@ -238,6 +238,12 @@
         var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
         return new_ch2;
     }
+	function dateTransformeFromEntiteSerializedForPickerGetYears(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-..-../,"$1");
+        return new_ch2;
+    }
     function dateTransformeFromEntiteSerialized(str_date)
     {
         var new_ch = str_date.substr(0,10);

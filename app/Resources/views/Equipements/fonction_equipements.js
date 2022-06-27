@@ -203,7 +203,7 @@ $(document).ready(function()
                     $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
                     $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
                     $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
-                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
+                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPickerGetYears($data_e_equipement.anneeDeConstruction);
                     var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
                     $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
                     $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
