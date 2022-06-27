@@ -1,6 +1,11 @@
 <script type='text/javascript'>
     $(document).ready(function()
     {
+
+		$('input[placeholder="dd/mm/YYYY"]').click(function(){
+			$('#ui-datepicker-div').removeClass('cacher');
+		});
+
         // On définit l'id de l'intervenant pour le retour arrière lorsqu'aucun message de motif de changement d'intervenant n'est indiqué
         $('#last_id_intervenant').val($('#' + id_select_intervenant).val());
 

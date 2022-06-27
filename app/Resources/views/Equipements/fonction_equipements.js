@@ -93,12 +93,33 @@ $(document).ready(function()
 			altField: "#equipement_ba_ticket_anneeDeConstruction",
 			altFormat: "yy/mm/dd" ,
             dateFormat: "yy",
+			autoclose: true,
 			onClose : function(dateText, inst) {
 				// var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                 var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                 $(this).datepicker('setDate', new Date(year, 0, 1));
-                $(".ui-datepicker-calendar").hide();
             }
+		});
+
+		// Lors de l'ouverture de la popup nouvel equipement on cache le calendrier et les mois puis on enleve la class caché sur le container datepicker
+		// Permet de ne pas rendre visisble la modification du css
+		$('#date_annee_construction_equipement').click(function(){
+			// On cache le container
+			$('#ui-datepicker-div').addClass('cacher');
+			setTimeout(function(){
+				$('.ui-datepicker-calendar').hide();
+				$('.ui-datepicker-month').hide();
+				setTimeout(function(){
+					// On réaffiche le container
+					$('#ui-datepicker-div').removeClass('cacher');
+				}, 50);
+				// A la selection de l'année on recache le container et on simule le click sur le bouton close
+				$('#ui-datepicker-div .ui-datepicker-year').change(function(){
+					$('#ui-datepicker-div').addClass('cacher');
+					$('#ui-datepicker-div button.ui-datepicker-close').trigger('click');
+					$('#equipement_ba_ticket_denomination').focus();
+				});
+			}, 100);
 		});
 });
 
@@ -467,6 +488,8 @@ $(document).ready(function()
 
     function gestionDesEquipements2()
     {
+		 $('#ui-datepicker-div').addClass('cacher');
+
 		// Si on est sur la page de [ saisie des bons ]
 		if ($('#bons_attachement_site').length != 0)
 		{
