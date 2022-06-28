@@ -179,9 +179,11 @@ $(document).ready(function()
 		{
 			$data_a_envoyer = $('form[name="equipement_ba_ticket"]').serialize()
 		} else {
+			// Récupération de l'id de l'équimement a afficher dans la popup modification de l'équipement
 			$data_a_envoyer = {'id_equipement':$id_equipement}
 		}
 		attendreRechargement();
+
 
         // Modification de l'équipement en ajax et
         // Réaffichage de la page pour prendre en compte la suppression
@@ -239,7 +241,6 @@ $(document).ready(function()
 
 					// On réindique la date de création de l'équipement
 					$("#date_annee_construction_equipement").val(dateReverseForPicker(date_creation_equipement));
-
 					return 0;
 				}
 
@@ -388,7 +389,6 @@ $(document).ready(function()
         	gestionCaracteresEquipement();
 
             attendreRechargement();
-
             // Appel ajax
             $.ajax({
                 url: "{{ path('lci_ajax_bon_new_equipement') }}",

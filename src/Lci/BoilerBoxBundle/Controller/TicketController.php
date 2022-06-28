@@ -541,6 +541,7 @@ class TicketController extends Controller
 							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+							$em->refresh($e_tmp_equipement);
 							if (!$e_ticket->getEquipementBATicket()->contains($e_tmp_equipement))
 							{
 								$e_tmp_equipement->setSiteBA($e_ticket->getSite());
