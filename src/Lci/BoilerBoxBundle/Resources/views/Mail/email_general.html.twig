@@ -9,14 +9,14 @@
 		<div id='contenu_email'>
 			{% if tab_email['titre'] %}
 				{% if tab_email['sous-titre'] %}
-					<h1 style='margin-bottom:20px;'>{{ tab_email['titre'] | nl2br | raw }}</h1>
+					<h1 style='margin-bottom:20px;'>{{ tab_email['titre'] | raw | nl2br }}</h1>
 				{% else %}
-					<h1 style='margin-bottom:40px;'>{{ tab_email['titre'] | nl2br | raw }}</h1>
+					<h1 style='margin-bottom:40px;'>{{ tab_email['titre'] | raw | nl2br }}</h1>
 				{% endif %}
 			{% endif %}
 
 			{% if tab_email['sous-titre'] %}
-				<h2 style='margin-bottom:40px;'> {{ tab_email['sous-titre'] | nl2br | raw }}</h2>
+				<h2 style='margin-bottom:40px;'> {{ tab_email['sous-titre'] | raw | nl2br }}</h2>
 			{% endif %}
 
 			{% if tab_email['contenu'] %}
@@ -26,7 +26,7 @@
 
 		{% if tab_email['footer'] %}
 			<div id='footer_email' style='margin-top:200px;font-style:italic'>
-				{{ tab_email['footer'] | nl2br | raw }}
+				{{ tab_email['footer'] | raw | nl2br }}
 			</div>
 		{% endif %}
 

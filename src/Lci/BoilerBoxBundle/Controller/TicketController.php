@@ -199,7 +199,7 @@ class TicketController extends Controller
 						}	
 
 						// Envoi de mail au client également
-						$this->sendMailClient($e_ticket, $f_ticket->get('motif')->getData());
+						$this->sendEmailOuvertureTicketClient($e_ticket, $f_ticket->get('motif')->getData());
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();
@@ -710,12 +710,9 @@ class TicketController extends Controller
 
 
 	// Envoi du mail de création de ticket au client
-	private function sendMailClient($e_ticket, $motif_client)
+	private function sendEmailOuvertureTicketClient($e_ticket, $motif_client)
     {
         $service_mailling       = $this->get('lci_boilerbox.mailing');
-        $emetteur               = $e_ticket->getUserInitiateur()->getEmail();
-        $destinataire           = $e_ticket->getUser()->getEmail();
-        $sujet                  = "Création d'un ticket d'incident";
 
         $tab_email            		= array();
 		$tab_email['sujet']			= "Ouverture de ticket d'incident sur BoilerBox";
@@ -726,7 +723,8 @@ class TicketController extends Controller
 		$tab_email['sous-titre']	= "Le ticket d'incident n°" . $e_ticket->getNumeroBA() . " a été ouvert dans nos services suite à votre appel.";
 		$tab_email['contenu']   	= "Ci dessous les informations que vous nous avez fait parvenir :\n\n";	
 		$tab_email['contenu']   	.= "<div style='border:1px solid black; padding:10px;'>$motif_client</div>";
-		$tab_email['footer']		= "Nous mettons tout en oeuvre pour résoudre votre problème et vous répondre dans les meilleurs délais\n";
+		$tab_email['footer']		= "Nous mettons tout en oeuvre pour résoudre votre problème et vous répondre dans les meilleurs délais\n\n";
+		$tab_email['footer']        .= "A bientôt sur <a href='http://boiler-box.fr'>BoilerBox</a>\n";
 		$tab_email['footer']        .="Merci de ne pas répondre directement à ce message.";
 
         $service_mailling->sendEmail($tab_email);

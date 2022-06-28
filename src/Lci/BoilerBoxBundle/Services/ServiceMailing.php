@@ -250,33 +250,7 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
 
 
 
-	// MAIL TICKETS
-
-    // Mail d'ouverture de ticket envoyé au Client
-    public function sendMailOvertureTicketIncident($e_ticket, $motif)
-    {
-        $message = \Swift_Message::newInstance()
-                ->setSubject("Ouverture d'un ticket d'incident pour l'affaire $code_affaire ( $nom_site )")
-				->setFrom($this->from)
-                ->setTo([$e_ticket->getEmailContactClient()]);
-        $image_link = $message->embed(\Swift_Image::fromPath($this->logo));
-        $message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_ouverture_ticket.html.twig', array('e_ticket' => $e_ticket, 'motif' => $motif,   'image_link' => $image_link)));
-
-
-        $message->setContentType('text/html');
-        $nb_delivery = $this->mailer->send($message);
-        if ($nb_delivery == 0) {
-            $this->log->setLog("[ERROR] [MAIL];Echec de l'envoi de l'email : [Ouverture de ticket d'incident] à " . $e_ticket->getEmailContactClient(), $this->fichier_log);
-            return(1);
-        } else {
-            $this->log->setLog("[MAIL];Mail d'ouverture de ticket d'incident envoyé à " . $e_ticket->getEmailContactClient(), $this->fichier_log);
-            return(0);
-        }
-    }
-
-
-
-
+	// ****************				EMAIL TICKETS			************************************
 	/* Attend en entrée : 
 
 
@@ -312,8 +286,6 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
 						->setFrom($from)
                 		->setTo([implode(',', $tab_email['to'])])
 						->setContentType('text/html');
-
-		// Ajout de l'utilisateur en copie de mail
 		if ($cc)
 		{
 			$message->setCc($cc);
@@ -323,7 +295,6 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
 
         $message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_general.html.twig', array('tab_email' => $tab_email,   'image_link' => $image_link)));
 
-
         $nb_delivery = $this->mailer->send($message);
 
         if ($nb_delivery == 0) 
@@ -331,7 +302,7 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
             $this->log->setLog("[ERROR] [MAIL];Echec de l'envoi de l'email : " . $tab_email['sujet'] . " à " . implode(' - ',$tab_email['to']), $this->fichier_log);
             return(1);
         } else {
-            $this->log->setLog("[MAIL];Mail de cloture d'incident envoyé à " . implode(' - ',$tab_email['to']), $this->fichier_log);
+            $this->log->setLog("[MAIL];Mail envoyé à " . implode(' - ',$tab_email['to']), $this->fichier_log);
             return(0);
         }
     }
