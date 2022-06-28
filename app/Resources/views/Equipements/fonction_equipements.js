@@ -126,7 +126,6 @@ $(document).ready(function()
 
     function gestionDesSelectionEquipements()
     {
-		alert('gestionDesSelectionEquipement ' + id_select_site);
 		 // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
 		if ($('#' + id_select_site).val() != '')
         {
