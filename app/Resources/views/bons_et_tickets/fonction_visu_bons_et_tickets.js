@@ -1,4 +1,8 @@
 <script 'type=text/javascript'>
+
+	// information : La variable $idBon est définie dans les ficchier form_visu_un_bon et form_visu_un_ticket. 
+	//					Elle doit être instanciés avant l'include de ce fichier
+
     // Fonction style barre de navigation page active
     function pageActive() {
         $('.side-nav .bons-interv').addClass('active');
@@ -114,8 +118,6 @@
             		    method: "POST",
             		    success: function(msg)
             		    {
-            		        console.log('envoi du mail de cloture effectué');
-							console.log(msg);
             		        ajoutCommentaire('cloture',"<span class='info_system'>Informations de clôture client</span> : " + texte);
 
 							var texte_technicien    = $('#consignesTechnicienCloture').val();
@@ -210,10 +212,10 @@
                 data: {'id_bon':$idBon, 'commentaire':commentaire},
                 method: "POST",
                 success: function(msg){
-                    if (type == 'sav')
+                    if ((type == 'sav') || (type == 'cloture'))
                     {
                         // Modification de la checkbox
-                        changeValidation(type, true);
+                        sendValidationAjaxRequest(type, true);
 						return 0;
                     }
                     if (type != 'autoNoSave')
@@ -240,13 +242,7 @@
     }
 
 
-    function changeValidation($type, $sens)
-    {
-        return sendAjaxRequest($idBon, $type, $sens);
-    }
-
-
-    function sendAjaxRequest($idBon, $type, $sens)
+    function sendValidationAjaxRequest($type, $sens)
     {
         attente();
         setTimeout(function()
@@ -258,7 +254,6 @@
                 success: function(msg)
                 {
                     window.location.assign(location.href);
-                    fin_attente();
                     return true;
                 },
                 error: function(request, $error, $msg)

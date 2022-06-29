@@ -428,43 +428,6 @@ class TicketController extends Controller
         return null;
     }
 
-    /* Seul l'initiateur du ticket ou l'intervenant peuvent modifier un ticket */
-	/* ICI DEV A supprimer ?  Supprimer au ssi la route */
-	/*
-    public function modifierUnBonAction($idBon, Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $current_user = $this->get('security.token_storage')->getToken()->getUser();
-
-        if (!($current_user == $entity_bon->getUser()) && !($current_user == $entity_bon->getUserInitiateur()) && !($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA'))) {
-            $request->getSession()->getFlashBag()->add('info', "Seul l'initiateur ou l'intervenant peuvent modifier le bon");
-            return $this->redirectToRoute('lci_bons_attachements');
-        }
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
-            $form = $this->createForm(BonsAttachementModification1Type::class, $entity_bon);
-        } else {
-            $form = $this->createForm(BonsAttachementModification2Type::class, $entity_bon);
-        }
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $entity_bon->getNumeroBA() . ' modifié.');
-                $_POST['id_bon'] = $entity_bon->getId();
-                // Retour vers la visualisation du ticket
-                return $this->afficherUnBonAction($request);
-            } else {
-                $request->getSession()->getFlashBag()->add('info', $form->getErrors(true));
-            }
-        }
-        return $this->render('LciBoilerBoxBundle:Bons:form_modification_bons.html.twig', array(
-            'form' => $form->createView(),
-            'idBon' => $entity_bon->getId()
-        ));
-    }
-	*/
-
 
     // Affichage et Modification d'un ticket pour la page d'affichage de la liste des fichiers du ticket
     // Dans la page du ticket on affiche également le forumlaire de validation du ticket
@@ -518,7 +481,6 @@ class TicketController extends Controller
 					{
 						if ($e_ticket->getUser()->getId() != $last_intervenant_id)
 						{
-							// ICI DEV  : Envoi des mails : Fin d'affecation et nouvelle affectation
 							$this->sendMailIntervenant($e_ticket);
 							if ($last_intervenant_id != null)
 							{
@@ -528,7 +490,6 @@ class TicketController extends Controller
 					} else {
 						if ($last_intervenant_id != null)
 						{
-							// ICI DEV Si on passe d'un intervenant à aucun intervenant : Faut il envoyer un mail de fin d'affectation de ticket ? 
 							$this->sendMailLastIntervenant($e_ticket, $last_intervenant_id);
 						}
 					}

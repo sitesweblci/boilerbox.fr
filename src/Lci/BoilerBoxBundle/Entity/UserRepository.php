@@ -37,4 +37,17 @@ class UserRepository extends EntityRepository {
 		return $qb->getQuery()->getResult();
 	
 	}
+
+	// Retourne les mails des utilisateurs ayant le rôle défini
+    public function findEmailByRole($role) {
+        $qb = $this->_em->createQueryBuilder()
+            ->select('u.email')
+            ->from($this->_entityName, 'u')
+            ->where('u.roles LIKE :role')
+            ->andWhere('u.enabled = 1')
+            ->setParameter('role', '%"'.$role.'"%');
+        return array_column($qb->getQuery()->getScalarResult(), 'email');
+
+    }
+
 }

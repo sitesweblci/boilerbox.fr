@@ -354,7 +354,7 @@
 										{{ form_widget(form_validation.validationIntervention) }}
 										Attente d'intervention <br/>
 									</div>
-									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
+									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationIntervention.user.label }} ({{ entity_bon.validationIntervention.dateDeValidation | date('d-m-Y H:i') }})</span>
 								{% else %}
 									<span style='color:red;>Non demandée</span>
                                 {% endif %}
@@ -389,7 +389,7 @@
                                 {% if entity_bon.validationIntervention.valide == true %}
                                     {# Service Intervention validé : On affiche l'icone pour le dévalider si on a les droits #}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('intervention', false);">Annuler</span>
+                                        <span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('intervention', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -398,7 +398,7 @@
                             {% if entity_bon.validationCloture %}
                                 {% if entity_bon.validationCloture.valide == true %}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('cloture', false);">Annuler</span>
+                                        <span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('cloture', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}

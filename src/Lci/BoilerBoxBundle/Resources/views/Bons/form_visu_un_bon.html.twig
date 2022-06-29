@@ -413,12 +413,12 @@
 									{% if entity_bon.validationPieceFaite %}
                                         {% if entity_bon.validationPieceFaite.valide == false %}
 											{% if is_granted('ROLE_SERVICE_PIECES') %}
-												<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces', false);">Annuler</span>
+												<span style="color:red; cursor:pointer;" onClick="sendValidationAjaxRequest('pieces', false);">Annuler</span>
 											 {% endif %}
                                         {% endif %}
                                     {% else %}
 										{% if is_granted('ROLE_SERVICE_PIECES') %}
-											<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces', false);">Annuler</span>
+											<span style="color:red; cursor:pointer;" onClick="sendValidationAjaxRequest('pieces', false);">Annuler</span>
 										{% endif %}
                                     {% endif %}
 	            		        {% else %}
@@ -489,7 +489,7 @@
                                 {% if entity_bon.validationTechnique.valide == true %}
                                     {# Service Technique validé : On affiche l'icone pour le dévalider si on a les droits #}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-										<span style='color:red; cursor:pointer;' onClick="changeValidation('technique', false);">Annuler</span>
+										<span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('technique', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -501,7 +501,7 @@
                                         {% if entity_bon.validationPieceFaite.valide == true %}
                                             <span style="display:block; color:green;">Offre traitée par {{ entity_bon.validationPieceFaite.user.label }}<br />Le {{ entity_bon.validationPieceFaite.dateDeValidation | date('d-m-Y') }}</span>
 											{% if is_granted('ROLE_SERVICE_GESTION_PIECES') %}
-												<span style="color:red; cursor:pointer;" onClick="changeValidation('pieces_faite', false);">Annuler</span>
+												<span style="color:red; cursor:pointer;" onClick="sendValidationAjaxRequest('pieces_faite', false);">Annuler</span>
 											{% endif %}
 										
                                         {% else %}
@@ -528,7 +528,7 @@
                                 {% if entity_bon.validationSAV.valide == true %}
                                     {# Service SAV validé : On affiche l'icone pour le dévalider si on a les droits #}
                                     {% if is_granted('ROLE_SERVICE_SAV') %}
-										<span style='color:red; cursor:pointer;' onClick="changeValidation('sav', false);">Annuler</span>
+										<span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('sav', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -538,7 +538,7 @@
                                 {% if entity_bon.validationFacturation.valide == true %}
                                     {# Service Facturation validé : On affiche l'icone pour le dévalider si on a les droits #}
                                     {% if is_granted('ROLE_SERVICE_FACTURATION') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('facturation', false);">Annuler</span>
+                                        <span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('facturation', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}

@@ -51,48 +51,6 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
         }
     }
 
-    // Mail envoyé lors de la validation d'une pièce au gestionnaire de pieces (désigné dans le fichier parameters.yml)
-    public function sendMailPieces($type, $nom_site, $code_affaire, $numero_bon, $label_demandeur, $destinataire)
-    {
-		if ($type == 'demande')
-		{
-        	$message = \Swift_Message::newInstance()
-        	    ->setSubject("Demande d'offre de pièces pour l'affaire $code_affaire ( $nom_site )")
-				->setFrom($this->from)
-        	    ->setTo([$destinataire]);
-			$image_link = $message->embed(\Swift_Image::fromPath($this->logo));
-        	$message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces.html.twig', array('nom_site' => $nom_site, 'code_affaire' => $code_affaire, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
-
-		} else if ($type == 'annulation') {
-			$message = \Swift_Message::newInstance()
-                ->setSubject("Annulation de demande d'offre de pièces pour l'affaire $code_affaire ( $nom_site )")
-				->setFrom($this->from)
-                ->setTo([$destinataire]);	
-			$image_link = $message->embed(\Swift_Image::fromPath($this->logo));
-        	$message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces_annulation.html.twig', array('nom_site' => $nom_site, 'code_affaire' => $code_affaire, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
-		} else if($type == 'faite') {
-			$message = \Swift_Message::newInstance()
-                ->setSubject("Offre de pièces effectuée pour l'affaire $code_affaire ( $nom_site )")
-				->setFrom($this->from)
-                ->setTo([$destinataire]);
-            $image_link = $message->embed(\Swift_Image::fromPath($this->logo));
-            $message->setBody($this->templating->render('LciBoilerBoxBundle:Mail:email_pieces_faite.html.twig', array('nom_site' => $nom_site, 'code_affaire' => $code_affaire, 'numero_bon' => $numero_bon, 'label_demandeur' => $label_demandeur,  'image_link' => $image_link)));
-		}
-
-        $message->setContentType('text/html');
-        $nb_delivery = $this->mailer->send($message);
-        if ($nb_delivery == 0) {
-            $this->log->setLog("[ERROR] [MAIL];Echec de l'envoi de l'email : [Offre de pièce BA] à $destinataire", $this->fichier_log);
-            return(1);
-        } else {
-            $this->log->setLog("[MAIL];Mail d'offre de pièce envoyé à $destinataire", $this->fichier_log);
-            return(0);
-        }
-    }
-
-
-
-
 	public function sendProblemeTechniqueMail($sender, $destinataire, $message_probleme_technique) {
 		$message = \Swift_Message::newInstance()
 			->setSubject('Affectation de problème technique')
@@ -280,12 +238,12 @@ private $from = array('no-reply-assistance-boilerbox@lci-group.fr' => 'Assistanc
             $cc = $tab_email['cc'];
         } 
 
-		
-        $message 	= \Swift_Message::newInstance()
-                		->setSubject($tab_email['sujet'])
-						->setFrom($from)
-                		->setTo([implode(',', $tab_email['to'])])
-						->setContentType('text/html');
+        $message    = \Swift_Message::newInstance()
+                        ->setSubject($tab_email['sujet'])
+                        ->setFrom($from)
+                        ->setTo($tab_email['to'])
+                        ->setContentType('text/html');
+
 		if ($cc)
 		{
 			$message->setCc($cc);

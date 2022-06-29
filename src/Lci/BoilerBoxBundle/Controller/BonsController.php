@@ -412,42 +412,6 @@ class BonsController extends Controller
         return null;
     }
 
-    /* Seul l'initiateur du bon ou l'intervenant peuvent modifier un bon */
-	/* ICI DEV  SUPP ?  supprimer aussi la route 
-    public function modifierUnBonAction($idBon, Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $current_user = $this->get('security.token_storage')->getToken()->getUser();
-
-        if (!($current_user == $entity_bon->getUser()) && !($current_user == $entity_bon->getUserInitiateur()) && !($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA'))) {
-            $request->getSession()->getFlashBag()->add('info', "Seul l'initiateur ou l'intervenant peuvent modifier le bon");
-            return $this->redirectToRoute('lci_bons_attachements');
-        }
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
-            $form = $this->createForm(BonsAttachementModification1Type::class, $entity_bon);
-        } else {
-            $form = $this->createForm(BonsAttachementModification2Type::class, $entity_bon);
-        }
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $entity_bon->getNumeroBA() . ' modifié.');
-                $_POST['id_bon'] = $entity_bon->getId();
-                // Retour vers la visualisation du bon
-                return $this->afficherUnBonAction($request);
-            } else {
-                $request->getSession()->getFlashBag()->add('info', $form->getErrors(true));
-            }
-        }
-        return $this->render('LciBoilerBoxBundle:Bons:form_modification_bons.html.twig', array(
-            'form' => $form->createView(),
-            'idBon' => $entity_bon->getId()
-        ));
-    }
-	*/
-
 
     // Affichage et Modification d'un bon pour la page d'affichage de la liste des fichiers du bon
     // Dans la page du bon on affiche également le forumlaire de validation du bon
