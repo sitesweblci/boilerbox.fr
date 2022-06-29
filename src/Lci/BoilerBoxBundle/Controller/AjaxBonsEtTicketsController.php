@@ -79,6 +79,7 @@ class AjaxBonsEtTicketsController extends Controller
 
         // Si le sens est false c'est que la checkbox est décochée : On définit le champs valide à 0 pour signifier que l'entité Validation est une Dé-Validation
         // Ajout du 02/12/2019 : Lors d'une dévalidation on informe l'ensemble des valideurs par mail.
+		// DE VALIDATION
         if ($sens == 'false')
         {
             switch ($type) {
@@ -111,6 +112,22 @@ class AjaxBonsEtTicketsController extends Controller
                     $entity_validation          = $entity_bon->getValidationCloture();
                     $entities_users_validation  = $em->getRepository('LciBoilerBoxBundle:User')->findEmailByRole('ROLE_SERVICE_TECHNIQUE');
 					$page_html                  = 'ticket';
+
+                	// Envoi du mail de réouverture de ticket au client
+                	$service_mail = $this->get('lci_boilerbox.mailing');
+                	$tab_email                  = array();
+                	$tab_email['sujet']         = "Ré-ouverture du ticket d'incident n°" . $entity_bon->getNumeroBA() . " pour l'affaire " . $entity_bon->getNumeroAffaire() . " ( " . $entity_bon->getSite()->getIntitule() . " ) ";
+                	$tab_email['from']          = null;
+                	$tab_email['to']            = array($entity_bon->getEmailContactClient());
+                	$tab_email['cc']            = array('assistance_ibc@lci-group.fr');
+                	$tab_email['titre']         = "Ré-ouverture du ticket d'incident n°" . $entity_bon->getNumeroBA() . " pour l'affaire " . $entity_bon->getNumeroAffaire();
+                	$tab_email['sous-titre']    = null;
+                	$tab_email['contenu']       = "Bonjour\n\n";
+                	$tab_email['contenu']       .= "Une réouverture du ticket d'incident n°" . $entity_bon->getNumeroBA() . " a été effectuée.\n";
+                	$tab_email['contenu']       .= "Ré-ouverture effectuée le ".date("d/m/Y")." par " . $e_user_actif->getLabel();
+                	$tab_email['footer']        = "A bientôt sur <a href='http://boiler-box.fr'>BoilerBox</a>\n";
+                	$tab_email['footer']        .= "Merci de ne pas répondre directement à ce message.";
+                	$service_mail->sendEmail($tab_email);
                     break;
                 default:
                     break;
@@ -145,14 +162,14 @@ class AjaxBonsEtTicketsController extends Controller
         		$tab_email['titre']         = "Annulation $type pour l'affaire " . $entity_bon->getNumeroAffaire();
         		$tab_email['sous-titre']    = null;
         		$tab_email['contenu']       = "Bonjour\n\n";
-        		$tab_email['contenu']       .= "Une annulation $type a été effectuée sur le " . $page_html . " <b>" . $entity_bon->getNumeroAffaire() . "</b> ( " . $entity_bon->getSite()->getIntitule() . " - " . $entity_bon->getNumeroAffaire() . " )<br />";
+        		$tab_email['contenu']       .= "Une annulation $type a été effectuée sur le " . $page_html . " <b>" . $entity_bon->getNumeroAffaire() . "</b> ( " . $entity_bon->getSite()->getIntitule() . " - " . $entity_bon->getNumeroAffaire() . " )\n";
         		$tab_email['contenu']       .= "Annulation effectuée le ".date("d/m/Y")." par " . $e_user_actif->getLabel();
-        		$tab_email['footer']        = "A bientôt sur <a href='http://boiler-box.fr'>BoilerBox</a>";
+        		$tab_email['footer']        = "A bientôt sur <a href='http://boiler-box.fr'>BoilerBox</a>\n";
         		$tab_email['footer']        .= "Merci de ne pas répondre directement à ce message.";
 				$service_mail->sendEmail($tab_email);
-
             }
         } else {
+			// VALIDATION
             // Si l'entité existe on la récupère sinon on la créée
             // Une Validation sur un bon d'intervention est effectuée
 
