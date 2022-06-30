@@ -307,4 +307,39 @@
             }
         });
 	}
+
+
+    // Fonction qui accepte en entrée un date au format fr jj[/-]mm[/-]aaaa (hh:mm:ss facultatif) 
+	// et retourne un tableau date pour les tri javascript : tab[date, yyyy, mm, dd, hh, mm, ss]
+    function setFRDateToJSDate(frdate)
+    {
+        var tab_jsdate;
+        if (frdate.length == 10)
+        {
+            // date sans time
+            var regexp = /(..).(..).(....)/;
+            var tab_jsdate = frdate.match(regexp);
+			tab_jsdate.push('00');
+            tab_jsdate.push('00');
+            tab_jsdate.push('00');
+            return tab_jsdate;
+        } else if (frdate.length == 16)
+        {
+			// date avec hh:mm
+			var regexp = /(..).(..).(....).(..).(..)$/;
+            var tab_jsdate = frdate.match(regexp);
+            tab_jsdate.push('00');
+            return tab_jsdate;
+        } else if (frdate.length == 19)
+        {
+            // date avec hh:mm:ss
+            var regexp = /(..).(..).(....).(..).(..).(..)$/;
+            var tab_jsdate = frdate.match(regexp);
+            return tab_jsdate;
+        } else {
+            return frdate;
+        }
+    }
+
+
 </script>

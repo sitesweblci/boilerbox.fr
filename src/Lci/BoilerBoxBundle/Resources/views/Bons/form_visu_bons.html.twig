@@ -380,37 +380,38 @@
 		}
     };
 
-    function compareDateSignature(a, b) {
-        if (a.dateSignature == b.dateSignature) {
-            return 0;
-        }
-		if (directionTri == 'asc') {
-        	return (a.dateSignature < b.dateSignature )?-1:1;
-		} else {
-			return (a.dateSignature < b.dateSignature )?1:-1;
-		}
-    };
 
-/*
-    function compareDateInitialisation(a, b) {
-		alert(typeof(a.dateInitialisation));
-		date1 = new Date(a.dateInitialisation);
-		date2 = new Date(b.dateInitialisation);
-		alert(typeof(date1));
-		
-        if (a.dateInitialisation == b.dateInitialisation) {
-			return 0;
-		}
-		if (directionTri == 'asc') {
-            return (a.dateInitialisation < b.dateInitialisation )?-1:1;
-        } else {
-            return (a.dateInitialisation < b.dateInitialisation )?1:-1;
+    function compareDateSignature(a, b) 
+	{
+        // Gestion des date null / empty
+        if (! a.dateSignature)
+        {
+            if (! b.dateSignature)
+            {
+                return 0;
+            } else {
+                if (directionTri == 'asc') {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        } else if (! b.dateSignature)
+        {
+            if (directionTri == 'asc') {
+                return 1;
+            } else {
+                return -1;
+            }
         }
-    };
-*/
-    function compareDateInitialisation(a, b) {
-        date1 = new Date(a.dateInitialisation);
-        date2 = new Date(b.dateInitialisation);
+
+        tab_date1js = setFRDateToJSDate(a.dateSignature);
+        tab_date2js = setFRDateToJSDate(b.dateSignature);
+
+        date1 = new Date(tab_date1js[3], (tab_date1js[2] - 1), tab_date1js[1], tab_date1js[4], tab_date1js[5], tab_date1js[6]);
+        date2 = new Date(tab_date2js[3], (tab_date2js[2] - 1), tab_date2js[1], tab_date2js[4], tab_date2js[5], tab_date2js[6]);
+
+
         if (date1 == date2) {
             return 0;
         }
@@ -421,9 +422,55 @@
         }
     };
 
-    function compareDateDebutIntervention(a, b) {
-        date1 = new Date(a.dateDebutIntervention);
-        date2 = new Date(b.dateDebutIntervention);
+    function compareDateInitialisation(a, b) 
+	{
+		tab_date1js = setFRDateToJSDate(a.dateInitialisation);
+		tab_date2js = setFRDateToJSDate(b.dateInitialisation);
+
+        date1 = new Date(tab_date1js[3], (tab_date1js[2] - 1), tab_date1js[1], tab_date1js[4], tab_date1js[5], tab_date1js[6]);
+        date2 = new Date(tab_date2js[3], (tab_date2js[2] - 1), tab_date2js[1], tab_date2js[4], tab_date2js[5], tab_date2js[6]);
+
+        if (date1 == date2) {
+            return 0;
+        }
+        if (directionTri == 'asc') {
+            return (date1 < date2)?-1:1;
+        } else {
+            return (date1 < date2)?1:-1;
+        }
+    };
+
+    function compareDateDebutIntervention(a, b) 
+	{
+		// Gestion des date null / empty
+        if (! a.dateDebutIntervention)
+        {
+			if (! b.dateDebutIntervention)
+			{
+				return 0;
+			} else {
+				if (directionTri == 'asc') {
+            		return -1;
+        		} else {
+        		    return 1;
+        		}
+			}
+		} else if (! b.dateDebutIntervention)
+        {
+            if (directionTri == 'asc') {
+                return 1;
+            } else {
+                return -1;
+            }
+		}
+
+        tab_date1js = setFRDateToJSDate(a.dateDebutIntervention);
+        tab_date2js = setFRDateToJSDate(b.dateDebutIntervention);
+
+        date1 = new Date(tab_date1js[3], (tab_date1js[2] - 1), tab_date1js[1], tab_date1js[4], tab_date1js[5], tab_date1js[6]);
+        date2 = new Date(tab_date2js[3], (tab_date2js[2] - 1), tab_date2js[1], tab_date2js[4], tab_date2js[5], tab_date2js[6]);
+
+
         if (date1 == date2) {
             return 0;
         }
@@ -435,9 +482,37 @@
     };
 
 
-    function compareDateFinIntervention(a, b) {
-        date1 = new Date(a.dateFinIntervention);
-        date2 = new Date(b.dateFinIntervention);
+    function compareDateFinIntervention(a, b) 
+	{
+        // Gestion des date null / empty
+        if (! a.dateFinIntervention)
+        {
+            if (! b.dateFinIntervention)
+            {
+                return 0;
+            } else {
+                if (directionTri == 'asc') {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        } else if (! b.dateFinIntervention)
+        {
+            if (directionTri == 'asc') {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+
+        tab_date1js = setFRDateToJSDate(a.dateFinIntervention);
+        tab_date2js = setFRDateToJSDate(b.dateFinIntervention);
+
+        date1 = new Date(tab_date1js[3], (tab_date1js[2] - 1), tab_date1js[1], tab_date1js[4], tab_date1js[5], tab_date1js[6]);
+        date2 = new Date(tab_date2js[3], (tab_date2js[2] - 1), tab_date2js[1], tab_date2js[4], tab_date2js[5], tab_date2js[6]);
+
+
         if (date1 == date2) {
             return 0;
         }
