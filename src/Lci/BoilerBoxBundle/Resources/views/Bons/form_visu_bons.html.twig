@@ -643,9 +643,9 @@
 		{
 			if (tableau[index]['type'] == 'ticket')
 			{
-				nouveauTableau += "<tr class='flex-table__row row-ticket' onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'ticket');>";
+				nouveauTableau += "<tr class='flex-table__row row-ticket' data-id='"+tableau[index]['id']+"' data-type='"+tableau[index]['type']+"' onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'ticket');>";
 			} else {
-				nouveauTableau += "<tr class='flex-table__row row-bon'    onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'bon');>";
+				nouveauTableau += "<tr class='flex-table__row row-bon'    data-id='"+tableau[index]['id']+"' data-type='"+tableau[index]['type']+"' onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'bon');>";
 			}
 
 			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
