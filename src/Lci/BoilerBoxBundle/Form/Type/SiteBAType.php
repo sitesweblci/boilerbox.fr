@@ -44,7 +44,7 @@ class SiteBAType extends AbstractType
 						'class' 		=> 'label_smalltext',
 					),
 					'attr'          => array(
-                		'class'         => 'biginput centrer uppercase',
+                		'class'         => 'uppercase',
                 		'placeholder'   => 'Nom du site',
 						'style'         => 'width:100%'
             		),
@@ -57,7 +57,6 @@ class SiteBAType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer',
                         'placeholder'   => "Adresse",
 						'style'         => 'width:100%;'
                     ),
@@ -69,7 +68,6 @@ class SiteBAType extends AbstractType
                         'class'         => 'label_smalltext',
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer',
                         'placeholder'   => "Copier ici l'url retournée par Google Map",
                         'style'         => 'width:100%'
                     ),
@@ -82,7 +80,6 @@ class SiteBAType extends AbstractType
                     ),
                     'attr'          => array(
 						'rows'			=> 7,
-                        'class'         => 'biginput centrer',
                         'placeholder'   => "Informations complémentaires",
 						'style'         => 'width:100%; resize:none'
                     ),

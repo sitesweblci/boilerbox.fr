@@ -666,7 +666,7 @@
                         $('#contact_reset').trigger('click');
 
                         // On ferme la popup contact
-                        retourPopupContact2();
+                        retourPopupContact();
 
                         // Rechargement de la page
                         document.forms['myForm'].submit();
@@ -674,7 +674,7 @@
                         finAttendreRechargement
                         // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
                         var form_html = output;
-                        $('#popupContact2').html(form_html);
+                        $('#popupContact').html(form_html);
                     }
                 },
                 error: function (xhr, status, st_text)
@@ -700,7 +700,7 @@
         {
             $('#select_contact').trigger('change');
         }
-        togglePopUp(popupContact2);
+        togglePopUp(popupContact);
     }
 
 
@@ -719,7 +719,7 @@
 
         $($("#bloc_contact_pour_impression")).html('');
     }
-    function retourPopupContact2()
+    function retourPopupContact()
     {
         $('#contact_nom').removeClass('erreur_formulaire');
         $('#contact_telephone').removeClass('erreur_formulaire');
@@ -728,7 +728,7 @@
 
         $('#contact_reset').trigger('click');
 
-        togglePopUp(popupContact2);
+        togglePopUp(popupContact);
     }
 
 

@@ -21,14 +21,6 @@
             width: 100%;
             min-width: initial;
         }
-{#
-        form > .form-group{
-            display: none;
-		}
-#}
-        #mapVisualisation {
-            height: 400px;
-        }
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -65,11 +57,9 @@
 		</div>
 
         <div class="form__field">
-			<div>
-            	{{ form_label(form.numeroAffaire) }}
-            	{{ form_widget(form.numeroAffaire) }}
-            	{{ form_errors(form.numeroAffaire) }}
-            </div>
+        	{{ form_label(form.numeroAffaire) }}
+        	{{ form_widget(form.numeroAffaire) }}
+        	{{ form_errors(form.numeroAffaire) }}
         </div>
 
 		{# Gestion du nom du contact en javascript car on le gère depuis le select html #}
@@ -91,11 +81,9 @@
 #}
 
         <div class="form__field">
-            <div>
-                {{ form_label(form.service) }}
-                {{ form_widget(form.service) }}
-                {{ form_errors(form.service) }}
-            </div>
+            {{ form_label(form.service) }}
+            {{ form_widget(form.service) }}
+            {{ form_errors(form.service) }}
         </div>
 
 		<div class="form__field form__field--double">
@@ -125,7 +113,6 @@
                 {{ form_errors(form.dateFinIntervention) }}
             </div>
         </div>
-
 	</fieldset>
 
     <fieldset class="fieldset">
@@ -183,11 +170,13 @@
     <fieldset class="fieldset">
         <h2 class="fieldset__title">Motif</h2>
         <div class="form__field">
-            <div>
-                {{ form_errors(form.motif) }}
-                {# {{ form_label(form.motif) }} #}
-                {{ form_widget(form.motif) }}
-            </div>
+            <label for="objet-ticket">Objet <span class="js-toggle red">à destination du client !</span></label>
+            <input type="text" id="objet-ticket">
+        </div>
+        <div class="form__field">
+            {{ form_errors(form.motif) }}
+            {# {{ form_label(form.motif) }} #}
+            {{ form_widget(form.motif) }}
         </div>
     </fieldset>
 	<div class="content__btn">
@@ -312,7 +301,7 @@
 </section>
 
 <!-- popup Nouveau Contact V2-->
-<section id="popupContact2" class="popup cacher">
+<section id="popupContact" class="popup cacher">
 	{{ render(path('lci_ajax_siteba_new_contact')) }}
 </div>
 

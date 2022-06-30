@@ -1,5 +1,5 @@
 {# src/Lci/BoilerBoxBundle/Resources/views/Bons/creer_siteBA.html.twig #}
-    <div class="popup__wrapper" style="width:500px;">
+    <div class="popup__wrapper">
         <header class="popup__header">
             <h1 id='titre_nouveau_siteBA' class="popup__title">Nouveau site</h1>
             <div class="close-cross" onclick="retourPopupSiteBA();"></div>
@@ -39,7 +39,6 @@
                             <span class="sous_label_fichier">&nbsp;({{ max_upload_size }}o max) : </span>
                         </label>
                         <div id='fichiers_deja_joints' style='font-size:12px; font-style:italic; line-height:1.6;'></div>
-                        <span id='lien_ajout_fichier_siteBA'></span>
                     </div>
                     <div class='form__field'>
                         <div id='champ_ajout_fichiers_siteBA'>
@@ -49,6 +48,7 @@
                     </div>
                 </div>
                 <div id='encart_fichiers_siteBA'></div>
+                <span id='lien_ajout_fichier_siteBA'></span>
                 {{ form_rest(form_siteBA, {attr: {'class':'btn' }}) }}
                 {{ form_end(form_siteBA) }}
 

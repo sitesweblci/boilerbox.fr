@@ -22,14 +22,6 @@
             width: 100%;
             min-width: initial;
         }
-{#
-        form > .form-group{
-        	display: none;
-        }
-#}
-		#mapVisualisation {
-			height: 400px;
-		}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -268,48 +260,8 @@
 </section>
 
 
-<!-- popup Nouveau Contact -->
-<section id="bonsNouveauContact" class="popup cacher">
-	<div class="popup__wrapper">
-		<header class="popup__header">
-			<h1 id='titre_nouveau_contact' class="popup__title">Nouveau Contact</h1>
-			<div class="close-cross" onclick="togglePopUp(bonsNouveauContact)"></div>
-		</header>
-		<div class="popup__content">
-            <div class="form__field form__field--double">
-            	<div>
-	                <label>Nom</label>
-	                <input type='text' name='nomContact' id='nomContact'>
-	            </div>
-	            <div>
-	                <label>Prénom</label>
-	                <input type='text' name='prenomContact' id='prenomContact'>
-	            </div>
-	        </div>
-            <div class="form__field form__field--double">
-            	<div>
-	                <label>Mail</label>
-	                <input type='text' name='emailContact' id='emailContact'>
-	            </div>
-	            <div>
-	                <label>Téléphone</label>
-	                <input type='text' name='telephoneContact' id='telephoneContact'>
-	            </div>
-	        </div>
-            <div class="form__field">
-                <label>Fonction</label>
-                <input type='text' name='fonctionContact' id='fonctionContact'>
-            </div>
-            <div class='form__btn form__btn--col notToBePrinted'>
-                <button onClick="modifierContact(); return false;" class="btn_menu btn btn--main btn--wide">Modifier</button>
-                <button onClick="supprimerContact(); return false;" class="btn_menu btn btn--delete btn--wide">Supprimer</button>
-            </div>
-		</div>
-	</div>
-</section>
-
 <!-- popup Nouveau Contact V2-->
-<section id="popupContact2" class="popup cacher">
+<section id="popupContact" class="popup cacher">
 	{{ render(path('lci_ajax_siteba_new_contact')) }}
 </div>
 

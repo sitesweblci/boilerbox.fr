@@ -47,7 +47,7 @@ class ContactType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer uppercase',
+                        'class'         => 'uppercase',
                         'placeholder'   => 'Nom',
                         'style'         => 'width:100%;'
                     )
@@ -58,7 +58,7 @@ class ContactType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer capitalize',
+                        'class'         => 'capitalize',
                         'placeholder'   => 'Prénom',
                         'style'         => 'width:100%;'
                     ),
@@ -70,7 +70,6 @@ class ContactType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer',
                         'placeholder'   => 'Téléphone',
                         'style'         => 'width:100%;',
 						'maxlength'		=> '15'
@@ -83,7 +82,6 @@ class ContactType extends AbstractType
                         'class'         => 'label_smalltext'
                     ),
                     'attr'          => array(
-                        'class'         => 'biginput centrer',
                         'placeholder'   => 'eMail',
                         'style'         => 'width:100%;'
                     ),

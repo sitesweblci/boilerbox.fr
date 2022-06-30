@@ -3,7 +3,7 @@
     <div class="popup__wrapper">
         <header class="popup__header">
             <h1 id='titre_nouveau_contact2' class="popup__title">Nouveau contact</h1>
-            <div class="close-cross" onclick="retourPopupContact2();"></div>
+            <div class="close-cross" onclick="retourPopupContact();"></div>
         </header>
 
         <div class="popup__content">
@@ -13,11 +13,9 @@
 
                 <div class='ligne_error'></div>
                 <div class='form__field'>
-                    <div>
-                        {{ form_label(form_contact.siteBA) }}
-                        {{ form_widget(form_contact.siteBA) }}
-                        {{ form_errors(form_contact.siteBA) }}
-                    </div>
+                    {{ form_label(form_contact.siteBA) }}
+                    {{ form_widget(form_contact.siteBA) }}
+                    {{ form_errors(form_contact.siteBA) }}
                 </div>
                 <div class='form__field form__field--double'>
                     <diV>
@@ -49,17 +47,15 @@
                     </div>
                 </div>
                 <div class='form__field'>
-                    <div>
-                        {{ form_label(form_contact.fonction) }}
-                        {{ form_widget(form_contact.fonction) }}
-                        {{ form_errors(form_contact.fonction) }}
-                    </div>
+                    {{ form_label(form_contact.fonction) }}
+                    {{ form_widget(form_contact.fonction) }}
+                    {{ form_errors(form_contact.fonction) }}
                 </div>
 				{{ form_end(form_contact) }}
             </div>
-            <div class='main-box__btn notToBePrinted'>
-                <button class="btn btn--second" onClick="retourPopupContact2();;return false;">Retour</button>
-                <button class="btn_menu btn btn--main" onClick="attente(); creerContact2(); return false;">Valider</button>
-            </div>
+        </div>
+        <div class='popup__action notToBePrinted'>
+            <button class="btn btn--second" onClick="retourPopupContact();;return false;">Retour</button>
+            <button class="btn_menu btn btn--main" onClick="attente(); creerContact2(); return false;">Valider</button>
         </div>
     </div>
