@@ -97,7 +97,17 @@
 
 			<tbody id='contenu_tableau_bons' class="flex-table__tbody scroll">
 				{% for ent_bons in entities_bon %}
-				<tr {% if ent_bons.type == "ticket" %}class='flex-table__row row-ticket' {% else %} class='flex-table__row row-bon' {% endif %} onclick="afficherBonOuTicket({{ ent_bons.id}}, '{{ent_bons.type }}');">
+				<tr 
+					{% if ent_bons.type == "ticket" %}
+						class='flex-table__row row-ticket' 
+						data-type='ticket' 
+					{% else %} 
+						class='flex-table__row row-bon' 
+						data-type='bon'
+					{% endif %} 
+					data-id='{{ ent_bons.id }}' 
+					onclick="afficherBonOuTicket({{ ent_bons.id}}, '{{ent_bons.type }}');"
+				>
 					<td class='medium' data-intitule='nomDuSite'>
 						{{ ent_bons.site.intitule }}
 					</td>
@@ -468,10 +478,13 @@
     function litTableauPhp() 
 	{
 		tableau = new Array();
-		/* parcours des lignes */
+		/* parcours des lignes (tr) */
         $('#contenu_tableau_bons').children().each(function() 
 		{
-            var ligne = new Object();
+            var ligne 	= new Object();
+			ligne.id 	= $(this).data('id');
+			ligne.type 	= $(this).data('type');
+
             /* parcours des colonnes */
             $(this).children().each(function() 
 			{
@@ -489,7 +502,6 @@
 						{% else %}
 							ligne.enquete = $(this).text().trim();
 						{% endif %}
-                        ligne.id = $(this).data('identifiant');
                         break;
                     case 'nomDuSite':
                         ligne.nomDuSite = $(this).text().trim();
@@ -570,7 +582,6 @@
             });
             tableau.push(ligne);
         });
-		console.log(tableau);
     }
 
 
@@ -630,7 +641,12 @@
 		/* Création du nouveau tableau */
 		$.each(tableau, function(index, value)
 		{
-			nouveauTableau += "<tr class='flex-table__row' onclick='afficherBonOuTicket(" + tableau[index]['id'] + ",\'" + tableau[index]['type'] + "\');'>";
+			if (tableau[index]['type'] == 'ticket')
+			{
+				nouveauTableau += "<tr class='flex-table__row row-ticket' onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'ticket');>";
+			} else {
+				nouveauTableau += "<tr class='flex-table__row row-bon'    onclick=afficherBonOuTicket(" + tableau[index]['id'] + ",'bon');>";
+			}
 
 			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
 			nouveauTableau += tableau[index]['nomDuSite'];
