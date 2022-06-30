@@ -465,14 +465,18 @@
 
 
     /* Enregistrement du tableau php dans un tableau javascript  pour le réaffichage après le tri*/
-	/* parcours des lignes */
-    function litTableauPhp() {
+    function litTableauPhp() 
+	{
 		tableau = new Array();
-        $('#contenu_tableau_bons').children().each(function() {
+		/* parcours des lignes */
+        $('#contenu_tableau_bons').children().each(function() 
+		{
             var ligne = new Object();
             /* parcours des colonnes */
-            $(this).children().each(function() {
-                switch ($(this).data('intitule')) {
+            $(this).children().each(function() 
+			{
+                switch ($(this).data('intitule')) 
+				{
                     case 'enquete':
 						{% if is_granted('ROLE_SECRETERIAT') %}
 							if ($(this).text().trim()) {
@@ -519,34 +523,44 @@
                         break;
 					case 'validation':
 						/* Faire une recherche pour chaque enfant */
-						$(this).children().children().children().each(function() {
-							switch ($(this).data('intitule')) {
+						/* parcours des différentes validations */	
+						$(this).children().children().children().each(function() 
+						{
+							switch ($(this).data('intitule')) 
+							{
 								case 'validationTechnique':
 									if ($(this).children().length === 0) {
 										ligne.validationTechnique = '&nbsp';
 									} else {
-										ligne.validationTechnique = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
+										ligne.validationTechnique = "<img src='" + $(this).children().attr('src') + "' alt='coche validation'/>"
 									}
 									break;	
                                 case 'validationPiece':
                                     if ($(this).children().length === 0) {
                                     	ligne.validationPiece = '&nbsp';
                                     } else {
-                                        ligne.validationPiece = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
+                                        ligne.validationPiece = "<img src='" + $(this).children().attr('src') + "' alt='coche validation'/>"
                                     }
                                     break;
                                 case 'validationSav':
                                     if ($(this).children().length === 0) {
                                         ligne.validationSav = '&nbsp';
                                     } else {
-                                        ligne.validationSav = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
+                                        ligne.validationSav = "<img src='" + $(this).children().attr('src') + "' alt='coche validation'/>"
                                     }
                                     break;
                                 case 'validationFacturation':
                                     if ($(this).children().length === 0) {
                                     	ligne.validationFacturation = '&nbsp';
                                     } else {
-                                        ligne.validationFacturation = "<img src='/bundles/lciboilerbox/images/picto/coche.svg' alt='coche validation'/>"
+                                        ligne.validationFacturation = "<img src='" + $(this).children().attr('src') + "' alt='coche validation'/>"
+                                    }
+                                    break;
+                                case 'validationTicket':
+                                    if ($(this).children().length === 0) {
+                                        ligne.validationTicket = '&nbsp';
+                                    } else {
+                                        ligne.validationTicket = $(this).html();
                                     }
                                     break;
 							}
@@ -556,6 +570,7 @@
             });
             tableau.push(ligne);
         });
+		console.log(tableau);
     }
 
 
@@ -613,7 +628,8 @@
         }
 
 		/* Création du nouveau tableau */
-		$.each(tableau, function(index, value){
+		$.each(tableau, function(index, value)
+		{
 			nouveauTableau += "<tr class='flex-table__row' onclick='afficherBonOuTicket(" + tableau[index]['id'] + ",\'" + tableau[index]['type'] + "\');'>";
 
 			nouveauTableau += "<td class='medium' data-intitule='nomDuSite'>";
@@ -661,10 +677,16 @@
             nouveauTableau += "<td class='medium' data-intitule='validation'>";
 			nouveauTableau += "<div class='champs_validation_bon'>";
 			nouveauTableau += "<div class='sous_champs_validation_bon'>";
-			nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
-            nouveauTableau += "<div data-intitule='validationPiece'>" + tableau[index]['validationPiece'] + "</div>";
-            nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
-			nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
+
+			if (tableau[index]['validationTicket'])
+			{
+				nouveauTableau += "<div data-intitule='validationTicket'>" + tableau[index]['validationTicket'] + "</div>";
+			} else {
+				nouveauTableau += "<div data-intitule='validationTechnique'>" + tableau[index]['validationTechnique'] + "</div>";
+            	nouveauTableau += "<div data-intitule='validationPiece'>" + tableau[index]['validationPiece'] + "</div>";
+            	nouveauTableau += "<div data-intitule='validationSav'>" + tableau[index]['validationSav'] + "</div>";
+				nouveauTableau += "<div data-intitule='validationFacturation'>" + tableau[index]['validationFacturation'] + "</div>";
+			}
 			nouveauTableau += "</div>";
             nouveauTableau += "</td>";
 	
