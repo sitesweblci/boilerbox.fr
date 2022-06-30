@@ -8,8 +8,6 @@
 
 {% block boilerBoxCSS %}
     {{ parent() }}
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba.css') }}" media='screen' />
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/saisie_ba_print.css') }}" media='print' />
 	<style>
 		body > form{
 			padding: 8px;
@@ -21,6 +19,34 @@
         #table_des_equipements {
             width: 100%;
             min-width: initial;
+        }
+{#
+        form > .form-group{
+        	display: none;
+        }
+#}
+		#mapVisualisation {
+			height: 400px;
+		}
+		.notIntoService {
+			background: gray;
+		}
+        {# Fonction pour n'afficher que l'annee de construction equipement  #}
+        .ui-datepicker-calendar {
+            display: none;
+        }
+        .ui-datepicker-month{
+            display :none;
+        }
+        .champs_recherche_select {
+            height : 20px;
+            width : 200px;
+            border : 1px dashed black;'
+        }
+        .flex_pour_champs_recherche {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 	</style>
 {% endblock boilerBoxCSS %}
@@ -99,7 +125,10 @@
 	        	</div>
 #}
 			<div>
-				{{ form_label(form.user) }}
+				<div class='flex_pour_champs_recherche'>
+					{{ form_label(form.user) }}
+					<input type='text' id='search_select_intervenant' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_intervenant', 'bons_attachement_user');" />
+				</div>
 				{{ form_widget(form.user) }}
 				{{ form_errors(form.user) }}
 			</div>

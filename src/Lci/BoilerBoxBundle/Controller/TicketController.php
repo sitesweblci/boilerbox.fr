@@ -162,13 +162,28 @@ class TicketController extends Controller
 						// On défini le type pour distinguer ticket d'un bon
 						$e_ticket->setType('ticket');
 						$e_ticket->setTypeIntervention('Incident');
-
+			
 						// Le numero du ticket s'incremente automatiquement
 						// 	recherche du dernier numéro de ticket en base
 						// 	incrémentation du numéro trouvé
 						$numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
 						$numero_de_ticket ++;
 						$e_ticket->setNumeroBA($numero_de_ticket);
+
+
+						// Ajout des commentaires d'ouverture
+						$e_user_courant         = $this->get('security.token_storage')->getToken()->getUser();
+						$commentaires_ouverture = "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'><span class='info_system'>Informations clients d'ouverture de ticket</span> : " . $f_ticket->get('motif')->getData() . "</div>";
+
+						$e_ticket->setCommentaires($commentaires_ouverture);	
+							
+						if ($f_ticket->get('motifTechnicien')->getData())
+						{
+							$commentaires_ouverture_technicien = "<div class='bons_commentaires_titre'>Par " . $e_user_courant->getLabel() . " le " . date('d/m/Y H:i:s') . "</div><div class='bons_commentaires_text'><span class='info_system'>Informations complémentaires d'ouverture de ticket</span> : " . $f_ticket->get('motifTechnicien')->getData() . "</div>";
+							$e_ticket->setCommentaires($commentaires_ouverture . $commentaires_ouverture_technicien);
+						}
+
+						
 
 						// Enregistrement du ticket
                     	$em->persist($e_ticket);
@@ -177,10 +192,14 @@ class TicketController extends Controller
 						// Si tout c'est bien passé pour l'enregistrement du nouveau ticket on réinitialise le tableau de id des équipements
 						$tab_des_id_equipements_selectionnes    = array();
 
-						// Envoi du mail à l'intervenant uniquement
-						$this->sendMailIntervenant($e_ticket);
+						// Envoi du mail à l'intervenant si un intervenant est défini
+						if ($e_ticket->getUser())
+						{
+							$this->sendMailIntervenant($e_ticket);
+						}	
 
-						// ICI DEV : Faire unenvoi de mail au client également
+						// Envoi de mail au client également
+						$this->sendEmailOuvertureTicketClient($e_ticket, $f_ticket->get('motif')->getData());
 					}
                 } catch (\Exception $e) {
 					echo $e->getMessage();
@@ -409,43 +428,6 @@ class TicketController extends Controller
         return null;
     }
 
-    /* Seul l'initiateur du ticket ou l'intervenant peuvent modifier un ticket */
-	/* ICI DEV A supprimer ?  Supprimer au ssi la route */
-	/*
-    public function modifierUnBonAction($idBon, Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $entity_bon = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->find($idBon);
-        $current_user = $this->get('security.token_storage')->getToken()->getUser();
-
-        if (!($current_user == $entity_bon->getUser()) && !($current_user == $entity_bon->getUserInitiateur()) && !($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA'))) {
-            $request->getSession()->getFlashBag()->add('info', "Seul l'initiateur ou l'intervenant peuvent modifier le bon");
-            return $this->redirectToRoute('lci_bons_attachements');
-        }
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
-            $form = $this->createForm(BonsAttachementModification1Type::class, $entity_bon);
-        } else {
-            $form = $this->createForm(BonsAttachementModification2Type::class, $entity_bon);
-        }
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $em->flush();
-                $request->getSession()->getFlashBag()->add('info', 'Bon ' . $entity_bon->getNumeroBA() . ' modifié.');
-                $_POST['id_bon'] = $entity_bon->getId();
-                // Retour vers la visualisation du ticket
-                return $this->afficherUnBonAction($request);
-            } else {
-                $request->getSession()->getFlashBag()->add('info', $form->getErrors(true));
-            }
-        }
-        return $this->render('LciBoilerBoxBundle:Bons:form_modification_bons.html.twig', array(
-            'form' => $form->createView(),
-            'idBon' => $entity_bon->getId()
-        ));
-    }
-	*/
-
 
     // Affichage et Modification d'un ticket pour la page d'affichage de la liste des fichiers du ticket
     // Dans la page du ticket on affiche également le forumlaire de validation du ticket
@@ -499,7 +481,6 @@ class TicketController extends Controller
 					{
 						if ($e_ticket->getUser()->getId() != $last_intervenant_id)
 						{
-							// ICI DEV  : Envoi des mails : Fin d'affecation et nouvelle affectation
 							$this->sendMailIntervenant($e_ticket);
 							if ($last_intervenant_id != null)
 							{
@@ -509,7 +490,6 @@ class TicketController extends Controller
 					} else {
 						if ($last_intervenant_id != null)
 						{
-							// ICI DEV Si on passe d'un intervenant à aucun intervenant : Faut il envoyer un mail de fin d'affectation de ticket ? 
 							$this->sendMailLastIntervenant($e_ticket, $last_intervenant_id);
 						}
 					}
@@ -522,6 +502,7 @@ class TicketController extends Controller
 							array_push($tab_des_equipements_modif, $variable_post);
 							// Si l'equipement n'est pas déjà affecté au bon , on l'ajoute
                             $e_tmp_equipement = $em->getRepository('LciBoilerBoxBundle:EquipementBATicket')->find($variable_post);
+							$em->refresh($e_tmp_equipement);
 							if (!$e_ticket->getEquipementBATicket()->contains($e_tmp_equipement))
 							{
 								$e_tmp_equipement->setSiteBA($e_ticket->getSite());
@@ -650,55 +631,82 @@ class TicketController extends Controller
 
 	private function sendMailIntervenant($e_ticket)
 	{
-                        // Envoi d'un mail à l'intervenant
-                        $service_mailling       = $this->get('lci_boilerbox.mailing');
-                        $emetteur               = $e_ticket->getUserInitiateur()->getEmail();
-                        $destinataire           = $e_ticket->getUser()->getEmail();
-                        $sujet                  = "Affectation d'un nouveau ticket d'incident";
-                        $tab_message            = array();
-                        $tab_message['titre']   = "Un nouveau ticket d'incident vous est affecté (".$e_ticket->getNumeroBA().')';
-                        $tab_message['site']    = $e_ticket->getSite()->getIntitule() . " ( " . $e_ticket->getNumeroAffaire() . " ) ";
-                        $messages_contact       = "";
-                        if (($e_ticket->getNomDuContact() != null) || ($e_ticket->getEmailContactClient() != null)) {
-                            if ($e_ticket->getNomDuContact() != null) {
-                                $messages_contact = "Votre contact sur site est : " . $e_ticket->getNomDuContact();
-                                if ($e_ticket->getEmailContactClient() != null) {
-                                    $messages_contact .= " ( " . $e_ticket->getEmailContactClient() . " ) ";
-                                }
-                            } else if ($e_ticket->getEmailContactClient() != null) {
-                                $messages_contact .= "Le mail du contact sur site est : " . $e_ticket->getEmailContactClient();
-                            }
-                        } else {
-                            $messages_contact = "Aucun contact sur site n'a été renseigné";
-                        }
-                        $tab_message['contact'] = $messages_contact;
-                        $liste_fichiers = "";
-                        foreach ($e_ticket->getFichiersPdf() as $fichier) {
-                            $liste_fichiers .= $fichier->getAlt() . ' ';
-                        }
-                        if ($liste_fichiers != "") {
-                            $tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le ticket d'incident sur le site boilerbox.fr : $liste_fichiers";
-                        } else {
-                            $tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce ticket";
-                        }
-                        // Envoi du mail à l'intervenant uniquement
-                        $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+    	// Envoi d'un mail à l'intervenant
+        $service_mailling       = $this->get('lci_boilerbox.mailing');
+        $emetteur               = $e_ticket->getUserInitiateur()->getEmail();
+        $destinataire           = $e_ticket->getUser()->getEmail();
+        $sujet                  = "Affectation d'un nouveau ticket d'incident";
+        $tab_message            = array();
+        $tab_message['titre']   = "Un nouveau ticket d'incident vous est affecté (".$e_ticket->getNumeroBA().')';
+        $tab_message['site']    = $e_ticket->getSite()->getIntitule() . " ( " . $e_ticket->getNumeroAffaire() . " ) ";
+        $messages_contact       = "";
+        if (($e_ticket->getNomDuContact() != null) || ($e_ticket->getEmailContactClient() != null)) 
+		{
+        	if ($e_ticket->getNomDuContact() != null) 
+			{
+            	$messages_contact = "Votre contact sur site est : " . $e_ticket->getNomDuContact();
+                if ($e_ticket->getEmailContactClient() != null) {
+                	$messages_contact .= " ( " . $e_ticket->getEmailContactClient() . " ) ";
+                }
+            } else if ($e_ticket->getEmailContactClient() != null) {
+            	$messages_contact .= "Le mail du contact sur site est : " . $e_ticket->getEmailContactClient();
+            }
+        } else {
+         	$messages_contact = "Aucun contact sur site n'a été renseigné";
+        }
+        $tab_message['contact'] = $messages_contact;
+        $liste_fichiers = "";
+        foreach ($e_ticket->getFichiersPdf() as $fichier) 
+		{
+        	$liste_fichiers .= $fichier->getAlt() . ' ';
+        }
+        if ($liste_fichiers != "") {
+        	$tab_message['fichiers'] = "Vous pouvez retrouver les fichiers suivants dans le ticket d'incident sur le site boilerbox.fr : $liste_fichiers";
+        } else {
+        	$tab_message['fichiers'] = "Aucun fichier n'a été importé pour ce ticket";
+        }
+        // Envoi du mail à l'intervenant uniquement
+        $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
 	}
 
+
+	// Envoi du mail de création de ticket au client
+	private function sendEmailOuvertureTicketClient($e_ticket, $motif_client)
+    {
+        $service_mailling       = $this->get('lci_boilerbox.mailing');
+
+        $tab_email            		= array();
+		$tab_email['sujet']			= "Ouverture de ticket d'incident sur BoilerBox";
+		$tab_email['from']			= null;
+		$tab_email['to']			= array($e_ticket->getEmailContactClient());
+		$tab_email['cc']			= array('assistance_ibc@lci-group.fr');
+        $tab_email['titre']   		= "Bonjour";
+		$tab_email['sous-titre']	= "Le ticket d'incident n°" . $e_ticket->getNumeroBA() . " a été ouvert dans nos services suite à votre appel.";
+		$tab_email['contenu']   	= "Ci dessous les informations que vous nous avez fait parvenir :\n\n";	
+		$tab_email['contenu']   	.= "<div style='border:1px solid black; padding:10px;'>$motif_client</div>";
+		$tab_email['footer']		= "Nous mettons tout en oeuvre pour résoudre votre problème et vous répondre dans les meilleurs délais\n\n";
+		$tab_email['footer']        .= "A bientôt sur <a href='http://boiler-box.fr'>BoilerBox</a>\n";
+		$tab_email['footer']        .="Merci de ne pas répondre directement à ce message.";
+
+        $service_mailling->sendEmail($tab_email);
+    }
+
+
+	// Envoi de mail de désafectation de ticket
     private function sendMailLastIntervenant($e_ticket, $id_last_intervenant)
     {
-                        // Envoi d'un mail à l'intervenant
-                        $service_mailling       = $this->get('lci_boilerbox.mailing');
-                        $emetteur               = $e_ticket->getUserInitiateur()->getEmail();
-                        $destinataire           = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->find($id_last_intervenant)->getEmail();
-                        $sujet                  = "Désaffectation du ticket d'incident ".$e_ticket->getNumeroBA();
-                        $tab_message            = array();
-						$tab_message['contact'] = '';
-						$tab_message['fichiers'] = '';
-                        $tab_message['titre']   = "Le ticket d'incident ".$e_ticket->getNumeroBA().' vous a été désaffecté';
-                        $tab_message['site']    = $e_ticket->getSite()->getIntitule() . " ( " . $e_ticket->getNumeroAffaire() . " ) ";
-                        // Envoi du mail à l'intervenant uniquement
-                        $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
+    	// Envoi d'un mail à l'intervenant
+        $service_mailling       = $this->get('lci_boilerbox.mailing');
+        $emetteur               = $e_ticket->getUserInitiateur()->getEmail();
+        $destinataire           = $this->getDoctrine()->getManager()->getRepository('LciBoilerBoxBundle:User')->find($id_last_intervenant)->getEmail();
+        $sujet                  = "Désaffectation du ticket d'incident ".$e_ticket->getNumeroBA();
+        $tab_message            = array();
+		$tab_message['contact'] = '';
+		$tab_message['fichiers'] = '';
+        $tab_message['titre']   = "Le ticket d'incident ".$e_ticket->getNumeroBA().' vous a été désaffecté';
+        $tab_message['site']    = $e_ticket->getSite()->getIntitule() . " ( " . $e_ticket->getNumeroAffaire() . " ) ";
+        // Envoi du mail à l'intervenant uniquement
+        $service_mailling->sendMail($emetteur, $destinataire, $sujet, $tab_message);
     }
 
 

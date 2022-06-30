@@ -3,6 +3,7 @@
 
 	$(document).ready(function() 
 	{
+		console.log('ready generale : app/Resources/views/boilerbox/boilerbox.js');
         // Inhibition du raffraichissement par F5
         $(document).keydown(function(e){
             if (e.which == 116) {
@@ -237,6 +238,12 @@
         var new_ch2 = new_ch.replace(/(....)-(..)-(..)/,"$3/$2/$1");
         return new_ch2;
     }
+	function dateTransformeFromEntiteSerializedForPickerGetYears(str_date)
+    {
+        var new_ch = str_date.substr(0,10);
+        var new_ch2 = new_ch.replace(/(....)-..-../,"$1");
+        return new_ch2;
+    }
     function dateTransformeFromEntiteSerialized(str_date)
     {
         var new_ch = str_date.substr(0,10);
@@ -271,8 +278,33 @@
     // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
     function setDatePicker()
     {
-        alert('set datepicker');
+		console.log('set date picker for placeholder fonction generale.js');
         $("input[placeholder='dd/mm/YYYY']").datepicker();
     }
 
+
+	// Fonction qui permet de réduire les options proposées dans un select en fonction du chamsp text entré dans une input text
+	// Necessite : 	Un select avec un id
+	//				Un champs text avec un id
+	// 				Un écouteur d'évenement keyup sur le champs text 
+	//				L'appel de cette fonction sur l'écouteur d'évenement avec en 	paramètre 1 : id du champs text, 
+	//																				parametre 2 : id du select
+	/* ex :
+        $('#search_contact').keyup(function(){
+            rechercheDansSelect('search_contact', 'select_contact');
+        });
+	*/
+	function rechercheDansSelect(id_input_search, id_select)
+	{
+		var mot_recherche = $('#' + id_input_search).val();
+        var regexp = new RegExp(mot_recherche, 'i');
+
+        $('#' + id_select + ' > option').each(function() {
+            $(this).removeClass('cacher');
+            if (! this.text.match(regexp))
+            {
+                $(this).addClass('cacher');
+            }
+        });
+	}
 </script>

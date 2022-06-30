@@ -16,6 +16,16 @@
 		body > form{
 			padding: 8px;
 		}
+		.champs_recherche_select {
+			height : 20px; 
+			width : 200px; 
+			border : 1px dashed black;'
+		}
+		.flex_pour_champs_recherche {
+			display: flex; 
+			justify-content: space-between;
+			align-items: center;
+		}
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -57,7 +67,10 @@
 			<h2 class="fieldset__title">Informations</h2>
 			<div class="form__field form__field--double">
 				<div>
-					{{ form_label(form.site) }}
+					<div class='flex_pour_champs_recherche'>
+						{{ form_label(form.site) }}
+						<input type='text' id='search_select_site' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_site', 'obj_recherche_bons_attachement_site');" />
+					</div>
 					{{ form_widget(form.site) }}
 					{{ form_errors(form.site) }}
 				</div>
@@ -81,12 +94,18 @@
 			</div>
 			<div class="form__field form__field--double">
 				<div>
-					{{ form_label(form.userInitiateur) }}
+					<div class='flex_pour_champs_recherche'>
+						{{ form_label(form.userInitiateur) }}
+						<input type='text' id='search_select_initiateur' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_initiateur', 'obj_recherche_bons_attachement_userInitiateur');" />
+					</div>
 					{{ form_widget(form.userInitiateur) }}
 					{{ form_errors(form.userInitiateur) }}
 				</div>
 				<div>
-					{{ form_label(form.user) }}
+					<div class='flex_pour_champs_recherche'>
+						{{ form_label(form.user) }}
+						<input type='text' id='search_select_intervenant' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_intervenant', 'obj_recherche_bons_attachement_user');" />
+					</div>
 					{{ form_widget(form.user) }}
 					{{ form_errors(form.user) }}
 				</div>
@@ -145,7 +164,10 @@
 		</fieldset>
 
 		<fieldset class="fieldset">
-            <h2 class="fieldset__title">Contact</h2>
+			<div class='flex_pour_champs_recherche'>
+            	<h2 class="fieldset__title">Contact</h2>
+				<input type='text' id='search_select_contact' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_contact', 'select_contact');" />
+			</div>
             <div class="form__field">
 				<select id='select_contact'></select>
             </div>
@@ -197,11 +219,13 @@
 {% block javascript %}
 <script type='text/javascript'>
 
+
 // Fonction style barre de navigation page active
 $(window).on('load', function pageActive(){
 	$('.side-nav .bons-interv').addClass('active');
 });
     $(document).ready(function(){
+
         /* Mise en place de l'objet datepicker */
 		$("#obj_recherche_bons_attachement_dateMin" ).datepicker({ dateFormat: 'dd/mm/yy' });
 		$("#obj_recherche_bons_attachement_dateMax" ).datepicker({ dateFormat: 'dd/mm/yy' });

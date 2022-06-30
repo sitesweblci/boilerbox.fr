@@ -153,13 +153,13 @@
                             }
                         {% endif %}
 
-/* ICI DEV A SUPP
+						/* 
                         // Ajout des noms des fichiers précédemment joints au site
                         $.each(siteBA.fichiersJoint, function(index, fichier) {
                                 $('#fichiers_deja_joints').append(fichier.alt + '<br />');
                                 $('#fichiers_deja_joints2').append("<div class='add-list__added " + fichier.id + "'>" + fichier.alt + "<div class='close-cross' onClick='supprimeFile(" + fichier.id + ");'></div></div>");
                         });
-*/
+						*/
 
                         // Ajout des équipements précédemment joints au site
                         $.each(siteBA.equipementBATickets, function(index, equipement) {
@@ -353,7 +353,6 @@
        	{% endif %}
 
 		// Se trouve dans la fonction setDatePicker
-		$("input[placeholder='dd/mm/YYYY']").datepicker();
         setDatePicker();
     });
 

@@ -6,5 +6,5 @@ affiche_ticket:
     defaults: { _controller: LciBoilerBoxBundle:Ticket:afficherUnTicket }
 envoi_mail_cloture:
     path: /envoi_mail_cloture
-    defaults: { _controller: LciBoilerBoxBundle:AjaxTicket:envoiMailCloture }
+    defaults: { _controller: LciBoilerBoxBundle:AjaxTicket:sendEmailClotureTicketClient }
 

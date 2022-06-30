@@ -36,7 +36,7 @@ $(document).ready(function()
                                                 style='display:inline-block; border:2px solid gray; cursor:pointer;' \
                                                 onClick=\"deplaceEquipement('{{ e_equipement.id }}', '{{ e_equipement.numeroDeSerie }}', '" + tmp_denomination + "', '" + tmp_autreDenomination + "')\" \
                                             />\
-                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:80px;margin-right:10px'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:80px;margin-right:10px'>{{ e_equipement.anneeDeConstruction | date('d/m/y') }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
+                                        </span><label style='display:inline-block; cursor:pointer;' for='equipement_{{ e_equipement.id }}'><span style='display:inline-block; width:80px;margin-right:10px'>({{ e_equipement.numeroDeSerie }})</span><span style='display:inline-block; width:80px;margin-right:10px'>{{ e_equipement.anneeDeConstruction | date('Y') }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.denomination }}</span><span style='display:inline-block; width:120px;margin-right:10px'>{{ e_equipement.autreDenomination }}</span><span style='display:inline-block; width:200px;'>{{ e_equipement.siteBA.intitule }}</span></label>\
                                     </div>\
                                 </div>";
                         } else {
@@ -88,9 +88,38 @@ $(document).ready(function()
 		}
 
         // On change le format de la datepicker des équipements pour envoyer le format yy/mm/dd
+		// On n'affiche que l'année pour les équipement donc on crée nous même la date au 1 janvier de l'année sélectionnée
         $("#date_annee_construction_equipement").datepicker({
 			altField: "#equipement_ba_ticket_anneeDeConstruction",
-			altFormat: "yy/mm/dd" 
+			altFormat: "yy/mm/dd" ,
+            dateFormat: "yy",
+			autoclose: true,
+			onClose : function(dateText, inst) {
+				// var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, 0, 1));
+            }
+		});
+
+		// Lors de l'ouverture de la popup nouvel equipement on cache le calendrier et les mois puis on enleve la class caché sur le container datepicker
+		// Permet de ne pas rendre visisble la modification du css
+		$('#date_annee_construction_equipement').click(function(){
+			// On cache le container
+			$('#ui-datepicker-div').addClass('cacher');
+			setTimeout(function(){
+				$('.ui-datepicker-calendar').hide();
+				$('.ui-datepicker-month').hide();
+				setTimeout(function(){
+					// On réaffiche le container
+					$('#ui-datepicker-div').removeClass('cacher');
+				}, 50);
+				// A la selection de l'année on recache le container et on simule le click sur le bouton close
+				$('#ui-datepicker-div .ui-datepicker-year').change(function(){
+					$('#ui-datepicker-div').addClass('cacher');
+					$('#ui-datepicker-div button.ui-datepicker-close').trigger('click');
+					$('#equipement_ba_ticket_denomination').focus();
+				});
+			}, 100);
 		});
 });
 
@@ -100,7 +129,7 @@ $(document).ready(function()
 		 // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
 		if ($('#' + id_select_site).val() != '')
         {
-			$("#select_equipement").val($('#bons_attachement_site').val());
+			$("#select_equipement").val($('#' + id_select_site).val());
 		} else {
 			alert('Veuillez selectionner un site');
             return -1;
@@ -150,9 +179,11 @@ $(document).ready(function()
 		{
 			$data_a_envoyer = $('form[name="equipement_ba_ticket"]').serialize()
 		} else {
+			// Récupération de l'id de l'équimement a afficher dans la popup modification de l'équipement
 			$data_a_envoyer = {'id_equipement':$id_equipement}
 		}
 		attendreRechargement();
+
 
         // Modification de l'équipement en ajax et
         // Réaffichage de la page pour prendre en compte la suppression
@@ -174,7 +205,7 @@ $(document).ready(function()
                     $('#equipement_ba_ticket_numeroDeSerie').val($data_e_equipement.numeroDeSerie);
                     $('#equipement_ba_ticket_denomination').val($data_e_equipement.denomination);
                     $('#equipement_ba_ticket_autreDenomination').val($data_e_equipement.autreDenomination);
-                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPicker($data_e_equipement.anneeDeConstruction);
+                    var date_reverse_creation_equipement = dateTransformeFromEntiteSerializedForPickerGetYears($data_e_equipement.anneeDeConstruction);
                     var date_creation_equipement = dateTransformeFromEntiteSerialized($data_e_equipement.anneeDeConstruction);
                     $('#date_annee_construction_equipement').val(date_reverse_creation_equipement);
                     $('#equipement_ba_ticket_anneeDeConstruction').val(date_creation_equipement);
@@ -210,7 +241,6 @@ $(document).ready(function()
 
 					// On réindique la date de création de l'équipement
 					$("#date_annee_construction_equipement").val(dateReverseForPicker(date_creation_equipement));
-
 					return 0;
 				}
 
@@ -249,13 +279,16 @@ $(document).ready(function()
             method: "POST",
             success: function(msg)
             {
-				if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
+				if ($('#' + id_select_site).length != 0)
 				{
-                	document.forms['myForm'].submit();
-				} else if ($('#bons_attachement_modification_site').length != 0)
-                {
-					document.forms['myFormFichiers'].submit();
-				} 
+					if (type_page_html == 'saisie')
+					{
+                		document.forms['myForm'].submit();
+					} else if (type_page_html == 'modification')
+                	{
+						document.forms['myFormFichiers'].submit();
+					} 
+				}
             },
             error: function(status, msg, tri) {
                 finAttendreRechargement();
@@ -359,7 +392,6 @@ $(document).ready(function()
         	gestionCaracteresEquipement();
 
             attendreRechargement();
-
             // Appel ajax
             $.ajax({
                 url: "{{ path('lci_ajax_bon_new_equipement') }}",
@@ -372,33 +404,36 @@ $(document).ready(function()
                         $data_e_equipement = JSON.parse(output);
                         // Remplissage des champs indiquant la création d'un nouvel objet
                         var $id_nouvel_equipement = $data_e_equipement['id'];
-                        $('#bons_attachement_idNouveau').val($id_nouvel_equipement);
-                        $('#bons_attachement_typeNouveau').val('equipement');
-                        $('#bons_attachement_siteNouveau').val($('#equipement_ba_ticket_siteBA').val());
+                        $('#' + id_champs_nouveau_id_site).val($id_nouvel_equipement);
+                        $('#' + id_champs_nouveau_type).val('equipement');
+                        $('#' + id_champs_nouveau_nom_site).val($('#equipement_ba_ticket_siteBA').val());
 
 						// Assignation de l'équipement au bon si on est sur la page de visu (modification de bon)
-						if ( ($('#bons_attachement_site').length != 0) || ($('#ticket_incident_site').length != 0) )
+						if ($('#' + id_select_site).length != 0)
                         {
-                            // Si on est su la page de saisie d'un bon on raffraichit la page
-                            // Rechargement de la page de saisie
-                            document.forms['myForm'].submit();
-                        } else if ($('#bons_attachement_modification_site').length != 0)
-						{
-							$.ajax({
-								url : "{{ path('lci_ajax_bon_assign_equipement_to_bon') }}",
-								method: "POST",
-								data: {'id_equipement':$id_nouvel_equipement, 'id_bon': $('#bons_attachement_modification_id').val()},
-								success: function(msg){
-									// Raffraichissement du formulaire du bon
-									document.forms['myFormFichiers'].submit();
-									return 0;
-								},
-								error: function(data) {
-									alert("Echec d'assignation de l'équipement");
-									console.log(data);
-									return -1;
-								}
-							});
+							if (type_page_html == 'saisie')
+							{
+                            	// Si on est su la page de saisie d'un bon on raffraichit la page
+                            	// Rechargement de la page de saisie
+                            	document.forms['myForm'].submit();
+							} else if (type_page_html == 'modification')
+							{
+								$.ajax({
+									url : "{{ path('lci_ajax_bon_assign_equipement_to_bon') }}",
+									method: "POST",
+									data: {'id_equipement':$id_nouvel_equipement, 'id_bon': $('#bons_attachement_modification_id').val()},
+									success: function(msg){
+										// Raffraichissement du formulaire du bon
+										document.forms['myFormFichiers'].submit();
+										return 0;
+									},
+									error: function(data) {
+										alert("Echec d'assignation de l'équipement");
+										console.log(data);
+										return -1;
+									}
+								});
+							}
 						}
                     } catch(e) {
                         // On ne recoit pas une réponse Ajax : on recoit donc le formulaire HTML avec les erreurs
@@ -459,44 +494,21 @@ $(document).ready(function()
 
     function gestionDesEquipements2()
     {
+		 $('#ui-datepicker-div').addClass('cacher');
+
 		// Si on est sur la page de [ saisie des bons ]
-		if ($('#bons_attachement_site').length != 0)
+		if ($('#' + id_select_site).length != 0)
 		{
         	// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-        	if ($('#bons_attachement_site').val() != '')
+        	if ($('#' + id_select_site).val() != '')
         	{
         	    // On définit le site selectionné comme site selectionnée dans le select du site
-        	    $('#equipement_ba_ticket_siteBA').val($('#bons_attachement_site').val());
+        	    $('#equipement_ba_ticket_siteBA').val($('#' + id_select_site).val());
 			} else if ($('#select_equipement').val() != '')
         	{
         	    // On définit le site selectionné comme site selectionnée dans le select nouvel Equipement
         	    $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
         	}
-		} else if ($('#bons_attachement_modification_site').length != 0)
-		{
-			// Si on est sur la page de visu / modification du site
-			// Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-            if ($('#bons_attachement_modification_site').val() != '')
-            {
-				// On définit le site selectionné comme site selectionnée dans le select du site
-                $('#equipement_ba_ticket_siteBA').val($('#bons_attachement_modification_site').val());
-            } else if ($('#select_equipement').val() != '')
-        	{
-            	// On définit le site selectionné comme site selectionnée dans le select nouvel Equipement
-            	$('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
-        	}
-        } else if ($('#ticket_incident_site').length != 0)
-        {
-            // Si la selection du select de site n'est pas vide on affiche le formulaire en lui définissant le même site que celui selectionné
-            if ($('#ticket_incident_site').val() != '')
-            {
-                // On définit le site selectionné comme site selectionnée dans le select du site
-                $('#equipement_ba_ticket_siteBA').val($('#ticket_incident_site').val());
-            } else if ($('#select_equipement').val() != '')
-            {
-                // On définit le site selectionné comme site selectionnée dans le select nouvel Equipement
-                $('#equipement_ba_ticket_siteBA').val($('#select_equipement').val());
-            }
         }
 		// Fermeture de la popup de selection des équipements
         togglePopUp(popupSelectionEquipement);

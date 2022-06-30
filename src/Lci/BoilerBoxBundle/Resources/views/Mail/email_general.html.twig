@@ -1,0 +1,40 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/email_general.html.twig #}
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{{ asset('bundles/lciboilerbox/css/mail.css') }}" media='screen' />
+	</head>
+
+	<body>
+		<div id='contenu_email'>
+			{% if tab_email['titre'] %}
+				{% if tab_email['sous-titre'] %}
+					<h1 style='margin-bottom:20px;'>{{ tab_email['titre'] | raw | nl2br }}</h1>
+				{% else %}
+					<h1 style='margin-bottom:40px;'>{{ tab_email['titre'] | raw | nl2br }}</h1>
+				{% endif %}
+			{% endif %}
+
+			{% if tab_email['sous-titre'] %}
+				<h2 style='margin-bottom:40px;'> {{ tab_email['sous-titre'] | raw | nl2br }}</h2>
+			{% endif %}
+
+			{% if tab_email['contenu'] %}
+				<p style='margin-bottom:100px'>{{ tab_email['contenu'] | raw | nl2br }}</p>
+			{% endif %}
+		</div>
+
+		{% if tab_email['footer'] %}
+			<div id='footer_email' style='margin-top:200px;font-style:italic'>
+				{{ tab_email['footer'] | raw | nl2br }}
+			</div>
+		{% endif %}
+
+		{% if image_link %}
+			<div id='image_link' style='margin-top:50px'>
+				<img src="{{ image_link }}" alt='IPC' align='left' />
+			</div>
+		{% endif %}
+	</body>
+</html>
+

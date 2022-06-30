@@ -43,6 +43,30 @@
     #table_des_equipements{
     	display: table !important;
     }
+	.info_system {
+		background: lightgray;
+	}
+    .notIntoService {
+        background: gray;
+    }
+    {# Fonction pour n'afficher que l'annee de construction equipement  #}
+    .ui-datepicker-calendar {
+        display: none;
+    }
+    .ui-datepicker-month{
+        display :none;
+    }
+    .champs_recherche_select {
+        height : 20px;
+        width : 150px;
+        border : 1px dashed black;'
+    }
+    .flex_pour_champs_recherche {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -127,7 +151,14 @@
            	     	</div>
 
 	                <div>
-	                    <label>Intervenant</label>
+						{% if is_granted('ROLE_SAISIE_BA') %}
+							<div class='flex_pour_champs_recherche'>
+                        		<label>Intervenant</label>
+                        		<input type='text' id='search_select_intervenant' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_intervenant', 'ticket_incident_modification_user');" />
+                    		</div>
+						{% else %}
+	                    	<label>Intervenant</label>
+						{% endif %}
                         <span class="data">
                             {% if is_granted('ROLE_SAISIE_BA') %}
 								{{ form_widget(form_modification.user) }}
@@ -341,7 +372,7 @@
 										{{ form_widget(form_validation.validationIntervention) }}
 										Attente d'intervention <br/>
 									</div>
-									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
+									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationIntervention.user.label }} ({{ entity_bon.validationIntervention.dateDeValidation | date('d-m-Y H:i') }})</span>
 								{% else %}
 									<span style='color:red;>Non demandée</span>
                                 {% endif %}
@@ -376,7 +407,7 @@
                                 {% if entity_bon.validationIntervention.valide == true %}
                                     {# Service Intervention validé : On affiche l'icone pour le dévalider si on a les droits #}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('intervention', false);">Annuler</span>
+                                        <span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('intervention', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -385,7 +416,7 @@
                             {% if entity_bon.validationCloture %}
                                 {% if entity_bon.validationCloture.valide == true %}
                                     {% if is_granted('ROLE_SERVICE_TECHNIQUE') %}
-                                        <span style='color:red; cursor:pointer;' onClick="changeValidation('cloture', false);">Annuler</span>
+                                        <span style='color:red; cursor:pointer;' onClick="sendValidationAjaxRequest('cloture', false);">Annuler</span>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -441,6 +472,15 @@
                 <div>
                     <label for="consignesClientCloture">Informations client de cloture</label>
                     <textarea name='consignesClientCloture' id='consignesClientCloture'></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="popup__content">
+            <div class="form__field">
+                <p id='avertissementConsignesClotureTechnicien' style='color:red'></p>
+                <div>
+                    <label for="consignesTechnicienCloture">Informations technicien de cloture</label>
+                    <textarea name='consignesTechnicienCloture' id='consignesTechnicienCloture'></textarea>
                 </div>
             </div>
         </div>

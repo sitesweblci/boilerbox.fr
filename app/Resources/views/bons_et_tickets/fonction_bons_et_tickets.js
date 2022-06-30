@@ -255,13 +255,6 @@
 
 
 
-    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
-    function setDatePicker()
-    {
-        $("input[placeholder='dd/mm/YYYY']").datepicker();
-    }
-
-
     function resetInfosSite()
     {
         $('#site_ba_intitule').attr('readonly', false);
@@ -421,8 +414,7 @@
                     {
                         if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
                         {
-                            $(this).prop('disabled', 'disabled');
-							$(this).addClass('disabled');
+							$(this).addClass('notIntoService');
                         } else {
                             // On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
                             // Si oui on le reselectionnera

@@ -1,4 +1,8 @@
 <script 'type=text/javascript'>
+
+	// information : La variable $idBon est définie dans les ficchier form_visu_un_bon et form_visu_un_ticket. 
+	//					Elle doit être instanciés avant l'include de ce fichier
+
     // Fonction style barre de navigation page active
     function pageActive() {
         $('.side-nav .bons-interv').addClass('active');
@@ -104,7 +108,7 @@
         		}	
 			break;
 			case 'cloture':
-		        var texte = $('#consignesClientCloture').val();
+		        var texte 				= $('#consignesClientCloture').val();
         		if (texte != '')
         		{
             		// Envoi du mail de cloture au client
@@ -114,9 +118,10 @@
             		    method: "POST",
             		    success: function(msg)
             		    {
-            		        console.log('envoi du mail de cloture effectué');
-            		        console.log(msg);
-            		        ajoutCommentaire('cloture',texte);
+            		        ajoutCommentaire('cloture',"<span class='info_system'>Informations de clôture client</span> : " + texte);
+
+							var texte_technicien    = $('#consignesTechnicienCloture').val();
+							ajoutCommentaire('cloture_technicien', "<span class='info_system'>Informations de clôture technicien</span> : " + texte_technicien);
             		    },
             		    error: function(){
             		        alert("Echec de l'envoi du mail client de cloture incident");
@@ -207,10 +212,10 @@
                 data: {'id_bon':$idBon, 'commentaire':commentaire},
                 method: "POST",
                 success: function(msg){
-                    if (type == 'sav')
+                    if ((type == 'sav') || (type == 'cloture'))
                     {
                         // Modification de la checkbox
-                        changeValidation(type, true);
+                        sendValidationAjaxRequest(type, true);
 						return 0;
                     }
                     if (type != 'autoNoSave')
@@ -237,13 +242,7 @@
     }
 
 
-    function changeValidation($type, $sens)
-    {
-        return sendAjaxRequest($idBon, $type, $sens);
-    }
-
-
-    function sendAjaxRequest($idBon, $type, $sens)
+    function sendValidationAjaxRequest($type, $sens)
     {
         attente();
         setTimeout(function()
@@ -255,7 +254,6 @@
                 success: function(msg)
                 {
                     window.location.assign(location.href);
-                    fin_attente();
                     return true;
                 },
                 error: function(request, $error, $msg)
@@ -386,12 +384,6 @@
     }
 
 
-
-    // Active le datepicker sur tous les input ayant le placeholder à 'dd/mm/YYYY'
-    function setDatePicker()
-    {
-        $("input[placeholder='dd/mm/YYYY']").datepicker();
-    }
 
 
     $('#' + id_select_intervenant).change(function(e) {

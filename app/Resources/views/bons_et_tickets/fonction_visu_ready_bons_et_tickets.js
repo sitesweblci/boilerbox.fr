@@ -1,22 +1,30 @@
 <script type='text/javascript'>
     $(document).ready(function()
     {
+
+		$('input[placeholder="dd/mm/YYYY"]').click(function(){
+			$('#ui-datepicker-div').removeClass('cacher');
+		});
+
         // On définit l'id de l'intervenant pour le retour arrière lorsqu'aucun message de motif de changement d'intervenant n'est indiqué
         $('#last_id_intervenant').val($('#' + id_select_intervenant).val());
 
 		/* Désactivation de la checkbox Archive */
         $('#chk_archive').attr('checked', false);
 
+
+		// Gestion des checkbox de Validation / Dévalidation
         $('#ticket_incident_validation_validationIntervention_valide').click(function(e){
             e.preventDefault;
             $sens = $('#ticket_incident_validation_validationIntervention_valide').is(":checked");
             $type = 'intervention';
-            changeValidation($type, $sens);
+            sendValidationAjaxRequest($type, $sens);
         });
         $('#ticket_incident_validation_validationCloture_valide').click(function(e){
-            e.preventDefault;
+            //e.preventDefault;
             $sens = $('#ticket_incident_validation_validationCloture_valide').is(":checked");
             $type = 'cloture';
+			// Le changement de valeur de la checkbox par l'appel de la fonction sendValidationAjaxRequest est effectué dans le fichier app/Resources/views/bons_et_tickets/fonction_visu_bons_et_tickets.js
             togglePopUp(commentaireCloture);
         });
 
@@ -24,31 +32,32 @@
             e.preventDefault;
             $sens = $('#bons_attachement_validation_validationTechnique_valide').is(":checked");
             $type = 'technique';
-            changeValidation($type, $sens);
+			sendValidationAjaxRequest($type, $sens);
         });
         $('#bons_attachement_validation_validationPiece_valide').click(function(e){
             e.preventDefault;
             $sens = $('#bons_attachement_validation_validationPiece_valide').is(":checked");
             $type = 'pieces';
-            changeValidation($type, $sens);
+            sendValidationAjaxRequest($type, $sens);
         });
         $('#bons_attachement_validation_validationPieceFaite_valide').click(function(e){
             e.preventDefault;
             $sens = $('#bons_attachement_validation_validationPieceFaite_valide').is(":checked");
             $type = 'pieces_faite';
-            changeValidation($type, $sens);
+            sendValidationAjaxRequest($type, $sens);
         });
         $('#bons_attachement_validation_validationSAV_valide').click(function(e){
             //e.preventDefault;
             $sens = $('#bons_attachement_validation_validationSAV_valide').is(":checked");
             $type = 'sav';
+			// Le changement de valeur de la checkbox par l'appel de la fonction sendValidationAjaxRequest est effectué dans le fichier app/Resources/views/bons_et_tickets/fonction_visu_bons_et_tickets.js
             togglePopUp(commentaireSAV);
         });
         $('#bons_attachement_validation_validationFacturation_valide').click(function(e){
             e.preventDefault;
             $sens = $('#bons_attachement_validation_validationFacturation_valide').is(":checked");
             $type = 'facturation';
-            changeValidation($type, $sens);
+            sendValidationAjaxRequest($type, $sens);
         });
 
         $("#bons_attachement_validation_dateSignature" ).datepicker();
@@ -156,7 +165,7 @@
                         {
                             if (($.inArray(parseInt($(this).prop('value')), t_data) == -1) && ($(this).prop('value') != ''))
                             {
-                                $(this).addClass('cacher');
+								$(this).addClass('notIntoService');
                             } else {
                                 // On regarde si l'intervenant précédemment selectionné se trouve dans la liste des intervants du service selectionné
                                 // Si oui on le reselectionnera

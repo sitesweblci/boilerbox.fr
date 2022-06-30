@@ -10,9 +10,6 @@ lci_ajax_bons_archive_fichier:
 lci_bons_afficher_unbon:
     path: /bons/afficher_unbon
     defaults: { _controller: LciBoilerBoxBundle:Bons:afficherUnBon }
-lci_bons_modifier_unbon:
-    path: /bons/modification_unbon/{idBon}
-    defaults: { _controller: LciBoilerBoxBundle:Bons:modifierUnBon }
 lci_bons_externe_enquete:
     path: /bons/externe/enquetes
     defaults: { _controller: LciBoilerBoxBundle:Externes:getNewEnquetes }
