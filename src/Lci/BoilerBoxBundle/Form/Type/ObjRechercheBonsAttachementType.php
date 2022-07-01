@@ -31,7 +31,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             'label'           => 'Intervenant',
             'label_attr'      => array('class' => 'label_smalltext'),
 			'attr'			  => array(
-				'class' 		=> 'smallselect',
+				'class' 		=> 'smallselect jq-select-2',
 			),
 			'choice_label'    => 'label',
 			'placeholder'   => 'Tout intervenant',
@@ -49,7 +49,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             'label'           => 'Initiateur du bon',
             'label_attr'      => array('class' => 'label_smalltext'),
             'attr'            => array(
-                'class'         => 'smallselect',
+                'class'         => 'smallselect jq-select-2',
             ),
             'choice_label'    => 'label',
             'placeholder'     => 'Tout initiateur',
@@ -92,7 +92,7 @@ class ObjRechercheBonsAttachementType extends AbstractType {
             },
 			'required'      => true,
             'label_attr'    => array ('class' => 'label_smalltext'),
-            'attr'          => array('class' => 'smallselect'),
+            'attr'          => array('class' => 'smallselect jq-select-2'),
 			'placeholder'   => 'Tout site'
 		))
         ->add('nomDuContact', TextType::class, array(
