@@ -283,32 +283,6 @@
     }
 
 
-	// Fonction qui permet de réduire les options proposées dans un select en fonction du chamsp text entré dans une input text
-	// Necessite : 	Un select avec un id
-	//				Un champs text avec un id
-	// 				Un écouteur d'évenement keyup sur le champs text 
-	//				L'appel de cette fonction sur l'écouteur d'évenement avec en 	paramètre 1 : id du champs text, 
-	//																				parametre 2 : id du select
-	/* ex :
-        $('#search_contact').keyup(function(){
-            rechercheDansSelect('search_contact', 'select_contact');
-        });
-	*/
-	function rechercheDansSelect(id_input_search, id_select)
-	{
-		var mot_recherche = $('#' + id_input_search).val();
-        var regexp = new RegExp(mot_recherche, 'i');
-
-        $('#' + id_select + ' > option').each(function() {
-            $(this).removeClass('cacher');
-            if (! this.text.match(regexp))
-            {
-                $(this).addClass('cacher');
-            }
-        });
-	}
-
-
     // Fonction qui accepte en entrée un date au format fr jj[/-]mm[/-]aaaa (hh:mm:ss facultatif) 
 	// et retourne un tableau date pour les tri javascript : tab[date, yyyy, mm, dd, hh, mm, ss]
     function setFRDateToJSDate(frdate)
