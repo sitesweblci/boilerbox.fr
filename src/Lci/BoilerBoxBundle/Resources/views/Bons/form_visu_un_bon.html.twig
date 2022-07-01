@@ -26,41 +26,17 @@
 	#table_des_fichiers tr td.small img{
 		cursor: pointer;
 	}
-    .erreur_formulaire {
-        border: 2px solid red !important;
-		position: relative;
-		margin-top: 0px;
-    }
     body > form{
     	padding: 8px;
     }
     #table_validation thead tr th{
     	width: 25%;
     }
-    #map{
-    	height: 160px;
-    }
     #map ~ a{
     	display: none;
     }
     #table_des_equipements{
     	display: table !important;
-    }
-    .info_system {
-        background: lightgray;
-    }
-    .notIntoService {
-        background: gray;
-    }
-    .champs_recherche_select {
-        height : 20px;
-        width : 150px;
-        border : 1px dashed black;'
-    }
-    .flex_pour_champs_recherche {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
     }
 	</style>
 {% endblock boilerBoxCSS %}
@@ -165,14 +141,7 @@
            	     	</div>
 
 	                <div>
-                        {% if is_granted('ROLE_SAISIE_BA') %}
-                            <div class='flex_pour_champs_recherche'>
-                                <label>Intervenant</label>
-                                <input type='text' id='search_select_intervenant' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_intervenant', 'bons_attachement_modification_user');" />
-                            </div>
-                        {% else %}
-                            <label>Intervenant</label>
-                        {% endif %}
+                        <label>Intervenant</label>
                         <span class="data">
                             {% if is_granted('ROLE_SAISIE_BA') %}
 								{{ form_widget(form_modification.user) }}

@@ -25,11 +25,6 @@
 		.main-box .search-bar{
 			width: 250px;
 		}
-		/**{
-			box-sizing: border-box;
-			outline: 1px solid limegreen !important;
-			background: rgb(0 100 0 / 0.1) !important;
-		}*/
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -53,17 +48,28 @@
 <main class='main-box main-box--table main-box--visuBons'>
 	<h1 class="main-box__title main-box--table__title">{# {% if is_granted('ROLE_GESTION_BA') %}Liste des {% else %}Mes {% endif %} bons d'interventions #}Liste bons d'interventions et tickets</h1>
     <div class='main-box__action main-box__action--wide'>
+    	{% if filtre %}
+    		<div class="filter tooltip-wrapper" onClick='refeshResearch();'>
+    			Filtre(s) actif(s)
+    			<span class="filter__cross"></span>
+    			<span class="tooltip">Supprimer</br> les filtres actifs</span>
+    		</div>
+    	{% endif %}
     	<div class="search-bar">
 			<span class="search-bar__img"/></span>
 			<input id='js-search-bon' class="search-bar__input" type="text" placeholder="Rechercher">
 		</div>
-    	<span class="tooltip-wrapper tooltip-wrapper--end" onClick="redirection('affinerRechercheBon'); return false;">
-    		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" />
-    		<span class="tooltip">Affiner recherche</span>
-    	</span>
 		{% if filtre %}
-			<span style='color:red' onClick='refeshResearch();'>&nbsp;&nbsp;R&nbsp;&nbsp;</span>
-		{% endif %}
+	    	<span class="tooltip-wrapper tooltip-wrapper--end filter__actif" onClick="redirection('affinerRechercheBon'); return false;">
+	    		<img src="/bundles/lciboilerbox/images/actions/affiner.svg" />
+	    		<span class="tooltip">Ajouter filtres</span>
+	    	</span>
+    	{% else %}
+    		<span class="tooltip-wrapper tooltip-wrapper--end" onClick="redirection('affinerRechercheBon'); return false;">
+    			<img src="/bundles/lciboilerbox/images/actions/affiner.svg" />
+    			<span class="tooltip">Affiner recherche</span>
+    		</span>
+    	{% endif %}
     </div>
     <div class="main-box__content">
         <table id="js-liste-bon" class='flex-table'>

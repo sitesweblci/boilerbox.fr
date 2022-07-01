@@ -1,10 +1,25 @@
-#contenu_email {
-	border: 10px solid black;
-	height: 400px;
+html{
+	background: #f0f0f0;
+	font-family: Calibri, Arial, sans-serif;
 }
-
+h1{
+	font-size: 42pt;
+	font-family: Arial;
+	font-weight: 700;
+	font-style: italic;
+	color: #0a71b3;
+	letter-spacing: -2pt;
+	overflow: none;
+}
+#contenu_email {
+	background: #fff;
+	border-radius: 0 10px 10px 10;
+	border:  solid 1px #d2d2d2;
+	box-shadow: 0 0 2px 0 rgba(0,0,0,0.3);
+}
  
-h1 {
+/*h1 {
 	color: red;
 	font-size: 10px;
 }
+*/

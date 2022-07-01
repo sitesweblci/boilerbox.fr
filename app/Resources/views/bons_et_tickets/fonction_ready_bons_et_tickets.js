@@ -3,6 +3,9 @@
     {
         attendreRechargement();
 
+        // Test Jquery Select 2
+        $('.jq-select-2').select2();
+
         // Récupération du container des fichiers des SitesBA
         $container_fichiers_site = $('#encart_fichiers_siteBA'); //$('#site_ba_fichiersJoint');
         // Récupération du container des contacts des SitesBA

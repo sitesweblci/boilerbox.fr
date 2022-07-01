@@ -6,15 +6,112 @@
 </head>
 
 <body>
-<div id='contenu_email' style='margin-bottom:200px;min-height:800px;border:2px solid black;'>
-	<h1 style='margin-bottom:50px;'>{{ tab_message['titre'] }}</h1>
-	<h2>
-		{{ tab_message['site'] }} <br /><br />
-		{{ tab_message['contact'] }}
-	</h2>
-	<h4>{{ tab_message['fichiers'] }}</h4>
-</div>
-<img src="{{ image_link }}" alt='IPC' align='left' />
+	{# <img src="{{ image_link }}" alt='IPC' align='left' /> #}
+
+	<table bgcolor="#f0f0f0" border="0" cellpadding="0" cellspacing="0" width="600"
+		style="width: 600px;
+		margin:0;
+		padding: 32px 48px;
+		cellspacing:0;
+		cellpadding:0;
+		border-spacing:0;
+		background: #f0f0f0;
+		font-family: Calibri, Arial, sans-serif;
+		">
+		<tr>
+			<td>
+				<h1 style="width: fit-content;
+				margin: 0 auto 32px auto;
+				padding:0;
+				font-size: 42pt;
+				font-family: Arial;
+				font-weight: bold;
+				font-style: italic;
+				text-align: center;
+				color: #0a71b3;
+				letter-spacing: -2pt;
+				overflow: none;
+				">BoilerBox</h1>
+				<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="504" 
+					style="width:504px !important;
+					margin:0;
+					padding: 48px 48px 32px 48px;
+					cellspacing:0;
+					cellpadding:0;
+					border-spacing:0;
+					border-radius: 0 10px 10px 10px;
+					border: solid 1px #d2d2d2;
+					background: #fff;
+					box-shadow: 0 0 2px 0 rgba(0,0,0,.3);
+				">
+					<tr style="margin:0;
+						padding:0;">
+						<td style="margin:0;
+						padding:0;">
+							{# <img src="{{ image_link }}" alt="illustration d'analyse possible avec BoilerBox"
+								style="
+								display:block;
+								background:red;
+								width:408px;
+								height:160px;
+								margin-bottom:16px;
+								margin-inline:auto;
+							"/> #}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p style="margin:0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 14pt;
+								font-weight:600;
+								color: #0a71b3;
+							">
+								{{ tab_message['titre'] }}
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p style="margin:0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 12pt;
+								color: #505050;
+							">
+								{{ tab_message['site'] }}
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p style="margin:0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 12pt;
+								color: #505050;
+							">
+								{{ tab_message['contact'] }}
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p style="margin:0;
+								padding:0;
+								font-family: Calibri, Arial, sans-serif;
+								font-size: 12pt;
+								color: #505050;
+							">
+								{{ tab_message['fichiers'] }}
+							</p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 
 </body>
 </html>

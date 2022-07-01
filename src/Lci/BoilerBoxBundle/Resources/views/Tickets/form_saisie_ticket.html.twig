@@ -12,25 +12,10 @@
 		body > form{
 			padding: 8px;
 		}
-		.erreur_formulaire {
-			border: 2px solid red !important;
-		}
         #table_des_equipements {
             width: 100%;
             min-width: initial;
         }
-{#
-        form > .form-group{
-            display: none;
-		}
-#}
-        #mapVisualisation {
-            height: 400px;
-        }
-        .notIntoService {
-            background: gray;
-        }
-
 		{# Fonction pour n'afficher que l'annee de construction equipement  #}
 		.ui-datepicker-calendar {
 			display: none;
@@ -38,16 +23,6 @@
 		.ui-datepicker-month{
     		display :none;
 		}
-        .champs_recherche_select {
-            height : 20px;
-            width : 200px;
-            border : 1px dashed black;'
-        }
-        .flex_pour_champs_recherche {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 	</style>
 {% endblock boilerBoxCSS %}
 
@@ -121,10 +96,7 @@
         	</div>
             {# Intervenant #}
             <div>
-				<div class='flex_pour_champs_recherche'>
-                    {{ form_label(form.user) }}
-                    <input type='text' id='search_select_intervenant' class='champs_recherche_select' onkeyup="rechercheDansSelect('search_select_intervenant', 'ticket_incident_user');" />
-                </div>
+                {{ form_label(form.user) }}
                 {{ form_widget(form.user) }}
                 {{ form_errors(form.user) }}
             </div>
@@ -193,24 +165,15 @@
 	</fieldset>
 </section>
 <section class="content__brick">
-	<fieldset class="fieldset">
-		<h2 class="fieldset__title">Localisation</h2>
-		<div id='mapVisualisation'></div>
-	</fieldset>
     <fieldset class="fieldset">
-        <h2 class="fieldset__title">Informations reçues par le client</h2>
+        <h2 class="fieldset__title">Motif</h2>
         <div class="form__field">
-            <label for="objet-ticket">Objet <span class="js-toggle red">à destination du client !</span></label>
-            <input type="text" id="objet-ticket">
-        </div>
-        <div class="form__field">
+            <label>Objet <span id="js-warning-client" class="warning">( à destination du client )</span></label>
             {{ form_errors(form.motif) }}
             {# {{ form_label(form.motif) }} #}
             {{ form_widget(form.motif) }}
         </div>
-    </fieldset>
-    <fieldset class="fieldset">
-        <h2 class="fieldset__title">Informations complémentaires</h2>
+        <label>Informations complémentaires</label>
         <div class="form__field">
             <div>
                 {{ form_errors(form.motifTechnicien) }}
@@ -218,6 +181,10 @@
                 {{ form_widget(form.motifTechnicien) }}
             </div>
         </div>
+    </fieldset>
+    <fieldset class="fieldset">
+        <h2 class="fieldset__title">Localisation</h2>
+        <div id='mapVisualisation'></div>
     </fieldset>
 	<div class="content__btn">
 		{# Retour à la page d'accueil #}
@@ -362,6 +329,10 @@
 
 {% block javascript %}
 <script type='text/javascript'>
+    // Avertissement que le texte saisi sera envoyé au client dans l'encart "Motif"
+    $('#ticket_incident_motif').on('focus', function(){
+        $('#js-warning-client').removeClass('cacher');
+    })
     var $page_html = "{{ page }}";
     var $indexFichier = 1;
     var $indexFichierSiteBA = 1;

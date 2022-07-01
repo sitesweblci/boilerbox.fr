@@ -50,6 +50,10 @@ class BonsAttachementType extends AbstractType {
             'label'           => 'Intervenant',
             'label_attr'      => array ('class' => 'label_smalltext'),
 			'choice_label'    => 'label',
+            'attr'            => array(
+                'class'             => 'jq-select-2'
+
+            ),
 			'query_builder'   => function(EntityRepository $er){
 				return $er->createQueryBuilder('u')
 					->where('u.roles LIKE :role')

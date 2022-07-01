@@ -52,6 +52,10 @@ class TicketIncidentType extends AbstractType {
             'label'           => 'Intervenant',
             'label_attr'      => array ('class' => 'label_smalltext'),
 			'choice_label'    => 'label',
+            'attr'            => array(
+                'class'             => 'jq-select-2'
+
+            ),
 			'query_builder'   => function(EntityRepository $er){
 				return $er->createQueryBuilder('u')
 					->where('u.roles LIKE :role')
@@ -188,7 +192,7 @@ class TicketIncidentType extends AbstractType {
 			'allow_delete'	=> true,
 			'required' 		=> true
 		))
-		->add('motif', TextareaType::class, array(
+		->add('motif', TextType::class, array(
             'label'         => false,
             'required'      => true,
             'trim'          => true,
@@ -200,9 +204,6 @@ class TicketIncidentType extends AbstractType {
             'label'         => false,
             'required'      => false,
             'trim'          => true,
-            'attr'          => array (
-                'placeholder'   => "Informations complémentaire pour les techniciens"
-            ),
 			'mapped'		=> false
         ))
 		->add('type', TextType::class, array(

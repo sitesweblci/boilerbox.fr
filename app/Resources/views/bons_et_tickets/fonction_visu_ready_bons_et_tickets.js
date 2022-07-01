@@ -1,6 +1,8 @@
 <script type='text/javascript'>
     $(document).ready(function()
     {
+        // Test Jquery Select 2
+        $('.jq-select-2').select2();
 
 		$('input[placeholder="dd/mm/YYYY"]').click(function(){
 			$('#ui-datepicker-div').removeClass('cacher');

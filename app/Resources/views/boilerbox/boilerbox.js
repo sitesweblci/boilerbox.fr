@@ -299,6 +299,7 @@
 		var mot_recherche = $('#' + id_input_search).val();
         var regexp = new RegExp(mot_recherche, 'i');
 
+        $('#' + id_select).size = 10;
         $('#' + id_select + ' > option').each(function() {
             $(this).removeClass('cacher');
             if (! this.text.match(regexp))
