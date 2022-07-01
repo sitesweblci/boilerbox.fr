@@ -61,7 +61,7 @@ class BonsController extends Controller
 
     public function indexAction(Request $request)
     {
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SAISIE_BA')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_GESTION_BA')) {
             return $this->render('LciBoilerBoxBundle:Bons:index.html.twig');
         } else {
             return $this->visualiserAction(null, $request);

@@ -71,7 +71,7 @@
 					<div>
 						<label>Site</label>
 						<span class="data">
-							{% if is_granted('ROLE_SAISIE_BA') %}
+							{% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.site) }}
 							{% else %}
 								{{ entity_bon.site.intitule }}
@@ -89,7 +89,7 @@
 					<div>
             	        <label>Affaire</label>
             	        <span class="data">
-							{% if is_granted('ROLE_SAISIE_BA') %}
+							{% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.numeroAffaire) }}
                         	{% else %}
                         	    {{ entity_bon.numeroAffaire }}
@@ -103,7 +103,7 @@
                     <div>
                         <label>Service</label>
                         <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
                                 {{ form_widget(form_modification.service) }}
                             {% else %}
                                 {{ entity_bon.service }}
@@ -117,7 +117,7 @@
             	    <div>
             	        <label>Initiateur</label>
                         <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.userInitiateur) }}
                             {% else %}
                                 {{ entity_bon.userInitiateur.label }}
@@ -128,7 +128,7 @@
 	                <div>
 	                    <label>Intervenant</label>
                         <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.user) }}
                             {% else %}
 								{% if entity_bon.user %}
@@ -144,7 +144,7 @@
 				<div class="form__field form__field--double">
 					<div>
 						<label>Date d'initialisation</label>
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
                                 {{ form_widget(form_modification.dateDebutIntervention) }}
                             {% else %}
                                 <input type='text' class='disabled' value="{{ entity_bon.dateDebutIntervention | date('d/m/Y H:i') }}" />
@@ -153,7 +153,7 @@
 
                     <div>
                         <label>Date de clôture</label>
-                            {% if is_granted('ROLE_SAISIE_BA') or (app.user == entity_bon.user) %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') or (app.user == entity_bon.user) %}
                                 {{ form_widget(form_modification.dateFinIntervention) }}
                             {% else %}
                                 <input type='text' class='disabled' value="{{ entity_bon.dateFinIntervention | date('d/m/Y H:i') }}" />
@@ -185,7 +185,7 @@
 				<div class="form__field">
 					<label>Nom Contact</label>
                     <span class="data">
-						{% if is_granted('ROLE_SAISIE_BA') %}
+						{% if is_granted('ROLE_SAISIE_TICKET') %}
 							{{ form_widget(form_modification.nomDuContact) }}
 						{% else %}
                     	    <input type='text' class='disabled' value="{{ entity_bon.nomDuContact }}" />
@@ -197,7 +197,7 @@
 					<div>
 						<label>Email</label>
                        	<span class="data">
-							{% if is_granted('ROLE_SAISIE_BA') %}
+							{% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.emailContactClient) }}
 							{% else %}
 								<input type='text' class='disabled' value="{{ entity_bon.emailContactClient }}" />
@@ -208,7 +208,7 @@
 					<div>
 						<label>Téléphone</label>
                         <span class="data">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
                                {{ form_widget(form_modification.telephoneContactClient) }} 
                             {% else %}
                             	<input type='text' class='disabled' value="{{ entity_bon.telephoneContactClient }}" />
@@ -224,7 +224,7 @@
 
             <fieldset class="fieldset fieldset--no-padding">
                 <h2 class="fieldset__title">Fichier{% if entity_bon.fichiersPdf | length > 1 %}s{% endif %} ({{ entity_bon.fichiersPdf | length }}) </h2>
-                {% if is_granted('ROLE_SAISIE_BA') %}
+                {% if is_granted('ROLE_SAISIE_TICKET') %}
                     <div id='label_archive' class="form__field">
                         <div class="checkbox">
                             <label>
@@ -237,7 +237,7 @@
                 <table class='flex-table'>
                     <thead class="flex-table__thead">
                         <tr class="flex-table__row">
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
                                 <th class='small'>Archiver</th>
                             {% endif %}
                             <th class='wide'>Nom</th>
@@ -247,7 +247,7 @@
                         {% for fichier in entity_bon.fichiersPdf %}
                             <tr id="fichier_{{ fichier.id }}" onClick="afficheFichier('{{ fichier.bonAttachement.id }}_{{ fichier.id }}');"
                             {% if fichier.archive == true %}class="flex-table__row cacher archive" {% else %} class="flex-table__row" {% endif %}>
-                                {% if is_granted('ROLE_SAISIE_BA') %}
+                                {% if is_granted('ROLE_SAISIE_TICKET') %}
                                     <td class='small'>
                                         <img id="image_{{ fichier.id }}"
                                             {% if fichier.archive == false %}
@@ -285,7 +285,7 @@
 					<label>Chemin local vers le répertoire des photos</label>
                     <div id='cheminDossierPhotos' class="input input--disabled" style="cursor:pointer">
                         <span>
-                            {% if is_granted('ROLE_SAISIE_BA') %}
+                            {% if is_granted('ROLE_SAISIE_TICKET') %}
 								{{ form_widget(form_modification.cheminDossierPhotos) }}
                             {% else %}
                                 {{ entity_bon.cheminDossierPhotos }}
@@ -334,7 +334,7 @@
                             {% if entity_bon.validationIntervention %}
                                 {% if entity_bon.validationIntervention.valide == true %}
                                     <span style='color:green;'>Intervention demandée par {{ entity_bon.validationIntervention.user.label }} ({{ entity_bon.validationIntervention.dateDeValidation | date('d-m-Y') }})</span>
-                                {% elseif entity_bon.validationIntervention.user == app.user %}
+                                {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
                                     {# Service Intervention dé-validé : On affiche la checkbox pour le revalider si on a les droits de validation #}
                                     <div style='display:flex'>
 										{{ form_widget(form_validation.validationIntervention) }}
@@ -342,7 +342,7 @@
 									</div>
 									<span style='color:red'>Demande d'intervention annulée par {{ entity_bon.validationIntervention.user.label }} ({{ entity_bon.validationIntervention.dateDeValidation | date('d-m-Y H:i') }})</span>
 								{% else %}
-									<span style='color:red;>Non demandée</span>
+									<span style='color:red'>Non demandée</span>
                                 {% endif %}
                             {% elseif is_granted('ROLE_SERVICE_TECHNIQUE')  %}
 								{# Service Intervention non validé - On a les droits de validation #}
@@ -353,14 +353,14 @@
                             {% if entity_bon.validationCloture %}
                                 {% if entity_bon.validationCloture.valide == true %}
                                     <span style='color:green;'>Cloturé par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
-                                {% elseif entity_bon.validationCloture.user == app.user %}
+                                {% elseif is_granted('ROLE_SERVICE_TECHNIQUE') %}
                                     <div style='display:flex'>
 										{{ form_widget(form_validation.validationCloture) }} 
 										Clôturer
 									</div>
 									<span style='color:red'>Réouvert par {{ entity_bon.validationCloture.user.label }} ({{ entity_bon.validationCloture.dateDeValidation | date('d-m-Y H:i') }})</span>
 								{% else %}
-                                    <span style='color:red;>Non clos</span>
+                                    <span style='color:red'>Non clos</span>
                                 {% endif %}
                             {% elseif is_granted('ROLE_SERVICE_TECHNIQUE')  %}
                                 {# Service Cloture non validé - On a les droits de validation #}
@@ -414,11 +414,11 @@
             <button class="btn_menu btn btn--second" onClick="attente(); redirection('bonsVisualiser'); return false;">Retour</button>
             {# Si le bon à un intervenant de définit : L'intervenant peut ouvrir le bon #}
             {% if entity_bon.user %}
-                {% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                {% if (entity_bon.userInitiateur.id == app.user.id) or (entity_bon.user.id == app.user.id) or is_granted('ROLE_SAISIE_TICKET') %}
                     <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
                 {% endif %}
             {% else %}
-                {% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_BA') %}
+                {% if (entity_bon.userInitiateur.id == app.user.id) or is_granted('ROLE_SAISIE_TICKET') %}
                     <button class="btn_menu btn btn--main" onClick="document.forms['myFormFichiers'].submit(); return false">Enregistrer modif.</button>
                 {% endif %}
             {% endif %}
