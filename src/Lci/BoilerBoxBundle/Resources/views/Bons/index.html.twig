@@ -37,6 +37,8 @@
     		<p class="card__container__desc">Affichage et recherches des bons et tickets<p>
     	</div>
     </div>
+	{# ICI DEV Suppression de l'accès en attende developpement micha #}
+	{% if app.user == 'DEBUYCKMI' %}
     <div class="card" onClick="attente(); redirection('sitesBAVisualiser'); return false;">
     	<img class="card__img" src="{{ asset('bundles/lciboilerbox/images/administration/boutonsMenu/visu-site.svg') }}" alt="Visualisation des sites" >
     	<div class="card__container">
@@ -44,6 +46,7 @@
     		<p class="card__container__desc">Synthése d'un site avec adresse, contact, fichiers etc...</p>
     	</div>
     </div>
+	{% endif %}
 </div>
 
 <script type='text/javascript'>
