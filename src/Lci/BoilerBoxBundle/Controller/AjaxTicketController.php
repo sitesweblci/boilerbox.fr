@@ -31,9 +31,9 @@ class AjaxTicketController extends Controller
 
         	$tab_email                  = array();
         	$tab_email['sujet']         = "Clôture de ticket d'incident sur BoilerBox";
-        	$tab_email['from']          = null;
+        	$tab_email['from']          = $this->getUser()->getEmail();
         	$tab_email['to']            = array($e_ticket->getEmailContactClient());
-        	$tab_email['cc']            = array('assistance_ibc@lci-group.fr');
+        	$tab_email['cc']            = array('Ticket@Boiler-box.fr');
         	$tab_email['titre']         = "Bonjour";
         	$tab_email['sous-titre']    = "Le ticket d'incident n°" . $e_ticket->getNumeroBA() . " a été clôturé par nos services.";
         	$tab_email['contenu']       = "Ci dessous les informations sur la(les) solution(s) apportée(s) :\n\n";

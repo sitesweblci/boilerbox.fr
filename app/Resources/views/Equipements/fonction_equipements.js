@@ -2,7 +2,6 @@
 // Tableau des équipements selectionnés
 // il permet de ne pas réafficher les équipements en doublon lors de la modification du select site
 var tabDesEquipementsSelectionnes = [];
-
 $(document).ready(function() 
 {
         /******************************         READY POUR LES EQUIPEMENTS        ***************************************/
@@ -281,10 +280,10 @@ $(document).ready(function()
             {
 				if ($('#' + id_select_site).length != 0)
 				{
-					if (type_page_html == 'saisie')
+					if ($type_page_html == 'saisie')
 					{
                 		document.forms['myForm'].submit();
-					} else if (type_page_html == 'modification')
+					} else if ($type_page_html == 'modification')
                 	{
 						document.forms['myFormFichiers'].submit();
 					} 
@@ -399,6 +398,7 @@ $(document).ready(function()
                 data: $('form[name="equipement_ba_ticket"]').serialize(),
                 success: function(output, status, xhr)
                 {
+                    console.log('success');
                     try {
                         // On recoit une réponse ajax : L'équipement a été enregistré (on recoit l'entité équipement)
                         $data_e_equipement = JSON.parse(output);
@@ -408,15 +408,24 @@ $(document).ready(function()
                         $('#' + id_champs_nouveau_type).val('equipement');
                         $('#' + id_champs_nouveau_nom_site).val($('#equipement_ba_ticket_siteBA').val());
 
-						// Assignation de l'équipement au bon si on est sur la page de visu (modification de bon)
+                        console.log($data_e_equipement['id']);
+
+        // Assignation de l'équipement au bon si on est sur la page de visu (modification de bon)
 						if ($('#' + id_select_site).length != 0)
                         {
-							if (type_page_html == 'saisie')
+        console.log('!=0');
+        console.log($type_page_html);
+        console.log($type_page_html);
+        if ($type_page_html == 'saisie')
 							{
-                            	// Si on est su la page de saisie d'un bon on raffraichit la page
+        console.log('submit');
+
+        // Si on est su la page de saisie d'un bon on raffraichit la page
                             	// Rechargement de la page de saisie
                             	document.forms['myForm'].submit();
-							} else if (type_page_html == 'modification')
+        console.log('submit done');
+
+    } else if ($type_page_html == 'modification')
 							{
 								$.ajax({
 									url : "{{ path('lci_ajax_bon_assign_equipement_to_bon') }}",

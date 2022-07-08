@@ -117,9 +117,9 @@ class AjaxBonsEtTicketsController extends Controller
                 	$service_mail = $this->get('lci_boilerbox.mailing');
                 	$tab_email                  = array();
                 	$tab_email['sujet']         = "Ré-ouverture du ticket d'incident n°" . $entity_bon->getNumeroBA() . " pour l'affaire " . $entity_bon->getNumeroAffaire() . " ( " . $entity_bon->getSite()->getIntitule() . " ) ";
-                	$tab_email['from']          = null;
+                	$tab_email['from']          = $e_user_actif->getEmail();
                 	$tab_email['to']            = array($entity_bon->getEmailContactClient());
-                	$tab_email['cc']            = array('assistance_ibc@lci-group.fr');
+                	$tab_email['cc']            = array('Ticket@Boiler-box.fr');
                 	$tab_email['titre']         = "Ré-ouverture du ticket d'incident n°" . $entity_bon->getNumeroBA() . " pour l'affaire " . $entity_bon->getNumeroAffaire();
                 	$tab_email['sous-titre']    = null;
                 	$tab_email['contenu']       = "Bonjour\n\n";

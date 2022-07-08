@@ -75,6 +75,7 @@ class TicketController extends Controller
 		$echec_creation_equipement 				= false;
         $apiKey 								= $this->get('lci_boilerbox.configuration')->getEntiteDeConfiguration('cle_api_google')->getValeur();
         $es_sitesBA 							= $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+        $service_utilitaire						= $this->container->get('lci_boilerbox.utilitaires');
 
         // Création de l'entité du ticket + Récupération de l'utilisateur courant pour en définir l'initiateur
         $e_ticket 		= new BonsAttachement();
@@ -331,7 +332,10 @@ class TicketController extends Controller
                     	    try {
 								// Enregistrement du siteBA en base
                     	        $em->flush();
-								// Mise en commentaire pour réafficher le site nouvellement créé
+                    	        // On remet à jour la liste des sites avec le nouveau
+                                $es_sitesBA = $em->getRepository('LciBoilerBoxBundle:SiteBA')->findAll();
+
+                                // Mise en commentaire pour réafficher le site nouvellement créé
 								$id_last_site = $e_siteBA->getId();
                     	        // Si il y a une demande d'ajout de sauvegarde des contacts
                     	        if (isset($_POST['site_ba']['contacts'])) 

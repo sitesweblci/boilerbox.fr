@@ -57,28 +57,28 @@
 			<div class="form__field">
 			<label>Adresse</label>
 			{{ ent_siteBA_actif.adresse }}
-		</div>
-		<div class="form__field" style="max-height:400px; overflow:auto;">
-			<label>Contacts</label>
-			{% for contact in ent_siteBA_actif.contacts %}
-				<div class="flex flex--col" style="margin-bottom:8px; border:2px solid lightgray;">
-					<span>{{ contact.nom }} {{ contact.prenom }}</span>
-					{% if contact.telephone is not empty %}
-						{% if contact.mail is not empty %}
-							<span>tél : {{ contact.telephone }}</span>
-							<span>eMail : {{ contact.mail }}</span>
+			</div>
+			<div class="form__field" style="max-height:400px; overflow:auto;">
+				<label>Contacts</label>
+				{% for contact in ent_siteBA_actif.contacts %}
+					<div class="flex flex--col" style="margin-bottom:8px; border:2px solid lightgray;">
+						<span>{{ contact.nom }} {{ contact.prenom }}</span>
+						{% if contact.telephone is not empty %}
+							{% if contact.mail is not empty %}
+								<span>tél : {{ contact.telephone }}</span>
+								<span>eMail : {{ contact.mail }}</span>
+							{% else %}
+								<span>tél : {{ contact.telephone }}</span>
+							{% endif %}
 						{% else %}
-							<span>tél : {{ contact.telephone }}</span>
+							{% if contact.mail is not empty %}
+								<span>eMail : {{ contact.mail }}</span>
+							{% endif %}
 						{% endif %}
-					{% else %}
-						{% if contact.mail is not empty %}
-							<span>eMail : {{ contact.mail }}</span>
-						{% endif %}
-					{% endif %}
-				</div>
-			{% endfor %}
+					</div>
+				{% endfor %}
+			</div>
 		</div>
-		
 		<div class="form__field">
 			<label>Informations complémentaires </label>
 			{{ ent_siteBA_actif.informationsClient | nl2br }}

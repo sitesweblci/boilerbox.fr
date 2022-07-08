@@ -1,0 +1,85 @@
+{# src/Lci/BoilerBoxBundle/Resources/views/TableauDeBord/etatPerformance.html.twig #}
+{% extends "LciBoilerBoxBundle::secondLayoutLogged.html.twig" %}
+{% block boilerBoxCSS %}
+    {{ parent() }}
+    <style>
+        .flex-table{
+            width: 100%;
+        }
+        .flex-table th, .flex-table td{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .flex-table tr th{
+            padding: 0 3px;
+            font-size: 8pt;
+        }
+        .flex-table tr{
+            cursor: initial;
+        }
+        .flex-table tr td{
+            padding: 3px;
+            font-size: 10pt;
+        }
+        .flex-table .small{
+            width: calc(25% - 6px);
+        }
+        .flex-table .medium{
+            width: calc(40% - 6px);
+        }
+        .visu-img{
+            width:20px;
+            height:20px;
+        }
+    </style>
+{% endblock boilerBoxCSS %}
+
+{% block title %}{{ parent() }} : Etat performance{% endblock title %}
+
+{% block mainBody %}
+    <header class="sub-header sub-header--blue">
+        <h1 class="sub-header__title">Etat module performance sur la journée d'hier</h1>
+    </header>
+
+    <main class='main-box main-box--table'>
+        <div class="main-box__content">
+            <table class='flex-table'>
+                <thead class="flex-table__thead">
+                    <tr class="flex-table__row">
+                        <th scope='col' class='medium' >Site</th>
+                        <th scope='col' class='medium' >Localisation</th>
+                        <th scope='col' class='small' >Etat</th>
+                    </tr>
+                </thead>
+
+                <tbody class="flex-table__tbody">
+                    {% for etat in etats %}
+                        <tr class="flex-table__row">
+                            <td class='medium'>
+                                {{ etat.site }}
+                            </td>
+                            <td class='medium'>
+                                {{ etat.localisation }}
+                            </td>
+                            <td class='small'>
+                                {% if etat.alarme == -3 %}
+                                    donnée non trouvée
+                                {% elseif etat.alarme == -1 %}
+                                    <img class="aucune_donnee visu-img" src="{{ asset('bundles/lciboilerbox/images/performance/geneArret.svg') }}" title="Générateur à l'arrêt" alt="Générateur à l'arrêt"/>
+                                {% elseif etat.alarme == -2 %}
+                                    <img class="aucune_donnee visu-img" src="{{ asset('bundles/lciboilerbox/images/performance/dataError.svg') }}" title="Donnée en erreur" alt="Donnée en erreur"/>
+                                {% elseif etat.alarme > 0 %}
+                                    <img class="exclamation visu-img" title="{{ etat.alarme }} Alarme(s) détectée(s)" src="{{ asset('bundles/lciboilerbox/images/performance/exclamation.svg') }}"/>
+                                {% else %}
+                                    OK
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+{% endblock mainBody %}
