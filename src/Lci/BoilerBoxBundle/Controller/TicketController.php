@@ -165,9 +165,13 @@ class TicketController extends Controller
 						$e_ticket->setTypeIntervention('Incident');
 			
 						// Le numero du ticket s'incremente automatiquement
-						// 	recherche du dernier numéro de ticket en base
-						// 	incrémentation du numéro trouvé
-						$numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
+                        try {
+                            // 	recherche du dernier numéro de ticket en base
+                            // 	incrémentation du numéro trouvé
+                            $numero_de_ticket = $em->getRepository('LciBoilerBoxBundle:BonsAttachement')->myFindLastNumeroBA('ticket');
+                        } catch (\Exception $e) {
+                            $numero_de_ticket = 0;
+                        }
 						$numero_de_ticket ++;
 						$e_ticket->setNumeroBA($numero_de_ticket);
 
